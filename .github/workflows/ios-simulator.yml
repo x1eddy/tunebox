@@ -38,8 +38,8 @@ jobs:
         run: |
           UDID=${{ steps.boot.outputs.udid }}
           xcrun simctl install "$UDID" build/ios/iphonesimulator/Runner.app
-          xcrun simctl launch --console-pty "$UDID" com.brito.tunebox &
-          echo $! > launch.pid
+          xcrun simctl launch --console-pty "$UDID" com.brito.tunebox \
+            > app-console.log 2>&1 &
           sleep 25
           CONTAINER=$(xcrun simctl get_app_container "$UDID" com.brito.tunebox data)
           echo "box=$CONTAINER/Documents" >> "$GITHUB_OUTPUT"
@@ -52,12 +52,19 @@ jobs:
           mkdir -p shots
           shot () { sleep 3; xcrun simctl io "$UDID" screenshot "shots/$1.png"; }
 
+          # The app splits this file on "|" and reads the first field as the
+          # command id, so the id needs that separator too — with a space it
+          # parses as id 0, silently skips the first command and acks the wrong
+          # number.
           drive () {   # <id> <commands…>
-            echo "$*" > "$BOX/tunebox_cmd"
+            id="$1"; shift
+            echo "$id|$*" > "$BOX/tunebox_cmd"
             for _ in $(seq 1 40); do
-              [ "$(cat "$BOX/tunebox_ack" 2>/dev/null)" = "$1" ] && break
+              [ "$(cat "$BOX/tunebox_ack" 2>/dev/null)" = "$id" ] && break
               sleep 1
             done
+            [ "$(cat "$BOX/tunebox_ack" 2>/dev/null)" = "$id" ] \
+              || { echo "the app never acked command $id"; exit 1; }
           }
 
           shot 01-home
@@ -73,8 +80,10 @@ jobs:
         if: always()
         run: |
           UDID=${{ steps.boot.outputs.udid }}
-          xcrun simctl spawn "$UDID" log show --last 5m --style compact \
-            --predicate 'process == "Runner"' > simulator.log 2>&1 || true
+          xcrun simctl spawn "$UDID" log show --last 10m --style compact \
+            --predicate 'processImagePath CONTAINS "Runner"' \
+            > simulator.log 2>&1 || true
+          cat app-console.log >> simulator.log 2>/dev/null || true
           echo "--- crashes:"
           ls ~/Library/Logs/DiagnosticReports/ 2>/dev/null | head || echo none
           grep -ciE "fatal|exception|crash" simulator.log || true
