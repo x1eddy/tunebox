@@ -59,6 +59,17 @@ class ImportService {
       ]) {
         if (Directory(p).existsSync()) out.add(p);
       }
+    } else if (Platform.isIOS) {
+      // An iOS app can only see its own sandbox. "TuneBox" appears in the
+      // Files app (UIFileSharingEnabled), so anything dropped in there — or
+      // opened with TuneBox from another app, which lands in Inbox — is what
+      // there is to scan.
+      try {
+        final docs = await getApplicationDocumentsDirectory();
+        if (docs.existsSync()) out.add(docs.path);
+        final inbox = Directory('${docs.path}/Inbox');
+        if (inbox.existsSync()) out.add(inbox.path);
+      } catch (_) {}
     } else {
       final home = Platform.environment['HOME'];
       if (home != null) {

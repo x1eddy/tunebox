@@ -1,10 +1,10 @@
 # TuneBox
 
-A music player for Android and Linux, with a recommender that runs entirely on
+A music player for Android, iPhone and Linux, with a recommender that runs entirely on
 your device. Music comes from YouTube and from your own files; what the app
 learns about your taste never leaves the phone.
 
-Built with Flutter, so one codebase runs on both.
+Built with Flutter, so one codebase runs on all three.
 
 <p align="center">
   <img src="docs/home.png" width="270" alt="Home, with shelves the AI built">
@@ -52,6 +52,24 @@ for whatever you opened it with.
 
 The APK is universal (arm64, arm32, x86_64).
 
+### iPhone (iOS 15+)
+
+There is no App Store build. The [Releases](../../releases) page carries an
+**unsigned** `.ipa`, which you sign with your own free Apple ID:
+
+- **[SideStore](https://sidestore.io) or [AltStore](https://altstore.io)** —
+  installs the app from the phone itself and refreshes it in the background.
+- **Xcode** on a Mac — drag the `.ipa` onto your device, or open `ios/Runner.xcworkspace`,
+  pick your Apple ID under *Signing & Capabilities* and hit run.
+
+On a free Apple ID the app stops opening after **7 days** until it is
+re-signed; AltStore/SideStore do that for you automatically. A paid Apple
+Developer account raises that to a year.
+
+The first launch shows *"Untrusted Developer"* — that is iOS telling you the
+app was signed by you rather than by Apple. Settings → General → VPN & Device
+Management → your Apple ID → Trust.
+
 ### Linux (x86_64)
 
 Download `TuneBox-<version>-linux-x64.tar.gz` from
@@ -74,12 +92,14 @@ Uninstall with `~/.local/share/tunebox/uninstall.sh`.
 
 ## Build it yourself
 
-Needs Flutter 3.35+ and, for the phone, the Android SDK.
+Needs Flutter 3.35+, the Android SDK for the phone build, and a Mac with
+Xcode for the iPhone build.
 
 ```bash
 flutter pub get
 flutter run -d linux                  # desktop
 flutter build apk --release           # universal APK
+flutter build ios --release --no-codesign   # iPhone (macOS only)
 flutter build linux --release         # desktop bundle
 flutter test                          # 26 tests
 flutter analyze
@@ -98,6 +118,9 @@ lib/
   playback/stream_proxy.dart     loopback server between player and YouTube
   features/                      home, search, library, player, taste, settings
 ```
+
+Every push builds and tests the app, and tags produce the Android and iOS
+artifacts — see [.github/workflows/build.yml](.github/workflows/build.yml).
 
 Two things worth knowing if you read the code:
 

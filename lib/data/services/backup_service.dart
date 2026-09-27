@@ -24,7 +24,8 @@ class BackupService {
   ///
   /// On Android this is the app's folder on shared storage, so it can be
   /// filled over USB (`adb push`) or by a file manager without any permission
-  /// dance. On desktop it sits next to the database.
+  /// dance. On iOS it is the Documents folder, which the Files app shows as
+  /// "TuneBox". On desktop it sits next to the database.
   Future<Directory> transferDirectory() async {
     if (Platform.isAndroid) {
       final external = await getExternalStorageDirectory();

@@ -50,3 +50,7 @@ app.*.map.json
 # Local dev leftovers
 /tool/_*.dart
 *.log
+
+# iOS build leftovers
+/ios/Flutter/ephemeral/
+/ios/Podfile.lock
