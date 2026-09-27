@@ -939,6 +939,13 @@ class LEs extends L {
   String get setUpdateReadySub => 'Descargada: toca para instalar';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Disponible en la página de releases: toca para copiar el enlace';
+
+  @override
+  String get setLinkCopied => 'Enlace copiado';
+
+  @override
   String get setCheckNow => 'Buscar ahora';
 
   @override

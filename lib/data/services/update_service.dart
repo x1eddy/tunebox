@@ -44,6 +44,11 @@ class UpdateService {
   static const _channel = MethodChannel('com.brito.tunebox/install');
   static const interval = Duration(hours: 3);
 
+  /// Android is the only platform that lets an app hand a package to the
+  /// installer. Elsewhere the update is announced and the link offered; the
+  /// download would be a file nothing could open.
+  static bool get canInstall => Platform.isAndroid;
+
   final SharedPreferences _prefs;
   final http.Client _client;
 

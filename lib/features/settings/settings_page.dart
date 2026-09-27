@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../ai/ai_engine.dart';
+import '../../data/services/update_service.dart';
 import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../state/providers.dart';
@@ -406,9 +408,20 @@ class SettingsPage extends ConsumerWidget {
                 color: t.colorScheme.primary,
               ),
               title: Text(l.setUpdateReady(update.version)),
-              subtitle: Text(l.setUpdateReadySub),
+              subtitle: Text(
+                UpdateService.canInstall
+                    ? l.setUpdateReadySub
+                    : l.setUpdateAvailableSub,
+              ),
               onTap: () async {
                 final messenger = ScaffoldMessenger.of(context);
+                if (!UpdateService.canInstall) {
+                  await Clipboard.setData(ClipboardData(text: update.url));
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l.setLinkCopied)),
+                  );
+                  return;
+                }
                 try {
                   await ref.read(updateServiceProvider).install(update);
                 } catch (e) {

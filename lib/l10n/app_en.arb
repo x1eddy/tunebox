@@ -497,6 +497,8 @@
   "setAutoUpdateSub": "Every few hours, quietly, and downloads on Wi-Fi. Installing still asks you.",
   "setUpdateReady": "Update to {version} is ready",
   "setUpdateReadySub": "Downloaded — tap to install",
+  "setUpdateAvailableSub": "Get it from the releases page — tap to copy the link",
+  "setLinkCopied": "Link copied",
   "setCheckNow": "Check now",
   "setUpToDate": "TuneBox is up to date",
   "setChecking": "Looking for a newer version…",

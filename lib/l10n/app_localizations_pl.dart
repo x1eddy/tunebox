@@ -946,6 +946,13 @@ class LPl extends L {
   String get setUpdateReadySub => 'Pobrana — dotknij, aby zainstalować';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Dostępna na stronie wydań — dotknij, aby skopiować link';
+
+  @override
+  String get setLinkCopied => 'Link skopiowany';
+
+  @override
   String get setCheckNow => 'Szukaj teraz';
 
   @override

@@ -936,6 +936,13 @@ class LNl extends L {
   String get setUpdateReadySub => 'Gedownload — tik om te installeren';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Te vinden op de releases-pagina — tik om de link te kopiëren';
+
+  @override
+  String get setLinkCopied => 'Link gekopieerd';
+
+  @override
   String get setCheckNow => 'Nu zoeken';
 
   @override

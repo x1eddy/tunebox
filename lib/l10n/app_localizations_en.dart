@@ -932,6 +932,13 @@ class LEn extends L {
   String get setUpdateReadySub => 'Downloaded — tap to install';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Get it from the releases page — tap to copy the link';
+
+  @override
+  String get setLinkCopied => 'Link copied';
+
+  @override
   String get setCheckNow => 'Check now';
 
   @override

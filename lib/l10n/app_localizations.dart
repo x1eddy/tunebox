@@ -1711,6 +1711,18 @@ abstract class L {
   /// **'Downloaded — tap to install'**
   String get setUpdateReadySub;
 
+  /// No description provided for @setUpdateAvailableSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Get it from the releases page — tap to copy the link'**
+  String get setUpdateAvailableSub;
+
+  /// No description provided for @setLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get setLinkCopied;
+
   /// No description provided for @setCheckNow.
   ///
   /// In en, this message translates to:

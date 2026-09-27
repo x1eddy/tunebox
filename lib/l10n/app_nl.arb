@@ -267,6 +267,8 @@
   "setAutoUpdateSub": "Om de paar uur, stilletjes, en downloadt op wifi. Installeren vraagt het je nog steeds.",
   "setUpdateReady": "Update naar {version} staat klaar",
   "setUpdateReadySub": "Gedownload — tik om te installeren",
+  "setUpdateAvailableSub": "Te vinden op de releases-pagina — tik om de link te kopiëren",
+  "setLinkCopied": "Link gekopieerd",
   "setCheckNow": "Nu zoeken",
   "setUpToDate": "TuneBox is up-to-date",
   "setChecking": "Zoeken naar een nieuwere versie…"

@@ -931,6 +931,13 @@ class LPt extends L {
   String get setUpdateReadySub => 'Transferida — toca para instalar';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Disponível na página de versões — toca para copiar a ligação';
+
+  @override
+  String get setLinkCopied => 'Ligação copiada';
+
+  @override
   String get setCheckNow => 'Procurar agora';
 
   @override

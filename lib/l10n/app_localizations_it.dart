@@ -937,6 +937,13 @@ class LIt extends L {
   String get setUpdateReadySub => 'Scaricato — tocca per installare';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Disponibile nella pagina delle release — tocca per copiare il link';
+
+  @override
+  String get setLinkCopied => 'Link copiato';
+
+  @override
   String get setCheckNow => 'Cerca ora';
 
   @override

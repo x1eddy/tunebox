@@ -267,6 +267,8 @@
   "setAutoUpdateSub": "Co kilka godzin, po cichu, i pobiera przez Wi-Fi. Instalacja nadal cię pyta.",
   "setUpdateReady": "Aktualizacja do {version} jest gotowa",
   "setUpdateReadySub": "Pobrana — dotknij, aby zainstalować",
+  "setUpdateAvailableSub": "Dostępna na stronie wydań — dotknij, aby skopiować link",
+  "setLinkCopied": "Link skopiowany",
   "setCheckNow": "Szukaj teraz",
   "setUpToDate": "TuneBox jest aktualny",
   "setChecking": "Szukam nowszej wersji…"

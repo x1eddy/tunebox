@@ -941,6 +941,13 @@ class LFr extends L {
   String get setUpdateReadySub => 'Téléchargée — appuie pour installer';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Disponible sur la page des releases — appuie pour copier le lien';
+
+  @override
+  String get setLinkCopied => 'Lien copié';
+
+  @override
   String get setCheckNow => 'Chercher maintenant';
 
   @override

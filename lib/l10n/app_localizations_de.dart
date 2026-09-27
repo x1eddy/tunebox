@@ -940,6 +940,13 @@ class LDe extends L {
   String get setUpdateReadySub => 'Heruntergeladen – zum Installieren tippen';
 
   @override
+  String get setUpdateAvailableSub =>
+      'Auf der Releases-Seite verfügbar – zum Kopieren des Links tippen';
+
+  @override
+  String get setLinkCopied => 'Link kopiert';
+
+  @override
   String get setCheckNow => 'Jetzt suchen';
 
   @override
