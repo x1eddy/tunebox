@@ -1,0 +1,495 @@
+{
+  "@@locale": "en",
+  "navHome": "Home",
+  "navExplore": "Explore",
+  "navLibrary": "Library",
+  "navTaste": "Your taste",
+  "actionDone": "Done",
+  "actionCancel": "Cancel",
+  "actionCreate": "Create",
+  "actionPlay": "Play",
+  "actionShuffle": "Shuffle",
+  "actionPlayAll": "Play all",
+  "actionAdd": "Add",
+  "actionRemove": "Remove",
+  "actionName": "Name",
+  "greetingNight": "Still up?",
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "homeBuilding": "The AI is building your shelves…",
+  "homeOffline": "Offline — showing what is on the device",
+  "homeNothingYet": "Nothing to show yet",
+  "homeShelfCount": "{count, plural, =1{1 shelf, refreshed just now} other{{count} shelves, refreshed just now}}",
+  "@homeShelfCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeRebuild": "Rebuild shelves",
+  "homeAddMusic": "Add music from this device",
+  "homeQuickPicks": "Quick picks",
+  "homeQuickPicksSub": "Straight back into what you were on",
+  "homeEmptyTitle": "Your library is empty",
+  "homeEmptyBody": "Search for something, or add the music already on this device. The AI starts learning from your very first play.",
+  "homeAddMyMusic": "Add my music",
+  "homeCouldNotReach": "Could not reach YouTube: {error}",
+  "@homeCouldNotReach": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "moodFocus": "Focus",
+  "moodWorkout": "Workout",
+  "moodChill": "Chill",
+  "moodCommute": "Commute",
+  "moodParty": "Party",
+  "moodBuilding": "Building a {mood} mix…",
+  "@moodBuilding": {
+    "placeholders": {
+      "mood": {}
+    }
+  },
+  "moodFailed": "No luck: {error}",
+  "@moodFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "shelfRepeat": "On repeat",
+  "shelfRepeatSub": "Your last two weeks",
+  "shelfForgotten": "Old forgotten hits you liked",
+  "shelfForgottenSub": "Loved once, untouched for a while",
+  "shelfNew": "New",
+  "shelfNewSub": "Fresh tracks the AI thinks are for you",
+  "shelfBecause": "Because you played {artist}",
+  "@shelfBecause": {
+    "placeholders": {
+      "artist": {}
+    }
+  },
+  "shelfBecauseSub": "Same corner of your taste",
+  "shelfDeep": "Barely touched",
+  "shelfDeepSub": "In your library, hardly ever played",
+  "shelfMix": "Your mix",
+  "shelfMixSub": "Rebuilt every time you open the app",
+  "shelfAdded": "Recently added",
+  "shelfAddedSub": "Downloads and files you imported",
+  "shelfStarter": "Start here",
+  "shelfStarterSub": "Play a few and the AI starts learning immediately",
+  "reasonPlays": "{count} plays",
+  "@reasonPlays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reasonLikedLast": "Liked, last played {when}",
+  "@reasonLikedLast": {
+    "placeholders": {
+      "when": {}
+    }
+  },
+  "reasonPlaysLast": "{count} plays, last {when}",
+  "@reasonPlaysLast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "when": {}
+    }
+  },
+  "reasonTopArtist": "One of your most played artists",
+  "reasonMore": "More {artist}",
+  "@reasonMore": {
+    "placeholders": {
+      "artist": {}
+    }
+  },
+  "reasonComeBack": "You keep coming back to {artist}",
+  "@reasonComeBack": {
+    "placeholders": {
+      "artist": {}
+    }
+  },
+  "reasonYourKind": "Your kind of {tag}",
+  "@reasonYourKind": {
+    "placeholders": {
+      "tag": {}
+    }
+  },
+  "reasonHeavyOn": "Heavy on {tag} lately",
+  "@reasonHeavyOn": {
+    "placeholders": {
+      "tag": {}
+    }
+  },
+  "reasonOutThisYear": "Out this year",
+  "reasonReleasedRecently": "Released recently",
+  "reasonClose": "Close to what you have been playing",
+  "reasonNear": "Sits near {artist}",
+  "@reasonNear": {
+    "placeholders": {
+      "artist": {}
+    }
+  },
+  "reasonNeverPlayed": "Never played",
+  "reasonPlayedOnce": "Played once",
+  "reasonPopular": "Popular right now",
+  "whenYearsAgo": "{count}y ago",
+  "@whenYearsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whenMonthsAgo": "{count} months ago",
+  "@whenMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "whenDaysAgo": "{count} days ago",
+  "@whenDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchHint": "Songs, artists, albums",
+  "searchResults": "{count, plural, =1{1 result} other{{count} results}}",
+  "@searchResults": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchRecent": "Recent searches",
+  "searchEmptyTitle": "Nothing found",
+  "searchEmptyBody": "Try another spelling, or the artist's name on its own.",
+  "searchStartTitle": "Find something to play",
+  "searchStartBody": "Search YouTube Music — only songs come back, never videos of other things.",
+  "libPlaylists": "Playlists",
+  "libSongs": "Songs",
+  "libArtists": "Artists",
+  "libLiked": "Liked",
+  "libDownloads": "Downloads",
+  "libImported": "Imported",
+  "libLikedSongs": "Liked songs",
+  "libSongCount": "{count, plural, =1{1 song} other{{count} songs}}",
+  "@libSongCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libOfflineCount": "{count} offline",
+  "@libOfflineCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libMyFiles": "My own files",
+  "libFileCount": "{count, plural, =1{1 file} other{{count} files}}",
+  "@libFileCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libNewPlaylist": "New playlist",
+  "libMakeOne": "Make one",
+  "libSortRecent": "Recently added",
+  "libSortTitle": "Title",
+  "libSortArtist": "Artist",
+  "libSortPlays": "Most played",
+  "sheetNotForMe": "Not for me",
+  "sheetNotForMeSub": "Never recommend this again",
+  "sheetBlocked": "Blocked — tap to allow again",
+  "sheetBlockedSub": "It can show up in recommendations again",
+  "sheetPlayNext": "Play next",
+  "sheetAddToPlaylist": "Add to playlist",
+  "sheetDownloaded": "Downloaded",
+  "sheetRemoveFile": "Tap to remove the file",
+  "sheetDownload": "Download",
+  "sheetKeepOffline": "Keep it for offline",
+  "sheetRadio": "Start radio",
+  "sheetRadioSub": "A queue built around this song",
+  "sheetQueue": "Queue",
+  "sheetSleepTimer": "Sleep timer",
+  "sheetSleepOff": "Off",
+  "sheetSleepMinutes": "{count} minutes",
+  "@sheetSleepMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sheetSleepEndOfTrack": "End of this song",
+  "sheetSleepSet": "Music stops in {count} min",
+  "@sheetSleepSet": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tasteTitle": "Your taste",
+  "tasteRetrain": "Retrain",
+  "tasteRetraining": "Retraining on your history…",
+  "tasteRetrained": "The AI rebuilt its model.",
+  "tasteConfidence": "Confidence {percent}%",
+  "@tasteConfidence": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "tasteCounts": "{plays} plays · {skips} skips · {likes} likes",
+  "@tasteCounts": {
+    "placeholders": {
+      "plays": {
+        "type": "int"
+      },
+      "skips": {
+        "type": "int"
+      },
+      "likes": {
+        "type": "int"
+      }
+    }
+  },
+  "tasteEmptySummary": "Play a few songs and this fills in.",
+  "tasteKeepLearning": "Keep learning while I listen",
+  "tasteKeepLearningSub": "Turn off to freeze the current profile",
+  "tasteDownloadsTitle": "Downloads the AI handles",
+  "tasteDownloadsSub": "Music lands on the device without you asking",
+  "tasteDownloadLikes": "Download everything I like",
+  "tasteDownloadLikesSub": "Hit the heart and the file is saved for offline",
+  "tasteAiInstall": "Let the AI install music it picks",
+  "tasteAiInstallSub": "It will fetch tracks it is confident about",
+  "tasteWhatItThinks": "What it thinks you like",
+  "tasteWhatItThinksSub": "Learned from plays, skips, likes and repeats",
+  "tasteArtists": "Artists it leans on",
+  "tasteWhenYouListen": "When you listen",
+  "tasteWhenYouListenSub": "Plays per hour — the current hour gets weighted",
+  "tasteDecades": "Decades",
+  "tasteTune": "Tune the recommendations",
+  "tasteTuneSub": "Takes effect on the next Home refresh",
+  "tasteDiscovery": "Discovery",
+  "tasteDiscoverySub": "Familiar ↔ things you have never heard",
+  "tasteEnergy": "Energy",
+  "tasteEnergySub": "Calm ↔ loud",
+  "tasteRecency": "Recency",
+  "tasteRecencySub": "Timeless ↔ brand new",
+  "tasteNostalgia": "Nostalgia",
+  "tasteNostalgiaSub": "How far back an old favourite counts as forgotten",
+  "tasteSignals": "Signals it may use",
+  "tasteSignalsSub": "Everything stays on this device",
+  "tasteUseHistory": "What I have played",
+  "tasteUseSkips": "What I skip",
+  "tasteUseTime": "Time of day",
+  "tasteUseYouTube": "Suggestions from YouTube",
+  "tasteAlwaysMore": "Always more of",
+  "tasteNeverAgain": "Never again",
+  "tasteAddArtist": "Add an artist",
+  "tasteMoreOfPrompt": "Always more of…",
+  "tasteNeverAgainPrompt": "Never again…",
+  "tasteReset": "Reset what it learned",
+  "tasteResetSub": "Your music stays; the profile starts from zero",
+  "trainCard": "Train it by rating",
+  "trainCardSub": "Swipe through real songs. Right for more like this, left for never again. Two minutes here beats a week of listening.",
+  "trainStart": "Start a training round",
+  "trainTitle": "Training round",
+  "trainQuestion": "Would you want this on your Home?",
+  "trainMoreLikeThis": "More like this",
+  "trainNeverAgain": "Never again",
+  "trainDone": "Round complete",
+  "trainSummary": "{liked} kept · {blocked} blocked. Confidence {before}% → {after}%",
+  "@trainSummary": {
+    "placeholders": {
+      "liked": {
+        "type": "int"
+      },
+      "blocked": {
+        "type": "int"
+      },
+      "before": {
+        "type": "int"
+      },
+      "after": {
+        "type": "int"
+      }
+    }
+  },
+  "trainBackToTaste": "Back to your taste",
+  "trainNothingTitle": "Nothing to rate yet",
+  "trainNothingBody": "Add some music or let the AI fetch candidates first, then come back.",
+  "trainLeaveTitle": "Leave the training round?",
+  "trainLeaveBody": "{count, plural, =1{If you leave now, the AI discards everything from this round — the 1 song you just rated.} other{If you leave now, the AI discards everything from this round — all {count} songs you just rated.}}",
+  "@trainLeaveBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "trainKeepGoing": "Keep training",
+  "trainDiscard": "Discard and leave",
+  "setTitle": "Settings",
+  "setAppearance": "Appearance",
+  "setTheme": "Theme",
+  "setThemeSystem": "Follow the system",
+  "setThemeLight": "Light",
+  "setThemeDark": "Dark",
+  "setPureBlack": "Pure black",
+  "setPureBlackSub": "Saves power on an OLED screen",
+  "setAccent": "Accent colour",
+  "setAccentArtwork": "From the cover art",
+  "setAccentFixed": "One colour I picked",
+  "setLanguage": "Language",
+  "setLanguageSystem": "Follow the system",
+  "setAccessibility": "Accessibility",
+  "setTextSize": "Text size",
+  "setTextSizeSub": "On top of your system setting",
+  "setReduceMotion": "Reduce motion",
+  "setReduceMotionSub": "Stops the bars, the visualiser and page transitions",
+  "setHighContrast": "High contrast",
+  "setHighContrastSub": "Stronger separation and visible outlines",
+  "setBoldText": "Bold text",
+  "setPlayback": "Playback",
+  "setAutoRadio": "Keep the music going",
+  "setAutoRadioSub": "When the queue ends, carry on with a radio built from the last song",
+  "setSmartShuffle": "Smart shuffle",
+  "setSmartShuffleSub": "Shuffles by taste instead of at random",
+  "setResume": "Pick up where I left off",
+  "setResumeSub": "Restores the queue when the app opens, paused",
+  "setDataSaver": "Data saver off Wi-Fi",
+  "setDataSaverSub": "Caps streams and downloads at 128 kbps on mobile data",
+  "setHaptics": "Haptic feedback",
+  "setShowReasons": "Show why something was recommended",
+  "setSkipSilence": "Skip silence",
+  "setQuality": "Audio quality",
+  "setQualityLow": "Low · 64 kbps",
+  "setQualityNormal": "Normal · 128 kbps",
+  "setQualityHigh": "High · 192 kbps",
+  "setQualityBest": "Best available",
+  "setStorage": "Downloads and storage",
+  "setWifiOnly": "Download on Wi-Fi only",
+  "setDailyLimit": "Daily limit for the AI",
+  "setDailyLimitSub": "{count} songs a day",
+  "@setDailyLimitSub": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "setBudget": "Storage the AI may use",
+  "setUsed": "{size} used by downloads",
+  "@setUsed": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "setYourMusic": "Your music",
+  "setImport": "Add music from this device",
+  "setImportSub": "Pick folders or single files",
+  "setCleanup": "Clean up missing files",
+  "setCleanupSub": "Drop songs whose file is gone",
+  "setCleanupDone": "Removed {count} missing files.",
+  "@setCleanupDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "setExport": "Send my taste to another device",
+  "setExportSub": "Writes a transfer file: likes, plays and everything the AI learned",
+  "setImportTaste": "Load taste from another device",
+  "setImportTasteSub": "Merges it with what this device knows",
+  "setAbout": "About",
+  "setAboutBody": "Music from YouTube and your own files. The AI runs entirely on this device — nothing leaves it.",
+  "setSource": "Source code",
+  "importTitle": "Add music",
+  "importPickFolder": "Pick a folder",
+  "importPickFiles": "Pick files",
+  "importScanning": "Scanning {file}",
+  "@importScanning": {
+    "placeholders": {
+      "file": {}
+    }
+  },
+  "importAdded": "{count} added",
+  "@importAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importDenied": "Permission denied — cannot read your music.",
+  "importWatched": "Folders it watches",
+  "importIosHint": "Open the Files app, go to On My iPhone → TuneBox, and drop music in there.",
+  "playerQueue": "Queue",
+  "playerUpNext": "Up next",
+  "playerLyrics": "Lyrics",
+  "playerNoLyrics": "No lyrics for this one.",
+  "playerRepeat": "Repeat",
+  "playerShuffle": "Shuffle",
+  "errorPlayback": "Could not play \"{title}\"",
+  "@errorPlayback": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "errorSkipping": "Skipping \"{title}\" — the stream would not open.",
+  "@errorSkipping": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "undo": "Undo",
+  "tasteSummaryLed": "Right now: {tags}, led by {artist}.",
+  "tasteSummaryPlain": "Right now: {tags}.",
+  "@tasteSummaryLed": {
+    "placeholders": {
+      "tags": {},
+      "artist": {}
+    }
+  },
+  "@tasteSummaryPlain": {
+    "placeholders": {
+      "tags": {}
+    }
+  },
+  "setColour": "Colour",
+  "setColourSub": "The whole app follows this",
+  "setCoverArt": "Cover art",
+  "setMyColour": "My colour",
+  "setCoverArtSub": "Every song retints the app from its cover.",
+  "setMyColourSub": "One colour, everywhere, all the time.",
+  "setPickColour": "Pick any colour",
+  "setWifiOnlyTitle": "Download on Wi-Fi only",
+  "setDownloadLikes": "Download everything I like",
+  "setDownloadLikesSub": "The heart button also saves the file",
+  "setAiInstall": "Let the AI install music it picks",
+  "setSkipSilenceSub": "Android only",
+  "setStorageUsed": "Storage used by downloads",
+  "setLibrary": "Library"
+}

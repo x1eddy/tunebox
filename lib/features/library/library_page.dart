@@ -8,6 +8,7 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
+import '../../l10n/app_localizations.dart';
 
 enum _Sort { recent, alpha, plays, year }
 
@@ -55,6 +56,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final library = ref.watch(libraryProvider).value ?? const <Song>[];
     final liked = ref.watch(likedProvider).value ?? const <Song>[];
     final downloaded = ref.watch(downloadedProvider).value ?? const <Song>[];
@@ -64,7 +66,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
       length: 6,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Library'),
+          title: Text(l.navLibrary),
           actions: [
             IconButton(
               tooltip: 'Add music from this device',
@@ -84,17 +86,17 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
             ),
             const SizedBox(width: 4),
           ],
-          bottom: const TabBar(
+          bottom: TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
             dividerHeight: 0,
             tabs: [
-              Tab(text: 'Playlists'),
-              Tab(text: 'Songs'),
-              Tab(text: 'Artists'),
-              Tab(text: 'Liked'),
-              Tab(text: 'Downloads'),
-              Tab(text: 'Imported'),
+              Tab(text: l.libPlaylists),
+              Tab(text: l.libSongs),
+              Tab(text: l.libArtists),
+              Tab(text: l.libLiked),
+              Tab(text: l.libDownloads),
+              Tab(text: l.libImported),
             ],
           ),
         ),

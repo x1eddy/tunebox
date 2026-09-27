@@ -153,7 +153,11 @@ class PlayerPage extends ConsumerWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(26, 12, 26, 0),
-                    child: Visualizer(playing: playing, height: 30),
+                    child: Visualizer(
+                      playing: playing,
+                      height: 30,
+                      reduceMotion: ref.watch(settingsProvider).reduceMotion,
+                    ),
                   ),
                   _Seek(position: position, total: total, onSeek: music.seek),
                   _Controls(

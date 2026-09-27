@@ -8,6 +8,7 @@ import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/router.dart';
+import 'l10n/app_localizations.dart';
 import 'app/theme.dart';
 import 'data/db/database.dart';
 import 'dev/tour.dart';
@@ -119,21 +120,59 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp> {
       title: 'TuneBox',
       debugShowCheckedModeBanner: false,
       themeMode: settings.themeMode,
-      theme: buildTheme(seed: seed, brightness: Brightness.light),
+      theme: buildTheme(
+        seed: seed,
+        brightness: Brightness.light,
+        highContrast: settings.highContrast,
+        boldText: settings.boldText,
+        reduceMotion: settings.reduceMotion,
+      ),
       darkTheme: buildTheme(
         seed: seed,
         brightness: Brightness.dark,
         pureBlack: settings.pureBlack,
+        highContrast: settings.highContrast,
+        boldText: settings.boldText,
+        reduceMotion: settings.reduceMotion,
       ),
+      locale: settings.localeCode.isEmpty
+          ? null
+          : Locale(settings.localeCode),
+      supportedLocales: L.supportedLocales,
+      localizationsDelegates: L.localizationsDelegates,
       routerConfig: router,
       builder: (context, child) {
-        final themed = AnimatedTheme(
-          data: Theme.of(context),
-          duration: const Duration(milliseconds: 450),
-          curve: Curves.easeOut,
+        // The accessibility text scale multiplies whatever the system is
+        // already asking for, rather than replacing it.
+        final media = MediaQuery.of(context);
+        var themed = MediaQuery(
+          data: media.copyWith(
+            textScaler: media.textScaler.clamp(
+              minScaleFactor: 0.8,
+              maxScaleFactor: 2.0,
+            ),
+          ),
           child: child!,
         );
-        return kTour ? TourDriver(child: themed) : themed;
+        if (settings.textScale != 1.0) {
+          themed = MediaQuery(
+            data: media.copyWith(
+              textScaler: TextScaler.linear(
+                media.textScaler.scale(14) / 14 * settings.textScale,
+              ),
+            ),
+            child: child,
+          );
+        }
+        final animated = settings.reduceMotion
+            ? Theme(data: Theme.of(context), child: themed)
+            : AnimatedTheme(
+                data: Theme.of(context),
+                duration: const Duration(milliseconds: 450),
+                curve: Curves.easeOut,
+                child: themed,
+              );
+        return kTour ? TourDriver(child: animated) : animated;
       },
     );
   }

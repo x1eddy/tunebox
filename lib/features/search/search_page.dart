@@ -8,6 +8,7 @@ import '../../dev/tour.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/common.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Live YouTube search, plus whatever is already in the library.
 class SearchPage extends ConsumerStatefulWidget {
@@ -92,6 +93,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
 
     return Scaffold(
@@ -172,7 +174,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        '${_results.length} results',
+                        l.searchResults(_results.length),
                         style: t.textTheme.labelMedium?.copyWith(
                           color: t.colorScheme.onSurfaceVariant,
                         ),
@@ -225,8 +227,8 @@ class _Suggestions extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (recent.isNotEmpty) ...[
-          const SectionHeader(
-            title: 'Recent searches',
+          SectionHeader(
+            title: L.of(context).searchRecent,
             padding: EdgeInsets.fromLTRB(16, 8, 8, 4),
           ),
           for (final q in recent)

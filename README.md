@@ -37,6 +37,14 @@ Built with Flutter, so one codebase runs on all three.
   the AI can fetch tracks it is confident about, inside a storage budget you set.
 - **Moves between devices** — export your taste on one device, import it on
   another. Play counts merge, likes are OR'd.
+- **Keeps going by itself** — when the queue runs out it carries on with a
+  radio built from the last song; shuffle is weighted by taste rather than
+  random; the queue comes back where you left it after a restart; and off
+  Wi-Fi it drops to 128 kbps on its own. All on out of the box.
+- **Speaks your language** — English, German, Spanish, French, Italian, Dutch,
+  Polish and Portuguese, including what the AI says about its own picks.
+- **Accessibility** — text scaling on top of the system setting, reduce
+  motion, high contrast and bold text.
 
 Everything is local: a SQLite database and a folder of audio files. No account,
 no server, no telemetry.

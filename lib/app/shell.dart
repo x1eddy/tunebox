@@ -9,6 +9,7 @@ import '../state/providers.dart';
 import '../ui/artwork.dart';
 import '../ui/equalizer.dart';
 import 'theme.dart';
+import '../l10n/app_localizations.dart';
 
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.shell});
@@ -16,6 +17,7 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     // Surface playback failures instead of leaving a silent player.
     ref.listen(playerErrorProvider, (_, next) {
       final message = next.value;
@@ -51,26 +53,26 @@ class AppShell extends ConsumerWidget {
             selectedIndex: shell.currentIndex,
             onDestinationSelected: (i) =>
                 shell.goBranch(i, initialLocation: i == shell.currentIndex),
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home_rounded),
-                label: 'Home',
+                icon: const Icon(Icons.home_outlined),
+                selectedIcon: const Icon(Icons.home_rounded),
+                label: l.navHome,
               ),
               NavigationDestination(
-                icon: Icon(Icons.search_rounded),
-                selectedIcon: Icon(Icons.travel_explore_rounded),
-                label: 'Explore',
+                icon: const Icon(Icons.search_rounded),
+                selectedIcon: const Icon(Icons.travel_explore_rounded),
+                label: l.navExplore,
               ),
               NavigationDestination(
-                icon: Icon(Icons.library_music_outlined),
-                selectedIcon: Icon(Icons.library_music_rounded),
-                label: 'Library',
+                icon: const Icon(Icons.library_music_outlined),
+                selectedIcon: const Icon(Icons.library_music_rounded),
+                label: l.navLibrary,
               ),
               NavigationDestination(
-                icon: Icon(Icons.auto_awesome_outlined),
-                selectedIcon: Icon(Icons.auto_awesome_rounded),
-                label: 'Your taste',
+                icon: const Icon(Icons.auto_awesome_outlined),
+                selectedIcon: const Icon(Icons.auto_awesome_rounded),
+                label: l.navTaste,
               ),
             ],
           ),

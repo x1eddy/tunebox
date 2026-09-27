@@ -9,6 +9,21 @@ final prefsProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('prefs not ready'),
 );
 
+/// The languages the app ships. '' follows the system.
+const kLanguages = <String, String>{
+  '': 'Follow the system',
+  'en': 'English',
+  'de': 'Deutsch',
+  'es': 'Español',
+  'fr': 'Français',
+  'it': 'Italiano',
+  'nl': 'Nederlands',
+  'pl': 'Polski',
+  'pt': 'Português',
+};
+
+String languageName(String code) => kLanguages[code] ?? code;
+
 /// Where the app's accent colour comes from.
 enum AccentMode {
   artwork('From the cover art'),
@@ -60,6 +75,20 @@ class Settings {
     this.useSkips = true,
     this.useTimeOfDay = true,
     this.useYouTubeSignals = true,
+    // language
+    this.localeCode = '',
+    // accessibility
+    this.textScale = 1.0,
+    this.reduceMotion = false,
+    this.highContrast = false,
+    this.boldText = false,
+    // advanced — deliberately on out of the box
+    this.autoRadio = true,
+    this.smartShuffle = true,
+    this.resumePlayback = true,
+    this.dataSaverOffWifi = true,
+    this.haptics = true,
+    this.showReasons = true,
   });
 
   final ThemeMode themeMode;
@@ -90,6 +119,43 @@ class Settings {
   final bool useTimeOfDay;
   final bool useYouTubeSignals;
 
+  /// Empty means "follow the system language".
+  final String localeCode;
+
+  // ------------------------------------------------------------ accessibility
+
+  /// Multiplies every text size in the app, on top of the system setting.
+  final double textScale;
+
+  /// Stops anything that moves on its own: the equalizer bars, the visualiser,
+  /// shimmering placeholders and page transitions.
+  final bool reduceMotion;
+
+  /// Stronger foreground/background separation and visible outlines.
+  final bool highContrast;
+  final bool boldText;
+
+  // ---------------------------------------------------------------- advanced
+
+  /// When the queue runs dry, keep going with a radio built from the last
+  /// song instead of falling silent.
+  final bool autoRadio;
+
+  /// Shuffle by taste rather than at random: the songs the AI rates highest
+  /// surface earlier, but the order still changes every time.
+  final bool smartShuffle;
+
+  /// Put the queue back where it was on the next launch, paused.
+  final bool resumePlayback;
+
+  /// Cap streaming and downloads at 128 kbps when off Wi-Fi.
+  final bool dataSaverOffWifi;
+
+  final bool haptics;
+
+  /// Show "because you played X" under recommendations.
+  final bool showReasons;
+
   String get qualityLabel => switch (audioQualityKbps) {
     64 => 'Low · 64 kbps',
     128 => 'Normal · 128 kbps',
@@ -119,6 +185,17 @@ class Settings {
     bool? useSkips,
     bool? useTimeOfDay,
     bool? useYouTubeSignals,
+    String? localeCode,
+    double? textScale,
+    bool? reduceMotion,
+    bool? highContrast,
+    bool? boldText,
+    bool? autoRadio,
+    bool? smartShuffle,
+    bool? resumePlayback,
+    bool? dataSaverOffWifi,
+    bool? haptics,
+    bool? showReasons,
   }) => Settings(
     themeMode: themeMode ?? this.themeMode,
     pureBlack: pureBlack ?? this.pureBlack,
@@ -141,6 +218,17 @@ class Settings {
     useSkips: useSkips ?? this.useSkips,
     useTimeOfDay: useTimeOfDay ?? this.useTimeOfDay,
     useYouTubeSignals: useYouTubeSignals ?? this.useYouTubeSignals,
+    localeCode: localeCode ?? this.localeCode,
+    textScale: textScale ?? this.textScale,
+    reduceMotion: reduceMotion ?? this.reduceMotion,
+    highContrast: highContrast ?? this.highContrast,
+    boldText: boldText ?? this.boldText,
+    autoRadio: autoRadio ?? this.autoRadio,
+    smartShuffle: smartShuffle ?? this.smartShuffle,
+    resumePlayback: resumePlayback ?? this.resumePlayback,
+    dataSaverOffWifi: dataSaverOffWifi ?? this.dataSaverOffWifi,
+    haptics: haptics ?? this.haptics,
+    showReasons: showReasons ?? this.showReasons,
   );
 
   static Settings load(SharedPreferences p) => Settings(
@@ -166,6 +254,17 @@ class Settings {
     useSkips: p.getBool('useSkips') ?? true,
     useTimeOfDay: p.getBool('useTimeOfDay') ?? true,
     useYouTubeSignals: p.getBool('useYouTubeSignals') ?? true,
+    localeCode: p.getString('localeCode') ?? '',
+    textScale: p.getDouble('textScale') ?? 1.0,
+    reduceMotion: p.getBool('reduceMotion') ?? false,
+    highContrast: p.getBool('highContrast') ?? false,
+    boldText: p.getBool('boldText') ?? false,
+    autoRadio: p.getBool('autoRadio') ?? true,
+    smartShuffle: p.getBool('smartShuffle') ?? true,
+    resumePlayback: p.getBool('resumePlayback') ?? true,
+    dataSaverOffWifi: p.getBool('dataSaverOffWifi') ?? true,
+    haptics: p.getBool('haptics') ?? true,
+    showReasons: p.getBool('showReasons') ?? true,
   );
 
   Future<void> save(SharedPreferences p) async {
@@ -190,6 +289,17 @@ class Settings {
     await p.setBool('useSkips', useSkips);
     await p.setBool('useTimeOfDay', useTimeOfDay);
     await p.setBool('useYouTubeSignals', useYouTubeSignals);
+    await p.setString('localeCode', localeCode);
+    await p.setDouble('textScale', textScale);
+    await p.setBool('reduceMotion', reduceMotion);
+    await p.setBool('highContrast', highContrast);
+    await p.setBool('boldText', boldText);
+    await p.setBool('autoRadio', autoRadio);
+    await p.setBool('smartShuffle', smartShuffle);
+    await p.setBool('resumePlayback', resumePlayback);
+    await p.setBool('dataSaverOffWifi', dataSaverOffWifi);
+    await p.setBool('haptics', haptics);
+    await p.setBool('showReasons', showReasons);
   }
 }
 

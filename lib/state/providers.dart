@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' show Random;
 
 import 'package:audio_service/audio_service.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../ai/ai_engine.dart';
@@ -241,11 +243,46 @@ class MusicActions {
     }
   }
 
+  /// A queue built around one song: YouTube Music's radio for it, reordered
+  /// by what the AI knows. Also what "keep the music going" uses when a queue
+  /// runs out.
+  Future<void> startRadio(Song seed) async {
+    final yt = _ref.read(ytProvider);
+    final companions = seed.id.startsWith('local:')
+        // YouTube Music answers a song query with songs; asking for "radio"
+        // only drags in hour-long mixes.
+        ? await yt.search('${seed.artist} ${seed.title}', max: 20)
+        : await yt.related(seed.id, max: 20);
+    for (final c in companions) {
+      await _db.cacheSong(c);
+    }
+    final songs = await _db.songsByIds([
+      for (final c in companions) c.id.value,
+    ]);
+    if (songs.isEmpty) throw StateError('no radio for "${seed.title}"');
+    final w = await _ai.weights();
+    final rules = {
+      for (final r in await _db.artistRuleList()) r.artist.toLowerCase(): r.rule,
+    };
+    final scores = {
+      for (final s in songs) s.id: _ai.scoreSong(s, w, _settings, rules),
+    };
+    songs.sort((a, b) => scores[b.id]!.compareTo(scores[a.id]!));
+    await playAll([seed, ...songs], origin: 'radio');
+  }
+
   Future<void> toggle() =>
       _handler.playbackState.value.playing ? _handler.pause() : _handler.play();
 
-  Future<void> next() => _handler.skipToNext();
-  Future<void> previous() => _handler.skipToPrevious();
+  Future<void> next() {
+    _tap();
+    return _handler.skipToNext();
+  }
+
+  Future<void> previous() {
+    _tap();
+    return _handler.skipToPrevious();
+  }
   Future<void> seek(Duration position) => _handler.seek(position);
   Future<void> jumpTo(int index) => _handler.jumpTo(index);
   void reorderQueue(int oldIndex, int newIndex) =>
@@ -270,8 +307,14 @@ class MusicActions {
     );
   }
 
+  /// A small tap, when the setting allows it.
+  void _tap() {
+    if (_settings.haptics) HapticFeedback.selectionClick();
+  }
+
   Future<void> like(Song song, {bool? value}) async {
     final liked = value ?? !song.liked;
+    _tap();
     await _ai.learnFromLike(song, liked, _settings);
     _ref.invalidate(homeShelvesProvider);
   }
@@ -280,6 +323,7 @@ class MusicActions {
   /// get off it — skipping to the next *different* track, or stopping when
   /// that was the only thing queued.
   Future<void> dislike(Song song) async {
+    _tap();
     await _ai.learnFromDislike(song, _settings);
     if (_handler.currentSong?.id == song.id) {
       final hasOther = _handler.queueSongs.any((s) => s.id != song.id);
@@ -372,8 +416,85 @@ final seedColorProvider = FutureProvider<Color>((ref) async {
   }
 });
 
+/// Connects the playback engine to the things only the app knows: the AI (for
+/// smart shuffle and radio) and the preferences (for resuming).
+final playbackWiringProvider = Provider<void>((ref) {
+  final handler = ref.read(audioHandlerProvider);
+  final prefs = ref.read(prefsProvider);
+
+  handler.shuffleOrder = (songs, current) {
+    if (!ref.read(settingsProvider).smartShuffle) return [...songs]..shuffle();
+    // Weighted, not sorted: the AI's favourites drift towards the front but
+    // the order is different every time.
+    final ai = ref.read(aiProvider);
+    final random = Random();
+    final scored = [
+      for (final s in songs)
+        (s, ai.quickScore(s) + random.nextDouble() * 2.5),
+    ]..sort((a, b) => b.$2.compareTo(a.$2));
+    return [for (final e in scored) e.$1];
+  };
+
+  handler.onQueueExhausted = (last) async {
+    if (!ref.read(settingsProvider).autoRadio) {
+      await handler.stop();
+      return;
+    }
+    try {
+      await ref.read(musicProvider).startRadio(last);
+    } catch (_) {
+      await handler.stop();
+    }
+  };
+
+  // The data saver only bites off Wi-Fi, so it is re-checked rather than
+  // read once at startup.
+  Future<void> applyQuality() async {
+    final settings = ref.read(settingsProvider);
+    var kbps = settings.audioQualityKbps;
+    if (settings.dataSaverOffWifi &&
+        !await ref.read(downloadServiceProvider).onWifi()) {
+      kbps = kbps == 0 ? 128 : (kbps > 128 ? 128 : kbps);
+    }
+    handler.streamQualityKbps = kbps;
+  }
+
+  unawaited(applyQuality());
+  ref.listen(settingsProvider, (_, _) => unawaited(applyQuality()));
+
+  handler.onSnapshot = (ids, index, position) {
+    if (!ref.read(settingsProvider).resumePlayback) return;
+    prefs.setStringList('lastQueue', ids);
+    prefs.setInt('lastIndex', index);
+    prefs.setInt('lastPositionMs', position.inMilliseconds);
+  };
+});
+
 /// Kicks off background work once the app is up: auto-downloads and a scan.
 final startupProvider = FutureProvider<void>((ref) async {
+  ref.read(playbackWiringProvider);
+
+  // Put the queue back before anything else touches the player.
+  final settings0 = ref.read(settingsProvider);
+  if (settings0.resumePlayback) {
+    try {
+      final prefs = ref.read(prefsProvider);
+      final ids = prefs.getStringList('lastQueue') ?? const [];
+      if (ids.isNotEmpty) {
+        final songs = await ref.read(dbProvider).songsByIds(ids);
+        if (songs.isNotEmpty) {
+          await ref.read(audioHandlerProvider).restore(
+            songs,
+            prefs.getInt('lastIndex') ?? 0,
+            Duration(milliseconds: prefs.getInt('lastPositionMs') ?? 0),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('resume failed — $e');
+    }
+  }
+
   await Future<void>.delayed(const Duration(seconds: 3));
 
   // Each step is independent: a folder that cannot be read must not cost you

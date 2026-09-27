@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -14,12 +15,51 @@ import '../data/services/song_filter.dart';
 
 export '../data/services/song_filter.dart' show looksLikeASong;
 
+/// Why a song was picked. Structured rather than a sentence, so the UI can
+/// say it in the language the app is running in.
+enum ReasonKind {
+  plays,
+  likedLast,
+  playsLast,
+  topArtist,
+  more,
+  comeBack,
+  yourKind,
+  heavyOn,
+  outThisYear,
+  releasedRecently,
+  close,
+  near,
+  neverPlayed,
+  playedOnce,
+  popular,
+}
+
+enum AgoUnit { years, months, days }
+
+@immutable
+class PickReason {
+  const PickReason(
+    this.kind, {
+    this.count = 0,
+    this.text = '',
+    this.ago = 0,
+    this.agoUnit = AgoUnit.days,
+  });
+
+  final ReasonKind kind;
+  final int count;
+  final String text;
+  final int ago;
+  final AgoUnit agoUnit;
+}
+
 /// A song plus the reason the AI put it in front of you.
 @immutable
 class Pick {
   const Pick(this.song, {this.reason});
   final Song song;
-  final String? reason;
+  final PickReason? reason;
 }
 
 enum ShelfStyle { cards, wideCards, circles }
@@ -274,6 +314,34 @@ class AiEngine {
     return score;
   }
 
+  Map<String, double>? _quickWeights;
+  DateTime? _quickAt;
+
+  /// A cheap score for ordering a queue, using weights cached for a minute.
+  ///
+  /// Shuffling a long queue must not turn into a few hundred database reads,
+  /// and a shuffle does not need weights that are seconds-fresh.
+  double quickScore(Song song) {
+    final fresh = _quickAt != null &&
+        DateTime.now().difference(_quickAt!) < const Duration(minutes: 1);
+    if (!fresh) {
+      unawaited(
+        weights().then((w) {
+          _quickWeights = w;
+          _quickAt = DateTime.now();
+        }),
+      );
+    }
+    final w = _quickWeights;
+    if (w == null) return 0;
+    var score = (w['artist:${song.artist.toLowerCase()}'] ?? 0) * 1.7;
+    for (final tag in tagsOf(song)) {
+      score += w['tag:$tag'] ?? 0;
+    }
+    if (song.liked) score += 2;
+    return score;
+  }
+
   // --------------------------------------------------------------- shelves
 
   Future<List<AiShelf>>? _homeBuild;
@@ -331,7 +399,7 @@ class AiEngine {
     List<Pick> claim(
       Iterable<Song> pool,
       int limit, {
-      String Function(Song)? reason,
+      PickReason Function(Song)? reason,
       int perArtist = 2,
     }) {
       final picks = <Pick>[];
@@ -368,7 +436,7 @@ class AiEngine {
         picks: claim(
           recent,
           12,
-          reason: (s) => '${s.playCount} plays',
+          reason: (s) => PickReason(ReasonKind.plays, count: s.playCount),
         ),
       ),
     );
@@ -438,7 +506,7 @@ class AiEngine {
           picks: claim(
             related,
             12,
-            reason: (s) => 'Sits near $topArtist',
+            reason: (s) => PickReason(ReasonKind.near, text: topArtist),
           ),
         ),
       );
@@ -456,7 +524,9 @@ class AiEngine {
         picks: claim(
           neglected,
           12,
-          reason: (s) => s.playCount == 0 ? 'Never played' : 'Played once',
+          reason: (s) => PickReason(
+            s.playCount == 0 ? ReasonKind.neverPlayed : ReasonKind.playedOnce,
+          ),
         ),
       ),
     );
@@ -500,7 +570,7 @@ class AiEngine {
             subtitle: 'Play a few and the AI starts learning immediately',
             picks: [
               for (final s in songs.take(16))
-                Pick(s, reason: 'Popular right now'),
+                Pick(s, reason: const PickReason(ReasonKind.popular)),
             ],
           ),
         );
@@ -510,19 +580,24 @@ class AiEngine {
     return shelves;
   }
 
-  String _forgottenReason(Song s, DateTime now) {
+  PickReason _forgottenReason(Song s, DateTime now) {
     final days = now.difference(s.lastPlayed!).inDays;
-    final when = days > 365
-        ? '${(days / 365).floor()}y ago'
+    final (ago, unit) = days > 365
+        ? ((days / 365).floor(), AgoUnit.years)
         : days > 60
-        ? '${(days / 30).floor()} months ago'
-        : '$days days ago';
+        ? ((days / 30).floor(), AgoUnit.months)
+        : (days, AgoUnit.days);
     return s.liked
-        ? 'Liked, last played $when'
-        : '${s.playCount} plays, last $when';
+        ? PickReason(ReasonKind.likedLast, ago: ago, agoUnit: unit)
+        : PickReason(
+            ReasonKind.playsLast,
+            count: s.playCount,
+            ago: ago,
+            agoUnit: unit,
+          );
   }
 
-  String _newReason(Song s, Map<String, double> w, DateTime now) {
+  PickReason _newReason(Song s, Map<String, double> w, DateTime now) {
     final artistWeight = w['artist:${s.artist.toLowerCase()}'] ?? 0;
     final tag = tagsOf(s).firstWhere(
       (t) => (w['tag:$t'] ?? 0) > 0.3,
@@ -530,18 +605,26 @@ class AiEngine {
     );
     // A shelf where every card says the same sentence reads like a bug, so
     // pick whichever true reason is most specific, and vary the wording.
-    if (artistWeight > 0.9) return 'One of your most played artists';
+    if (artistWeight > 0.9) return const PickReason(ReasonKind.topArtist);
     if (artistWeight > 0.4) {
-      return _random.nextBool()
-          ? 'More ${s.artist}'
-          : 'You keep coming back to ${s.artist}';
+      return PickReason(
+        _random.nextBool() ? ReasonKind.more : ReasonKind.comeBack,
+        text: s.artist,
+      );
     }
     if (tag.isNotEmpty) {
-      return _random.nextBool() ? 'Your kind of $tag' : 'Heavy on $tag lately';
+      return PickReason(
+        _random.nextBool() ? ReasonKind.yourKind : ReasonKind.heavyOn,
+        text: tag,
+      );
     }
-    if (s.year != null && s.year! >= now.year) return 'Out this year';
-    if (s.year != null && s.year! >= now.year - 1) return 'Released recently';
-    return 'Close to what you have been playing';
+    if (s.year != null && s.year! >= now.year) {
+      return const PickReason(ReasonKind.outThisYear);
+    }
+    if (s.year != null && s.year! >= now.year - 1) {
+      return const PickReason(ReasonKind.releasedRecently);
+    }
+    return const PickReason(ReasonKind.close);
   }
 
   String? _topArtist(List<Song> library, Map<String, double> w) {
@@ -706,12 +789,20 @@ class AiEngine {
     bool auto = false,
   }) async {
     if (song.source == SongSource.imported) return;
-    if (settings.wifiOnlyDownloads && !await _downloads.onWifi()) return;
+    final onWifi = await _downloads.onWifi();
+    if (settings.wifiOnlyDownloads && !onWifi) return;
     await _downloads.enqueue(
       song,
       auto: auto,
-      maxBitrateKbps: settings.audioQualityKbps,
+      maxBitrateKbps: _qualityFor(settings, onWifi),
     );
+  }
+
+  /// Mobile data gets 128 kbps when the data saver is on.
+  int _qualityFor(Settings settings, bool onWifi) {
+    final chosen = settings.audioQualityKbps;
+    if (onWifi || !settings.dataSaverOffWifi) return chosen;
+    return chosen == 0 || chosen > 128 ? 128 : chosen;
   }
 
   /// "Let the AI install things it thinks I like."
@@ -757,7 +848,7 @@ class AiEngine {
       await _downloads.enqueue(
         song,
         auto: true,
-        maxBitrateKbps: settings.audioQualityKbps,
+        maxBitrateKbps: _qualityFor(settings, true),
       );
       taken++;
     }

@@ -153,7 +153,10 @@ void main() {
         forgotten.first.picks.map((p) => p.song.id),
         containsAll(<String>['old', 'old2', 'old3']),
       );
-      expect(forgotten.first.picks.first.reason, contains('Liked'));
+      // The reason is structured so the UI can say it in any language.
+      final reason = forgotten.first.picks.first.reason!;
+      expect(reason.kind, ReasonKind.likedLast);
+      expect(reason.ago, greaterThan(0));
     });
 
     test('liking a song stores it and teaches the model', () async {

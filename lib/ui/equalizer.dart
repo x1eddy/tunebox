@@ -12,12 +12,14 @@ class PlayingBars extends StatefulWidget {
     this.color,
     this.size = 14,
     this.bars = 3,
+    this.reduceMotion = false,
   });
 
   final bool playing;
   final Color? color;
   final double size;
   final int bars;
+  final bool reduceMotion;
 
   @override
   State<PlayingBars> createState() => _PlayingBarsState();
@@ -36,6 +38,9 @@ class _PlayingBarsState extends State<PlayingBars> {
 
   void _start() {
     _timer?.cancel();
+    // "Reduce motion" leaves the bars standing still rather than hiding them:
+    // they still say which row is playing.
+    if (widget.reduceMotion) return;
     _timer = Timer.periodic(_tick, (_) {
       if (!mounted) return;
       setState(() => _t = (_t + 0.11) % 1.0);
@@ -125,11 +130,13 @@ class Visualizer extends StatefulWidget {
     this.bars = 32,
     this.height = 34,
     this.color,
+    this.reduceMotion = false,
   });
 
   final bool playing;
   final int bars;
   final double height;
+  final bool reduceMotion;
   final Color? color;
 
   @override
@@ -152,6 +159,7 @@ class _VisualizerState extends State<Visualizer> {
 
   void _start() {
     _timer?.cancel();
+    if (widget.reduceMotion) return;
     _timer = Timer.periodic(_tick, (_) {
       if (!mounted) return;
       setState(() => _t = (_t + 0.017) % 1.0);

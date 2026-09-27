@@ -1,7 +1,7 @@
 name: tunebox
 description: "A music app with an on-device AI that learns what you like."
 publish_to: 'none'
-version: 0.3.0+3000
+version: 0.4.0+4000
 
 environment:
   sdk: ^3.10.0
@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   cupertino_icons: ^1.0.8
 
   # state & navigation
@@ -65,5 +68,6 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/icon/

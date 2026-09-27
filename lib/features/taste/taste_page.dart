@@ -8,6 +8,7 @@ import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../ui/common.dart';
 import 'rate_trainer.dart';
+import '../../l10n/app_localizations.dart';
 
 /// What the AI learned, and every control for changing its mind.
 class TastePage extends ConsumerWidget {
@@ -15,6 +16,7 @@ class TastePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final set = ref.read(settingsProvider.notifier);
@@ -28,21 +30,21 @@ class TastePage extends ConsumerWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            title: const Text('Your taste'),
+            title: Text(l.tasteTitle),
             actions: [
               TextButton.icon(
                 onPressed: () async {
                   final messenger = ScaffoldMessenger.of(context);
                   messenger.showSnackBar(
-                    const SnackBar(content: Text('Retraining on your history…')),
+                    SnackBar(content: Text(l.tasteRetraining)),
                   );
                   await music.retrain();
                   messenger.showSnackBar(
-                    const SnackBar(content: Text('The AI rebuilt its model.')),
+                    SnackBar(content: Text(l.tasteRetrained)),
                   );
                 },
                 icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Retrain'),
+                label: Text(l.tasteRetrain),
               ),
               const SizedBox(width: 8),
             ],
@@ -50,18 +52,21 @@ class TastePage extends ConsumerWidget {
           SliverList.list(
             children: [
               _ProfileCard(profile: profile),
+              // The fastest way to teach the AI belongs next to the score it
+              // moves, not at the bottom of a long page.
+              const _TrainCard(),
               SwitchListTile(
                 value: settings.learning,
                 onChanged: (v) => set.update((s) => s.copyWith(learning: v)),
-                title: const Text('Keep learning while I listen'),
-                subtitle: const Text('Turn off to freeze the current profile'),
+                title: Text(l.tasteKeepLearning),
+                subtitle: Text(l.tasteKeepLearningSub),
                 secondary: const Icon(Icons.school_outlined),
               ),
 
               // ---------------------------------------------- downloads
-              const SectionHeader(
-                title: 'Downloads the AI handles',
-                subtitle: 'Music lands on the phone without you asking',
+              SectionHeader(
+                title: l.tasteDownloadsTitle,
+                subtitle: l.tasteDownloadsSub,
               ),
               SwitchListTile(
                 value: settings.downloadLikes,
@@ -148,9 +153,9 @@ class TastePage extends ConsumerWidget {
               ],
 
               // ------------------------------------------------- profile
-              const SectionHeader(
-                title: 'What it thinks you like',
-                subtitle: 'Learned from plays, skips, likes and repeats',
+              SectionHeader(
+                title: l.tasteWhatItThinks,
+                subtitle: l.tasteWhatItThinksSub,
               ),
               if (profile == null || profile.tags.isEmpty)
                 const Padding(
@@ -163,32 +168,32 @@ class TastePage extends ConsumerWidget {
               else
                 _TagBars(tags: profile.tags),
               if (profile != null && profile.artists.isNotEmpty) ...[
-                const SectionHeader(
-                  title: 'Artists it leans on',
+                SectionHeader(
+                  title: l.tasteArtists,
                   padding: EdgeInsets.fromLTRB(16, 18, 8, 10),
                 ),
                 _ArtistWrap(artists: profile.artists),
               ],
               if (profile != null && profile.plays > 0) ...[
-                const SectionHeader(
-                  title: 'When you listen',
-                  subtitle: 'Plays per hour — the current hour gets weighted',
+                SectionHeader(
+                  title: l.tasteWhenYouListen,
+                  subtitle: l.tasteWhenYouListenSub,
                   padding: EdgeInsets.fromLTRB(16, 22, 8, 6),
                 ),
                 _HourChart(byHour: profile.byHour),
               ],
               if (profile != null && profile.decades.isNotEmpty) ...[
-                const SectionHeader(
-                  title: 'Decades',
+                SectionHeader(
+                  title: l.tasteDecades,
                   padding: EdgeInsets.fromLTRB(16, 18, 8, 6),
                 ),
                 _DecadeChart(decades: profile.decades),
               ],
 
               // --------------------------------------------------- dials
-              const SectionHeader(
-                title: 'Tune the recommendations',
-                subtitle: 'Takes effect on the next Home refresh',
+              SectionHeader(
+                title: l.tasteTune,
+                subtitle: l.tasteTuneSub,
               ),
               _Dial(
                 icon: Icons.explore_rounded,
@@ -229,9 +234,9 @@ class TastePage extends ConsumerWidget {
               ),
 
               // ------------------------------------------------- signals
-              const SectionHeader(
-                title: 'Signals it may use',
-                subtitle: 'Everything stays on this device',
+              SectionHeader(
+                title: l.tasteSignals,
+                subtitle: l.tasteSignalsSub,
               ),
               SwitchListTile(
                 value: settings.useHistory,
@@ -263,8 +268,8 @@ class TastePage extends ConsumerWidget {
               ),
 
               // ---------------------------------------------- overrides
-              const SectionHeader(
-                title: 'Always more of',
+              SectionHeader(
+                title: l.tasteAlwaysMore,
                 padding: EdgeInsets.fromLTRB(16, 22, 8, 8),
               ),
               _RuleChips(
@@ -274,8 +279,8 @@ class TastePage extends ConsumerWidget {
                 onAdd: () => _addRule(context, ref, 1),
                 onRemove: (a) => music.clearArtistRule(a),
               ),
-              const SectionHeader(
-                title: 'Never again',
+              SectionHeader(
+                title: l.tasteNeverAgain,
                 padding: EdgeInsets.fromLTRB(16, 18, 8, 8),
               ),
               _RuleChips(
@@ -287,7 +292,6 @@ class TastePage extends ConsumerWidget {
               ),
 
               const SizedBox(height: 22),
-              const _TrainCard(),
               _ResetTile(onReset: music.forgetEverything),
               const SizedBox(height: 28),
             ],
@@ -298,13 +302,26 @@ class TastePage extends ConsumerWidget {
   }
 
   Future<void> _addRule(BuildContext context, WidgetRef ref, int rule) async {
+    final l = L.of(context);
     final name = await promptForName(
       context,
-      rule > 0 ? 'Always more of…' : 'Never again…',
+      rule > 0 ? l.tasteMoreOfPrompt : l.tasteNeverAgainPrompt,
     );
     if (name == null) return;
     await ref.read(musicProvider).setArtistRule(name, rule);
   }
+}
+
+/// The engine hands over the top tags and artists; the sentence is built here
+/// so it reads naturally in every language.
+String _summary(L l, TasteProfile? profile) {
+  final tags = profile?.tags ?? const <(String, double)>[];
+  if (tags.isEmpty) return l.tasteEmptySummary;
+  final names = tags.take(2).map((t) => t.$1).join(', ');
+  final artists = profile?.artists ?? const <(String, double)>[];
+  return artists.isEmpty
+      ? l.tasteSummaryPlain(names)
+      : l.tasteSummaryLed(names, artists.first.$1);
 }
 
 class _ProfileCard extends StatelessWidget {
@@ -313,6 +330,7 @@ class _ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final confidence = profile?.confidence ?? 0;
     return Container(
@@ -340,7 +358,7 @@ class _ProfileCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Confidence ${(confidence * 100).round()}%',
+                l.tasteConfidence((confidence * 100).round()),
                 style: t.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: t.colorScheme.onPrimaryContainer,
@@ -365,16 +383,19 @@ class _ProfileCard extends StatelessWidget {
           const SizedBox(height: 14),
           Text(
             profile == null
-                ? 'Warming up…'
-                : '${profile!.plays} plays · ${profile!.skips} skips · '
-                      '${profile!.likes} likes',
+                ? l.homeBuilding
+                : l.tasteCounts(
+                    profile!.plays,
+                    profile!.skips,
+                    profile!.likes,
+                  ),
             style: t.textTheme.bodySmall?.copyWith(
               color: t.colorScheme.onPrimaryContainer,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            profile?.summary ?? 'Play a few songs and this fills in.',
+            _summary(l, profile),
             style: t.textTheme.bodyMedium?.copyWith(
               color: t.colorScheme.onPrimaryContainer,
               height: 1.3,
@@ -726,6 +747,7 @@ class _TrainCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -742,7 +764,7 @@ class _TrainCard extends StatelessWidget {
               Icon(Icons.swipe_rounded, color: t.colorScheme.primary),
               const SizedBox(width: 10),
               Text(
-                'Train it by rating',
+                l.trainCard,
                 style: t.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -751,8 +773,7 @@ class _TrainCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Swipe through real songs. Right for more like this, left for '
-            'never again. Two minutes here beats a week of listening.',
+            l.trainCardSub,
             style: t.textTheme.bodySmall?.copyWith(
               color: t.colorScheme.onSurfaceVariant,
               height: 1.35,
@@ -764,7 +785,7 @@ class _TrainCard extends StatelessWidget {
               MaterialPageRoute<void>(builder: (_) => const RateTrainerPage()),
             ),
             icon: const Icon(Icons.play_arrow_rounded),
-            label: const Text('Start a training round'),
+            label: Text(l.trainStart),
           ),
         ],
       ),

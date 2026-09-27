@@ -11,42 +11,44 @@ import '../../app/theme.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../ui/common.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final s = ref.watch(settingsProvider);
     final set = ref.read(settingsProvider.notifier);
     final bytes = ref.watch(downloadedBytesProvider).value ?? 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(l.setTitle)),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 28),
         children: [
           // ------------------------------------------------------ colour
-          const SectionHeader(
-            title: 'Colour',
-            subtitle: 'The whole app follows this',
+          SectionHeader(
+            title: l.setColour,
+            subtitle: l.setColourSub,
             padding: EdgeInsets.fromLTRB(16, 10, 8, 6),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SegmentedButton<AccentMode>(
               showSelectedIcon: false,
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: AccentMode.artwork,
-                  icon: Icon(Icons.image_outlined, size: 18),
-                  label: Text('Cover art'),
+                  icon: const Icon(Icons.image_outlined, size: 18),
+                  label: Text(l.setCoverArt),
                 ),
                 ButtonSegment(
                   value: AccentMode.fixed,
-                  icon: Icon(Icons.palette_outlined, size: 18),
-                  label: Text('My colour'),
+                  icon: const Icon(Icons.palette_outlined, size: 18),
+                  label: Text(l.setMyColour),
                 ),
               ],
               selected: {s.accentMode},
@@ -58,8 +60,8 @@ class SettingsPage extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
             child: Text(
               s.accentMode == AccentMode.artwork
-                  ? 'Every song retints the app from its cover.'
-                  : 'One colour, everywhere, all the time.',
+                  ? l.setCoverArtSub
+                  : l.setMyColourSub,
               style: t.textTheme.bodySmall?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
@@ -109,17 +111,17 @@ class SettingsPage extends ConsumerWidget {
           ),
 
           const Divider(height: 28),
-          const SectionHeader(
-            title: 'Appearance',
+          SectionHeader(
+            title: l.setAppearance,
             padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
           ),
           ListTile(
             leading: const Icon(Icons.brightness_6_outlined),
-            title: const Text('Theme'),
+            title: Text(l.setTheme),
             subtitle: Text(switch (s.themeMode) {
-              ThemeMode.dark => 'Dark',
-              ThemeMode.light => 'Light',
-              ThemeMode.system => 'Follow system',
+              ThemeMode.dark => l.setThemeDark,
+              ThemeMode.light => l.setThemeLight,
+              ThemeMode.system => l.setThemeSystem,
             }),
             trailing: SegmentedButton<ThemeMode>(
               showSelectedIcon: false,
@@ -147,18 +149,149 @@ class SettingsPage extends ConsumerWidget {
             secondary: const Icon(Icons.contrast_rounded),
             value: s.pureBlack,
             onChanged: (v) => set.update((x) => x.copyWith(pureBlack: v)),
-            title: const Text('Pure black dark mode'),
-            subtitle: const Text('Saves battery on OLED phones'),
+            title: Text(l.setPureBlack),
+            subtitle: Text(l.setPureBlackSub),
+          ),
+
+          // ------------------------------------------------- language
+          const Divider(height: 28),
+          SectionHeader(
+            title: l.setLanguage,
+            padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
+          ),
+          ListTile(
+            leading: const Icon(Icons.translate_rounded),
+            title: Text(l.setLanguage),
+            subtitle: Text(languageName(s.localeCode)),
+            onTap: () => showModalBottomSheet<void>(
+              context: context,
+              showDragHandle: true,
+              builder: (sheet) => SafeArea(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final code in kLanguages.keys)
+                      ListTile(
+                        leading: Icon(
+                          s.localeCode == code
+                              ? Icons.radio_button_checked_rounded
+                              : Icons.radio_button_unchecked_rounded,
+                        ),
+                        title: Text(languageName(code)),
+                        onTap: () {
+                          set.update((v) => v.copyWith(localeCode: code));
+                          Navigator.pop(sheet);
+                        },
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // -------------------------------------------- accessibility
+          const Divider(height: 28),
+          SectionHeader(
+            title: l.setAccessibility,
+            padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
+          ),
+          ListTile(
+            leading: const Icon(Icons.format_size_rounded),
+            title: Text(l.setTextSize),
+            subtitle: Text(
+              s.textScale == 1.0
+                  ? l.setTextSizeSub
+                  : '${(s.textScale * 100).round()}%',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Slider(
+              value: s.textScale,
+              min: 0.85,
+              max: 1.6,
+              divisions: 15,
+              label: '${(s.textScale * 100).round()}%',
+              onChanged: (v) => set.update((x) => x.copyWith(textScale: v)),
+            ),
+          ),
+          SwitchListTile(
+            value: s.reduceMotion,
+            onChanged: (v) => set.update((x) => x.copyWith(reduceMotion: v)),
+            secondary: const Icon(Icons.motion_photos_off_outlined),
+            title: Text(l.setReduceMotion),
+            subtitle: Text(l.setReduceMotionSub),
+          ),
+          SwitchListTile(
+            value: s.highContrast,
+            onChanged: (v) => set.update((x) => x.copyWith(highContrast: v)),
+            secondary: const Icon(Icons.contrast_rounded),
+            title: Text(l.setHighContrast),
+            subtitle: Text(l.setHighContrastSub),
+          ),
+          SwitchListTile(
+            value: s.boldText,
+            onChanged: (v) => set.update((x) => x.copyWith(boldText: v)),
+            secondary: const Icon(Icons.format_bold_rounded),
+            title: Text(l.setBoldText),
+          ),
+
+          // ------------------------------------------------- playback
+          const Divider(height: 28),
+          SectionHeader(
+            title: l.setPlayback,
+            padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
+          ),
+          SwitchListTile(
+            value: s.autoRadio,
+            onChanged: (v) => set.update((x) => x.copyWith(autoRadio: v)),
+            secondary: const Icon(Icons.all_inclusive_rounded),
+            title: Text(l.setAutoRadio),
+            subtitle: Text(l.setAutoRadioSub),
+          ),
+          SwitchListTile(
+            value: s.smartShuffle,
+            onChanged: (v) => set.update((x) => x.copyWith(smartShuffle: v)),
+            secondary: const Icon(Icons.auto_awesome_motion_outlined),
+            title: Text(l.setSmartShuffle),
+            subtitle: Text(l.setSmartShuffleSub),
+          ),
+          SwitchListTile(
+            value: s.resumePlayback,
+            onChanged: (v) => set.update((x) => x.copyWith(resumePlayback: v)),
+            secondary: const Icon(Icons.restore_rounded),
+            title: Text(l.setResume),
+            subtitle: Text(l.setResumeSub),
+          ),
+          SwitchListTile(
+            value: s.dataSaverOffWifi,
+            onChanged: (v) =>
+                set.update((x) => x.copyWith(dataSaverOffWifi: v)),
+            secondary: const Icon(Icons.data_saver_on_rounded),
+            title: Text(l.setDataSaver),
+            subtitle: Text(l.setDataSaverSub),
+          ),
+          SwitchListTile(
+            value: s.showReasons,
+            onChanged: (v) => set.update((x) => x.copyWith(showReasons: v)),
+            secondary: const Icon(Icons.psychology_alt_outlined),
+            title: Text(l.setShowReasons),
+          ),
+          SwitchListTile(
+            value: s.haptics,
+            onChanged: (v) => set.update((x) => x.copyWith(haptics: v)),
+            secondary: const Icon(Icons.vibration_rounded),
+            title: Text(l.setHaptics),
           ),
 
           const Divider(height: 28),
-          const SectionHeader(
-            title: 'Audio & downloads',
+          SectionHeader(
+            title: l.setStorage,
             padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
           ),
           ListTile(
             leading: const Icon(Icons.high_quality_outlined),
-            title: const Text('Download quality'),
+            title: Text(l.setQuality),
             subtitle: Text(s.qualityLabel),
             onTap: () => showModalBottomSheet<void>(
               context: context,
@@ -191,20 +324,20 @@ class SettingsPage extends ConsumerWidget {
             value: s.wifiOnlyDownloads,
             onChanged: (v) =>
                 set.update((x) => x.copyWith(wifiOnlyDownloads: v)),
-            title: const Text('Download on Wi-Fi only'),
+            title: Text(l.setWifiOnlyTitle),
           ),
           SwitchListTile(
             secondary: const Icon(Icons.favorite_rounded),
             value: s.downloadLikes,
             onChanged: (v) => set.update((x) => x.copyWith(downloadLikes: v)),
-            title: const Text('Download everything I like'),
-            subtitle: const Text('The heart button also saves the file'),
+            title: Text(l.setDownloadLikes),
+            subtitle: Text(l.setDownloadLikesSub),
           ),
           SwitchListTile(
             secondary: const Icon(Icons.auto_awesome_rounded),
             value: s.aiAutoDownload,
             onChanged: (v) => set.update((x) => x.copyWith(aiAutoDownload: v)),
-            title: const Text('Let the AI install music it picks'),
+            title: Text(l.setAiInstall),
             subtitle: Text(
               'Up to ${s.aiDailyDownloads}/day · '
               '${s.aiStorageBudgetMb ~/ 1024} GB budget · tune it in Your taste',
@@ -214,45 +347,42 @@ class SettingsPage extends ConsumerWidget {
             secondary: const Icon(Icons.fast_forward_rounded),
             value: s.skipSilence,
             onChanged: (v) => set.update((x) => x.copyWith(skipSilence: v)),
-            title: const Text('Skip silence'),
-            subtitle: const Text('Android only'),
+            title: Text(l.setSkipSilence),
+            subtitle: Text(l.setSkipSilenceSub),
           ),
           ListTile(
             leading: const Icon(Icons.sd_storage_outlined),
-            title: const Text('Storage used by downloads'),
+            title: Text(l.setStorageUsed),
             subtitle: Text(prettyBytes(bytes)),
           ),
 
           const Divider(height: 28),
-          const SectionHeader(
-            title: 'Library',
+          SectionHeader(
+            title: l.setLibrary,
             padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
           ),
           ListTile(
             leading: const Icon(Icons.library_add_outlined),
-            title: const Text('Add music from this device'),
+            title: Text(l.setImport),
             subtitle: Text('${s.watchedFolders.length} folders watched'),
             onTap: () => pushDetail(context, 'import'),
           ),
           ListTile(
             leading: const Icon(Icons.sync_alt_rounded),
-            title: const Text('Send my taste to another device'),
-            subtitle: const Text(
-              'Writes a transfer file: likes, plays and everything the AI '
-              'learned',
-            ),
+            title: Text(l.setExport),
+            subtitle: Text(l.setExportSub),
             onTap: () => _exportTaste(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.download_for_offline_outlined),
-            title: const Text('Load taste from another device'),
-            subtitle: const Text('Merges it with what this device knows'),
+            title: Text(l.setImportTaste),
+            subtitle: Text(l.setImportTasteSub),
             onTap: () => _importTaste(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.cleaning_services_outlined),
-            title: const Text('Clean up missing files'),
-            subtitle: const Text('Drop songs whose file is gone'),
+            title: Text(l.setCleanup),
+            subtitle: Text(l.setCleanupSub),
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
               final n = await ref.read(importServiceProvider).pruneMissing();
@@ -263,8 +393,8 @@ class SettingsPage extends ConsumerWidget {
           ),
 
           const Divider(height: 28),
-          const SectionHeader(
-            title: 'About',
+          SectionHeader(
+            title: l.setAbout,
             padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
           ),
           ListTile(

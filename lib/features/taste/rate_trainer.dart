@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +10,7 @@ import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Swipe-to-rate: the fastest way to teach the AI without listening first.
 class RateTrainerPage extends ConsumerStatefulWidget {
@@ -22,9 +25,14 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
   bool _loading = true;
   String? _error;
   int _i = 0;
-  int _liked = 0;
-  int _blocked = 0;
   double _before = 0;
+  /// Verdicts are held here until the round finishes, so leaving really does
+  /// throw the round away — which is what the warning promises.
+  final _verdicts = <String, bool>{};
+  bool _saving = false;
+
+  int get _liked => _verdicts.values.where((v) => v).length;
+  int get _blocked => _verdicts.values.where((v) => !v).length;
 
   @override
   void initState() {
@@ -70,51 +78,101 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
     }
   }
 
-  Future<void> _rate(bool like) async {
+  void _rate(bool like) {
     // Two taps inside one frame would run past the end of the deck.
     if (_i >= _deck.length) return;
-    final song = _deck[_i];
+    _verdicts[_deck[_i].id] = like;
+    setState(() => _i++);
+    if (_i >= _deck.length) unawaited(_commit());
+  }
+
+  /// Writes the whole round to the model in one go.
+  Future<void> _commit() async {
+    if (_saving || _verdicts.isEmpty) return;
+    _saving = true;
     final music = ref.read(musicProvider);
-    setState(() {
-      like ? _liked++ : _blocked++;
-      _i++;
-    });
-    if (like) {
-      await music.like(song, value: true);
-    } else {
-      await ref
-          .read(aiProvider)
-          .learnFromDislike(song, ref.read(settingsProvider));
+    final ai = ref.read(aiProvider);
+    final settings = ref.read(settingsProvider);
+    final byId = {for (final s in _deck) s.id: s};
+    for (final entry in _verdicts.entries) {
+      final song = byId[entry.key];
+      if (song == null) continue;
+      if (entry.value) {
+        await music.like(song, value: true);
+      } else {
+        await ai.learnFromDislike(song, settings);
+      }
     }
+    if (!mounted) return;
+    dropTasteProfileCache();
+    ref.invalidate(tasteProfileProvider);
+  }
+
+  /// Asked before the round is abandoned. Nothing has been written yet.
+  Future<bool> _confirmLeave() async {
+    if (_verdicts.isEmpty || _i >= _deck.length) return true;
+    final l = L.of(context);
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(Icons.warning_amber_rounded),
+        title: Text(l.trainLeaveTitle),
+        content: Text(l.trainLeaveBody(_verdicts.length)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l.trainKeepGoing),
+          ),
+          FilledButton.tonal(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l.trainDiscard),
+          ),
+        ],
+      ),
+    );
+    return leave ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
 
     if (_loading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Training round')),
+        appBar: AppBar(title: Text(l.trainTitle)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
     if (_error != null || _deck.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Training round')),
+        appBar: AppBar(title: Text(l.trainTitle)),
         body: EmptyState(
           icon: Icons.school_outlined,
-          title: 'Nothing to rate yet',
-          body: _error ??
-              'Add some music or let the AI fetch candidates first, then '
-                  'come back.',
+          title: l.trainNothingTitle,
+          body: _error ?? l.trainNothingBody,
         ),
       );
     }
 
     final done = _i >= _deck.length;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        if (await _confirmLeave() && mounted) {
+          if (context.mounted) Navigator.of(context).pop();
+        }
+      },
+      child: _scaffold(t, done),
+    );
+  }
+
+  Widget _scaffold(ThemeData t, bool done) {
+    final l = L.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Training round'),
+        title: Text(l.trainTitle),
         actions: [
           Center(
             child: Padding(
@@ -143,6 +201,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
   }
 
   Widget _buildDeck(ThemeData t) {
+    final l = L.of(context);
     final song = _deck[_i];
     final next = _i + 1 < _deck.length ? _deck[_i + 1] : null;
 
@@ -151,7 +210,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
           child: Text(
-            'Would you want this on your Home?',
+            l.trainQuestion,
             textAlign: TextAlign.center,
             style: t.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
@@ -179,13 +238,13 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
                   background: _SwipeHint(
                     alignment: Alignment.centerLeft,
                     icon: Icons.favorite_rounded,
-                    label: 'More like this',
+                    label: l.trainMoreLikeThis,
                     color: t.colorScheme.primary,
                   ),
                   secondaryBackground: _SwipeHint(
                     alignment: Alignment.centerRight,
                     icon: Icons.block_rounded,
-                    label: 'Never again',
+                    label: l.trainNeverAgain,
                     color: t.colorScheme.error,
                   ),
                   child: _Card(song: song),

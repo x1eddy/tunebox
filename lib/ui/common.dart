@@ -10,6 +10,7 @@ import '../state/settings.dart';
 import 'artwork.dart';
 import 'equalizer.dart';
 import 'motion.dart';
+import '../l10n/app_localizations.dart';
 
 String formatDuration(Duration d) {
   final m = d.inMinutes.remainder(60).toString();
@@ -186,7 +187,13 @@ class SongTile extends ConsumerWidget {
                       if (playing)
                         Padding(
                           padding: const EdgeInsets.only(right: 7, top: 2),
-                          child: PlayingBars(playing: isPlaying, size: 13),
+                          child: PlayingBars(
+                            playing: isPlaying,
+                            size: 13,
+                            reduceMotion: ref
+                                .watch(settingsProvider)
+                                .reduceMotion,
+                          ),
                         ),
                       Flexible(
                         child: Text(
@@ -330,7 +337,7 @@ class CoverCard extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
-                  pick.reason!,
+                  reasonText(L.of(context), pick.reason!),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: t.textTheme.labelSmall?.copyWith(
@@ -389,6 +396,31 @@ class _Badge extends StatelessWidget {
     );
   }
 }
+
+/// Says the AI's reason in the language the app is running in.
+String reasonText(L l, PickReason r) => switch (r.kind) {
+  ReasonKind.plays => l.reasonPlays(r.count),
+  ReasonKind.likedLast => l.reasonLikedLast(_ago(l, r)),
+  ReasonKind.playsLast => l.reasonPlaysLast(r.count, _ago(l, r)),
+  ReasonKind.topArtist => l.reasonTopArtist,
+  ReasonKind.more => l.reasonMore(r.text),
+  ReasonKind.comeBack => l.reasonComeBack(r.text),
+  ReasonKind.yourKind => l.reasonYourKind(r.text),
+  ReasonKind.heavyOn => l.reasonHeavyOn(r.text),
+  ReasonKind.outThisYear => l.reasonOutThisYear,
+  ReasonKind.releasedRecently => l.reasonReleasedRecently,
+  ReasonKind.close => l.reasonClose,
+  ReasonKind.near => l.reasonNear(r.text),
+  ReasonKind.neverPlayed => l.reasonNeverPlayed,
+  ReasonKind.playedOnce => l.reasonPlayedOnce,
+  ReasonKind.popular => l.reasonPopular,
+};
+
+String _ago(L l, PickReason r) => switch (r.agoUnit) {
+  AgoUnit.years => l.whenYearsAgo(r.ago),
+  AgoUnit.months => l.whenMonthsAgo(r.ago),
+  AgoUnit.days => l.whenDaysAgo(r.ago),
+};
 
 /// Wide card — artwork left, title and the AI's reason right.
 class WideCard extends ConsumerWidget {
@@ -457,7 +489,9 @@ class WideCard extends ConsumerWidget {
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
-                              pick.reason ?? 'Back in rotation',
+                              pick.reason == null
+                                  ? L.of(context).shelfRepeat
+                                  : reasonText(L.of(context), pick.reason!),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: t.textTheme.labelSmall?.copyWith(
@@ -509,6 +543,7 @@ void showSongSheet(BuildContext context, Song song) {
     isScrollControlled: true,
     builder: (sheetContext) => Consumer(
       builder: (context, ref, _) {
+        final l = L.of(context);
         final t = Theme.of(context);
         final music = ref.read(musicProvider);
         final live = ref.watch(libraryProvider).value?.firstWhere(
@@ -555,12 +590,10 @@ void showSongSheet(BuildContext context, Song song) {
                     color: current.blocked ? t.colorScheme.error : null,
                   ),
                   title: Text(
-                    current.blocked ? 'Blocked — tap to allow again' : 'Not for me',
+                    current.blocked ? l.sheetBlocked : l.sheetNotForMe,
                   ),
                   subtitle: Text(
-                    current.blocked
-                        ? 'It can show up in recommendations again'
-                        : 'Never recommend this again',
+                    current.blocked ? l.sheetBlockedSub : l.sheetNotForMeSub,
                   ),
                   onTap: () {
                     Navigator.pop(sheetContext);
@@ -573,7 +606,7 @@ void showSongSheet(BuildContext context, Song song) {
                 ),
                 ListTile(
                   leading: const Icon(Icons.queue_music_rounded),
-                  title: const Text('Play next'),
+                  title: Text(l.sheetPlayNext),
                   onTap: () {
                     ref.read(audioHandlerProvider).addToQueue(current, next: true);
                     Navigator.pop(sheetContext);
@@ -581,7 +614,7 @@ void showSongSheet(BuildContext context, Song song) {
                 ),
                 ListTile(
                   leading: const Icon(Icons.playlist_add_rounded),
-                  title: const Text('Add to playlist'),
+                  title: Text(l.sheetAddToPlaylist),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     showAddToPlaylist(context, current);
@@ -593,8 +626,8 @@ void showSongSheet(BuildContext context, Song song) {
                       Icons.download_done_rounded,
                       color: t.colorScheme.primary,
                     ),
-                    title: const Text('Downloaded'),
-                    subtitle: const Text('Tap to remove the file'),
+                    title: Text(l.sheetDownloaded),
+                    subtitle: Text(l.sheetRemoveFile),
                     onTap: () {
                       music.removeDownload(current);
                       Navigator.pop(sheetContext);
@@ -603,8 +636,8 @@ void showSongSheet(BuildContext context, Song song) {
                 else if (current.source == SongSource.youtube)
                   ListTile(
                     leading: const Icon(Icons.download_rounded),
-                    title: const Text('Download'),
-                    subtitle: const Text('Keep it for offline'),
+                    title: Text(l.sheetDownload),
+                    subtitle: Text(l.sheetKeepOffline),
                     onTap: () {
                       music.download(current);
                       Navigator.pop(sheetContext);
@@ -612,8 +645,8 @@ void showSongSheet(BuildContext context, Song song) {
                   ),
                 ListTile(
                   leading: const Icon(Icons.radio_rounded),
-                  title: const Text('Start radio'),
-                  subtitle: const Text('A queue built around this song'),
+                  title: Text(l.sheetRadio),
+                  subtitle: Text(l.sheetRadioSub),
                   onTap: () async {
                     Navigator.pop(sheetContext);
                     await startRadio(ref, current);
@@ -629,33 +662,8 @@ void showSongSheet(BuildContext context, Song song) {
   );
 }
 
-Future<void> startRadio(WidgetRef ref, Song seed) async {
-  final ai = ref.read(aiProvider);
-  final db = ref.read(dbProvider);
-  final yt = ref.read(ytProvider);
-  final settings = ref.read(settingsProvider);
-  final companions = seed.id.startsWith('local:')
-      // YouTube Music answers a song query with songs; asking for "radio"
-      // only drags in hour-long mixes.
-      ? await yt.search('${seed.artist} ${seed.title}', max: 20)
-      : await yt.related(seed.id, max: 20);
-  for (final c in companions) {
-    await db.cacheSong(c);
-  }
-  final songs = await db.songsByIds([
-    for (final c in companions) c.id.value,
-  ]);
-  final w = await ai.weights();
-  final rules = {
-    for (final r in await db.artistRuleList()) r.artist.toLowerCase(): r.rule,
-  };
-  songs.sort(
-    (a, b) => ai
-        .scoreSong(b, w, settings, rules)
-        .compareTo(ai.scoreSong(a, w, settings, rules)),
-  );
-  await ref.read(musicProvider).playAll([seed, ...songs], origin: 'radio');
-}
+Future<void> startRadio(WidgetRef ref, Song seed) =>
+    ref.read(musicProvider).startRadio(seed);
 
 void showAddToPlaylist(BuildContext context, Song song) {
   showModalBottomSheet<void>(

@@ -9,20 +9,22 @@ import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
 import '../../ui/motion.dart';
+import '../../l10n/app_localizations.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
-  String get _greeting {
+  String _greeting(L l) {
     final h = DateTime.now().hour;
-    if (h < 5) return 'Still up?';
-    if (h < 12) return 'Good morning';
-    if (h < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (h < 5) return l.greetingNight;
+    if (h < 12) return l.greetingMorning;
+    if (h < 18) return l.greetingAfternoon;
+    return l.greetingEvening;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final shelves = ref.watch(homeShelvesProvider);
     final library = ref.watch(libraryProvider).value ?? const <Song>[];
@@ -50,7 +52,7 @@ class HomePage extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _greeting,
+                    _greeting(l),
                     style: t.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.6,
@@ -58,12 +60,11 @@ class HomePage extends ConsumerWidget {
                   ),
                   Text(
                     switch (shelves) {
-                      AsyncLoading() => 'The AI is building your shelves…',
-                      AsyncError() => 'Offline — showing what is on the phone',
+                      AsyncLoading() => l.homeBuilding,
+                      AsyncError() => l.homeOffline,
                       _ => switch (shelves.value?.length ?? 0) {
-                        0 => 'Nothing to show yet',
-                        1 => '1 shelf, refreshed just now',
-                        final n => '$n shelves, refreshed just now',
+                        0 => l.homeNothingYet,
+                        final n => l.homeShelfCount(n),
                       },
                     },
                     style: t.textTheme.bodySmall?.copyWith(
@@ -76,12 +77,12 @@ class HomePage extends ConsumerWidget {
                 IconButton(
                   onPressed: () => ref.read(musicProvider).refreshHome(),
                   icon: const Icon(Icons.refresh_rounded),
-                  tooltip: 'Rebuild shelves',
+                  tooltip: l.homeRebuild,
                 ),
                 IconButton(
                   onPressed: () => pushDetail(context, 'import'),
                   icon: const Icon(Icons.library_add_outlined),
-                  tooltip: 'Add music from this device',
+                  tooltip: l.homeAddMusic,
                 ),
                 IconButton(
                   onPressed: () => pushDetail(context, 'settings'),
@@ -105,7 +106,7 @@ class HomePage extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Text(
-                      'Could not reach YouTube: $error',
+                      l.homeCouldNotReach('$error'),
                       style: t.textTheme.bodySmall?.copyWith(
                         color: t.colorScheme.error,
                       ),
@@ -126,16 +127,41 @@ class HomePage extends ConsumerWidget {
   }
 }
 
+/// The engine names shelves in English for its own bookkeeping; the screen
+/// says them in whatever language the app is running in.
+(String, String?) shelfText(L l, AiShelf shelf) => switch (shelf.id) {
+  'repeat' => (l.shelfRepeat, l.shelfRepeatSub),
+  'forgotten' => (l.shelfForgotten, l.shelfForgottenSub),
+  'new' => (l.shelfNew, l.shelfNewSub),
+  'because' => (
+    l.shelfBecause(shelf.title.replaceFirst('Because you played ', '')),
+    l.shelfBecauseSub,
+  ),
+  'deep' => (l.shelfDeep, l.shelfDeepSub),
+  'mix' => (l.shelfMix, l.shelfMixSub),
+  'added' => (l.shelfAdded, l.shelfAddedSub),
+  'starter' => (l.shelfStarter, l.shelfStarterSub),
+  _ => (shelf.title, shelf.subtitle),
+};
+
 class _MoodRow extends ConsumerWidget {
   const _MoodRow();
 
   static const moods = [
-    ('Focus', Icons.center_focus_weak_rounded, 'focus instrumental music'),
-    ('Workout', Icons.bolt_rounded, 'workout hype songs'),
-    ('Chill', Icons.nightlight_round, 'chill late night songs'),
-    ('Commute', Icons.directions_subway_rounded, 'driving playlist songs'),
-    ('Party', Icons.celebration_rounded, 'party bangers'),
+    ('focus', Icons.center_focus_weak_rounded, 'focus instrumental music'),
+    ('workout', Icons.bolt_rounded, 'workout hype songs'),
+    ('chill', Icons.nightlight_round, 'chill late night songs'),
+    ('commute', Icons.directions_subway_rounded, 'driving playlist songs'),
+    ('party', Icons.celebration_rounded, 'party bangers'),
   ];
+
+  static String moodName(L l, String key) => switch (key) {
+    'focus' => l.moodFocus,
+    'workout' => l.moodWorkout,
+    'chill' => l.moodChill,
+    'commute' => l.moodCommute,
+    _ => l.moodParty,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -149,8 +175,13 @@ class _MoodRow extends ConsumerWidget {
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (_, i) => ActionChip(
           avatar: Icon(moods[i].$2, size: 17, color: t.colorScheme.primary),
-          label: Text(moods[i].$1),
-          onPressed: () => _playMood(context, ref, moods[i].$3, moods[i].$1),
+          label: Text(moodName(L.of(context), moods[i].$1)),
+          onPressed: () => _playMood(
+            context,
+            ref,
+            moods[i].$3,
+            moodName(L.of(context), moods[i].$1),
+          ),
         ),
       ),
     );
@@ -162,8 +193,9 @@ class _MoodRow extends ConsumerWidget {
     String query,
     String label,
   ) async {
+    final l = L.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(SnackBar(content: Text('Building a $label mix…')));
+    messenger.showSnackBar(SnackBar(content: Text(l.moodBuilding(label))));
     try {
       final db = ref.read(dbProvider);
       final found = await ref.read(ytProvider).search(query, max: 25);
@@ -174,7 +206,7 @@ class _MoodRow extends ConsumerWidget {
       if (songs.isEmpty) return;
       await ref.read(musicProvider).playAll(songs, origin: 'mood');
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('No luck: $e')));
+      messenger.showSnackBar(SnackBar(content: Text(l.moodFailed('$e'))));
     }
   }
 }
@@ -184,6 +216,7 @@ class _FirstRunCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 14, 16, 4),
@@ -210,7 +243,7 @@ class _FirstRunCard extends ConsumerWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'Your library is empty',
+                l.homeEmptyTitle,
                 style: t.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: t.colorScheme.onPrimaryContainer,
@@ -220,8 +253,7 @@ class _FirstRunCard extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Search for something, or add the music already on this device. '
-            'The AI starts learning from your very first play.',
+            l.homeEmptyBody,
             style: t.textTheme.bodyMedium?.copyWith(
               color: t.colorScheme.onPrimaryContainer,
               height: 1.3,
@@ -233,7 +265,7 @@ class _FirstRunCard extends ConsumerWidget {
               FilledButton.icon(
                 onPressed: () => pushDetail(context, 'import'),
                 icon: const Icon(Icons.library_add_outlined),
-                label: const Text('Add my music'),
+                label: Text(l.homeAddMyMusic),
               ),
               const SizedBox(width: 10),
               OutlinedButton.icon(
@@ -338,18 +370,20 @@ class _ShelfView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final songs = [for (final p in shelf.picks) p.song];
     if (songs.isEmpty) return const SizedBox.shrink();
+    final (title, subtitle) = shelfText(l, shelf);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          title: shelf.title,
-          subtitle: shelf.subtitle,
+          title: title,
+          subtitle: subtitle,
           emoji: shelf.emoji,
           trailing: IconButton(
-            tooltip: 'Play this shelf',
+            tooltip: l.actionPlayAll,
             onPressed: () => ref
                 .read(musicProvider)
                 .playAll(songs, origin: 'shelf:${shelf.id}'),

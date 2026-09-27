@@ -44,6 +44,21 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   final _errors = StreamController<String>.broadcast();
   final _queueChanges = StreamController<List<Song>>.broadcast();
 
+  /// Called when the queue runs out and nothing is repeating, so the app can
+  /// keep the music going with a radio instead of falling silent.
+  Future<void> Function(Song last)? onQueueExhausted;
+
+  /// Called whenever the queue or position changes enough to be worth
+  /// remembering for the next launch.
+  void Function(List<String> ids, int index, Duration position)? onSnapshot;
+
+  /// Reorders a shuffle. Set by the app so the AI can shuffle by taste.
+  List<Song> Function(List<Song> songs, Song current)? shuffleOrder;
+
+  /// Highest bitrate to ask YouTube for, 0 for the best available. The app
+  /// lowers it on mobile data when the data saver is on.
+  int streamQualityKbps = 0;
+
   int _index = 0;
   String _origin = 'library';
   /// Bumped on every load request. A load that finds a newer token has been
@@ -138,7 +153,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         // Served by the local proxy, which handles ranges and URL expiry.
         if (!_proxy.running) await _proxy.start();
         await _proxy
-            .resolve(song.id)
+            .resolve(song.id, maxKbps: streamQualityKbps)
             .timeout(const Duration(seconds: 30));
         if (token != _loadToken) return;
         await _player.setAudioSource(
@@ -148,6 +163,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       if (token != _loadToken) return;
       if (play) await _player.play();
       _consecutiveFailures = 0;
+      _snapshot();
       // Search results sometimes arrive without a length; now we know it.
       final real = _player.duration;
       if (real != null && real.inMilliseconds > 0 &&
@@ -190,6 +206,12 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     } else if (_repeatAll) {
       _index = 0;
     } else {
+      final last = currentSong;
+      final radio = onQueueExhausted;
+      if (last != null && radio != null) {
+        await radio(last);
+        return;
+      }
       await _player.stop();
       return;
     }
@@ -220,7 +242,34 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> play() => _player.play();
 
   @override
-  Future<void> pause() => _player.pause();
+  Future<void> pause() async {
+    _snapshot();
+    await _player.pause();
+  }
+
+  void _snapshot() => onSnapshot?.call(
+    [for (final s in _queue) s.id],
+    _index,
+    _player.position,
+  );
+
+  /// Puts a saved queue back without playing it.
+  Future<void> restore(List<Song> songs, int index, Duration position) async {
+    if (songs.isEmpty) return;
+    _queue
+      ..clear()
+      ..addAll(songs);
+    _queueChanges.add(queueSongs);
+    _index = index.clamp(0, songs.length - 1);
+    await _load(play: false);
+    if (position > Duration.zero) {
+      try {
+        await _player.seek(position);
+      } catch (_) {
+        // a stream that will not seek yet is not worth failing a launch over
+      }
+    }
+  }
 
   @override
   Future<void> stop() async {
@@ -269,11 +318,16 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     _shuffled = shuffleMode == AudioServiceShuffleMode.all;
     if (_shuffled && _queue.length > 1) {
-      final current = _queue.removeAt(_index);
-      _queue.shuffle();
-      _queue.insert(0, current);
+      final current = _queue[_index];
+      final rest = [..._queue]..removeAt(_index);
+      final ordered = shuffleOrder?.call(rest, current) ?? (rest..shuffle());
+      _queue
+        ..clear()
+        ..add(current)
+        ..addAll(ordered);
       _index = 0;
       queue.add([for (final s in _queue) _mediaItem(s)]);
+      _queueChanges.add(queueSongs);
     }
     _broadcastState(_player.playbackEvent);
   }
