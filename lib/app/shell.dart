@@ -39,42 +39,44 @@ class AppShell extends ConsumerWidget {
               fillColor: Colors.transparent,
               child: child,
             ),
-        child: KeyedSubtree(
-          key: ValueKey(shell.currentIndex),
-          child: shell,
-        ),
+        child: KeyedSubtree(key: ValueKey(shell.currentIndex), child: shell),
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const _DownloadBar(),
           const MiniPlayer(),
-          NavigationBar(
-            selectedIndex: shell.currentIndex,
-            onDestinationSelected: (i) =>
-                shell.goBranch(i, initialLocation: i == shell.currentIndex),
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.home_outlined),
-                selectedIcon: const Icon(Icons.home_rounded),
-                label: l.navHome,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.search_rounded),
-                selectedIcon: const Icon(Icons.travel_explore_rounded),
-                label: l.navExplore,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.library_music_outlined),
-                selectedIcon: const Icon(Icons.library_music_rounded),
-                label: l.navLibrary,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.auto_awesome_outlined),
-                selectedIcon: const Icon(Icons.auto_awesome_rounded),
-                label: l.navTaste,
-              ),
-            ],
+          // Nav labels have a fixed slot; past ~1.3x "Your taste" is clipped,
+          // so the bar caps what the accessibility text scale does to it.
+          MediaQuery.withClampedTextScaling(
+            maxScaleFactor: 1.3,
+            child: NavigationBar(
+              selectedIndex: shell.currentIndex,
+              onDestinationSelected: (i) =>
+                  shell.goBranch(i, initialLocation: i == shell.currentIndex),
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.home_outlined),
+                  selectedIcon: const Icon(Icons.home_rounded),
+                  label: l.navHome,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.search_rounded),
+                  selectedIcon: const Icon(Icons.travel_explore_rounded),
+                  label: l.navExplore,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.library_music_outlined),
+                  selectedIcon: const Icon(Icons.library_music_rounded),
+                  label: l.navLibrary,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.auto_awesome_outlined),
+                  selectedIcon: const Icon(Icons.auto_awesome_rounded),
+                  label: l.navTaste,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -89,9 +91,7 @@ class _DownloadBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasks = ref.watch(downloadTasksProvider).value ?? const [];
-    final active = tasks
-        .where((t) => t.stage != DownloadStage.done)
-        .toList();
+    final active = tasks.where((t) => t.stage != DownloadStage.done).toList();
     if (active.isEmpty) return const SizedBox.shrink();
     final t = Theme.of(context);
     final first = active.first;
@@ -147,9 +147,7 @@ class _MiniProgress extends ConsumerWidget {
     final position = ref.watch(positionProvider).value ?? Duration.zero;
     final total = song.durationMs;
     return LinearProgressIndicator(
-      value: total == 0
-          ? 0
-          : (position.inMilliseconds / total).clamp(0.0, 1.0),
+      value: total == 0 ? 0 : (position.inMilliseconds / total).clamp(0.0, 1.0),
       minHeight: 2,
       backgroundColor: t.colorScheme.onSurface.withValues(alpha: 0.10),
     );

@@ -161,7 +161,16 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         );
       }
       if (token != _loadToken) return;
-      if (play) await _player.play();
+      // NOT awaited: just_audio's play() completes when the track *finishes*,
+      // so awaiting it defers everything below until the song ends — which is
+      // why the resume snapshot was never written.
+      if (play) {
+        unawaited(
+          _player.play().catchError((Object e) {
+            _errors.add('Could not start "${song.title}" — $e');
+          }),
+        );
+      }
       _consecutiveFailures = 0;
       _snapshot();
       // Search results sometimes arrive without a length; now we know it.
@@ -300,7 +309,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   bool _repeatOne = false;
-  bool _repeatAll = true;
+  /// Off by default so a queue actually ends — which is what lets "keep the
+  /// music going" start a radio. Turning repeat on is the user saying they
+  /// want the queue looped instead.
+  bool _repeatAll = false;
   bool _shuffled = false;
 
   bool get repeatOne => _repeatOne;

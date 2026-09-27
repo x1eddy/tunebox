@@ -1,0 +1,89 @@
+name: ios simulator
+
+# Runs the real app on a simulated iPhone and takes screenshots of every tab.
+# There is no way to do this off macOS, so it lives here rather than on a
+# development machine.
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  simulator:
+    name: run on a simulated iPhone
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: build for the simulator
+        run: flutter build ios --simulator --debug --dart-define=TOUR=true
+
+      - name: boot an iPhone
+        id: boot
+        run: |
+          xcrun simctl list devices available | sed -n '1,40p'
+          UDID=$(xcrun simctl list devices available -j \
+            | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];\
+print([x['udid'] for rt in d for x in d[rt] if 'iPhone' in x['name']][0])")
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: install and launch
+        id: run
+        run: |
+          UDID=${{ steps.boot.outputs.udid }}
+          xcrun simctl install "$UDID" build/ios/iphonesimulator/Runner.app
+          xcrun simctl launch --console-pty "$UDID" com.brito.tunebox &
+          echo $! > launch.pid
+          sleep 25
+          CONTAINER=$(xcrun simctl get_app_container "$UDID" com.brito.tunebox data)
+          echo "box=$CONTAINER/Documents" >> "$GITHUB_OUTPUT"
+          ls -la "$CONTAINER/Documents" || true
+
+      - name: walk through the app
+        run: |
+          UDID=${{ steps.boot.outputs.udid }}
+          BOX="${{ steps.run.outputs.box }}"
+          mkdir -p shots
+          shot () { sleep 3; xcrun simctl io "$UDID" screenshot "shots/$1.png"; }
+
+          drive () {   # <id> <commands…>
+            echo "$*" > "$BOX/tunebox_cmd"
+            for _ in $(seq 1 40); do
+              [ "$(cat "$BOX/tunebox_ack" 2>/dev/null)" = "$1" ] && break
+              sleep 1
+            done
+          }
+
+          shot 01-home
+          drive 1 "go:/explore|wait:2000"       ; shot 02-explore
+          drive 2 "go:/library|wait:2000"       ; shot 03-library
+          drive 3 "go:/taste|wait:3000"         ; shot 04-taste
+          drive 4 "push:/settings|wait:2000"    ; shot 05-settings
+          drive 5 "scroll:900|wait:1000"        ; shot 06-settings-more
+          drive 6 "pop|go:/home|wait:3000|scroll:600" ; shot 07-home-scrolled
+          ls -la shots
+
+      - name: collect the simulator log
+        if: always()
+        run: |
+          UDID=${{ steps.boot.outputs.udid }}
+          xcrun simctl spawn "$UDID" log show --last 5m --style compact \
+            --predicate 'process == "Runner"' > simulator.log 2>&1 || true
+          echo "--- crashes:"
+          ls ~/Library/Logs/DiagnosticReports/ 2>/dev/null | head || echo none
+          grep -ciE "fatal|exception|crash" simulator.log || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: iphone-simulator-screenshots
+          path: |
+            shots/
+            simulator.log

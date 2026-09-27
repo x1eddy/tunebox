@@ -9,12 +9,25 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../app/router.dart';
 
 const kTour = bool.fromEnvironment('TOUR');
 const _cmdFile = '/tmp/tunebox_cmd';
 const _ackFile = '/tmp/tunebox_ack';
+
+/// Where the harness talks to the app.
+///
+/// On desktop that is `/tmp`. An iOS simulator app cannot read `/tmp` on the
+/// host, so there it is the app's own documents directory, which the test
+/// script finds with `xcrun simctl get_app_container`.
+Directory? _boxDir;
+
+File _file(String tmpPath, String name) {
+  final box = _boxDir;
+  return box == null ? File(tmpPath) : File('${box.path}/$name');
+}
 
 /// Dev-only frame timing. Prints how long the UI thread (build) and the raster
 /// thread (GPU) take, so "it feels laggy" becomes a number.
@@ -72,6 +85,11 @@ class _TourDriverState extends State<TourDriver> {
   @override
   void initState() {
     super.initState();
+    if (Platform.isIOS || Platform.isMacOS) {
+      unawaited(
+        getApplicationDocumentsDirectory().then((d) => _boxDir = d),
+      );
+    }
     _poll = Timer.periodic(const Duration(milliseconds: 120), (_) => _tick());
   }
 
@@ -82,7 +100,7 @@ class _TourDriverState extends State<TourDriver> {
   }
 
   Future<void> _tick() async {
-    final f = File(_cmdFile);
+    final f = _file(_cmdFile, 'tunebox_cmd');
     if (!f.existsSync()) return;
     final raw = f.readAsStringSync().trim();
     if (raw.isEmpty) return;
@@ -94,7 +112,7 @@ class _TourDriverState extends State<TourDriver> {
       await _run(cmd.trim());
     }
     await Future<void>.delayed(const Duration(milliseconds: 700));
-    File(_ackFile).writeAsStringSync('$id');
+    _file(_ackFile, 'tunebox_ack').writeAsStringSync('$id');
   }
 
   Future<void> _run(String cmd) async {
