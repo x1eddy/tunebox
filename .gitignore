@@ -53,4 +53,12 @@ app.*.map.json
 
 # iOS build leftovers
 /ios/Flutter/ephemeral/
+/ios/Podfile
 /ios/Podfile.lock
+/ios/Pods/
+
+# Signing key — never commit this
+/android/key.properties
+*.jks
+*.p12
+*.keystore

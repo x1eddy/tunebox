@@ -1,8 +1,19 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Real signing key, kept outside the repository. Without it (CI, a fresh
+// clone) the build falls back to the debug key and still works — it just
+// produces an APK that Play Protect treats as a test build.
+val keystoreProperties = Properties().apply {
+    val f = rootProject.file("key.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val hasReleaseKey = keystoreProperties.getProperty("storeFile")?.let { file(it).exists() } == true
 
 android {
     namespace = "com.brito.tunebox"
@@ -29,10 +40,30 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                // v1 keeps older Androids happy, v2/v3 are what a modern
+                // device checks — and v3 is missing from a debug-signed APK,
+                // which is one of the things that makes one look untrusted.
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // Personal build: debug keys are fine for sideloading.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (hasReleaseKey) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
             // audio_service looks its notification icons up by name at
             // runtime, so the shrinker cannot see them and throws them away —
             // which breaks the media notification and, with it, playback.
