@@ -1,0 +1,14 @@
+TuneBox @VERSION@ — Linux (x86_64)
+
+Install:
+    ./install.sh
+
+Then start it from your app menu, or type: tunebox
+
+Needs: a 64-bit Linux desktop with GTK3 and libmpv
+    Ubuntu/Debian:  sudo apt install libmpv2      (or libmpv1 on older releases)
+    Fedora:         sudo dnf install mpv-libs
+    Arch:           sudo pacman -S mpv
+
+Uninstall:
+    ~/.local/share/tunebox/uninstall.sh

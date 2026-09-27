@@ -62,3 +62,4 @@ app.*.map.json
 *.jks
 *.p12
 *.keystore
+dist/
