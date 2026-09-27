@@ -26,10 +26,9 @@ jobs:
       - name: boot an iPhone
         id: boot
         run: |
-          xcrun simctl list devices available | sed -n '1,40p'
-          UDID=$(xcrun simctl list devices available -j \
-            | python3 -c "import json,sys;d=json.load(sys.stdin)['devices'];\
-print([x['udid'] for rt in d for x in d[rt] if 'iPhone' in x['name']][0])")
+          xcrun simctl list devices available | head -30
+          UDID=$(xcrun simctl list devices available | grep -m1 "iPhone" | grep -oE "[0-9A-F-]{36}")
+          echo "picked $UDID"
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
           xcrun simctl boot "$UDID"
           xcrun simctl bootstatus "$UDID" -b
