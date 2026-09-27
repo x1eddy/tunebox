@@ -23,6 +23,7 @@ class SettingsPage extends ConsumerWidget {
     final s = ref.watch(settingsProvider);
     final set = ref.read(settingsProvider.notifier);
     final bytes = ref.watch(downloadedBytesProvider).value ?? 0;
+    final update = ref.watch(pendingUpdateProvider).value;
 
     return Scaffold(
       appBar: AppBar(title: Text(l.setTitle)),
@@ -388,6 +389,57 @@ class SettingsPage extends ConsumerWidget {
               final n = await ref.read(importServiceProvider).pruneMissing();
               messenger.showSnackBar(
                 SnackBar(content: Text('Removed $n missing files.')),
+              );
+            },
+          ),
+
+          // ------------------------------------------------------ updates
+          const Divider(height: 28),
+          SectionHeader(
+            title: l.setUpdates,
+            padding: const EdgeInsets.fromLTRB(16, 4, 8, 6),
+          ),
+          if (update != null)
+            ListTile(
+              leading: Icon(
+                Icons.system_update_rounded,
+                color: t.colorScheme.primary,
+              ),
+              title: Text(l.setUpdateReady(update.version)),
+              subtitle: Text(l.setUpdateReadySub),
+              onTap: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(updateServiceProvider).install(update);
+                } catch (e) {
+                  messenger.showSnackBar(SnackBar(content: Text('$e')));
+                }
+              },
+            ),
+          SwitchListTile(
+            value: s.autoUpdate,
+            onChanged: (v) => set.update((x) => x.copyWith(autoUpdate: v)),
+            secondary: const Icon(Icons.update_rounded),
+            title: Text(l.setAutoUpdate),
+            subtitle: Text(l.setAutoUpdateSub),
+          ),
+          ListTile(
+            leading: const Icon(Icons.search_rounded),
+            title: Text(l.setCheckNow),
+            onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              messenger.showSnackBar(SnackBar(content: Text(l.setChecking)));
+              final found = await ref
+                  .read(updateServiceProvider)
+                  .checkAndFetch(mayDownload: true);
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    found == null
+                        ? l.setUpToDate
+                        : l.setUpdateReady(found.version),
+                  ),
+                ),
               );
             },
           ),

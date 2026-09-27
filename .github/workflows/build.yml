@@ -89,8 +89,8 @@ jobs:
       # makes Play Protect treat a sideloaded app as suspect.
       - run: |
           v="${GITHUB_REF_NAME#v}"
-          mv artifacts/TuneBox-unsigned.ipa "TuneBox-$v-unsigned.ipa"
-          gh release upload "$GITHUB_REF_NAME" "TuneBox-$v-unsigned.ipa" --clobber
+          mv artifacts/TuneBox-unsigned.ipa "iphone-TuneBox-$v.ipa"
+          gh release upload "$GITHUB_REF_NAME" "iphone-TuneBox-$v.ipa" --clobber
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

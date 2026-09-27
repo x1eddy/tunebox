@@ -45,6 +45,10 @@ Built with Flutter, so one codebase runs on all three.
   Polish and Portuguese, including what the AI says about its own picks.
 - **Accessibility** — text scaling on top of the system setting, reduce
   motion, high contrast and bold text.
+- **Updates itself quietly** — checks this repo every three hours and fetches
+  the new release in the background on Wi-Fi. Installing it is still one tap,
+  because Android always asks, and an app that could replace itself silently
+  would be indistinguishable from malware.
 
 Everything is local: a SQLite database and a folder of audio files. No account,
 no server, no telemetry.
@@ -53,7 +57,7 @@ no server, no telemetry.
 
 ### Android (7.0 or newer)
 
-Grab `TuneBox-<version>.apk` from [Releases](../../releases) and open it on the
+Grab `android-TuneBox-<version>.apk` from [Releases](../../releases) and open it on the
 phone. Android asks once for permission to install from whatever app you opened
 it with — that prompt is how sideloading works and it never goes away.
 
@@ -68,7 +72,7 @@ SHA-256  B7:DD:73:CD:77:8A:3A:38:1B:9E:2E:09:21:02:AE:AD:7E:0D:2B:FD:10:A1:9E:21
 Check it yourself before installing anything anyone sends you:
 
 ```bash
-apksigner verify --print-certs TuneBox-<version>.apk
+apksigner verify --print-certs android-TuneBox-<version>.apk
 ```
 
 If Play Protect still shows a warning, it is saying "I have not seen this app
@@ -82,7 +86,8 @@ other apps.
 ### iPhone (iOS 15+)
 
 There is no App Store build. The [Releases](../../releases) page carries an
-**unsigned** `.ipa`, which you sign with your own free Apple ID:
+**unsigned** `iphone-TuneBox-<version>.ipa`, which you sign with your own
+free Apple ID:
 
 - **[SideStore](https://sidestore.io) or [AltStore](https://altstore.io)** —
   installs the app from the phone itself and refreshes it in the background.
@@ -104,7 +109,7 @@ false because it ships no cryptography of its own.
 
 ### Linux (x86_64)
 
-Download `TuneBox-<version>-linux-x64.tar.gz` from
+Download `linux-TuneBox-<version>.tar.gz` from
 [Releases](../../releases), extract it and run:
 
 ```bash

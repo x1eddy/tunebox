@@ -1680,6 +1680,54 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Library'**
   String get setLibrary;
+
+  /// No description provided for @setUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get setUpdates;
+
+  /// No description provided for @setAutoUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates by itself'**
+  String get setAutoUpdate;
+
+  /// No description provided for @setAutoUpdateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Every few hours, quietly, and downloads on Wi-Fi. Installing still asks you.'**
+  String get setAutoUpdateSub;
+
+  /// No description provided for @setUpdateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Update to {version} is ready'**
+  String setUpdateReady(Object version);
+
+  /// No description provided for @setUpdateReadySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloaded — tap to install'**
+  String get setUpdateReadySub;
+
+  /// No description provided for @setCheckNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Check now'**
+  String get setCheckNow;
+
+  /// No description provided for @setUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'TuneBox is up to date'**
+  String get setUpToDate;
+
+  /// No description provided for @setChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for a newer version…'**
+  String get setChecking;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

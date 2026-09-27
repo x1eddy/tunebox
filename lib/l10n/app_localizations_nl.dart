@@ -916,4 +916,31 @@ class LNl extends L {
 
   @override
   String get setLibrary => 'Bibliotheek';
+
+  @override
+  String get setUpdates => 'Updates';
+
+  @override
+  String get setAutoUpdate => 'Zelf naar updates zoeken';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Om de paar uur, stilletjes, en downloadt op wifi. Installeren vraagt het je nog steeds.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'Update naar $version staat klaar';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Gedownload — tik om te installeren';
+
+  @override
+  String get setCheckNow => 'Nu zoeken';
+
+  @override
+  String get setUpToDate => 'TuneBox is up-to-date';
+
+  @override
+  String get setChecking => 'Zoeken naar een nieuwere versie…';
 }

@@ -921,4 +921,31 @@ class LFr extends L {
 
   @override
   String get setLibrary => 'Bibliothèque';
+
+  @override
+  String get setUpdates => 'Mises à jour';
+
+  @override
+  String get setAutoUpdate => 'Chercher les mises à jour tout seul';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Toutes les quelques heures, discrètement, et télécharge en Wi-Fi. L\'installation te demande toujours.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'La mise à jour vers $version est prête';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Téléchargée — appuie pour installer';
+
+  @override
+  String get setCheckNow => 'Chercher maintenant';
+
+  @override
+  String get setUpToDate => 'TuneBox est à jour';
+
+  @override
+  String get setChecking => 'Recherche d\'une version plus récente…';
 }

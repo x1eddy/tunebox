@@ -17,6 +17,7 @@ import '../data/services/innertube.dart';
 import '../data/services/backup_service.dart';
 import '../data/services/download_service.dart';
 import '../data/services/import_service.dart';
+import '../data/services/update_service.dart';
 import '../data/services/yt_service.dart';
 import '../playback/audio_handler.dart';
 import '../playback/stream_proxy.dart';
@@ -42,6 +43,39 @@ final downloadServiceProvider = Provider<DownloadService>((ref) {
   );
   ref.onDispose(service.dispose);
   return service;
+});
+
+final updateServiceProvider = Provider<UpdateService>((ref) {
+  final service = UpdateService(ref.watch(prefsProvider));
+  ref.onDispose(service.dispose);
+  return service;
+});
+
+/// The update sitting downloaded and ready, or null. Nothing in the UI reacts
+/// to this except one row in Settings.
+final pendingUpdateProvider = StreamProvider<Update?>(
+  (ref) => ref.watch(updateServiceProvider).available,
+);
+
+/// Checks for a new version every three hours while the app is running, and
+/// once shortly after launch. Says nothing unless something is found.
+final updateTickerProvider = Provider<void>((ref) {
+  Future<void> run() async {
+    final settings = ref.read(settingsProvider);
+    if (!settings.autoUpdate) return;
+    final service = ref.read(updateServiceProvider);
+    if (service.checkedRecently) return;
+    // The check is a couple of kilobytes and happens anywhere; the download is
+    // 30 MB, so it waits for Wi-Fi unless the user turned the data saver off.
+    final onWifi = await ref.read(downloadServiceProvider).onWifi();
+    await service.checkAndFetch(
+      mayDownload: onWifi || !settings.dataSaverOffWifi,
+    );
+  }
+
+  final timer = Timer.periodic(UpdateService.interval, (_) => unawaited(run()));
+  ref.onDispose(timer.cancel);
+  unawaited(Future<void>.delayed(const Duration(seconds: 25), run));
 });
 
 final backupServiceProvider = Provider<BackupService>(
@@ -520,6 +554,7 @@ final startupProvider = FutureProvider<void>((ref) async {
   // Release years are only worth a background trickle — they are cosmetic
   // until the AI uses the decade, and they cost one request each.
   await step('release years', () => ref.read(aiProvider).backfillYears());
+  ref.read(updateTickerProvider);
 });
 
 /// Clears album fields that are really play counts.

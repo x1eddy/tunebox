@@ -920,4 +920,31 @@ class LDe extends L {
 
   @override
   String get setLibrary => 'Bibliothek';
+
+  @override
+  String get setUpdates => 'Updates';
+
+  @override
+  String get setAutoUpdate => 'Selbst nach Updates suchen';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Alle paar Stunden, im Stillen, und lädt im WLAN herunter. Das Installieren fragt weiterhin nach.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'Update auf $version ist bereit';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Heruntergeladen – zum Installieren tippen';
+
+  @override
+  String get setCheckNow => 'Jetzt suchen';
+
+  @override
+  String get setUpToDate => 'TuneBox ist aktuell';
+
+  @override
+  String get setChecking => 'Suche nach einer neueren Version…';
 }

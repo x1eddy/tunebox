@@ -919,4 +919,31 @@ class LEs extends L {
 
   @override
   String get setLibrary => 'Biblioteca';
+
+  @override
+  String get setUpdates => 'Actualizaciones';
+
+  @override
+  String get setAutoUpdate => 'Buscar actualizaciones por su cuenta';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Cada pocas horas, en silencio, y descarga con Wi-Fi. Instalar sigue preguntándote.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'La actualización a $version está lista';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Descargada: toca para instalar';
+
+  @override
+  String get setCheckNow => 'Buscar ahora';
+
+  @override
+  String get setUpToDate => 'TuneBox está al día';
+
+  @override
+  String get setChecking => 'Buscando una versión más nueva…';
 }

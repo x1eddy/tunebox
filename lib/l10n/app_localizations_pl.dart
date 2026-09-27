@@ -926,4 +926,31 @@ class LPl extends L {
 
   @override
   String get setLibrary => 'Biblioteka';
+
+  @override
+  String get setUpdates => 'Aktualizacje';
+
+  @override
+  String get setAutoUpdate => 'Sam szukaj aktualizacji';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Co kilka godzin, po cichu, i pobiera przez Wi-Fi. Instalacja nadal cię pyta.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'Aktualizacja do $version jest gotowa';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Pobrana — dotknij, aby zainstalować';
+
+  @override
+  String get setCheckNow => 'Szukaj teraz';
+
+  @override
+  String get setUpToDate => 'TuneBox jest aktualny';
+
+  @override
+  String get setChecking => 'Szukam nowszej wersji…';
 }

@@ -912,4 +912,31 @@ class LEn extends L {
 
   @override
   String get setLibrary => 'Library';
+
+  @override
+  String get setUpdates => 'Updates';
+
+  @override
+  String get setAutoUpdate => 'Check for updates by itself';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Every few hours, quietly, and downloads on Wi-Fi. Installing still asks you.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'Update to $version is ready';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Downloaded — tap to install';
+
+  @override
+  String get setCheckNow => 'Check now';
+
+  @override
+  String get setUpToDate => 'TuneBox is up to date';
+
+  @override
+  String get setChecking => 'Looking for a newer version…';
 }

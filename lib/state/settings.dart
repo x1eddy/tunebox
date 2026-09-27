@@ -89,6 +89,7 @@ class Settings {
     this.dataSaverOffWifi = true,
     this.haptics = true,
     this.showReasons = true,
+    this.autoUpdate = true,
   });
 
   final ThemeMode themeMode;
@@ -156,6 +157,10 @@ class Settings {
   /// Show "because you played X" under recommendations.
   final bool showReasons;
 
+  /// Look for a newer TuneBox every few hours, quietly, and fetch it on
+  /// Wi-Fi. Installing still needs a tap — Android always asks.
+  final bool autoUpdate;
+
   String get qualityLabel => switch (audioQualityKbps) {
     64 => 'Low · 64 kbps',
     128 => 'Normal · 128 kbps',
@@ -196,6 +201,7 @@ class Settings {
     bool? dataSaverOffWifi,
     bool? haptics,
     bool? showReasons,
+    bool? autoUpdate,
   }) => Settings(
     themeMode: themeMode ?? this.themeMode,
     pureBlack: pureBlack ?? this.pureBlack,
@@ -229,6 +235,7 @@ class Settings {
     dataSaverOffWifi: dataSaverOffWifi ?? this.dataSaverOffWifi,
     haptics: haptics ?? this.haptics,
     showReasons: showReasons ?? this.showReasons,
+    autoUpdate: autoUpdate ?? this.autoUpdate,
   );
 
   static Settings load(SharedPreferences p) => Settings(
@@ -265,6 +272,7 @@ class Settings {
     dataSaverOffWifi: p.getBool('dataSaverOffWifi') ?? true,
     haptics: p.getBool('haptics') ?? true,
     showReasons: p.getBool('showReasons') ?? true,
+    autoUpdate: p.getBool('autoUpdate') ?? true,
   );
 
   Future<void> save(SharedPreferences p) async {
@@ -300,6 +308,7 @@ class Settings {
     await p.setBool('dataSaverOffWifi', dataSaverOffWifi);
     await p.setBool('haptics', haptics);
     await p.setBool('showReasons', showReasons);
+    await p.setBool('autoUpdate', autoUpdate);
   }
 }
 

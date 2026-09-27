@@ -911,4 +911,31 @@ class LPt extends L {
 
   @override
   String get setLibrary => 'Biblioteca';
+
+  @override
+  String get setUpdates => 'Atualizações';
+
+  @override
+  String get setAutoUpdate => 'Procurar atualizações sozinho';
+
+  @override
+  String get setAutoUpdateSub =>
+      'De poucas em poucas horas, em silêncio, e transfere em Wi-Fi. Instalar continua a pedir-te.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'A atualização para $version está pronta';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Transferida — toca para instalar';
+
+  @override
+  String get setCheckNow => 'Procurar agora';
+
+  @override
+  String get setUpToDate => 'O TuneBox está atualizado';
+
+  @override
+  String get setChecking => 'À procura de uma versão mais recente…';
 }

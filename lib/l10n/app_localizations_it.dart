@@ -917,4 +917,31 @@ class LIt extends L {
 
   @override
   String get setLibrary => 'Libreria';
+
+  @override
+  String get setUpdates => 'Aggiornamenti';
+
+  @override
+  String get setAutoUpdate => 'Cerca aggiornamenti da solo';
+
+  @override
+  String get setAutoUpdateSub =>
+      'Ogni poche ore, in silenzio, e scarica sotto Wi-Fi. L\'installazione te lo chiede comunque.';
+
+  @override
+  String setUpdateReady(Object version) {
+    return 'L\'aggiornamento a $version è pronto';
+  }
+
+  @override
+  String get setUpdateReadySub => 'Scaricato — tocca per installare';
+
+  @override
+  String get setCheckNow => 'Cerca ora';
+
+  @override
+  String get setUpToDate => 'TuneBox è aggiornato';
+
+  @override
+  String get setChecking => 'Cerco una versione più recente…';
 }

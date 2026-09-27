@@ -6,6 +6,7 @@ import 'package:tunebox/ai/ai_engine.dart';
 import 'package:tunebox/data/db/database.dart';
 import 'package:tunebox/data/services/import_service.dart';
 import 'package:tunebox/data/services/innertube.dart';
+import 'package:tunebox/data/services/update_service.dart';
 import 'package:tunebox/data/services/artwork_service.dart';
 import 'package:tunebox/data/services/backup_service.dart';
 import 'package:tunebox/data/services/download_service.dart';
@@ -362,6 +363,20 @@ void main() {
       expect(VideoItem.isDuration('3:45'), isTrue);
       expect(VideoItem.isDuration('1:02:11'), isTrue);
       expect(VideoItem.isDuration('2001'), isFalse);
+    });
+  });
+
+  group('updates', () {
+    test('only a genuinely later version counts', () {
+      expect(isNewer('0.4.1', '0.4.0'), isTrue);
+      expect(isNewer('0.5.0', '0.4.9'), isTrue);
+      expect(isNewer('1.0.0', '0.9.9'), isTrue);
+      // A string comparison gets this one wrong.
+      expect(isNewer('0.10.0', '0.9.0'), isTrue);
+      expect(isNewer('0.4.0', '0.4.0'), isFalse);
+      expect(isNewer('0.3.9', '0.4.0'), isFalse);
+      expect(isNewer('0.4', '0.4.1'), isFalse);
+      expect(isNewer('nonsense', '0.4.0'), isFalse);
     });
   });
 

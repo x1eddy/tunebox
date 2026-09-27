@@ -261,5 +261,13 @@
   "setAiInstall": "Die KI darf Musik selbst installieren",
   "setSkipSilenceSub": "Nur Android",
   "setStorageUsed": "Von Downloads belegter Speicher",
-  "setLibrary": "Bibliothek"
+  "setLibrary": "Bibliothek",
+  "setUpdates": "Updates",
+  "setAutoUpdate": "Selbst nach Updates suchen",
+  "setAutoUpdateSub": "Alle paar Stunden, im Stillen, und lädt im WLAN herunter. Das Installieren fragt weiterhin nach.",
+  "setUpdateReady": "Update auf {version} ist bereit",
+  "setUpdateReadySub": "Heruntergeladen – zum Installieren tippen",
+  "setCheckNow": "Jetzt suchen",
+  "setUpToDate": "TuneBox ist aktuell",
+  "setChecking": "Suche nach einer neueren Version…"
 }

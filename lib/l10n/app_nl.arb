@@ -261,5 +261,13 @@
   "setAiInstall": "De AI mag zelf muziek installeren",
   "setSkipSilenceSub": "Alleen Android",
   "setStorageUsed": "Ruimte in gebruik door downloads",
-  "setLibrary": "Bibliotheek"
+  "setLibrary": "Bibliotheek",
+  "setUpdates": "Updates",
+  "setAutoUpdate": "Zelf naar updates zoeken",
+  "setAutoUpdateSub": "Om de paar uur, stilletjes, en downloadt op wifi. Installeren vraagt het je nog steeds.",
+  "setUpdateReady": "Update naar {version} staat klaar",
+  "setUpdateReadySub": "Gedownload — tik om te installeren",
+  "setCheckNow": "Nu zoeken",
+  "setUpToDate": "TuneBox is up-to-date",
+  "setChecking": "Zoeken naar een nieuwere versie…"
 }
