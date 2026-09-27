@@ -35,10 +35,12 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      # A smoke test that the Android build still compiles. The APK that ships
+      # is built locally, where the release signing key lives.
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
-          name: TuneBox-android
+          name: TuneBox-android-unsigned-test-build
           path: build/app/outputs/flutter-apk/app-release.apk
 
   ios:
@@ -70,21 +72,25 @@ jobs:
           path: TuneBox-unsigned.ipa
 
   release:
-    name: attach builds to the release
+    name: attach the iOS build to the release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [android, ios]
+    needs: [ios]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/download-artifact@v4
         with:
+          name: TuneBox-ios-unsigned
           path: artifacts
+      # Only the iOS build is attached here. The Android and Linux builds are
+      # uploaded from the machine that holds the release signing key — an APK
+      # signed by CI would carry the debug certificate, which is exactly what
+      # makes Play Protect treat a sideloaded app as suspect.
       - run: |
           v="${GITHUB_REF_NAME#v}"
-          mv artifacts/TuneBox-android/app-release.apk "TuneBox-$v.apk"
-          mv artifacts/TuneBox-ios-unsigned/TuneBox-unsigned.ipa "TuneBox-$v-unsigned.ipa"
-          gh release upload "$GITHUB_REF_NAME" "TuneBox-$v.apk" "TuneBox-$v-unsigned.ipa" --clobber
+          mv artifacts/TuneBox-unsigned.ipa "TuneBox-$v-unsigned.ipa"
+          gh release upload "$GITHUB_REF_NAME" "TuneBox-$v-unsigned.ipa" --clobber
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

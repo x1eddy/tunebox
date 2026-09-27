@@ -45,12 +45,31 @@ no server, no telemetry.
 
 ### Android (7.0 or newer)
 
-Grab `TuneBox-<version>.apk` from
-[Releases](../../releases) and open it on the phone. Android will warn that it
-is not from the Play Store, because it is not — allow "install unknown apps"
-for whatever you opened it with.
+Grab `TuneBox-<version>.apk` from [Releases](../../releases) and open it on the
+phone. Android asks once for permission to install from whatever app you opened
+it with — that prompt is how sideloading works and it never goes away.
 
-The APK is universal (arm64, arm32, x86_64).
+The APK is universal (arm64, arm32, x86_64) and is signed with a real release
+key, not the debug key that Android build tools hand out by default:
+
+```
+CN=x1eddy, OU=TuneBox, O=TuneBox
+SHA-256  B7:DD:73:CD:77:8A:3A:38:1B:9E:2E:09:21:02:AE:AD:7E:0D:2B:FD:10:A1:9E:21:D4:CF:82:4A:36:5B:85:44
+```
+
+Check it yourself before installing anything anyone sends you:
+
+```bash
+apksigner verify --print-certs TuneBox-<version>.apk
+```
+
+If Play Protect still shows a warning, it is saying "I have not seen this app
+before", not "this app is malicious" — no sideloaded app has a Play Store
+reputation. The permission list is the honest place to look, and it is short:
+internet, network state, wake lock, a media-playback foreground service,
+notifications, and read access to audio files (only if you import your own
+music). No contacts, no location, no camera, no SMS, no ability to install
+other apps.
 
 ### iPhone (iOS 15+)
 
@@ -66,9 +85,14 @@ On a free Apple ID the app stops opening after **7 days** until it is
 re-signed; AltStore/SideStore do that for you automatically. A paid Apple
 Developer account raises that to a year.
 
-The first launch shows *"Untrusted Developer"* — that is iOS telling you the
-app was signed by you rather than by Apple. Settings → General → VPN & Device
+The first launch shows *"Untrusted Developer"* — that is iOS saying the app
+was signed by *you* rather than by Apple, which is the only way to install an
+app that is not on the App Store. Settings → General → VPN & Device
 Management → your Apple ID → Trust.
+
+The app asks iOS for nothing beyond background audio: no photos, no contacts,
+no location, no microphone, no tracking. `ITSAppUsesNonExemptEncryption` is
+false because it ships no cryptography of its own.
 
 ### Linux (x86_64)
 
@@ -119,8 +143,11 @@ lib/
   features/                      home, search, library, player, taste, settings
 ```
 
-Every push builds and tests the app, and tags produce the Android and iOS
-artifacts — see [.github/workflows/build.yml](.github/workflows/build.yml).
+Every push runs the tests and builds all three platforms; tags attach the iOS
+build to the release. See
+[.github/workflows/build.yml](.github/workflows/build.yml). The Android and
+Linux release builds are made locally, because the signing key never leaves
+that machine.
 
 Two things worth knowing if you read the code:
 
