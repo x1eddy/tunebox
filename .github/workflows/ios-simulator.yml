@@ -71,7 +71,8 @@ jobs:
           drive 1 "go:/explore|wait:2000"       ; shot 02-explore
           drive 2 "go:/library|wait:2000"       ; shot 03-library
           drive 3 "go:/taste|wait:3000"         ; shot 04-taste
-          drive 4 "push:/settings|wait:2000"    ; shot 05-settings
+          # Settings lives under whichever tab is open, so it is /taste/settings
+          drive 4 "push:/taste/settings|wait:2000" ; shot 05-settings
           drive 5 "scroll:900|wait:1000"        ; shot 06-settings-more
           drive 6 "pop|go:/home|wait:3000|scroll:600" ; shot 07-home-scrolled
           ls -la shots
