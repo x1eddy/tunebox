@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -518,10 +520,11 @@ class WideCard extends ConsumerWidget {
 void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
   final music = ref.read(musicProvider);
   final messenger = ScaffoldMessenger.of(context);
+  final wasLiked = song.liked;
   music.dislike(song);
   messenger
     ..hideCurrentSnackBar()
-    ..showSnackBar(
+    ..showTimed(
       SnackBar(
         content: Text(
           'Blocked "${song.title}" — the AI will avoid it',
@@ -530,7 +533,7 @@ void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
         ),
         action: SnackBarAction(
           label: 'Undo',
-          onPressed: () => music.unblock(song),
+          onPressed: () => music.unblock(song, restoreLike: wasLiked),
         ),
       ),
     );
@@ -787,5 +790,22 @@ class EmptyState extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Every message in the app goes away on its own after ten seconds. Flutter
+/// keeps a snackbar that has an action (or runs under TalkBack) on screen
+/// until it is swiped, so the timer is ours rather than the framework's.
+extension TimedSnackBars on ScaffoldMessengerState {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showTimed(
+    SnackBar bar,
+  ) {
+    final controller = showSnackBar(bar);
+    Timer(const Duration(seconds: 10), () {
+      try {
+        controller.close();
+      } catch (_) {}
+    });
+    return controller;
   }
 }

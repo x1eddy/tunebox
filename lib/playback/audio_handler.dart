@@ -34,7 +34,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     });
   }
 
-  final AppDatabase _db;
+  AppDatabase _db;
   final StreamProxy _proxy;
   final AudioPlayer _player = AudioPlayer();
 
@@ -66,6 +66,15 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   int _loadToken = 0;
   Duration _playedBefore = Duration.zero;
   int _consecutiveFailures = 0;
+
+  /// Points the player at another profile's database. The queue belongs to
+  /// the profile that built it, so it is emptied.
+  void useDatabase(AppDatabase db) {
+    _db = db;
+    _queue.clear();
+    _index = 0;
+    _queueChanges.add(queueSongs);
+  }
 
   AudioPlayer get player => _player;
   List<Song> get queueSongs => List.unmodifiable(_queue);

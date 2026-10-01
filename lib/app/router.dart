@@ -27,7 +27,6 @@ List<RouteBase> _details() => [
     builder: (_, s) =>
         ArtistPage(name: Uri.decodeComponent(s.pathParameters['name']!)),
   ),
-  GoRoute(path: 'settings', builder: (_, _) => const SettingsPage()),
   GoRoute(path: 'import', builder: (_, _) => const ImportPage()),
   GoRoute(path: 'queue', builder: (_, _) => const QueuePage()),
 ];
@@ -83,6 +82,15 @@ final router = GoRouter(
             GoRoute(
               path: '/taste',
               builder: (_, _) => const TastePage(),
+              routes: _details(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (_, _) => const SettingsPage(),
               routes: _details(),
             ),
           ],

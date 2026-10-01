@@ -75,6 +75,17 @@ class DownloadService {
     return dir;
   }
 
+  /// An app that was closed mid-download leaves its half-written `.part`
+  /// file behind; nothing will ever finish it, so reclaim the space.
+  Future<void> clearStaleParts() async {
+    if (_working) return;
+    try {
+      for (final f in (await _audioDir()).listSync()) {
+        if (f is File && f.path.endsWith('.part')) await f.delete();
+      }
+    } catch (_) {}
+  }
+
   Future<bool> onWifi() async {
     final result = await Connectivity().checkConnectivity();
     return result.contains(ConnectivityResult.wifi) ||
@@ -86,14 +97,19 @@ class DownloadService {
     Song song, {
     bool auto = false,
     int maxBitrateKbps = 0,
+    bool replace = false,
   }) async {
     if (song.source == SongSource.imported) return;
+    // The caller's copy of the song can be stale (an auto-download may have
+    // just finished it), and writing over a file that is playing is exactly
+    // what makes music skip. Trust the database, not the argument.
+    song = await _db.songById(song.id) ?? song;
     final existing = song.filePath;
     if (existing != null) {
       final file = File(existing);
       // A stub left by a failed attempt must not block a retry.
-      if (file.existsSync() && file.lengthSync() > 0) return;
-      if (file.existsSync()) await file.delete();
+      if (!replace && file.existsSync() && file.lengthSync() > 0) return;
+      if (!replace && file.existsSync()) await file.delete();
     }
     if (_queue.containsKey(song.id)) return;
 
@@ -136,7 +152,10 @@ class DownloadService {
       );
       final dir = await _audioDir();
       final file = File('${dir.path}/${task.songId}.${info.extension}');
-      final sink = file.openWrite();
+      // Written beside the real name and renamed when complete, so a player
+      // never opens half a file and a failed attempt never looks downloaded.
+      final part = File('${file.path}.part');
+      final sink = part.openWrite();
       final total = info.contentLength;
       var received = 0;
 
@@ -154,6 +173,15 @@ class DownloadService {
       }
       await sink.flush();
       await sink.close();
+      if (total > 0 && received != total) {
+        throw StateError('download cut short ($received of $total bytes)');
+      }
+      final old = song.filePath;
+      await part.rename(file.path);
+      if (old != null && old != file.path && File(old).existsSync()) {
+        // a re-download into another format: the old copy is now redundant
+        await File(old).delete();
+      }
 
       final art = await _artwork.cacheRemote(song.id, song.artworkUrl);
       await _db.markDownloaded(song.id, file.path, received);
@@ -180,14 +208,16 @@ class DownloadService {
         final dir = await _audioDir();
         for (final f in dir.listSync()) {
           if (f is File && f.uri.pathSegments.last.startsWith(task.songId)) {
-            if (f.lengthSync() == 0) await f.delete();
+            if (f.path.endsWith('.part') || f.lengthSync() == 0) {
+              await f.delete();
+            }
           }
         }
       } catch (_) {}
       _queue[task.songId] = (_queue[task.songId] ?? task)
           .copyWith(stage: DownloadStage.failed, error: '$e');
       _emit();
-      Timer(const Duration(seconds: 8), () {
+      Timer(const Duration(seconds: 10), () {
         _queue.remove(task.songId);
         _emit();
       });

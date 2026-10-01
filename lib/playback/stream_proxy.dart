@@ -135,30 +135,45 @@ class StreamProxy {
       }
 
       // Walk the requested range, stitching upstream pieces into one
-      // continuous body for the player.
+      // continuous body for the player. A connection that dies or stalls
+      // part-way is resumed from the exact byte already delivered — handing
+      // the player a gap or a repeat is what sounds like skipping or a speed
+      // change.
       var position = start;
-      var refreshed = false;
-      while (position <= end) {
+      var failures = 0;
+      var clientGone = false;
+      unawaited(request.response.done.then((_) {}, onError: (_) {
+        clientGone = true;
+      }));
+      while (position <= end && !clientGone) {
         final stop = min(position + _chunkSize - 1, end);
-        final response = await _range(format, position, stop);
-        if ((response.statusCode == 403 || response.statusCode == 410) &&
-            !refreshed) {
-          refreshed = true;
-          format = await resolve(id, force: true);
+        var received = 0;
+        try {
+          final response = await _range(format, position, stop)
+              .timeout(_stallLimit);
+          if (response.statusCode == 403 || response.statusCode == 410) {
+            throw const _Expired();
+          }
+          if (response.statusCode >= 400) {
+            throw InnerTubeException('upstream ${response.statusCode}');
+          }
+          // addStream honours the player's backpressure; a plain add() loop
+          // buffers the whole 8 MB chunk in memory while the player sips at it.
+          await request.response.addStream(
+            response.stream.timeout(_stallLimit).map((bytes) {
+              received += bytes.length;
+              return bytes;
+            }),
+          );
+        } catch (e) {
+          position += received;
+          if (clientGone) break;
+          if (++failures > 4) rethrow;
+          if (e is _Expired || failures > 1) {
+            format = await resolve(id, force: true);
+          }
           continue;
         }
-        if (response.statusCode >= 400) {
-          throw InnerTubeException('upstream ${response.statusCode}');
-        }
-        // addStream honours the player's backpressure; a plain add() loop
-        // buffers the whole 8 MB chunk in memory while the player sips at it.
-        var received = 0;
-        await request.response.addStream(
-          response.stream.map((bytes) {
-            received += bytes.length;
-            return bytes;
-          }),
-        );
         if (received == 0) break;
         position += received;
       }
@@ -182,6 +197,9 @@ class StreamProxy {
   /// capping chunk sizes again.
   static const _chunkSize = 8 * 1024 * 1024;
 
+  /// An upstream that sends nothing for this long is treated as dropped.
+  static const _stallLimit = Duration(seconds: 12);
+
   Future<http.StreamedResponse> _range(
     AudioFormat format,
     int start,
@@ -204,6 +222,10 @@ class StreamProxy {
     final end = parts.length > 1 ? int.tryParse(parts[1]) : null;
     return (start.clamp(0, last), (end ?? last).clamp(start, last));
   }
+}
+
+class _Expired implements Exception {
+  const _Expired();
 }
 
 class _Resolved {

@@ -104,6 +104,9 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'tunebox'));
 
+  /// One database file per profile.
+  AppDatabase.named(String name) : super(driftDatabase(name: name));
+
   @override
   int get schemaVersion => 1;
 
@@ -309,6 +312,17 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<List<Affinity>> allAffinities() => select(affinities).get();
+
+  /// Writes one weight outright (a merge decides the value, not the table).
+  Future<void> setAffinity(String key, double weight) =>
+      into(affinities).insertOnConflictUpdate(
+        AffinitiesCompanion.insert(
+          key: key,
+          weight: Value(weight.clamp(-6.0, 6.0)),
+          hits: const Value(1),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
 
   Future<void> bumpAffinity(String key, double delta) async {
     final existing = await (select(affinities)..where((a) => a.key.equals(key)))

@@ -80,10 +80,6 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                 _grid ? Icons.view_list_rounded : Icons.grid_view_rounded,
               ),
             ),
-            IconButton(
-              onPressed: () => pushDetail(context, 'settings'),
-              icon: const Icon(Icons.settings_outlined),
-            ),
             const SizedBox(width: 4),
           ],
           bottom: TabBar(

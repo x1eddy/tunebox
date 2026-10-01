@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:drift/drift.dart' show Value;
@@ -11,6 +12,8 @@ import '../data/services/download_service.dart';
 import '../data/services/yt_service.dart';
 import '../playback/audio_handler.dart';
 import '../state/settings.dart';
+import '../state/profiles.dart';
+import 'credit.dart';
 import '../data/services/song_filter.dart';
 
 export '../data/services/song_filter.dart' show looksLikeASong;
@@ -269,14 +272,14 @@ class AiEngine {
     Settings s,
     Map<String, int> artistRules,
   ) {
-    final rule = artistRules[song.artist.toLowerCase()] ?? 0;
+    final rule = artistRules[artistKey(song)] ?? 0;
     if (rule < 0 || song.blocked) return double.negativeInfinity;
 
     var score = 0.0;
     for (final tag in tagsOf(song)) {
       score += (w['tag:$tag'] ?? 0) * 1.0;
     }
-    score += (w['artist:${song.artist.toLowerCase()}'] ?? 0) * 1.7;
+    score += (w['artist:${artistKey(song)}'] ?? 0) * 1.7;
     if (song.year != null) {
       score += (w['decade:${song.year! ~/ 10 * 10}'] ?? 0) * 0.6;
     }
@@ -334,7 +337,7 @@ class AiEngine {
     }
     final w = _quickWeights;
     if (w == null) return 0;
-    var score = (w['artist:${song.artist.toLowerCase()}'] ?? 0) * 1.7;
+    var score = (w['artist:${artistKey(song)}'] ?? 0) * 1.7;
     for (final tag in tagsOf(song)) {
       score += w['tag:$tag'] ?? 0;
     }
@@ -367,7 +370,7 @@ class AiEngine {
     // Anything you blocked, or by an artist you banned, is out of every shelf
     // — not merely ranked last.
     final library = (await _db.library())
-        .where((s) => !s.blocked && rules[s.artist.toLowerCase()] != -1)
+        .where((s) => !s.blocked && rules[artistKey(s)] != -1)
         // Hour-long mixes and "full soundtrack" rips that made it into the
         // library before the filter existed stay there — they are the user's
         // — but the AI stops handing them back as recommendations.
@@ -406,7 +409,7 @@ class AiEngine {
       final byArtist = <String, int>{};
       for (final song in pool) {
         if (used.contains(song.id)) continue;
-        final artist = song.artist.toLowerCase();
+        final artist = artistKey(song);
         if ((byArtist[artist] ?? 0) >= perArtist) continue;
         byArtist[artist] = (byArtist[artist] ?? 0) + 1;
         used.add(song.id);
@@ -493,7 +496,7 @@ class AiEngine {
     final topArtist = _topArtist(library, w);
     if (topArtist != null && settings.useYouTubeSignals) {
       final seedSong = library.firstWhere(
-        (s) => s.artist == topArtist,
+        (s) => creditedArtist(s) == topArtist,
         orElse: () => library.first,
       );
       final related = await _relatedFor(seedSong, library);
@@ -598,7 +601,7 @@ class AiEngine {
   }
 
   PickReason _newReason(Song s, Map<String, double> w, DateTime now) {
-    final artistWeight = w['artist:${s.artist.toLowerCase()}'] ?? 0;
+    final artistWeight = w['artist:${artistKey(s)}'] ?? 0;
     final tag = tagsOf(s).firstWhere(
       (t) => (w['tag:$t'] ?? 0) > 0.3,
       orElse: () => '',
@@ -609,7 +612,7 @@ class AiEngine {
     if (artistWeight > 0.4) {
       return PickReason(
         _random.nextBool() ? ReasonKind.more : ReasonKind.comeBack,
-        text: s.artist,
+        text: creditedArtist(s),
       );
     }
     if (tag.isNotEmpty) {
@@ -630,10 +633,11 @@ class AiEngine {
   String? _topArtist(List<Song> library, Map<String, double> w) {
     final counts = <String, double>{};
     for (final s in library) {
-      if (s.artist.isEmpty) continue;
-      counts[s.artist] = (counts[s.artist] ?? 0) +
+      final who = creditedArtist(s);
+      if (who.isEmpty) continue;
+      counts[who] = (counts[who] ?? 0) +
           s.playCount +
-          (w['artist:${s.artist.toLowerCase()}'] ?? 0);
+          (w['artist:${artistKey(s)}'] ?? 0);
     }
     if (counts.isEmpty) return null;
     final best = counts.entries.reduce((a, b) => a.value >= b.value ? a : b);
@@ -662,7 +666,8 @@ class AiEngine {
     ];
     if (seeds.isEmpty && library.isNotEmpty) {
       final s = library[_random.nextInt(library.length)];
-      seeds.add('${s.artist} similar songs');
+      final who = creditedArtist(s);
+      if (who.isNotEmpty) seeds.add('$who similar songs');
     }
     return seeds;
   }
@@ -678,7 +683,8 @@ class AiEngine {
 
   Future<List<Song>> _relatedFor(Song seed, List<Song> library) async {
     if (seed.id.startsWith('local:')) {
-      return _candidates(['${seed.artist} similar'], library);
+      final who = creditedArtist(seed);
+      return who.isEmpty ? const [] : _candidates(['$who similar'], library);
     }
     final found = await _yt.related(seed.id);
     return _persistCandidates(found, exclude: library);
@@ -805,6 +811,42 @@ class AiEngine {
     return chosen == 0 || chosen > 128 ? 128 : chosen;
   }
 
+  /// Catches up on downloads that should exist but do not: a like made on
+  /// mobile data with Wi-Fi-only on, a download that failed, or a song hearted
+  /// while another download was running. Also swaps old Opus/WebM files for
+  /// AAC, which is what stopped the stutter on the phone.
+  Future<int> syncDownloads(Settings settings) async {
+    await _downloads.clearStaleParts();
+    final onWifi = await _downloads.onWifi();
+    if (settings.wifiOnlyDownloads && !onWifi) return 0;
+    var queued = 0;
+    // Shortest first: a one-hour mix must not hold up forty ordinary songs.
+    final all = [...await _db.allSongs()]
+      ..sort((a, b) => a.durationMs.compareTo(b.durationMs));
+    for (final song in all) {
+      if (song.source == SongSource.imported || song.blocked) continue;
+      final path = song.filePath;
+      final has =
+          path != null && File(path).existsSync() && File(path).lengthSync() > 0;
+      final wantsFile = settings.downloadLikes && song.liked;
+      if (!has && wantsFile) {
+        await _downloads.enqueue(
+          song,
+          maxBitrateKbps: _qualityFor(settings, onWifi),
+        );
+        queued++;
+      } else if (has && path.endsWith('.webm')) {
+        await _downloads.enqueue(
+          song,
+          replace: true,
+          maxBitrateKbps: _qualityFor(settings, onWifi),
+        );
+        queued++;
+      }
+    }
+    return queued;
+  }
+
   /// "Let the AI install things it thinks I like."
   /// Runs at most once a day's worth of downloads, inside a storage budget.
   Future<int> runAutoDownloads(Settings settings) async {
@@ -812,8 +854,8 @@ class AiEngine {
     if (settings.wifiOnlyDownloads && !await _downloads.onWifi()) return 0;
 
     final today = DateTime.now().toIso8601String().substring(0, 10);
-    final stamp = _prefs.getString('autoDlDay');
-    var used = stamp == today ? (_prefs.getInt('autoDlCount') ?? 0) : 0;
+    final stamp = _prefs.getString(profileKey('autoDlDay'));
+    var used = stamp == today ? (_prefs.getInt(profileKey('autoDlCount')) ?? 0) : 0;
     final budget = settings.aiDailyDownloads - used;
     if (budget <= 0) return 0;
 
@@ -827,7 +869,12 @@ class AiEngine {
     final pool = <Song>[
       ...await _candidates(seeds, const []),
       ...library.where((s) => s.source == SongSource.youtube),
-    ]..removeWhere((s) => s.source == SongSource.downloaded || s.blocked);
+    ]..removeWhere(
+        (s) =>
+            s.source == SongSource.downloaded ||
+            s.blocked ||
+            isMixOrReupload(s),
+      );
 
     final scored = pool
         .map((s) => (s, scoreSong(s, w, settings, rules)))
@@ -854,16 +901,16 @@ class AiEngine {
     }
 
     used += taken;
-    await _prefs.setString('autoDlDay', today);
-    await _prefs.setInt('autoDlCount', used);
+    await _prefs.setString(profileKey('autoDlDay'), today);
+    await _prefs.setInt(profileKey('autoDlCount'), used);
     await _downloads.enforceBudget(settings.aiStorageBudgetMb * 1024 * 1024);
     return taken;
   }
 
   Future<void> forget() async {
     await _db.clearLearning();
-    await _prefs.remove('autoDlDay');
-    await _prefs.remove('autoDlCount');
+    await _prefs.remove(profileKey('autoDlDay'));
+    await _prefs.remove(profileKey('autoDlCount'));
   }
 
   /// Fills in keywords, album and release year for a YouTube song the first
@@ -918,8 +965,9 @@ List<String> tagsOf(Song song) => [
 ];
 
 List<String> descriptorsOf(Song song) => [
-  for (final t in tagsOf(song)) 'tag:$t',
-  if (song.artist.isNotEmpty) 'artist:${song.artist.toLowerCase()}',
+  for (final t in tagsOf(song))
+    if (t != 'local file') 'tag:$t', // where a file came from says nothing about taste
+  if (artistKey(song).isNotEmpty) 'artist:${artistKey(song)}',
   if (song.year != null) 'decade:${song.year! ~/ 10 * 10}',
 ];
 

@@ -1,3 +1,4 @@
+import '../ui/common.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class AppShell extends ConsumerWidget {
       if (message == null) return;
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(message)));
+        ..showTimed(SnackBar(content: Text(message)));
     });
 
     return Scaffold(
@@ -75,6 +76,11 @@ class AppShell extends ConsumerWidget {
                   selectedIcon: const Icon(Icons.auto_awesome_rounded),
                   label: l.navTaste,
                 ),
+                NavigationDestination(
+                  icon: const Icon(Icons.settings_outlined),
+                  selectedIcon: const Icon(Icons.settings_rounded),
+                  label: l.setTitle,
+                ),
               ],
             ),
           ),
@@ -119,10 +125,11 @@ class _DownloadBar extends ConsumerWidget {
                 child: Text(
                   first.stage == DownloadStage.failed
                       ? 'Download failed: ${first.title}'
+                            '${first.error == null ? "" : " — ${first.error}"}'
                       : '${first.auto ? "AI is downloading" : "Downloading"} '
                             '${first.title}'
                             '${active.length > 1 ? " +${active.length - 1}" : ""}',
-                  maxLines: 1,
+                  maxLines: first.stage == DownloadStage.failed ? 3 : 1,
                   overflow: TextOverflow.ellipsis,
                   style: t.textTheme.labelMedium?.copyWith(
                     color: t.colorScheme.onSecondaryContainer,

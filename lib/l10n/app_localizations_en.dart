@@ -783,13 +783,14 @@ class LEn extends L {
 
   @override
   String get setExportSub =>
-      'Writes a transfer file: likes, plays and everything the AI learned';
+      'Saves a file with your likes, plays and everything the AI learned';
 
   @override
   String get setImportTaste => 'Load taste from another device';
 
   @override
-  String get setImportTasteSub => 'Merges it with what this device knows';
+  String get setImportTasteSub =>
+      'Pick a saved taste file and merge it in — safe to repeat';
 
   @override
   String get setAbout => 'About';
@@ -905,7 +906,8 @@ class LEn extends L {
   String get setAiInstall => 'Let the AI install music it picks';
 
   @override
-  String get setSkipSilenceSub => 'Android only';
+  String get setSkipSilenceSub =>
+      'Android only. Can cut quiet intros, fades and soft parts — leave off if music skips';
 
   @override
   String get setStorageUsed => 'Storage used by downloads';

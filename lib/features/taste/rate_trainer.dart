@@ -40,50 +40,88 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
     _build();
   }
 
+  /// True while cards from YouTube are still on their way. The first cards
+  /// come from the library at once; waiting for the network used to hold the
+  /// whole screen on a spinner.
+  bool _loadingMore = false;
+
   Future<void> _build() async {
     try {
-      final ai = ref.read(aiProvider);
       final db = ref.read(dbProvider);
       final settings = ref.read(settingsProvider);
-      _before = (await ai.profile()).confidence;
 
       final library = await db.library();
       final unrated = library.where((s) => !s.liked && !s.blocked).toList()
         ..shuffle();
-
       final deck = <Song>[...unrated.take(10)];
-      if (settings.useYouTubeSignals && deck.length < 20) {
-        final shelves = await ai.buildHome(settings);
-        for (final shelf in shelves) {
-          for (final pick in shelf.picks) {
-            if (deck.any((s) => s.id == pick.song.id)) continue;
-            if (pick.song.liked || pick.song.blocked) continue;
-            deck.add(pick.song);
-            if (deck.length >= 20) break;
-          }
-          if (deck.length >= 20) break;
-        }
-      }
+      final wantMore = settings.useYouTubeSignals && deck.length < 20;
+
       if (!mounted) return;
       setState(() {
         _deck = deck;
-        _loading = false;
+        _loadingMore = wantMore;
+        _loading = deck.isEmpty && wantMore;
       });
+      if (deck.isEmpty && !wantMore) {
+        setState(() => _loading = false);
+      }
+
+      // The profile is usually already warm from the Taste tab.
+      unawaited(() async {
+        final warm = ref.read(tasteProfileProvider).value;
+        _before = warm?.confidence ??
+            (await ref.read(aiProvider).profile()).confidence;
+      }());
+
+      if (wantMore) await _fetchMore(deck);
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _error = '$e';
         _loading = false;
+        _loadingMore = false;
       });
     }
+  }
+
+  Future<void> _fetchMore(List<Song> deck) async {
+    final extra = <Song>[];
+    try {
+      // Home already built these shelves; reuse them instead of asking
+      // YouTube again.
+      final shelves = await ref.read(homeShelvesProvider.future);
+      for (final shelf in shelves) {
+        for (final pick in shelf.picks) {
+          if (deck.any((s) => s.id == pick.song.id)) continue;
+          if (extra.any((s) => s.id == pick.song.id)) continue;
+          if (pick.song.liked || pick.song.blocked) continue;
+          extra.add(pick.song);
+          if (deck.length + extra.length >= 20) break;
+        }
+        if (deck.length + extra.length >= 20) break;
+      }
+    } catch (_) {
+      // the library cards are enough to train on
+    }
+    if (!mounted) return;
+    setState(() {
+      _deck = [..._deck, ...extra];
+      _loadingMore = false;
+      _loading = false;
+    });
+    if (_i >= _deck.length) unawaited(_commit());
   }
 
   void _rate(bool like) {
     // Two taps inside one frame would run past the end of the deck.
     if (_i >= _deck.length) return;
     _verdicts[_deck[_i].id] = like;
+    _next();
+  }
+
+  void _next() {
     setState(() => _i++);
-    if (_i >= _deck.length) unawaited(_commit());
+    if (_i >= _deck.length && !_loadingMore) unawaited(_commit());
   }
 
   /// Writes the whole round to the model in one go.
@@ -110,7 +148,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
 
   /// Asked before the round is abandoned. Nothing has been written yet.
   Future<bool> _confirmLeave() async {
-    if (_verdicts.isEmpty || _i >= _deck.length) return true;
+    if (_verdicts.isEmpty || (_i >= _deck.length && !_loadingMore)) return true;
     final l = L.of(context);
     final leave = await showDialog<bool>(
       context: context,
@@ -155,7 +193,8 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
       );
     }
 
-    final done = _i >= _deck.length;
+    final waiting = _i >= _deck.length && _loadingMore;
+    final done = _i >= _deck.length && !_loadingMore;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
@@ -164,11 +203,11 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
           if (context.mounted) Navigator.of(context).pop();
         }
       },
-      child: _scaffold(t, done),
+      child: _scaffold(t, done, waiting),
     );
   }
 
-  Widget _scaffold(ThemeData t, bool done) {
+  Widget _scaffold(ThemeData t, bool done, bool waiting) {
     final l = L.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -189,12 +228,14 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(3),
           child: LinearProgressIndicator(
-            value: _i / _deck.length,
+            value: _deck.isEmpty ? 0 : (_i / _deck.length).clamp(0.0, 1.0),
             minHeight: 3,
           ),
         ),
       ),
-      body: done
+      body: waiting
+          ? const Center(child: CircularProgressIndicator())
+          : done
           ? _Done(liked: _liked, blocked: _blocked, before: _before)
           : _buildDeck(t),
     );
@@ -267,7 +308,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
                 icon: Icons.skip_next_rounded,
                 color: t.colorScheme.onSurfaceVariant,
                 size: 48,
-                onTap: () => setState(() => _i++),
+                onTap: _i < _deck.length ? _next : () {},
               ),
               _RoundButton(
                 icon: Icons.favorite_rounded,

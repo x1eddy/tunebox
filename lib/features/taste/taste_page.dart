@@ -35,11 +35,11 @@ class TastePage extends ConsumerWidget {
               TextButton.icon(
                 onPressed: () async {
                   final messenger = ScaffoldMessenger.of(context);
-                  messenger.showSnackBar(
+                  messenger.showTimed(
                     SnackBar(content: Text(l.tasteRetraining)),
                   );
                   await music.retrain();
-                  messenger.showSnackBar(
+                  messenger.showTimed(
                     SnackBar(content: Text(l.tasteRetrained)),
                   );
                 },
@@ -136,7 +136,7 @@ class TastePage extends ConsumerWidget {
                     onPressed: () async {
                       final messenger = ScaffoldMessenger.of(context);
                       final n = await music.runAutoDownloads();
-                      messenger.showSnackBar(
+                      messenger.showTimed(
                         SnackBar(
                           content: Text(
                             n == 0

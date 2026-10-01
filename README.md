@@ -35,8 +35,11 @@ Built with Flutter, so one codebase runs on all three.
   "never again" overrides.
 - **Auto-download** — optionally, anything you like is saved for offline, and
   the AI can fetch tracks it is confident about, inside a storage budget you set.
-- **Moves between devices** — export your taste on one device, import it on
-  another. Play counts merge, likes are OR'd.
+- **Profiles** — each listener gets their own library, likes, playlists and
+  taste; switch from the avatar on Home or in Settings.
+- **Moves between devices** — save your taste to a file with the system's
+  "save as" dialog, pick it on another device to merge it in. Importing the
+  same file twice changes nothing.
 - **Keeps going by itself** — when the queue runs out it carries on with a
   radio built from the last song; shuffle is weighted by taste rather than
   random; the queue comes back where you left it after a restart; and off

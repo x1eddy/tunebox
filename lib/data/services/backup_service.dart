@@ -94,6 +94,12 @@ class BackupService {
     };
   }
 
+  /// The transfer file's content, for saving through the system's own
+  /// "save as" dialog.
+  Future<List<int>> exportBytes() async => utf8.encode(
+    const JsonEncoder.withIndent('  ').convert(await buildBackup()),
+  );
+
   /// Writes the transfer file and returns where it went.
   Future<File> export() async {
     final file = await transferFile();
@@ -120,6 +126,12 @@ class BackupService {
     if (backup['format'] != formatVersion) {
       throw FormatException('unsupported backup format: ${backup['format']}');
     }
+    // One transaction: thousands of single writes took minutes on a phone,
+    // and a failure half way left a half-merged library behind.
+    return _db.transaction(() => _merge(backup));
+  }
+
+  Future<BackupSummary> _merge(Map<String, dynamic> backup) async {
 
     var songsAdded = 0;
     var songsMerged = 0;
@@ -179,27 +191,41 @@ class BackupService {
       }
     }
 
+    // Weights: keep whichever device holds the stronger opinion. Adding them
+    // (as this used to) doubled everything on every import of the same file.
     var weights = 0;
+    final local = {
+      for (final a in await _db.allAffinities()) a.key: a.weight,
+    };
     for (final raw in (backup['affinities'] as List? ?? const [])) {
       final a = raw as Map<String, dynamic>;
       final key = a['key'] as String;
       final weight = (a['weight'] as num?)?.toDouble() ?? 0;
       if (weight == 0) continue;
-      // bumpAffinity adds, so a device that already knows you keeps its own
-      // opinion and gains the other one's.
-      await _db.bumpAffinity(key, weight);
-      weights++;
+      if (weight.abs() > (local[key]?.abs() ?? 0)) {
+        await _db.setAffinity(key, weight);
+        weights++;
+      }
     }
 
+    // Plays: a play already on this device (same song, same moment) is not
+    // added a second time.
     var events = 0;
+    final seen = {
+      for (final e in await _db.recentEvents(limit: 1000000))
+        '${e.songId}@${e.at.millisecondsSinceEpoch}',
+    };
     for (final raw in (backup['events'] as List? ?? const [])) {
       final e = raw as Map<String, dynamic>;
+      final at = _date(e['at']) ?? DateTime.now();
+      final key = '${e['songId']}@${at.millisecondsSinceEpoch}';
+      if (!seen.add(key)) continue;
       await _db.logEvent(
         PlayEventsCompanion.insert(
           songId: e['songId'] as String,
           playedMs: e['playedMs'] as int? ?? 0,
           durationMs: e['durationMs'] as int? ?? 0,
-          at: Value(_date(e['at']) ?? DateTime.now()),
+          at: Value(at),
           skipped: Value(e['skipped'] as bool? ?? false),
           origin: Value(e['origin'] as String? ?? 'import'),
           hour: e['hour'] as int? ?? 0,

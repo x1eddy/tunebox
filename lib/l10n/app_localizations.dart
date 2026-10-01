@@ -1450,7 +1450,7 @@ abstract class L {
   /// No description provided for @setExportSub.
   ///
   /// In en, this message translates to:
-  /// **'Writes a transfer file: likes, plays and everything the AI learned'**
+  /// **'Saves a file with your likes, plays and everything the AI learned'**
   String get setExportSub;
 
   /// No description provided for @setImportTaste.
@@ -1462,7 +1462,7 @@ abstract class L {
   /// No description provided for @setImportTasteSub.
   ///
   /// In en, this message translates to:
-  /// **'Merges it with what this device knows'**
+  /// **'Pick a saved taste file and merge it in — safe to repeat'**
   String get setImportTasteSub;
 
   /// No description provided for @setAbout.
@@ -1666,7 +1666,7 @@ abstract class L {
   /// No description provided for @setSkipSilenceSub.
   ///
   /// In en, this message translates to:
-  /// **'Android only'**
+  /// **'Android only. Can cut quiet intros, fades and soft parts — leave off if music skips'**
   String get setSkipSilenceSub;
 
   /// No description provided for @setStorageUsed.

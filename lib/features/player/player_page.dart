@@ -491,7 +491,7 @@ class _TuningSheet extends ConsumerStatefulWidget {
 }
 
 class _TuningSheetState extends ConsumerState<_TuningSheet> {
-  double _speed = 1;
+  late double _speed = ref.read(audioHandlerProvider).player.speed;
 
   @override
   Widget build(BuildContext context) {

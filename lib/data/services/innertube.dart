@@ -519,10 +519,20 @@ class PlayerResult {
   /// Highest bitrate at or below [maxKbps] (0 = best available).
   AudioFormat? best({int maxKbps = 0}) {
     if (formats.isEmpty) return null;
-    final sorted = [...formats]..sort((a, b) => b.bitrate.compareTo(a.bitrate));
+    // AAC (m4a) first: every Android and iOS decoder handles it cleanly. The
+    // Opus-in-WebM files drifted, sped up and skipped on the phone.
+    final sorted = [...formats]
+      ..sort((a, b) {
+        final aac = (b.mimeType.contains('mp4') ? 1 : 0) -
+            (a.mimeType.contains('mp4') ? 1 : 0);
+        return aac != 0 ? aac : b.bitrate.compareTo(a.bitrate);
+      });
     if (maxKbps > 0) {
       final fit = sorted.where((f) => f.bitrate <= maxKbps * 1000).toList();
       if (fit.isNotEmpty) return fit.first;
+      // nothing under the cap: the smallest AAC rather than the biggest file
+      final aac = sorted.where((f) => f.mimeType.contains('mp4')).toList();
+      if (aac.isNotEmpty) return aac.last;
     }
     return sorted.first;
   }
@@ -693,10 +703,25 @@ class VideoItem {
 
     // Second column reads "Artist • Album • 3:45", separators included.
     final runs = (column(1)?['text'] as Map?)?['runs'] as List? ?? const [];
-    final parts = [
-      for (final run in runs)
-        ((run as Map)['text']?.toString() ?? '').trim(),
-    ]..removeWhere((t) => t.isEmpty || t == '•' || t == '\u2022');
+    // "Daft Punk", ", ", "Pharrell Williams", " • ", "Random Access Memories":
+    // the commas between co-artists are not separators of their own, so group
+    // the runs between bullets instead of treating each run as a field.
+    final parts = <String>[];
+    var current = StringBuffer();
+    void flush() {
+      final text = current.toString().trim();
+      if (text.isNotEmpty) parts.add(text);
+      current = StringBuffer();
+    }
+    for (final run in runs) {
+      final text = (run as Map)['text']?.toString() ?? '';
+      if (text.trim() == '•' || text.trim() == '\u2022') {
+        flush();
+      } else {
+        current.write(text);
+      }
+    }
+    flush();
 
     var duration = 0;
     var artist = '';
@@ -712,7 +737,8 @@ class VideoItem {
       if (asYear != null) {
         year = asYear;
       } else if (artist.isEmpty) {
-        artist = part;
+        // lead artist only: the taste weights are keyed by it
+        artist = part.split(RegExp(r',\s|\s&\s')).first.trim();
       } else if (album.isEmpty) {
         album = part;
       }

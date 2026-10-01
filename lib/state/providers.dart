@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:math' show Random;
 
 import 'package:audio_service/audio_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../ai/ai_engine.dart';
 import '../data/db/database.dart';
@@ -22,11 +24,14 @@ import '../data/services/yt_service.dart';
 import '../playback/audio_handler.dart';
 import '../playback/stream_proxy.dart';
 import '../ui/artwork.dart';
+import 'profiles.dart';
 import 'settings.dart';
 
 // ------------------------------------------------------------- foundations
 
 final dbProvider = Provider<AppDatabase>((ref) => throw UnimplementedError());
+final profilesProvider =
+    Provider<ProfileController>((ref) => throw UnimplementedError());
 final ytProvider = Provider<YtService>((ref) => throw UnimplementedError());
 final audioHandlerProvider =
     Provider<TuneBoxAudioHandler>((ref) => throw UnimplementedError());
@@ -371,8 +376,10 @@ class MusicActions {
   }
 
   /// Undo for the above.
-  Future<void> unblock(Song song) async {
+  Future<void> unblock(Song song, {bool restoreLike = false}) async {
     await _db.setBlocked(song.id, false);
+    // Blocking un-hearts a song; an undo has to put the heart back too.
+    if (restoreLike) await _db.setLiked(song.id, true);
     _ref.invalidate(homeShelvesProvider);
   }
 
@@ -404,6 +411,8 @@ class MusicActions {
   }
 
   Future<int> runAutoDownloads() => _ai.runAutoDownloads(_settings);
+
+  Future<int> syncDownloads() => _ai.syncDownloads(_settings);
 
   void refreshHome() {
     _ref.invalidate(homeShelvesProvider);
@@ -498,9 +507,9 @@ final playbackWiringProvider = Provider<void>((ref) {
 
   handler.onSnapshot = (ids, index, position) {
     if (!ref.read(settingsProvider).resumePlayback) return;
-    prefs.setStringList('lastQueue', ids);
-    prefs.setInt('lastIndex', index);
-    prefs.setInt('lastPositionMs', position.inMilliseconds);
+    prefs.setStringList(profileKey('lastQueue'), ids);
+    prefs.setInt(profileKey('lastIndex'), index);
+    prefs.setInt(profileKey('lastPositionMs'), position.inMilliseconds);
   };
 });
 
@@ -513,14 +522,14 @@ final startupProvider = FutureProvider<void>((ref) async {
   if (settings0.resumePlayback) {
     try {
       final prefs = ref.read(prefsProvider);
-      final ids = prefs.getStringList('lastQueue') ?? const [];
+      final ids = prefs.getStringList(profileKey('lastQueue')) ?? const [];
       if (ids.isNotEmpty) {
         final songs = await ref.read(dbProvider).songsByIds(ids);
         if (songs.isNotEmpty) {
           await ref.read(audioHandlerProvider).restore(
             songs,
-            prefs.getInt('lastIndex') ?? 0,
-            Duration(milliseconds: prefs.getInt('lastPositionMs') ?? 0),
+            prefs.getInt(profileKey('lastIndex')) ?? 0,
+            Duration(milliseconds: prefs.getInt(profileKey('lastPositionMs')) ?? 0),
           );
         }
       }
@@ -550,7 +559,21 @@ final startupProvider = FutureProvider<void>((ref) async {
     await importer.scanFolders(settings.watchedFolders).drain<void>();
     await importer.pruneMissing();
   });
+  // Weights learned before artists were credited properly still point at
+  // uploaders; replay the history once so they point at the artists.
+  await step('credit retrain', () async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('creditRetrain1') ?? false) return;
+    await ref.read(musicProvider).retrain();
+    await prefs.setBool('creditRetrain1', true);
+  });
+  await step('missing downloads', () => ref.read(musicProvider).syncDownloads());
   await step('auto-downloads', () => ref.read(musicProvider).runAutoDownloads());
+  // A like made off Wi-Fi is caught up the moment Wi-Fi comes back.
+  final link = Connectivity().onConnectivityChanged.listen((_) {
+    ref.read(musicProvider).syncDownloads().ignore();
+  });
+  ref.onDispose(link.cancel);
   // Release years are only worth a background trickle — they are cosmetic
   // until the AI uses the decade, and they cost one request each.
   await step('release years', () => ref.read(aiProvider).backfillYears());

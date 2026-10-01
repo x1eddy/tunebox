@@ -157,11 +157,21 @@ class PlaylistPage extends ConsumerWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: FilledButton.tonalIcon(
-                      onPressed: songs.isEmpty
+                      onPressed: songs.every((s) => s.source != SongSource.youtube)
                           ? null
-                          : () => _downloadAll(ref, songs),
-                      icon: const Icon(Icons.download_outlined),
-                      label: const Text('Download'),
+                          : () => _downloadAll(context, ref, songs),
+                      icon: Icon(
+                        songs.isNotEmpty &&
+                                songs.every((s) => s.source != SongSource.youtube)
+                            ? Icons.download_done_rounded
+                            : Icons.download_outlined,
+                      ),
+                      label: Text(
+                        songs.isNotEmpty &&
+                                songs.every((s) => s.source != SongSource.youtube)
+                            ? 'Downloaded'
+                            : 'Download',
+                      ),
                     ),
                   ),
                 ],
@@ -193,10 +203,14 @@ class PlaylistPage extends ConsumerWidget {
     );
   }
 
-  void _downloadAll(WidgetRef ref, List<Song> songs) {
+  void _downloadAll(BuildContext context, WidgetRef ref, List<Song> songs) {
     final music = ref.read(musicProvider);
-    for (final song in songs.where((s) => s.source == SongSource.youtube)) {
+    final todo = songs.where((s) => s.source == SongSource.youtube).toList();
+    for (final song in todo) {
       music.download(song);
     }
+    ScaffoldMessenger.of(context).showTimed(
+      SnackBar(content: Text('Downloading ${todo.length} songs…')),
+    );
   }
 }

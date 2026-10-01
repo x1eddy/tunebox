@@ -8,6 +8,7 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
+import '../profiles/profile_sheet.dart';
 import '../../ui/motion.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -74,6 +75,7 @@ class HomePage extends ConsumerWidget {
                 ],
               ),
               actions: [
+                const ProfileButton(),
                 IconButton(
                   onPressed: () => ref.read(musicProvider).refreshHome(),
                   icon: const Icon(Icons.refresh_rounded),
@@ -83,10 +85,6 @@ class HomePage extends ConsumerWidget {
                   onPressed: () => pushDetail(context, 'import'),
                   icon: const Icon(Icons.library_add_outlined),
                   tooltip: l.homeAddMusic,
-                ),
-                IconButton(
-                  onPressed: () => pushDetail(context, 'settings'),
-                  icon: const Icon(Icons.settings_outlined),
                 ),
                 const SizedBox(width: 4),
               ],
@@ -195,7 +193,7 @@ class _MoodRow extends ConsumerWidget {
   ) async {
     final l = L.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    messenger.showSnackBar(SnackBar(content: Text(l.moodBuilding(label))));
+    messenger.showTimed(SnackBar(content: Text(l.moodBuilding(label))));
     try {
       final db = ref.read(dbProvider);
       final found = await ref.read(ytProvider).search(query, max: 25);
@@ -206,7 +204,7 @@ class _MoodRow extends ConsumerWidget {
       if (songs.isEmpty) return;
       await ref.read(musicProvider).playAll(songs, origin: 'mood');
     } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text(l.moodFailed('$e'))));
+      messenger.showTimed(SnackBar(content: Text(l.moodFailed('$e'))));
     }
   }
 }

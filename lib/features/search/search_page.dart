@@ -217,11 +217,21 @@ class _Suggestions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
     final profile = ref.watch(tasteProfileProvider).value;
-    final seeds = <String>[
+    final artists = [
       for (final a in profile?.artists.take(4) ?? const <(String, double)>[])
         a.$1,
-      for (final g in profile?.tags.take(5) ?? const <(String, double)>[]) g.$1,
     ];
+    // A tag that just repeats an artist ("michael jackson", "jackson") is the
+    // same chip twice.
+    final seeds = <String>[
+      ...artists,
+      for (final g in profile?.tags.take(8) ?? const <(String, double)>[])
+        if (!artists.any((a) {
+          final x = a.toLowerCase(), y = g.$1.toLowerCase();
+          return x == y || x.contains(y) || y.contains(x);
+        }))
+          g.$1,
+    ].take(8).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

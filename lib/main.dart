@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
@@ -16,6 +16,7 @@ import 'data/services/innertube.dart';
 import 'data/services/yt_service.dart';
 import 'playback/audio_handler.dart';
 import 'playback/stream_proxy.dart';
+import 'state/profiles.dart';
 import 'state/providers.dart';
 import 'state/settings.dart';
 
@@ -43,27 +44,32 @@ Future<void> main() async {
     ..maximumSize = mobile ? 400 : 600;
 
   final prefs = await SharedPreferences.getInstance();
-  final db = AppDatabase();
   final innerTube = InnerTube();
   final yt = YtService(innerTube: innerTube);
   final proxy = StreamProxy(innerTube);
-  proxy.onDuration = (videoId, durationMs) => db.patchSong(
-    videoId,
-    SongsCompanion(durationMs: Value(durationMs)),
-  );
+  final profiles = ProfileController(prefs: prefs, proxy: proxy)..load();
+  profiles.onSwitching = dropTasteProfileCache;
   await proxy.start();
-  final handler = await _buildHandler(db, proxy);
+  final handler = await _buildHandler(profiles.db, proxy);
+  profiles.handler = handler;
 
   runApp(
-    ProviderScope(
-      overrides: [
-        prefsProvider.overrideWithValue(prefs),
-        dbProvider.overrideWithValue(db),
-        ytProvider.overrideWithValue(yt),
-        streamProxyProvider.overrideWithValue(proxy),
-        audioHandlerProvider.overrideWithValue(handler),
-      ],
-      child: const TuneBoxApp(),
+    // Switching profile bumps the generation, which gives the whole provider
+    // tree a new key and so rebuilds it against the other profile's database.
+    ListenableBuilder(
+      listenable: profiles,
+      builder: (context, _) => ProviderScope(
+        key: ValueKey(profiles.generation),
+        overrides: [
+          prefsProvider.overrideWithValue(prefs),
+          dbProvider.overrideWithValue(profiles.db),
+          profilesProvider.overrideWithValue(profiles),
+          ytProvider.overrideWithValue(yt),
+          streamProxyProvider.overrideWithValue(proxy),
+          audioHandlerProvider.overrideWithValue(handler),
+        ],
+        child: const TuneBoxApp(),
+      ),
     ),
   );
 }
@@ -96,12 +102,20 @@ class TuneBoxApp extends ConsumerStatefulWidget {
 }
 
 class _TuneBoxAppState extends ConsumerState<TuneBoxApp> {
+  StreamSubscription<ListenReport>? _reports;
+
+  @override
+  void dispose() {
+    _reports?.cancel();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
     // Every finished or skipped listen trains the on-device model.
     final handler = ref.read(audioHandlerProvider);
-    handler.reports.listen((report) async {
+    _reports = handler.reports.listen((report) async {
       final settings = ref.read(settingsProvider);
       await ref.read(aiProvider).learnFromListen(report, settings);
       dropTasteProfileCache();
@@ -114,6 +128,11 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    // The switch in Settings only saved the choice; the player kept whatever
+    // it was started with until the next launch.
+    ref.listen(settingsProvider.select((s) => s.skipSilence), (_, on) {
+      ref.read(audioHandlerProvider).setSkipSilence(on);
+    });
     final seed = ref.watch(seedColorProvider).value ?? settings.accentColor;
 
     return MaterialApp.router(

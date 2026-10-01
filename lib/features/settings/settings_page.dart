@@ -12,6 +12,7 @@ import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
+import '../profiles/profile_sheet.dart';
 import '../../ui/common.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -32,6 +33,27 @@ class SettingsPage extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 28),
         children: [
+          // ----------------------------------------------------- profile
+          Consumer(
+            builder: (context, ref, _) {
+              final profiles = ref.watch(profilesProvider);
+              return ListenableBuilder(
+                listenable: profiles,
+                builder: (context, _) => ListTile(
+                  leading: ProfileAvatar(profiles.active),
+                  title: Text(profiles.active.name),
+                  subtitle: Text(
+                    profiles.profiles.length > 1
+                        ? 'Profile · tap to switch (${profiles.profiles.length})'
+                        : 'Profile · tap to add another listener',
+                  ),
+                  trailing: const Icon(Icons.swap_horiz_rounded),
+                  onTap: () => showProfileSheet(context),
+                ),
+              );
+            },
+          ),
+          const Divider(height: 8),
           // ------------------------------------------------------ colour
           SectionHeader(
             title: l.setColour,
@@ -389,7 +411,7 @@ class SettingsPage extends ConsumerWidget {
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
               final n = await ref.read(importServiceProvider).pruneMissing();
-              messenger.showSnackBar(
+              messenger.showTimed(
                 SnackBar(content: Text('Removed $n missing files.')),
               );
             },
@@ -417,7 +439,7 @@ class SettingsPage extends ConsumerWidget {
                 final messenger = ScaffoldMessenger.of(context);
                 if (!UpdateService.canInstall) {
                   await Clipboard.setData(ClipboardData(text: update.url));
-                  messenger.showSnackBar(
+                  messenger.showTimed(
                     SnackBar(content: Text(l.setLinkCopied)),
                   );
                   return;
@@ -425,7 +447,7 @@ class SettingsPage extends ConsumerWidget {
                 try {
                   await ref.read(updateServiceProvider).install(update);
                 } catch (e) {
-                  messenger.showSnackBar(SnackBar(content: Text('$e')));
+                  messenger.showTimed(SnackBar(content: Text('$e')));
                 }
               },
             ),
@@ -441,11 +463,11 @@ class SettingsPage extends ConsumerWidget {
             title: Text(l.setCheckNow),
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
-              messenger.showSnackBar(SnackBar(content: Text(l.setChecking)));
+              messenger.showTimed(SnackBar(content: Text(l.setChecking)));
               final found = await ref
                   .read(updateServiceProvider)
                   .checkAndFetch(mayDownload: true);
-              messenger.showSnackBar(
+              messenger.showTimed(
                 SnackBar(
                   content: Text(
                     found == null
@@ -481,19 +503,33 @@ class SettingsPage extends ConsumerWidget {
 
 Future<void> _exportTaste(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
+  final profile = ref.read(profilesProvider).active.name
+      .toLowerCase()
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '-');
   try {
-    final file = await ref.read(backupServiceProvider).export();
-    final size = (file.lengthSync() / 1024).toStringAsFixed(0);
+    final service = ref.read(backupServiceProvider);
+    final bytes = Uint8List.fromList(await service.exportBytes());
+    // The system's own "save as" dialog: the app's private folder is not
+    // reachable from a file manager on a modern phone.
+    final saved = await FilePicker.saveFile(
+      fileName: 'tunebox-taste-$profile.json',
+      bytes: bytes,
+      mimeType: 'application/json',
+      dialogTitle: 'Save your taste',
+    );
+    if (saved == null) return;
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(
+      ..showTimed(
         SnackBar(
-          content: Text('Saved ${size}KB to ${file.path}'),
-          duration: const Duration(seconds: 8),
+          content: Text(
+            'Saved ${(bytes.length / 1024).toStringAsFixed(0)} KB — open '
+            '"Load taste" on the other device and pick that file.',
+          ),
         ),
       );
   } catch (e) {
-    messenger.showSnackBar(SnackBar(content: Text('Export failed: $e')));
+    messenger.showTimed(SnackBar(content: Text('Export failed: $e')));
   }
 }
 
@@ -501,32 +537,31 @@ Future<void> _importTaste(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
   final backup = ref.read(backupServiceProvider);
   try {
-    // Prefer the file sitting in this device's transfer folder; only ask the
-    // user to hunt for one if it is not there.
-    var file = await backup.transferFile();
-    if (!file.existsSync()) {
-      final picked = await FilePicker.pickFiles(type: FileType.any);
-      final path = picked.firstOrNull?.path;
-      if (path == null) return;
-      file = File(path);
-    }
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Merging taste…')),
-    );
-    final summary = await backup.importFromFile(file);
-    ref.read(musicProvider).refreshHome();
+    // Always ask which file: quietly re-reading an old copy from the app's
+    // own folder is what made "load" appear to do nothing.
+    final picked = await FilePicker.pickFiles(type: FileType.any);
+    final path = picked.firstOrNull?.path;
+    if (path == null) return;
+    // No timer on this one — it has to stay until the merge is over.
     messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(
-          content: Text('Imported: $summary'),
-          duration: const Duration(seconds: 8),
+        const SnackBar(
+          content: Text('Merging taste…'),
+          duration: Duration(minutes: 5),
         ),
       );
+    final summary = await backup.importFromFile(File(path));
+    dropTasteProfileCache();
+    ref.invalidate(tasteProfileProvider);
+    ref.read(musicProvider).refreshHome();
+    messenger
+      ..hideCurrentSnackBar()
+      ..showTimed(SnackBar(content: Text('Imported: $summary')));
   } catch (e) {
     messenger
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('Import failed: $e')));
+      ..showTimed(SnackBar(content: Text('Import failed: $e')));
   }
 }
 
