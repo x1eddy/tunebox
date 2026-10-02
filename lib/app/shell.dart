@@ -1,4 +1,5 @@
 import '../ui/common.dart';
+import '../ui/tab_scroll.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,8 +54,12 @@ class AppShell extends ConsumerWidget {
             maxScaleFactor: 1.3,
             child: NavigationBar(
               selectedIndex: shell.currentIndex,
-              onDestinationSelected: (i) =>
-                  shell.goBranch(i, initialLocation: i == shell.currentIndex),
+              onDestinationSelected: (i) {
+                final same = i == shell.currentIndex;
+                shell.goBranch(i, initialLocation: same);
+                // Arriving on a tab always starts at its top.
+                scrollTabToTop(i, animate: same);
+              },
               destinations: [
                 NavigationDestination(
                   icon: const Icon(Icons.home_outlined),

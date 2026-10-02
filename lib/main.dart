@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,8 +41,12 @@ Future<void> main() async {
   // Android kills while it is in the background playing music.
   final mobile = Platform.isAndroid || Platform.isIOS;
   PaintingBinding.instance.imageCache
-    ..maximumSizeBytes = (mobile ? 96 : 256) << 20
-    ..maximumSize = mobile ? 400 : 600;
+    ..maximumSizeBytes = (mobile ? 24 : 256) << 20
+    ..maximumSize = mobile ? 120 : 600;
+  // Skia keeps up to ~96 MB of GPU resources around by default; on a phone
+  // that is most of what the app weighs. A small budget costs a re-upload now
+  // and then, not memory the system will come and take back.
+  if (Platform.isAndroid) _setGpuCache(12 << 20);
 
   final prefs = await SharedPreferences.getInstance();
   final innerTube = InnerTube();
@@ -74,6 +79,14 @@ Future<void> main() async {
   );
 }
 
+void _setGpuCache(int bytes) {
+  try {
+    SystemChannels.skia.invokeMethod<void>('Skia.setResourceCacheMaxBytes', bytes);
+  } catch (_) {
+    // Impeller or a platform without the channel: nothing to tune
+  }
+}
+
 Future<TuneBoxAudioHandler> _buildHandler(
   AppDatabase db,
   StreamProxy proxy,
@@ -101,18 +114,36 @@ class TuneBoxApp extends ConsumerStatefulWidget {
   ConsumerState<TuneBoxApp> createState() => _TuneBoxAppState();
 }
 
-class _TuneBoxAppState extends ConsumerState<TuneBoxApp> {
+class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
+    with WidgetsBindingObserver {
   StreamSubscription<ListenReport>? _reports;
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _reports?.cancel();
     super.dispose();
+  }
+
+  /// A music app spends most of its life in the background, which is exactly
+  /// when Android decides who to kill. Nothing on screen needs the decoded
+  /// covers or GPU caches then; they are rebuilt on return.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+      final cache = PaintingBinding.instance.imageCache;
+      cache.clear();
+      cache.clearLiveImages();
+      if (Platform.isAndroid) _setGpuCache(8 << 20);
+    } else if (state == AppLifecycleState.resumed && Platform.isAndroid) {
+      _setGpuCache(12 << 20);
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Every finished or skipped listen trains the on-device model.
     final handler = ref.read(audioHandlerProvider);
     _reports = handler.reports.listen((report) async {

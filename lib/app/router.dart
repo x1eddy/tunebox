@@ -10,6 +10,7 @@ import '../features/player/player_page.dart';
 import '../features/player/queue_page.dart';
 import '../features/search/search_page.dart';
 import '../features/settings/settings_page.dart';
+import '../ui/tab_scroll.dart';
 import '../features/taste/taste_page.dart';
 import 'shell.dart';
 
@@ -54,7 +55,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/home',
-              builder: (_, _) => const HomePage(),
+              builder: (_, _) => const TabScroll(index: 0, child: HomePage()),
               routes: _details(),
             ),
           ],
@@ -63,7 +64,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/explore',
-              builder: (_, _) => const SearchPage(),
+              builder: (_, _) => const TabScroll(index: 1, child: SearchPage()),
               routes: _details(),
             ),
           ],
@@ -72,7 +73,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/library',
-              builder: (_, _) => const LibraryPage(),
+              builder: (_, _) => const TabScroll(index: 2, child: LibraryPage()),
               routes: _details(),
             ),
           ],
@@ -81,7 +82,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/taste',
-              builder: (_, _) => const TastePage(),
+              builder: (_, _) => const TabScroll(index: 3, child: TastePage()),
               routes: _details(),
             ),
           ],
@@ -90,7 +91,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/settings',
-              builder: (_, _) => const SettingsPage(),
+              builder: (_, _) => const TabScroll(index: 4, child: SettingsPage()),
               routes: _details(),
             ),
           ],
