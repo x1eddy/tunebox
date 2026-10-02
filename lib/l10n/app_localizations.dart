@@ -1246,7 +1246,7 @@ abstract class L {
   /// No description provided for @setReduceMotionSub.
   ///
   /// In en, this message translates to:
-  /// **'Stops the bars, the visualiser and page transitions'**
+  /// **'Stops the bars, the visualiser, bouncy scrolling, springy taps and page transitions'**
   String get setReduceMotionSub;
 
   /// No description provided for @setHighContrast.

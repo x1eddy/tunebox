@@ -229,14 +229,19 @@ class _VisualizerPainter extends CustomPainter {
       final wave = idle
           ? 0.34 + seed * 0.16
           : (sin(phase * (1 + seed * 0.8) + i * 0.7) * 0.5 + 0.5) *
-                    (0.45 + 0.55 * sin(phase * 0.5 + seed * 3).abs());
+                (0.45 + 0.55 * sin(phase * 0.5 + seed * 3).abs());
       // Loudest in the middle, like a real spectrum, and never so short that
       // the row reads as dots.
       final centre = (1 - (i / (count - 1) - 0.5).abs() * 1.7).clamp(0.15, 1.0);
-      final height = (size.height * (0.26 + 0.74 * wave) * (0.45 + 0.55 * centre))
-          .clamp(3.0, size.height);
+      final height =
+          (size.height * (0.26 + 0.74 * wave) * (0.45 + 0.55 * centre)).clamp(
+            3.0,
+            size.height,
+          );
       final paint = Paint()
-        ..color = color.withValues(alpha: (0.45 + 0.55 * centre).clamp(0.0, 1.0));
+        ..color = color.withValues(
+          alpha: (0.45 + 0.55 * centre).clamp(0.0, 1.0),
+        );
       final x = i * slot + (slot - width) / 2;
       canvas.drawRRect(
         RRect.fromRectAndRadius(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../state/settings.dart';
 
 /// Shared motion vocabulary. Material's "emphasized" easing is what makes a
 /// music app feel like it glides rather than snaps.
@@ -11,8 +14,9 @@ class Motion {
   static const decelerate = Cubic(0.05, 0.7, 0.1, 1.0);
 }
 
-/// Shrinks slightly while held, the way a Spotify card does.
-class Pressable extends StatefulWidget {
+/// Shrinks while held and springs back with a little overshoot — the iOS
+/// press. With Reduce motion on it is just a tap.
+class Pressable extends ConsumerStatefulWidget {
   const Pressable({
     super.key,
     required this.child,
@@ -29,10 +33,10 @@ class Pressable extends StatefulWidget {
   final BorderRadius? borderRadius;
 
   @override
-  State<Pressable> createState() => _PressableState();
+  ConsumerState<Pressable> createState() => _PressableState();
 }
 
-class _PressableState extends State<Pressable> {
+class _PressableState extends ConsumerState<Pressable> {
   bool _down = false;
 
   void _set(bool value) {
@@ -41,19 +45,25 @@ class _PressableState extends State<Pressable> {
 
   @override
   Widget build(BuildContext context) {
+    final reduce = ref.watch(settingsProvider.select((s) => s.reduceMotion));
     return GestureDetector(
-      onTapDown: (_) => _set(true),
-      onTapUp: (_) => _set(false),
-      onTapCancel: () => _set(false),
+      onTapDown: reduce ? null : (_) => _set(true),
+      onTapUp: reduce ? null : (_) => _set(false),
+      onTapCancel: reduce ? null : () => _set(false),
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedScale(
-        scale: _down ? widget.scale : 1,
-        duration: Motion.fast,
-        curve: Motion.emphasized,
-        child: widget.child,
-      ),
+      child: reduce
+          ? widget.child
+          : AnimatedScale(
+              scale: _down ? widget.scale : 1,
+              // quick on the way down, a soft overshoot on the way back up
+              duration: _down
+                  ? const Duration(milliseconds: 110)
+                  : const Duration(milliseconds: 380),
+              curve: _down ? Curves.easeOut : Curves.easeOutBack,
+              child: widget.child,
+            ),
     );
   }
 }
@@ -92,9 +102,10 @@ class _SkeletonState extends State<Skeleton>
   Widget build(BuildContext context) {
     final t = Theme.of(context);
     return FadeTransition(
-      opacity: Tween(begin: 0.45, end: 0.85).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-      ),
+      opacity: Tween(
+        begin: 0.45,
+        end: 0.85,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
       child: Container(
         width: widget.width,
         height: widget.height,

@@ -79,7 +79,8 @@ class CoverBackdrop extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: colors ??
+              colors:
+                  colors ??
                   [
                     t.colorScheme.surface.withValues(alpha: 0.78),
                     t.colorScheme.surface.withValues(alpha: 0.96),
@@ -116,7 +117,8 @@ class CoverArt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = artworkImageProvider(song, size: size?.round());
-    final seed = seedText ??
+    final seed =
+        seedText ??
         (song == null
             ? '?'
             : song!.album.isNotEmpty
@@ -164,9 +166,7 @@ class CoverArt extends StatelessWidget {
 
     if (heroTag != null) child = Hero(tag: heroTag!, child: child);
 
-    final shape = circle
-        ? BorderRadius.circular((size ?? 200) / 2)
-        : radius;
+    final shape = circle ? BorderRadius.circular((size ?? 200) / 2) : radius;
     return SizedBox(
       width: size,
       height: size,

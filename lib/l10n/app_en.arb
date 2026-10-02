@@ -367,7 +367,7 @@
   "setTextSize": "Text size",
   "setTextSizeSub": "On top of your system setting",
   "setReduceMotion": "Reduce motion",
-  "setReduceMotionSub": "Stops the bars, the visualiser and page transitions",
+  "setReduceMotionSub": "Stops the bars, the visualiser, bouncy scrolling, springy taps and page transitions",
   "setHighContrast": "High contrast",
   "setHighContrastSub": "Stronger separation and visible outlines",
   "setBoldText": "Bold text",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/detail/artist_page.dart';
@@ -12,6 +13,7 @@ import '../features/search/search_page.dart';
 import '../features/settings/settings_page.dart';
 import '../ui/tab_scroll.dart';
 import '../features/taste/taste_page.dart';
+import '../state/settings.dart';
 import 'shell.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -35,10 +37,9 @@ List<RouteBase> _details() => [
 /// Pushes a detail screen inside whichever tab is currently open.
 void pushDetail(BuildContext context, String sub) {
   final path = GoRouterState.of(context).uri.path;
-  final branch = path.split('/').firstWhere(
-    (e) => e.isNotEmpty,
-    orElse: () => 'home',
-  );
+  final branch = path
+      .split('/')
+      .firstWhere((e) => e.isNotEmpty, orElse: () => 'home');
   context.push('/$branch/$sub');
 }
 
@@ -73,7 +74,8 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/library',
-              builder: (_, _) => const TabScroll(index: 2, child: LibraryPage()),
+              builder: (_, _) =>
+                  const TabScroll(index: 2, child: LibraryPage()),
               routes: _details(),
             ),
           ],
@@ -91,7 +93,8 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: '/settings',
-              builder: (_, _) => const TabScroll(index: 4, child: SettingsPage()),
+              builder: (_, _) =>
+                  const TabScroll(index: 4, child: SettingsPage()),
               routes: _details(),
             ),
           ],
@@ -101,27 +104,30 @@ final router = GoRouter(
     GoRoute(
       path: '/player',
       parentNavigatorKey: rootNavigatorKey,
-      pageBuilder: (_, state) => CustomTransitionPage(
-        key: state.pageKey,
-        opaque: false,
-        barrierColor: Colors.transparent,
-        transitionDuration: const Duration(milliseconds: 380),
-        reverseTransitionDuration: const Duration(milliseconds: 300),
-        child: const PlayerPage(),
-        transitionsBuilder: (_, animation, _, child) => SlideTransition(
-          position: Tween(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
-            ),
+      pageBuilder: (context, state) {
+        final reduce = ProviderScope.containerOf(
+          context,
+        ).read(settingsProvider).reduceMotion;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          opaque: false,
+          barrierColor: Colors.transparent,
+          transitionDuration: Duration(milliseconds: reduce ? 0 : 380),
+          reverseTransitionDuration: Duration(milliseconds: reduce ? 0 : 300),
+          child: const PlayerPage(),
+          transitionsBuilder: (_, animation, _, child) => SlideTransition(
+            position: Tween(begin: const Offset(0, 1), end: Offset.zero)
+                .animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                    reverseCurve: Curves.easeInCubic,
+                  ),
+                ),
+            child: child,
           ),
-          child: child,
-        ),
-      ),
+        );
+      },
     ),
   ],
 );

@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Shown on the About row; keep in step with pubspec.
-const kAppVersion = '0.6.2';
+const kAppVersion = '0.6.3';
 
 const kDefaultSeed = Color(0xFF3F5EFB);
 
@@ -79,7 +80,9 @@ ThemeData buildTheme({
 
   final transition = reduceMotion
       ? const _NoTransition()
-      : const FadeForwardsPageTransitionsBuilder();
+      // The iOS push: the old page slides back with parallax, and an edge
+      // swipe drags the new one away again.
+      : const CupertinoPageTransitionsBuilder();
 
   return base.copyWith(
     splashFactory: reduceMotion

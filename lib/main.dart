@@ -18,6 +18,7 @@ import 'data/services/yt_service.dart';
 import 'playback/audio_handler.dart';
 import 'playback/stream_proxy.dart';
 import 'state/profiles.dart';
+import 'ui/scroll_behavior.dart';
 import 'state/providers.dart';
 import 'state/settings.dart';
 
@@ -81,7 +82,10 @@ Future<void> main() async {
 
 void _setGpuCache(int bytes) {
   try {
-    SystemChannels.skia.invokeMethod<void>('Skia.setResourceCacheMaxBytes', bytes);
+    SystemChannels.skia.invokeMethod<void>(
+      'Skia.setResourceCacheMaxBytes',
+      bytes,
+    );
   } catch (_) {
     // Impeller or a platform without the channel: nothing to tune
   }
@@ -130,7 +134,8 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
   /// covers or GPU caches then; they are rebuilt on return.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
       final cache = PaintingBinding.instance.imageCache;
       cache.clear();
       cache.clearLiveImages();
@@ -185,12 +190,11 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
         boldText: settings.boldText,
         reduceMotion: settings.reduceMotion,
       ),
-      locale: settings.localeCode.isEmpty
-          ? null
-          : Locale(settings.localeCode),
+      locale: settings.localeCode.isEmpty ? null : Locale(settings.localeCode),
       supportedLocales: L.supportedLocales,
       localizationsDelegates: L.localizationsDelegates,
       routerConfig: router,
+      scrollBehavior: TuneBoxScrollBehavior(bouncy: !settings.reduceMotion),
       builder: (context, child) {
         // The accessibility text scale multiplies whatever the system is
         // already asking for, rather than replacing it.

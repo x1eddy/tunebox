@@ -21,8 +21,9 @@ String formatDuration(Duration d) {
   return '$m:$s';
 }
 
-String songDuration(Song song) =>
-    song.durationMs == 0 ? '--:--' : formatDuration(Duration(milliseconds: song.durationMs));
+String songDuration(Song song) => song.durationMs == 0
+    ? '--:--'
+    : formatDuration(Duration(milliseconds: song.durationMs));
 
 /// "Daft Punk · 2001" — the year is left off when we don't know it yet.
 String songByline(Song song) => [
@@ -143,10 +144,13 @@ class SongTile extends ConsumerWidget {
     final playing = ref.watch(currentSongProvider).value?.id == song.id;
     final isPlaying =
         playing && (ref.watch(playbackStateProvider).value?.playing ?? false);
-    final task = ref.watch(downloadTasksProvider).value?.firstWhere(
-      (d) => d.songId == song.id,
-      orElse: () => const DownloadTask(songId: '', title: ''),
-    );
+    final task = ref
+        .watch(downloadTasksProvider)
+        .value
+        ?.firstWhere(
+          (d) => d.songId == song.id,
+          orElse: () => const DownloadTask(songId: '', title: ''),
+        );
     final downloading = task != null && task.songId == song.id;
 
     final sub = [
@@ -156,13 +160,24 @@ class SongTile extends ConsumerWidget {
       if (song.year != null) '${song.year}',
     ].join(' · ');
 
-    return InkWell(
-      onTap: onTap ??
-          () => ref
-              .read(musicProvider)
-              .playSong(song, queue: queue, origin: origin),
-      onLongPress: () => showSongSheet(context, song),
-      child: Padding(
+    final reduce = ref.watch(settingsProvider.select((s) => s.reduceMotion));
+    final tap =
+        onTap ??
+        () => ref
+            .read(musicProvider)
+            .playSong(song, queue: queue, origin: origin);
+    void longPress() => showSongSheet(context, song);
+    Widget row(Widget child) => reduce
+        ? InkWell(onTap: tap, onLongPress: longPress, child: child)
+        : Pressable(
+            scale: 0.985,
+            onTap: tap,
+            onLongPress: longPress,
+            child: child,
+          );
+
+    return row(
+      Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: dense ? 5 : 7),
         child: Row(
           children: [
@@ -549,10 +564,10 @@ void showSongSheet(BuildContext context, Song song) {
         final l = L.of(context);
         final t = Theme.of(context);
         final music = ref.read(musicProvider);
-        final live = ref.watch(libraryProvider).value?.firstWhere(
-          (s) => s.id == song.id,
-          orElse: () => song,
-        );
+        final live = ref
+            .watch(libraryProvider)
+            .value
+            ?.firstWhere((s) => s.id == song.id, orElse: () => song);
         final current = live ?? song;
 
         return SafeArea(
@@ -611,7 +626,9 @@ void showSongSheet(BuildContext context, Song song) {
                   leading: const Icon(Icons.queue_music_rounded),
                   title: Text(l.sheetPlayNext),
                   onTap: () {
-                    ref.read(audioHandlerProvider).addToQueue(current, next: true);
+                    ref
+                        .read(audioHandlerProvider)
+                        .addToQueue(current, next: true);
                     Navigator.pop(sheetContext);
                   },
                 ),
@@ -718,8 +735,11 @@ void showAddToPlaylist(BuildContext context, Song song) {
 
 Future<String?> promptForName(BuildContext context, String title) {
   final controller = TextEditingController();
-  return _promptForName(context, title, controller)
-      .whenComplete(controller.dispose);
+  return _promptForName(
+    context,
+    title,
+    controller,
+  ).whenComplete(controller.dispose);
 }
 
 Future<String?> _promptForName(

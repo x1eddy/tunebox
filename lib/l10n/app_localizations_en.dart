@@ -672,7 +672,7 @@ class LEn extends L {
 
   @override
   String get setReduceMotionSub =>
-      'Stops the bars, the visualiser and page transitions';
+      'Stops the bars, the visualiser, bouncy scrolling, springy taps and page transitions';
 
   @override
   String get setHighContrast => 'High contrast';
