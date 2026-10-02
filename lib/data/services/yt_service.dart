@@ -32,6 +32,8 @@ class YtService {
     _downloadClient.close();
   }
 
+  Future<void> warmUp() => innerTube.warmUp();
+
   /// Search.
   ///
   /// YouTube Music first: it only indexes music, so nothing that isn't a song

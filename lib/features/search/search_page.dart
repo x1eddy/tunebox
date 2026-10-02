@@ -27,9 +27,25 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   List<Song> _results = const [];
   final _recent = <String>[];
 
+  /// Search results by normalised query, as song ids. Kept for the life of
+  /// the app, so repeating a search — or backing out of a result and coming
+  /// back — costs nothing. Ids rather than songs, so likes and blocks made in
+  /// the meantime still show.
+  static final _cache = <String, ({List<String> ids, DateTime at})>{};
+  static Object? _cacheOwner;
+  static const _cacheTtl = Duration(minutes: 20);
+
+  int _gen = 0;
+  List<Song> _lastResults = const [];
+
+  static String _norm(String q) =>
+      q.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+
   @override
   void initState() {
     super.initState();
+    // Open the connection to YouTube while the user is still typing.
+    unawaited(ref.read(ytProvider).warmUp());
     // Screenshot harness only: start with a query already typed.
     const seeded = String.fromEnvironment('TOUR_QUERY');
     if (kTour && seeded.isNotEmpty) {
@@ -45,45 +61,93 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     super.dispose();
   }
 
+  bool _matches(Song s, List<String> tokens) {
+    final hay = '${s.title} ${s.artist} ${s.album}'.toLowerCase();
+    return tokens.every(hay.contains);
+  }
+
   void _onChanged(String value) {
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 420), () => _run(value));
+    final q = _norm(value);
+    if (q.isEmpty) {
+      _run('');
+      return;
+    }
+    // Answer at once with what is already known — the library, and whatever
+    // the previous (shorter) query found that still fits — then let the
+    // network refine it. Typing never waits on YouTube to show something.
+    final tokens = q.split(' ');
+    final library = ref.read(libraryProvider).value ?? const <Song>[];
+    final local = library.where((s) => !s.blocked && _matches(s, tokens));
+    final carried = _lastResults.where(
+      (s) => !s.blocked && _matches(s, tokens) && !local.any((l) => l.id == s.id),
+    );
+    setState(() {
+      _query = q;
+      _error = null;
+      _results = [...local, ...carried];
+      _loading = true;
+    });
+    final cached = _cache[q];
+    final fresh = cached != null && DateTime.now().difference(cached.at) < _cacheTtl;
+    _debounce = Timer(
+      fresh ? Duration.zero : Duration(milliseconds: q.length < 3 ? 260 : 120),
+      () => _run(value),
+    );
   }
 
   Future<void> _run(String value) async {
     final query = value.trim();
+    final key = _norm(value);
+    final gen = ++_gen;
     setState(() {
       _query = query;
       _error = null;
     });
     if (query.isEmpty) {
-      setState(() => _results = const []);
+      setState(() {
+        _results = const [];
+        _loading = false;
+      });
       return;
     }
     setState(() => _loading = true);
     try {
       final db = ref.read(dbProvider);
-      final found = await ref.read(ytProvider).search(query, max: 30);
-      for (final c in found) {
-        await db.cacheSong(c);
+      // A different profile means a different database: start clean.
+      if (_cacheOwner != db) {
+        _cache.clear();
+        _cacheOwner = db;
       }
-      final songs = (await db.songsByIds([for (final c in found) c.id.value]))
-          .where((s) => !s.blocked)
-          .toList();
+
+      List<Song> songs;
+      final hit = _cache[key];
+      if (hit != null && DateTime.now().difference(hit.at) < _cacheTtl) {
+        songs = (await db.songsByIds(hit.ids)).where((s) => !s.blocked).toList();
+      } else {
+        final found = await ref.read(ytProvider).search(query, max: 30);
+        await db.cacheSongs(found);
+        final ids = [for (final c in found) c.id.value];
+        _cache[key] = (ids: ids, at: DateTime.now());
+        songs = (await db.songsByIds(ids)).where((s) => !s.blocked).toList();
+      }
+      // The user has typed on since: this answer is cached for later, but is
+      // not what they are looking at any more.
+      if (!mounted || gen != _gen) return;
+
+      final tokens = key.split(' ');
       final local = (ref.read(libraryProvider).value ?? const <Song>[])
-          .where((s) =>
-              s.title.toLowerCase().contains(query.toLowerCase()) ||
-              s.artist.toLowerCase().contains(query.toLowerCase()))
+          .where((s) => !s.blocked && _matches(s, tokens))
           .where((s) => !songs.any((y) => y.id == s.id));
-      if (!mounted) return;
       setState(() {
         _results = [...local, ...songs];
+        _lastResults = _results;
         _loading = false;
         if (!_recent.contains(query)) _recent.insert(0, query);
         if (_recent.length > 8) _recent.removeLast();
       });
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || gen != _gen) return;
       setState(() {
         _loading = false;
         _error = '$e';

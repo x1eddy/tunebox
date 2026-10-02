@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'dart:io';
+import 'dart:isolate';
+
 import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 /// Minimal InnerTube ("YouTube internal API") client.
 ///
@@ -10,7 +14,27 @@ import 'package:http/http.dart' as http;
 /// only answer to *ranged* requests, which is why playback goes through
 /// [StreamProxy] rather than straight to googlevideo.
 class InnerTube {
-  InnerTube({http.Client? client}) : _client = client ?? http.Client();
+  InnerTube({http.Client? client}) : _client = client ?? _keepAliveClient();
+
+  /// A client that holds its connection open for minutes instead of the 15
+  /// seconds Dart defaults to. Every search used to pay a fresh TLS handshake
+  /// (a few hundred milliseconds on a phone) after a short pause.
+  static http.Client _keepAliveClient() => IOClient(
+    HttpClient()
+      ..idleTimeout = const Duration(minutes: 3)
+      ..connectionTimeout = const Duration(seconds: 10),
+  );
+
+  /// Opens the connection to YouTube Music ahead of the first search.
+  Future<void> warmUp() async {
+    try {
+      await _client
+          .head(Uri.parse('https://music.youtube.com/'))
+          .timeout(const Duration(seconds: 8));
+    } catch (_) {
+      // purely an optimisation
+    }
+  }
 
   final http.Client _client;
 
@@ -165,11 +189,15 @@ class InnerTube {
     if (res.statusCode != 200) {
       throw InnerTubeException('music search returned HTTP ${res.statusCode}');
     }
-    final json = jsonDecode(utf8.decode(res.bodyBytes));
-    final out = <VideoItem>[];
-    final seen = <String>{};
-    _collectMusicRows(json, out, seen, max);
-    return out;
+    // The response is a few hundred kilobytes of JSON; decoding it on the UI
+    // isolate is a visible hitch on a phone.
+    final body = res.bodyBytes;
+    return Isolate.run(() {
+      final json = jsonDecode(utf8.decode(body));
+      final out = <VideoItem>[];
+      _collectMusicRows(json, out, <String>{}, max);
+      return out;
+    });
   }
 
   /// The radio queue YouTube Music builds around one song — the music-only

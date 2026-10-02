@@ -138,6 +138,15 @@ class AppDatabase extends _$AppDatabase {
     ),
   );
 
+  /// [cacheSong] for a whole result page in one transaction — thirty
+  /// separate commits were a noticeable part of the wait after a search.
+  Future<void> cacheSongs(List<SongsCompanion> list) =>
+      transaction(() async {
+        for (final song in list) {
+          await cacheSong(song);
+        }
+      });
+
   Future<Song?> songById(String id) =>
       (select(songs)..where((s) => s.id.equals(id))).getSingleOrNull();
 

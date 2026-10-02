@@ -516,6 +516,8 @@ final playbackWiringProvider = Provider<void>((ref) {
 /// Kicks off background work once the app is up: auto-downloads and a scan.
 final startupProvider = FutureProvider<void>((ref) async {
   ref.read(playbackWiringProvider);
+  // Have the connection to YouTube Music open before the first search.
+  unawaited(ref.read(ytProvider).warmUp());
 
   // Put the queue back before anything else touches the player.
   final settings0 = ref.read(settingsProvider);
