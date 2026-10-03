@@ -190,7 +190,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
         boldText: settings.boldText,
         reduceMotion: settings.reduceMotion,
       ),
-      locale: settings.localeCode.isEmpty ? null : Locale(settings.localeCode),
+      locale: localeFromCode(settings.localeCode),
       supportedLocales: L.supportedLocales,
       localizationsDelegates: L.localizationsDelegates,
       routerConfig: router,

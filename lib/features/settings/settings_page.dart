@@ -190,26 +190,12 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(languageName(s.localeCode)),
             onTap: () => showModalBottomSheet<void>(
               context: context,
+              isScrollControlled: true,
               showDragHandle: true,
-              builder: (sheet) => SafeArea(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final code in kLanguages.keys)
-                      ListTile(
-                        leading: Icon(
-                          s.localeCode == code
-                              ? Icons.radio_button_checked_rounded
-                              : Icons.radio_button_unchecked_rounded,
-                        ),
-                        title: Text(languageName(code)),
-                        onTap: () {
-                          set.update((v) => v.copyWith(localeCode: code));
-                          Navigator.pop(sheet);
-                        },
-                      ),
-                  ],
-                ),
+              builder: (_) => _LanguageSheet(
+                current: s.localeCode,
+                onPick: (code) =>
+                    set.update((v) => v.copyWith(localeCode: code)),
               ),
             ),
           ),
@@ -654,6 +640,97 @@ class _Swatch extends StatelessWidget {
           child: selected
               ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
               : null,
+        ),
+      ),
+    );
+  }
+}
+
+/// Every language, with a search box that understands both the native name
+/// ("Deutsch") and the English one ("German") as well as the code.
+class _LanguageSheet extends StatefulWidget {
+  const _LanguageSheet({required this.current, required this.onPick});
+
+  final String current;
+  final ValueChanged<String> onPick;
+
+  @override
+  State<_LanguageSheet> createState() => _LanguageSheetState();
+}
+
+class _LanguageSheetState extends State<_LanguageSheet> {
+  var _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    final q = _query.trim().toLowerCase();
+    final matches = [
+      for (final e in kLanguageInfo.entries)
+        if (q.isEmpty ||
+            e.value.$1.toLowerCase().contains(q) ||
+            e.value.$2.toLowerCase().contains(q) ||
+            e.key.toLowerCase().contains(q))
+          e,
+    ];
+
+    return SafeArea(
+      child: Padding(
+        // keeps the list above the keyboard
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: SearchBar(
+                  hintText: 'Search languages',
+                  elevation: const WidgetStatePropertyAll(0),
+                  backgroundColor: WidgetStatePropertyAll(
+                    t.colorScheme.surfaceContainerHigh,
+                  ),
+                  leading: const Icon(Icons.search_rounded),
+                  onChanged: (v) => setState(() => _query = v),
+                ),
+              ),
+              Expanded(
+                child: matches.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No language matches "$_query"',
+                          style: t.textTheme.bodyMedium?.copyWith(
+                            color: t.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: matches.length,
+                        itemBuilder: (context, i) {
+                          final e = matches[i];
+                          final selected = widget.current == e.key;
+                          return ListTile(
+                            leading: Icon(
+                              selected
+                                  ? Icons.radio_button_checked_rounded
+                                  : Icons.radio_button_unchecked_rounded,
+                            ),
+                            title: Text(e.value.$1),
+                            subtitle: e.key.isEmpty || e.value.$1 == e.value.$2
+                                ? null
+                                : Text(e.value.$2),
+                            onTap: () {
+                              widget.onPick(e.key);
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );

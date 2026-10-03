@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../db/database.dart';
 import 'artwork_service.dart';
+import 'innertube.dart';
 import 'yt_service.dart';
 
 enum DownloadStage { queued, running, done, failed }
@@ -146,31 +147,60 @@ class DownloadService {
       final song = await _db.songById(task.songId);
       if (song == null) throw StateError('song vanished');
 
-      final info = await _yt.bestAudio(
-        task.songId,
-        maxBitrateKbps: maxBitrateKbps,
-      );
       final dir = await _audioDir();
-      final file = File('${dir.path}/${task.songId}.${info.extension}');
-      // Written beside the real name and renamed when complete, so a player
-      // never opens half a file and a failed attempt never looks downloaded.
-      final part = File('${file.path}.part');
-      final sink = part.openWrite();
-      final total = info.contentLength;
-      var received = 0;
 
-      await for (final chunk in _yt.download(info)) {
-        sink.add(chunk);
-        received += chunk.length;
-        if (total > 0) {
-          final p = received / total;
-          final t = _queue[task.songId];
-          if (t != null && (p - t.progress) > 0.02) {
-            _queue[task.songId] = t.copyWith(progress: p);
-            _emit();
+      // Some videos answer 403 for one format and serve another, and a URL can
+      // expire between resolving and downloading — so walk the formats, and
+      // once more with fresh URLs, before giving up.
+      late AudioFormat info;
+      late File file;
+      late File part;
+      late IOSink sink;
+      var received = 0;
+      var total = 0;
+      Object? lastError;
+      var done = false;
+      for (var round = 0; round < 2 && !done; round++) {
+        final candidates = await _yt.audioCandidates(
+          task.songId,
+          maxBitrateKbps: maxBitrateKbps,
+        );
+        for (final candidate in candidates) {
+          info = candidate;
+          file = File('${dir.path}/${task.songId}.${info.extension}');
+          // Written beside the real name and renamed when complete, so a
+          // player never opens half a file and a failed attempt never looks
+          // downloaded.
+          part = File('${file.path}.part');
+          sink = part.openWrite();
+          total = info.contentLength;
+          received = 0;
+          try {
+            await for (final chunk in _yt.download(info)) {
+              sink.add(chunk);
+              received += chunk.length;
+              if (total > 0) {
+                final p = received / total;
+                final t = _queue[task.songId];
+                if (t != null && (p - t.progress) > 0.02) {
+                  _queue[task.songId] = t.copyWith(progress: p);
+                  _emit();
+                }
+              }
+            }
+            done = true;
+            break;
+          } catch (e) {
+            lastError = e;
+            await sink.close();
+            if (part.existsSync()) await part.delete();
+            final refused = '$e'.contains('403') || '$e'.contains('410');
+            if (!refused) rethrow;
           }
         }
       }
+      if (!done) throw lastError ?? StateError('no format could be downloaded');
+
       await sink.flush();
       await sink.close();
       if (total > 0 && received != total) {
@@ -195,8 +225,10 @@ class DownloadService {
         );
       }
 
-      _queue[task.songId] = (_queue[task.songId] ?? task)
-          .copyWith(stage: DownloadStage.done, progress: 1);
+      _queue[task.songId] = (_queue[task.songId] ?? task).copyWith(
+        stage: DownloadStage.done,
+        progress: 1,
+      );
       _emit();
       Timer(const Duration(seconds: 4), () {
         _queue.remove(task.songId);
@@ -214,8 +246,10 @@ class DownloadService {
           }
         }
       } catch (_) {}
-      _queue[task.songId] = (_queue[task.songId] ?? task)
-          .copyWith(stage: DownloadStage.failed, error: '$e');
+      _queue[task.songId] = (_queue[task.songId] ?? task).copyWith(
+        stage: DownloadStage.failed,
+        error: '$e',
+      );
       _emit();
       Timer(const Duration(seconds: 10), () {
         _queue.remove(task.songId);

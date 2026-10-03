@@ -9,20 +9,112 @@ final prefsProvider = Provider<SharedPreferences>(
   (ref) => throw UnimplementedError('prefs not ready'),
 );
 
-/// The languages the app ships. '' follows the system.
-const kLanguages = <String, String>{
-  '': 'Follow the system',
-  'en': 'English',
-  'de': 'Deutsch',
-  'es': 'Español',
-  'fr': 'Français',
-  'it': 'Italiano',
-  'nl': 'Nederlands',
-  'pl': 'Polski',
-  'pt': 'Português',
+/// Every language the app ships: code -> (name in that language, English name).
+/// The English name only exists so the search box finds "German" as well as
+/// "Deutsch". '' follows the system.
+const kLanguageInfo = <String, (String, String)>{
+  '': ('Follow the system', 'System default'),
+  'en': ('English', 'English'),
+  'de': ('Deutsch', 'German'),
+  'es': ('Español', 'Spanish'),
+  'fr': ('Français', 'French'),
+  'it': ('Italiano', 'Italian'),
+  'nl': ('Nederlands', 'Dutch'),
+  'pl': ('Polski', 'Polish'),
+  'pt': ('Português', 'Portuguese'),
+  'af': ('Afrikaans', 'Afrikaans'),
+  'am': ('አማርኛ', 'Amharic'),
+  'ar': ('العربية', 'Arabic'),
+  'as': ('অসমীয়া', 'Assamese'),
+  'az': ('Azərbaycanca', 'Azerbaijani'),
+  'be': ('Беларуская', 'Belarusian'),
+  'bg': ('Български', 'Bulgarian'),
+  'bn': ('বাংলা', 'Bengali'),
+  'bo': ('བོད་སྐད་', 'Tibetan'),
+  'bs': ('Bosanski', 'Bosnian'),
+  'ca': ('Català', 'Catalan'),
+  'cs': ('Čeština', 'Czech'),
+  'cy': ('Cymraeg', 'Welsh'),
+  'da': ('Dansk', 'Danish'),
+  'el': ('Ελληνικά', 'Greek'),
+  'et': ('Eesti', 'Estonian'),
+  'eu': ('Euskara', 'Basque'),
+  'fa': ('فارسی', 'Persian'),
+  'fi': ('Suomi', 'Finnish'),
+  'fil': ('Filipino', 'Filipino'),
+  'ga': ('Gaeilge', 'Irish'),
+  'gl': ('Galego', 'Galician'),
+  'gsw': ('Schwiizertüütsch', 'Swiss German'),
+  'gu': ('ગુજરાતી', 'Gujarati'),
+  'he': ('עברית', 'Hebrew'),
+  'hi': ('हिन्दी', 'Hindi'),
+  'hr': ('Hrvatski', 'Croatian'),
+  'hu': ('Magyar', 'Hungarian'),
+  'hy': ('Հայերեն', 'Armenian'),
+  'id': ('Bahasa Indonesia', 'Indonesian'),
+  'is': ('Íslenska', 'Icelandic'),
+  'ja': ('日本語', 'Japanese'),
+  'ka': ('ქართული', 'Georgian'),
+  'kk': ('Қазақша', 'Kazakh'),
+  'km': ('ខ្មែរ', 'Khmer'),
+  'kn': ('ಕನ್ನಡ', 'Kannada'),
+  'ko': ('한국어', 'Korean'),
+  'ky': ('Кыргызча', 'Kyrgyz'),
+  'lo': ('ລາວ', 'Lao'),
+  'lt': ('Lietuvių', 'Lithuanian'),
+  'lv': ('Latviešu', 'Latvian'),
+  'mk': ('Македонски', 'Macedonian'),
+  'ml': ('മലയാളം', 'Malayalam'),
+  'mn': ('Монгол', 'Mongolian'),
+  'mr': ('मराठी', 'Marathi'),
+  'ms': ('Bahasa Melayu', 'Malay'),
+  'my': ('မြန်မာ', 'Burmese'),
+  'nb': ('Norsk bokmål', 'Norwegian'),
+  'ne': ('नेपाली', 'Nepali'),
+  'or': ('ଓଡ଼ିଆ', 'Odia'),
+  'pa': ('ਪੰਜਾਬੀ', 'Punjabi'),
+  'ps': ('پښتو', 'Pashto'),
+  'ro': ('Română', 'Romanian'),
+  'ru': ('Русский', 'Russian'),
+  'si': ('සිංහල', 'Sinhala'),
+  'sk': ('Slovenčina', 'Slovak'),
+  'sl': ('Slovenščina', 'Slovenian'),
+  'sq': ('Shqip', 'Albanian'),
+  'sr': ('Српски', 'Serbian'),
+  'sr_Latn': ('Srpski (latinica)', 'Serbian Latin'),
+  'sv': ('Svenska', 'Swedish'),
+  'sw': ('Kiswahili', 'Swahili'),
+  'ta': ('தமிழ்', 'Tamil'),
+  'te': ('తెలుగు', 'Telugu'),
+  'th': ('ไทย', 'Thai'),
+  'tr': ('Türkçe', 'Turkish'),
+  'ug': ('ئۇيغۇرچە', 'Uyghur'),
+  'uk': ('Українська', 'Ukrainian'),
+  'ur': ('اردو', 'Urdu'),
+  'uz': ('Oʻzbekcha', 'Uzbek'),
+  'vi': ('Tiếng Việt', 'Vietnamese'),
+  'zh': ('简体中文', 'Chinese Simplified'),
+  'zh_TW': ('繁體中文', 'Chinese Traditional'),
+  'zu': ('isiZulu', 'Zulu'),
+};
+
+/// Native names only, in the order above.
+final kLanguages = <String, String>{
+  for (final e in kLanguageInfo.entries) e.key: e.value.$1,
 };
 
 String languageName(String code) => kLanguages[code] ?? code;
+
+/// "zh_TW" -> zh-TW, "sr_Latn" -> sr in Latin script, "" -> follow the system.
+Locale? localeFromCode(String code) {
+  if (code.isEmpty) return null;
+  final parts = code.split('_');
+  if (parts.length == 1) return Locale(parts[0]);
+  final second = parts[1];
+  return second.length == 4
+      ? Locale.fromSubtags(languageCode: parts[0], scriptCode: second)
+      : Locale(parts[0], second);
+}
 
 /// Where the app's accent colour comes from.
 enum AccentMode {

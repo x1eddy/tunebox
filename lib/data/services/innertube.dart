@@ -565,6 +565,17 @@ class PlayerResult {
     return sorted.first;
   }
 
+  /// Every audio format worth trying, best first (the same order [best] uses).
+  List<AudioFormat> ranked({int maxKbps = 0}) {
+    final first = best(maxKbps: maxKbps);
+    if (first == null) return const [];
+    return [
+      first,
+      for (final f in formats)
+        if (f.itag != first.itag) f,
+    ];
+  }
+
   static PlayerResult parse(Map<String, dynamic> json) {
     final playability = json['playabilityStatus'] as Map<String, dynamic>?;
     final details = json['videoDetails'] as Map<String, dynamic>?;

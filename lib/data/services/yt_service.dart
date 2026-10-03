@@ -170,6 +170,22 @@ class YtService {
     return format;
   }
 
+  /// All formats to try for [videoId], best first — some videos refuse one
+  /// format (HTTP 403) and serve another.
+  Future<List<AudioFormat>> audioCandidates(
+    String videoId, {
+    int maxBitrateKbps = 0,
+  }) async {
+    final result = await innerTube.player(videoId);
+    final list = result.ranked(maxKbps: maxBitrateKbps);
+    if (list.isEmpty) {
+      throw InnerTubeException(
+        result.reason ?? 'no audio stream (${result.status})',
+      );
+    }
+    return list;
+  }
+
   /// Downloads in ranges — googlevideo refuses an unranged GET outright.
   Stream<List<int>> download(AudioFormat format) async* {
     const chunk = 8 * 1024 * 1024;

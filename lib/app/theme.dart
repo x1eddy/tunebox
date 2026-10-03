@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Shown on the About row; keep in step with pubspec.
-const kAppVersion = '0.6.3';
+const kAppVersion = '0.7.0';
 
 const kDefaultSeed = Color(0xFF3F5EFB);
 
@@ -127,8 +127,12 @@ ThemeData buildTheme({
       elevation: 0,
       height: 68,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+      labelPadding: EdgeInsets.zero,
       labelTextStyle: WidgetStatePropertyAll(
-        base.textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+        base.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: 10.5,
+        ),
       ),
     ),
     listTileTheme: const ListTileThemeData(

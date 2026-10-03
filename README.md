@@ -44,8 +44,10 @@ Built with Flutter, so one codebase runs on all three.
   radio built from the last song; shuffle is weighted by taste rather than
   random; the queue comes back where you left it after a restart; and off
   Wi-Fi it drops to 128 kbps on its own. All on out of the box.
-- **Speaks your language** — English, German, Spanish, French, Italian, Dutch,
-  Polish and Portuguese, including what the AI says about its own picks.
+- **Speaks your language** — 85 languages (everything Flutter ships system
+  strings for, right-to-left ones included) with a search box in Settings, and
+  it covers what the AI says about its own picks. The first eight were
+  translated with care; the rest are machine translations and welcome fixes.
 - **Accessibility** — text scaling on top of the system setting, reduce
   motion, high contrast and bold text.
 - **Updates itself quietly** — checks this repo every three hours and fetches
