@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../db/database.dart';
+import 'transfer_service.dart';
 
 /// Moves what the AI knows — and the library it learned it from — between
 /// devices.
@@ -51,6 +52,7 @@ class BackupService {
     return {
       'format': formatVersion,
       'createdAt': DateTime.now().toIso8601String(),
+      'device': Platform.localHostname,
       'songs': [
         for (final s in songs)
           if (!s.id.startsWith('local:'))
@@ -112,12 +114,21 @@ class BackupService {
 
   // ------------------------------------------------------------------ import
 
-  Future<BackupSummary> importFromFile(File file) async {
-    final raw = jsonDecode(await file.readAsString());
-    if (raw is! Map<String, dynamic>) {
-      throw const FormatException('not a TuneBox transfer file');
-    }
-    return importBackup(raw);
+  Future<BackupSummary> importFromFile(File file) async =>
+      importBackup(TasteCodec.decode(await file.readAsBytes()));
+
+  /// What a taste contains, for the "merge this?" question.
+  static BackupPreview preview(Map<String, dynamic> backup) {
+    final songs = (backup['songs'] as List? ?? const []);
+    return BackupPreview(
+      songs: songs.length,
+      liked: songs.where((s) => (s as Map)['liked'] == true).length,
+      plays: (backup['events'] as List? ?? const []).length,
+      rules: (backup['artistRules'] as List? ?? const []).length,
+      device: backup['device'] as String?,
+      createdAt: DateTime.tryParse('${backup['createdAt']}'),
+      supported: backup['format'] == formatVersion,
+    );
   }
 
   /// Merges a backup into this device. Existing rows are kept and strengthened
@@ -274,4 +285,24 @@ class BackupSummary {
   String toString() =>
       '$songsAdded new songs, $songsMerged updated, $weights weights, '
       '$events plays, $rules artist rules';
+}
+
+class BackupPreview {
+  const BackupPreview({
+    required this.songs,
+    required this.liked,
+    required this.plays,
+    required this.rules,
+    required this.device,
+    required this.createdAt,
+    required this.supported,
+  });
+
+  final int songs;
+  final int liked;
+  final int plays;
+  final int rules;
+  final String? device;
+  final DateTime? createdAt;
+  final bool supported;
 }

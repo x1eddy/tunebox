@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -380,15 +378,11 @@ class SettingsPage extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.sync_alt_rounded),
-            title: Text(l.setExport),
-            subtitle: Text(l.setExportSub),
-            onTap: () => _exportTaste(context, ref),
-          ),
-          ListTile(
-            leading: const Icon(Icons.download_for_offline_outlined),
-            title: Text(l.setImportTaste),
-            subtitle: Text(l.setImportTasteSub),
-            onTap: () => _importTaste(context, ref),
+            title: const Text('Move your taste'),
+            subtitle: const Text(
+              'Between devices over Wi-Fi, or with a file or text',
+            ),
+            onTap: () => pushDetail(context, 'transfer'),
           ),
           ListTile(
             leading: const Icon(Icons.cleaning_services_outlined),
@@ -484,70 +478,6 @@ class SettingsPage extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-Future<void> _exportTaste(BuildContext context, WidgetRef ref) async {
-  final messenger = ScaffoldMessenger.of(context);
-  final profile = ref.read(profilesProvider).active.name
-      .toLowerCase()
-      .replaceAll(RegExp(r'[^a-z0-9]+'), '-');
-  try {
-    final service = ref.read(backupServiceProvider);
-    final bytes = Uint8List.fromList(await service.exportBytes());
-    // The system's own "save as" dialog: the app's private folder is not
-    // reachable from a file manager on a modern phone.
-    final saved = await FilePicker.saveFile(
-      fileName: 'tunebox-taste-$profile.json',
-      bytes: bytes,
-      mimeType: 'application/json',
-      dialogTitle: 'Save your taste',
-    );
-    if (saved == null) return;
-    messenger
-      ..hideCurrentSnackBar()
-      ..showTimed(
-        SnackBar(
-          content: Text(
-            'Saved ${(bytes.length / 1024).toStringAsFixed(0)} KB — open '
-            '"Load taste" on the other device and pick that file.',
-          ),
-        ),
-      );
-  } catch (e) {
-    messenger.showTimed(SnackBar(content: Text('Export failed: $e')));
-  }
-}
-
-Future<void> _importTaste(BuildContext context, WidgetRef ref) async {
-  final messenger = ScaffoldMessenger.of(context);
-  final backup = ref.read(backupServiceProvider);
-  try {
-    // Always ask which file: quietly re-reading an old copy from the app's
-    // own folder is what made "load" appear to do nothing.
-    final picked = await FilePicker.pickFiles(type: FileType.any);
-    final path = picked.firstOrNull?.path;
-    if (path == null) return;
-    // No timer on this one — it has to stay until the merge is over.
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Merging taste…'),
-          duration: Duration(minutes: 5),
-        ),
-      );
-    final summary = await backup.importFromFile(File(path));
-    dropTasteProfileCache();
-    ref.invalidate(tasteProfileProvider);
-    ref.read(musicProvider).refreshHome();
-    messenger
-      ..hideCurrentSnackBar()
-      ..showTimed(SnackBar(content: Text('Imported: $summary')));
-  } catch (e) {
-    messenger
-      ..hideCurrentSnackBar()
-      ..showTimed(SnackBar(content: Text('Import failed: $e')));
   }
 }
 

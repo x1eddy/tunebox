@@ -13,6 +13,7 @@ import '../features/search/search_page.dart';
 import '../features/settings/settings_page.dart';
 import '../ui/tab_scroll.dart';
 import '../features/taste/taste_page.dart';
+import '../features/transfer/transfer_page.dart';
 import '../state/settings.dart';
 import 'shell.dart';
 
@@ -31,6 +32,7 @@ List<RouteBase> _details() => [
         ArtistPage(name: Uri.decodeComponent(s.pathParameters['name']!)),
   ),
   GoRoute(path: 'import', builder: (_, _) => const ImportPage()),
+  GoRoute(path: 'transfer', builder: (_, _) => const TransferPage()),
   GoRoute(path: 'queue', builder: (_, _) => const QueuePage()),
 ];
 
