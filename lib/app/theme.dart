@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Shown on the About row; keep in step with pubspec.
-const kAppVersion = '0.8.0';
+const kAppVersion = '0.8.1';
 
 const kDefaultSeed = Color(0xFF3F5EFB);
 

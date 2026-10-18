@@ -137,7 +137,7 @@ class TransferServer {
 class TransferClient {
   /// Looks for senders on every /24 this device is attached to.
   static Future<List<NearbyDevice>> discover({
-    Duration timeout = const Duration(milliseconds: 700),
+    Duration timeout = const Duration(milliseconds: 3500),
   }) async {
     final bases = <String>{};
     for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
@@ -152,15 +152,14 @@ class TransferClient {
       for (final b in bases)
         for (var n = 1; n < 255; n++) '$b.$n',
     ];
-    // sixty-four at a time keeps phones and routers happy
-    for (var i = 0; i < targets.length; i += 64) {
-      await Future.wait([
-        for (final host in targets.skip(i).take(64))
-          _probe(host, TransferServer.port, timeout).then((d) {
-            if (d != null) found.add(d);
-          }),
-      ]);
-    }
+    // All at once: a quiet address only costs the timeout, and home Wi-Fi
+    // drops enough packets that a short timeout misses real devices.
+    await Future.wait([
+      for (final host in targets)
+        _probe(host, TransferServer.port, timeout).then((d) {
+          if (d != null) found.add(d);
+        }),
+    ]);
     return found;
   }
 

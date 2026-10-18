@@ -37,7 +37,7 @@ class TransferPage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: Text(
-              'Likes, plays, playlists-free taste and artist rules of '
+              'Likes, plays and artist rules of '
               '"$profile". Receiving merges into this profile and is safe to '
               'repeat — nothing is doubled.',
               style: t.textTheme.bodyMedium?.copyWith(
@@ -62,12 +62,18 @@ class TransferPage extends ConsumerWidget {
             leading: const Icon(Icons.radar_rounded),
             title: const Text('Receive from a nearby device'),
             subtitle: const Text('Finds senders automatically — you type the code'),
-            onTap: () => showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              showDragHandle: true,
-              builder: (_) => const _ReceiveSheet(),
-            ),
+            onTap: () async {
+              final got = await showModalBottomSheet<(Map<String, dynamic>, String)>(
+                context: context,
+                isScrollControlled: true,
+                showDragHandle: true,
+                builder: (_) => const _ReceiveSheet(),
+              );
+              // The sheet is gone by now; merge from this page, which is not.
+              if (got != null && context.mounted) {
+                await _confirmAndMerge(context, ref, got.$1, got.$2);
+              }
+            },
           ),
           section('With a file'),
           ListTile(
@@ -473,11 +479,7 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
     try {
       final map = await TransferClient.fetch(device, pin);
       if (!mounted) return;
-      final navigator = Navigator.of(context);
-      final outer = navigator.context;
-      navigator.pop();
-      // ignore: use_build_context_synchronously
-      await _confirmAndMerge(outer, ref, map, device.name);
+      Navigator.of(context).pop((map, device.name));
     } on FormatException catch (e) {
       if (mounted) {
         setState(() {
