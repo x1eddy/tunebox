@@ -483,5 +483,6 @@
   "cFoldersWatched": "{count} dossiers surveillés",
   "cMoveTasteSub": "Entre appareils via Wi-Fi, ou avec un fichier ou du texte",
   "cSearchLanguages": "Rechercher des langues",
-  "cNoLanguageMatch": "Aucune langue ne correspond à \"{query}\""
+  "cNoLanguageMatch": "Aucune langue ne correspond à \"{query}\"",
+  "addedToPlaylist": "Ajouté à « {name} »"
 }

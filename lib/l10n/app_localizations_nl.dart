@@ -1709,4 +1709,9 @@ class LNl extends L {
   String cNoLanguageMatch(String query) {
     return 'Geen taal komt overeen met \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Toegevoegd aan ‘$name’';
+  }
 }

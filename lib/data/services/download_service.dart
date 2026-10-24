@@ -58,6 +58,20 @@ class DownloadService {
   final _controller = StreamController<List<DownloadTask>>.broadcast();
   bool _working = false;
 
+  /// Called when YouTube refuses a video for good (age-restricted, private,
+  /// removed) — retrying it on every launch only makes noise.
+  void Function(String songId)? onPermanentFailure;
+
+  static bool _isPermanent(Object e) {
+    final t = '$e'.toLowerCase();
+    return t.contains('inappropriate') ||
+        t.contains('age') && t.contains('restrict') ||
+        t.contains('private video') ||
+        t.contains('video unavailable') ||
+        t.contains('has been removed') ||
+        t.contains('not available');
+  }
+
   Stream<List<DownloadTask>> get tasks => _controller.stream;
   List<DownloadTask> get current => _queue.values.toList();
   bool get isBusy => _working;
@@ -246,6 +260,7 @@ class DownloadService {
           }
         }
       } catch (_) {}
+      if (_isPermanent(e)) onPermanentFailure?.call(task.songId);
       _queue[task.songId] = (_queue[task.songId] ?? task).copyWith(
         stage: DownloadStage.failed,
         error: '$e',

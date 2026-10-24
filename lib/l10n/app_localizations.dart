@@ -3164,6 +3164,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'No language matches \"{query}\"'**
   String cNoLanguageMatch(String query);
+
+  /// No description provided for @addedToPlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to \"{name}\"'**
+  String addedToPlaylist(String name);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

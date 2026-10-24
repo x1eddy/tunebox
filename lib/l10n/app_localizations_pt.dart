@@ -1705,4 +1705,9 @@ class LPt extends L {
   String cNoLanguageMatch(String query) {
     return 'Nenhum idioma corresponde a \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Adicionada a «$name»';
+  }
 }

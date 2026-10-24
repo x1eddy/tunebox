@@ -823,8 +823,10 @@ class AiEngine {
     // Shortest first: a one-hour mix must not hold up forty ordinary songs.
     final all = [...await _db.allSongs()]
       ..sort((a, b) => a.durationMs.compareTo(b.durationMs));
+    final skip = {...?_prefs.getStringList(profileKey('dlSkip'))};
     for (final song in all) {
       if (song.source == SongSource.imported || song.blocked) continue;
+      if (skip.contains(song.id)) continue;
       final path = song.filePath;
       final has =
           path != null && File(path).existsSync() && File(path).lengthSync() > 0;

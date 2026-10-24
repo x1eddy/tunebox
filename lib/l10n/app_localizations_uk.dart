@@ -1730,4 +1730,9 @@ class LUk extends L {
   String cNoLanguageMatch(String query) {
     return 'No language matches \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Added to \"$name\"';
+  }
 }

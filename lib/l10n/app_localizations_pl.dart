@@ -1716,4 +1716,9 @@ class LPl extends L {
   String cNoLanguageMatch(String query) {
     return 'Brak języka pasującego do \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Dodano do „$name”';
+  }
 }

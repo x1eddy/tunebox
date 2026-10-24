@@ -1716,4 +1716,9 @@ class LFr extends L {
   String cNoLanguageMatch(String query) {
     return 'Aucune langue ne correspond à \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Ajouté à « $name »';
+  }
 }

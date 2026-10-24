@@ -1713,4 +1713,9 @@ class LDe extends L {
   String cNoLanguageMatch(String query) {
     return 'Keine Sprache passt zu \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Zu „$name“ hinzugefügt';
+  }
 }

@@ -1711,4 +1711,9 @@ class LEs extends L {
   String cNoLanguageMatch(String query) {
     return 'Ningún idioma coincide con \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Añadida a «$name»';
+  }
 }

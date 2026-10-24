@@ -1705,4 +1705,9 @@ class LIt extends L {
   String cNoLanguageMatch(String query) {
     return 'Nessuna lingua corrisponde a \"$query\"';
   }
+
+  @override
+  String addedToPlaylist(String name) {
+    return 'Aggiunta a «$name»';
+  }
 }

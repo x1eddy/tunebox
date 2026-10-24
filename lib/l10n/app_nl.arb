@@ -483,5 +483,6 @@
   "cFoldersWatched": "{count} mappen in de gaten gehouden",
   "cMoveTasteSub": "Tussen apparaten via wifi, of met een bestand of tekst",
   "cSearchLanguages": "Talen zoeken",
-  "cNoLanguageMatch": "Geen taal komt overeen met \"{query}\""
+  "cNoLanguageMatch": "Geen taal komt overeen met \"{query}\"",
+  "addedToPlaylist": "Toegevoegd aan ‘{name}’"
 }

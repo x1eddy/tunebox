@@ -46,6 +46,11 @@ final downloadServiceProvider = Provider<DownloadService>((ref) {
     ref.watch(ytProvider),
     ref.watch(artworkProvider),
   );
+  final prefs = ref.watch(prefsProvider);
+  service.onPermanentFailure = (id) {
+    final key = profileKey('dlSkip');
+    prefs.setStringList(key, {...?prefs.getStringList(key), id}.toList());
+  };
   ref.onDispose(service.dispose);
   return service;
 });

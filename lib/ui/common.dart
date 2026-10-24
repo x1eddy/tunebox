@@ -691,6 +691,8 @@ Future<void> startRadio(WidgetRef ref, Song seed) =>
     ref.read(musicProvider).startRadio(seed);
 
 void showAddToPlaylist(BuildContext context, Song song) {
+  final messenger = ScaffoldMessenger.of(context);
+  final added = L.of(context);
   showModalBottomSheet<void>(
     context: context,
     useRootNavigator: true,
@@ -720,6 +722,12 @@ void showAddToPlaylist(BuildContext context, Song song) {
                   final id = 'pl${DateTime.now().millisecondsSinceEpoch}';
                   await db.createPlaylist(id, name);
                   await db.addToPlaylist(id, song.id);
+                  messenger.showTimed(
+                    SnackBar(
+                      duration: const Duration(seconds: 3),
+                      content: Text(added.addedToPlaylist(name)),
+                    ),
+                  );
                 },
               ),
               for (final p in playlists)
@@ -729,6 +737,12 @@ void showAddToPlaylist(BuildContext context, Song song) {
                   onTap: () {
                     db.addToPlaylist(p.id, song.id);
                     Navigator.pop(sheetContext);
+                    messenger.showTimed(
+                      SnackBar(
+                        duration: const Duration(seconds: 3),
+                        content: Text(added.addedToPlaylist(p.name)),
+                      ),
+                    );
                   },
                 ),
               const SizedBox(height: 8),
