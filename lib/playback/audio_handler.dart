@@ -76,6 +76,9 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _queueChanges.add(queueSongs);
   }
 
+  /// Where the queue came from: 'library', 'search', 'liked', 'radio'…
+  String get origin => _origin;
+
   AudioPlayer get player => _player;
   List<Song> get queueSongs => List.unmodifiable(_queue);
   int get index => _index;
@@ -134,6 +137,28 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     if (index < 0 || index >= _queue.length || index == _index) return;
     _queue.removeAt(index);
     if (index < _index) _index--;
+    queue.add([for (final s in _queue) _mediaItem(s)]);
+    _queueChanges.add(queueSongs);
+  }
+
+  /// Puts a song back where it was (undo for [removeAt]).
+  void insertAt(int index, Song song) {
+    final at = index.clamp(0, _queue.length);
+    _queue.insert(at, song);
+    if (at <= _index && _queue.length > 1) _index++;
+    queue.add([for (final s in _queue) _mediaItem(s)]);
+    _queueChanges.add(queueSongs);
+  }
+
+  /// Swaps the queue for [songs] without touching what is playing, as long as
+  /// the current song is among them. Used for "clear queue" and its undo.
+  void setQueueKeepingCurrent(List<Song> songs) {
+    final playing = currentSong?.id;
+    _queue
+      ..clear()
+      ..addAll(songs);
+    final i = playing == null ? -1 : _queue.indexWhere((s) => s.id == playing);
+    _index = i < 0 ? 0 : i;
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
   }
@@ -287,6 +312,16 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         // a stream that will not seek yet is not worth failing a launch over
       }
     }
+  }
+
+  /// Swipe-away: stop, forget the queue and hide the mini-player.
+  Future<void> dismiss() async {
+    await stop();
+    _queue.clear();
+    _index = 0;
+    _queueChanges.add(queueSongs);
+    queue.add(const []);
+    _currentSong.add(null);
   }
 
   @override

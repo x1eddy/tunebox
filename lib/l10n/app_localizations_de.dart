@@ -954,4 +954,340 @@ class LDe extends L {
 
   @override
   String get setChecking => 'Suche nach einer neueren Version…';
+
+  @override
+  String get homeCantReach => 'YouTube nicht erreichbar';
+
+  @override
+  String get homeOfflineHint =>
+      'Prüfe deine Verbindung. Alles, was schon auf dem Gerät ist, funktioniert weiter.';
+
+  @override
+  String get actionRetry => 'Erneut versuchen';
+
+  @override
+  String get actionClear => 'Leeren';
+
+  @override
+  String get searchFailed => 'Die Suche hat nicht geklappt';
+
+  @override
+  String get profWho => 'Wer hört gerade zu?';
+
+  @override
+  String get profExplain =>
+      'Jedes Profil hat seine eigene Mediathek, Likes, Playlists und seinen eigenen Geschmack.';
+
+  @override
+  String get profActive => 'Aktiv';
+
+  @override
+  String get profRename => 'Umbenennen';
+
+  @override
+  String get profDeleteMenu => 'Profil löschen';
+
+  @override
+  String get profAdd => 'Profil hinzufügen';
+
+  @override
+  String get profNew => 'Neues Profil';
+
+  @override
+  String get profName => 'Name';
+
+  @override
+  String profDeleteTitle(String name) {
+    return '\"$name\" löschen?';
+  }
+
+  @override
+  String get profDeleteBody =>
+      'Bibliothek, Likes, Playlists und gelernter Geschmack werden endgültig entfernt. Die Musikdateien bleiben auf dem Gerät.';
+
+  @override
+  String get profKeep => 'Behalten';
+
+  @override
+  String get actionOk => 'OK';
+
+  @override
+  String get actionDelete => 'Löschen';
+
+  @override
+  String get xferTitle => 'Geschmack übertragen';
+
+  @override
+  String xferIntro(String profile) {
+    return 'Likes, Wiedergaben und Künstlerregeln von \"$profile\". Beim Empfangen wird in dieses Profil zusammengeführt – du kannst es beliebig wiederholen, nichts wird doppelt.';
+  }
+
+  @override
+  String get xferSectionWifi => 'Zwischen Geräten im selben Wi-Fi';
+
+  @override
+  String get xferSend => 'An ein Gerät in der Nähe senden';
+
+  @override
+  String get xferSendSub => 'Zeigt einen Code; das andere Gerät findet dieses';
+
+  @override
+  String get xferReceive => 'Von einem Gerät in der Nähe empfangen';
+
+  @override
+  String get xferReceiveSub =>
+      'Findet Sender automatisch – du gibst den Code ein';
+
+  @override
+  String get xferSectionFile => 'Mit einer Datei';
+
+  @override
+  String get xferSave => 'In Datei speichern';
+
+  @override
+  String get xferSaveSub => 'Wähle das Ziel: Downloads, USB, ein Chat …';
+
+  @override
+  String get xferLoad => 'Aus Datei laden';
+
+  @override
+  String get xferLoadSub => 'Jede TuneBox-Geschmacksdatei, alt oder neu';
+
+  @override
+  String get xferSectionText => 'Als Text';
+
+  @override
+  String get xferCopy => 'Als Text kopieren';
+
+  @override
+  String get xferCopySub =>
+      'Eine Zeile, die du in jeden Chat oder jede Notiz einfügen kannst';
+
+  @override
+  String get xferPaste => 'Text einfügen';
+
+  @override
+  String get xferPasteSub => 'Aus der Zwischenablage';
+
+  @override
+  String get xferSaveDialog => 'Geschmack speichern';
+
+  @override
+  String xferSaved(String kb) {
+    return '$kb KB gespeichert. Wähle auf dem anderen Gerät \"Aus Datei laden\".';
+  }
+
+  @override
+  String xferSaveFailed(String error) {
+    return 'Speichern fehlgeschlagen: $error';
+  }
+
+  @override
+  String xferFileUnreadable(String error) {
+    return 'Diese Datei konnte nicht als Geschmack gelesen werden: $error';
+  }
+
+  @override
+  String xferCopied(String kb) {
+    return 'Kopiert ($kb KB Text). Füge ihn auf dem anderen Gerät mit \"Text einfügen\" ein.';
+  }
+
+  @override
+  String xferCopyFailed(String error) {
+    return 'Kopieren fehlgeschlagen: $error';
+  }
+
+  @override
+  String get xferClipboardEmpty =>
+      'Die Zwischenablage enthält keinen TuneBox-Geschmack. Kopiere ihn zuerst auf dem anderen Gerät.';
+
+  @override
+  String get xferNewerTitle => 'Neuer als diese App';
+
+  @override
+  String get xferNewerBody =>
+      'Dieser Geschmack wurde mit einer neueren TuneBox-Version erstellt. Aktualisiere zuerst dieses Gerät.';
+
+  @override
+  String xferMergeTitle(String profile) {
+    return 'In \"$profile\" zusammenführen?';
+  }
+
+  @override
+  String xferMergeBody(
+    String source,
+    int songs,
+    int liked,
+    int plays,
+    int rules,
+  ) {
+    return 'Von $source:\n• $songs Songs, $liked mit Like\n• $plays Wiedergaben\n• $rules Künstlerregeln\n\nDeine eigenen Likes und dein Verlauf bleiben erhalten. Zweimal ausführen ändert nichts.';
+  }
+
+  @override
+  String get xferSourceFile => 'der Datei';
+
+  @override
+  String get xferSourceClipboard => 'der Zwischenablage';
+
+  @override
+  String get xferMerge => 'Zusammenführen';
+
+  @override
+  String get xferMerging => 'Wird zusammengeführt …';
+
+  @override
+  String xferMerged(String summary) {
+    return 'Zusammengeführt: $summary';
+  }
+
+  @override
+  String xferMergeFailed(String error) {
+    return 'Zusammenführen fehlgeschlagen: $error';
+  }
+
+  @override
+  String get xferSendTitle => 'Geschmack senden';
+
+  @override
+  String xferCouldNotStart(String error) {
+    return 'Start fehlgeschlagen: $error';
+  }
+
+  @override
+  String get xferSent => 'Gesendet. Das andere Gerät hat deinen Geschmack.';
+
+  @override
+  String get xferClosed =>
+      'Geschlossen – der Code ist abgelaufen oder wurde zu oft falsch eingegeben. Starte neu für einen neuen Code.';
+
+  @override
+  String get xferSendHow =>
+      'Öffne auf dem anderen Gerät Einstellungen → Geschmack übertragen → Empfangen, wähle dieses Gerät und gib ein:';
+
+  @override
+  String get xferNoWifi =>
+      'Keine Wi-Fi-Adresse gefunden – verbinde beide Geräte mit demselben Netzwerk.';
+
+  @override
+  String xferThisDevice(String addresses, int port) {
+    return 'Dieses Gerät: $addresses (Port $port)';
+  }
+
+  @override
+  String get xferWaiting =>
+      'Warte auf das andere Gerät … (schließt nach 5 Minuten)';
+
+  @override
+  String xferCodeFor(String name) {
+    return 'Code angezeigt auf $name';
+  }
+
+  @override
+  String get xferCodeLabel => '6-stelliger Code';
+
+  @override
+  String get xferReceiveAction => 'Empfangen';
+
+  @override
+  String xferReceivingFrom(String name) {
+    return 'Empfange von $name …';
+  }
+
+  @override
+  String get xferWrongCode =>
+      'Falscher Code. Prüfe die Zahl auf dem anderen Gerät.';
+
+  @override
+  String get xferNotTaste => 'Das war kein TuneBox-Geschmack.';
+
+  @override
+  String xferCouldNotReach(String error) {
+    return 'Nicht erreichbar: $error';
+  }
+
+  @override
+  String xferLooking(String host) {
+    return 'Suche nach $host …';
+  }
+
+  @override
+  String xferNothingAt(String host) {
+    return 'Bei $host hat nichts geantwortet. Ist dort \"Senden\" geöffnet?';
+  }
+
+  @override
+  String get xferReceiveTitle => 'Geschmack empfangen';
+
+  @override
+  String get xferOpenSendFirst =>
+      'Öffne zuerst \"Senden\" auf dem anderen Gerät (selbes Wi-Fi).';
+
+  @override
+  String get xferSearching => 'Suche nach Geräten in der Nähe …';
+
+  @override
+  String get xferNoSender => 'Noch kein Sender gefunden.';
+
+  @override
+  String get xferSearchAgain => 'Erneut suchen';
+
+  @override
+  String get xferTypeAddress => 'Nicht aufgelistet? Gib die Adresse ein';
+
+  @override
+  String get xferConnect => 'Verbinden';
+
+  @override
+  String get qUndo => 'Rückgängig';
+
+  @override
+  String qRemoved(String title) {
+    return '\"$title\" entfernt';
+  }
+
+  @override
+  String get qCleared => 'Warteschlange geleert';
+
+  @override
+  String qSaved(String songs, String name) {
+    return '$songs in \"$name\" gespeichert';
+  }
+
+  @override
+  String qTitle(int count) {
+    return 'Warteschlange · $count';
+  }
+
+  @override
+  String get qSavePlaylist => 'Als Playlist speichern';
+
+  @override
+  String get qClear => 'Warteschlange leeren';
+
+  @override
+  String get qClearSub => 'Der aktuelle Song bleibt';
+
+  @override
+  String get qEmptyTitle => 'Die Warteschlange ist leer';
+
+  @override
+  String get qEmptyBody => 'Spiel etwas ab und sie füllt sich hier.';
+
+  @override
+  String get qDrag => 'Zum Umsortieren ziehen';
+
+  @override
+  String plDeleted(String name) {
+    return '\"$name\" gelöscht';
+  }
+
+  @override
+  String get plDeleteSub => 'Die Songs bleiben in deiner Mediathek';
+
+  @override
+  String get plDelete => 'Playlist löschen';
+
+  @override
+  String get plRenameOrDelete => 'Umbenennen oder löschen';
 }

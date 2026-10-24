@@ -116,7 +116,12 @@ class CoverArt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = artworkImageProvider(song, size: size?.round());
+    // A cover that will fly into the full-screen player is decoded larger, or
+    // the flight shows a blurry thumbnail until the real one swaps in.
+    final decode = (heroTag != null && size != null && size! < 160)
+        ? 160
+        : size?.round();
+    final provider = artworkImageProvider(song, size: decode);
     final seed =
         seedText ??
         (song == null
@@ -153,10 +158,13 @@ class CoverArt extends StatelessWidget {
                 // shelf of twenty that is the difference between a smooth
                 // scroll and a stuttery one. Only the big player art fades.
                 if (size != null) return child;
-                return AnimatedOpacity(
-                  opacity: 1,
+                // already on screen: no fade. Arriving from the network: fade in.
+                if (wasSync) return child;
+                return TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: 1),
                   duration: Motion.medium,
                   curve: Motion.decelerate,
+                  builder: (_, v, c) => Opacity(opacity: v, child: c),
                   child: child,
                 );
               }

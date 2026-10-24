@@ -211,8 +211,10 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
         if (settings.textScale != 1.0) {
           themed = MediaQuery(
             data: media.copyWith(
+              // still inside the same 0.8–2.4 window as everything else
               textScaler: TextScaler.linear(
-                media.textScaler.scale(14) / 14 * settings.textScale,
+                (media.textScaler.scale(14) / 14 * settings.textScale)
+                    .clamp(0.8, 2.4),
               ),
             ),
             child: child,

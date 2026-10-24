@@ -46,24 +46,30 @@ class _PressableState extends ConsumerState<Pressable> {
   @override
   Widget build(BuildContext context) {
     final reduce = ref.watch(settingsProvider.select((s) => s.reduceMotion));
-    return GestureDetector(
-      onTapDown: reduce ? null : (_) => _set(true),
-      onTapUp: reduce ? null : (_) => _set(false),
-      onTapCancel: reduce ? null : () => _set(false),
+    return Semantics(
+      button: true,
+      container: true,
       onTap: widget.onTap,
       onLongPress: widget.onLongPress,
-      behavior: HitTestBehavior.opaque,
-      child: reduce
-          ? widget.child
-          : AnimatedScale(
-              scale: _down ? widget.scale : 1,
-              // quick on the way down, a soft overshoot on the way back up
-              duration: _down
-                  ? const Duration(milliseconds: 110)
-                  : const Duration(milliseconds: 380),
-              curve: _down ? Curves.easeOut : Curves.easeOutBack,
-              child: widget.child,
-            ),
+      child: GestureDetector(
+        onTapDown: reduce ? null : (_) => _set(true),
+        onTapUp: reduce ? null : (_) => _set(false),
+        onTapCancel: reduce ? null : () => _set(false),
+        onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
+        behavior: HitTestBehavior.opaque,
+        child: reduce
+            ? widget.child
+            : AnimatedScale(
+                scale: _down ? widget.scale : 1,
+                // quick on the way down, a soft overshoot on the way back up
+                duration: _down
+                    ? const Duration(milliseconds: 110)
+                    : const Duration(milliseconds: 380),
+                curve: _down ? Curves.easeOut : Curves.easeOutBack,
+                child: widget.child,
+              ),
+      ),
     );
   }
 }
@@ -153,6 +159,52 @@ class ShelfSkeleton extends StatelessWidget {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Placeholder rows shaped like [SongTile], for lists that are still loading.
+class SongListSkeleton extends StatelessWidget {
+  const SongListSkeleton({super.key, this.rows = 8});
+
+  final int rows;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 14, 12, 0),
+      child: Column(
+        children: [
+          for (var i = 0; i < rows; i++)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 7),
+              child: Row(
+                children: [
+                  const Skeleton(width: 52, height: 52, radius: 8),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Skeleton(
+                          width: 120.0 + (i * 37 % 90),
+                          height: 13,
+                          radius: 4,
+                        ),
+                        const SizedBox(height: 8),
+                        Skeleton(
+                          width: 70.0 + (i * 23 % 60),
+                          height: 10,
+                          radius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

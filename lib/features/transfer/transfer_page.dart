@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/services/backup_service.dart';
 import '../../data/services/transfer_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../../state/providers.dart';
 import '../../ui/common.dart';
 
@@ -30,28 +31,27 @@ class TransferPage extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Move your taste')),
+      appBar: AppBar(title: Text(L.of(context).xferTitle)),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 28),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: Text(
-              'Likes, plays and artist rules of '
-              '"$profile". Receiving merges into this profile and is safe to '
-              'repeat — nothing is doubled.',
+              L.of(context).xferIntro(profile),
               style: t.textTheme.bodyMedium?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
-          section('Between devices on the same Wi-Fi'),
+          section(L.of(context).xferSectionWifi),
           ListTile(
             leading: const Icon(Icons.send_rounded),
-            title: const Text('Send to a nearby device'),
-            subtitle: const Text('Shows a code; the other device finds this one'),
+            title: Text(L.of(context).xferSend),
+            subtitle: Text(L.of(context).xferSendSub),
             onTap: () => showModalBottomSheet<void>(
               context: context,
+    useRootNavigator: true,
               isScrollControlled: true,
               showDragHandle: true,
               isDismissible: false,
@@ -60,11 +60,12 @@ class TransferPage extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.radar_rounded),
-            title: const Text('Receive from a nearby device'),
-            subtitle: const Text('Finds senders automatically — you type the code'),
+            title: Text(L.of(context).xferReceive),
+            subtitle: Text(L.of(context).xferReceiveSub),
             onTap: () async {
               final got = await showModalBottomSheet<(Map<String, dynamic>, String)>(
                 context: context,
+    useRootNavigator: true,
                 isScrollControlled: true,
                 showDragHandle: true,
                 builder: (_) => const _ReceiveSheet(),
@@ -75,30 +76,30 @@ class TransferPage extends ConsumerWidget {
               }
             },
           ),
-          section('With a file'),
+          section(L.of(context).xferSectionFile),
           ListTile(
             leading: const Icon(Icons.save_alt_rounded),
-            title: const Text('Save to a file'),
-            subtitle: const Text('Pick where it goes: Downloads, USB, a chat…'),
+            title: Text(L.of(context).xferSave),
+            subtitle: Text(L.of(context).xferSaveSub),
             onTap: () => _saveFile(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.folder_open_rounded),
-            title: const Text('Load from a file'),
-            subtitle: const Text('Any TuneBox taste file, old or new'),
+            title: Text(L.of(context).xferLoad),
+            subtitle: Text(L.of(context).xferLoadSub),
             onTap: () => _loadFile(context, ref),
           ),
-          section('As text'),
+          section(L.of(context).xferSectionText),
           ListTile(
             leading: const Icon(Icons.content_copy_rounded),
-            title: const Text('Copy as text'),
-            subtitle: const Text('One line you can paste into any chat or note'),
+            title: Text(L.of(context).xferCopy),
+            subtitle: Text(L.of(context).xferCopySub),
             onTap: () => _copyText(context, ref),
           ),
           ListTile(
             leading: const Icon(Icons.content_paste_rounded),
-            title: const Text('Paste text'),
-            subtitle: const Text('From the clipboard'),
+            title: Text(L.of(context).xferPaste),
+            subtitle: Text(L.of(context).xferPasteSub),
             onTap: () => _pasteText(context, ref),
           ),
         ],
@@ -111,6 +112,7 @@ class TransferPage extends ConsumerWidget {
 
 Future<void> _saveFile(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l = L.of(context);
   final name = ref.read(profilesProvider).active.name
       .toLowerCase()
       .replaceAll(RegExp(r'[^a-z0-9]+'), '-');
@@ -122,40 +124,39 @@ Future<void> _saveFile(BuildContext context, WidgetRef ref) async {
       fileName: 'tunebox-taste-$name.json',
       bytes: bytes,
       mimeType: 'application/json',
-      dialogTitle: 'Save your taste',
+      dialogTitle: l.xferSaveDialog,
     );
     if (saved == null) return;
     messenger.showTimed(
       SnackBar(
-        content: Text(
-          'Saved ${(bytes.length / 1024).toStringAsFixed(0)} KB. On the other '
-          'device choose "Load from a file".',
-        ),
+        content: Text(l.xferSaved((bytes.length / 1024).toStringAsFixed(0))),
       ),
     );
   } catch (e) {
-    messenger.showTimed(SnackBar(content: Text('Could not save: $e')));
+    messenger.showTimed(SnackBar(content: Text(l.xferSaveFailed('$e'))));
   }
 }
 
 Future<void> _loadFile(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l = L.of(context);
   try {
     final picked = await FilePicker.pickFiles(type: FileType.any);
     final path = picked.firstOrNull?.path;
     if (path == null) return;
     final map = TasteCodec.decode(await File(path).readAsBytes());
     if (!context.mounted) return;
-    await _confirmAndMerge(context, ref, map, 'the file');
+    await _confirmAndMerge(context, ref, map, l.xferSourceFile);
   } catch (e) {
     messenger.showTimed(
-      SnackBar(content: Text('That file could not be read as a taste: $e')),
+      SnackBar(content: Text(l.xferFileUnreadable('$e'))),
     );
   }
 }
 
 Future<void> _copyText(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l = L.of(context);
   try {
     final text = TasteCodec.toText(
       await ref.read(backupServiceProvider).buildBackup(),
@@ -163,30 +164,25 @@ Future<void> _copyText(BuildContext context, WidgetRef ref) async {
     await Clipboard.setData(ClipboardData(text: text));
     messenger.showTimed(
       SnackBar(
-        content: Text(
-          'Copied (${(text.length / 1024).toStringAsFixed(0)} KB of text). '
-          'Paste it on the other device with "Paste text".',
-        ),
+        content: Text(l.xferCopied((text.length / 1024).toStringAsFixed(0))),
       ),
     );
   } catch (e) {
-    messenger.showTimed(SnackBar(content: Text('Could not copy: $e')));
+    messenger.showTimed(SnackBar(content: Text(l.xferCopyFailed('$e'))));
   }
 }
 
 Future<void> _pasteText(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
+  final l = L.of(context);
   try {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final map = TasteCodec.decodeText(data?.text ?? '');
     if (!context.mounted) return;
-    await _confirmAndMerge(context, ref, map, 'the clipboard');
+    await _confirmAndMerge(context, ref, map, l.xferSourceClipboard);
   } catch (_) {
     messenger.showTimed(
-      const SnackBar(
-        content: Text('The clipboard does not hold a TuneBox taste. Copy it on '
-            'the other device first.'),
-      ),
+      SnackBar(content: Text(l.xferClipboardEmpty)),
     );
   }
 }
@@ -198,20 +194,19 @@ Future<void> _confirmAndMerge(
   Map<String, dynamic> map,
   String source,
 ) async {
+  final l = L.of(context);
   final preview = BackupService.preview(map);
   final profile = ref.read(profilesProvider).active.name;
   if (!preview.supported) {
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Newer than this app'),
-        content: const Text(
-          'This taste was made by a newer TuneBox. Update this device first.',
-        ),
+        title: Text(l.xferNewerTitle),
+        content: Text(l.xferNewerBody),
         actions: [
           FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text(l.actionOk),
           ),
         ],
       ),
@@ -222,22 +217,24 @@ Future<void> _confirmAndMerge(
     context: context,
     builder: (context) => AlertDialog(
       icon: const Icon(Icons.merge_rounded),
-      title: Text('Merge into "$profile"?'),
+      title: Text(l.xferMergeTitle(profile)),
       content: Text(
-        'From $source${preview.device == null ? '' : ' (${preview.device})'}:\n'
-        '• ${preview.songs} songs, ${preview.liked} liked\n'
-        '• ${preview.plays} plays\n'
-        '• ${preview.rules} artist rules\n\n'
-        'Your own likes and history stay. Doing this twice changes nothing.',
+        l.xferMergeBody(
+          '$source${preview.device == null ? '' : ' (${preview.device})'}',
+          preview.songs,
+          preview.liked,
+          preview.plays,
+          preview.rules,
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: Text(l.actionCancel),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Merge'),
+          child: Text(l.xferMerge),
         ),
       ],
     ),
@@ -248,9 +245,9 @@ Future<void> _confirmAndMerge(
   messenger
     ..hideCurrentSnackBar()
     ..showSnackBar(
-      const SnackBar(
-        content: Text('Merging…'),
-        duration: Duration(minutes: 5),
+      SnackBar(
+        content: Text(l.xferMerging),
+        duration: const Duration(minutes: 5),
       ),
     );
   try {
@@ -260,11 +257,11 @@ Future<void> _confirmAndMerge(
     ref.read(musicProvider).refreshHome();
     messenger
       ..hideCurrentSnackBar()
-      ..showTimed(SnackBar(content: Text('Merged: $summary')));
+      ..showTimed(SnackBar(content: Text(l.xferMerged('$summary'))));
   } catch (e) {
     messenger
       ..hideCurrentSnackBar()
-      ..showTimed(SnackBar(content: Text('Merge failed: $e')));
+      ..showTimed(SnackBar(content: Text(l.xferMergeFailed('$e'))));
   }
 }
 
@@ -323,26 +320,24 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
     final t = Theme.of(context);
     Widget body;
     if (_error != null) {
-      body = Text('Could not start: $_error');
+      body = Text(L.of(context).xferCouldNotStart('$_error'));
     } else if (!_ready) {
       body = const Center(child: CircularProgressIndicator());
     } else if (_delivered == true) {
-      body = const Column(
+      body = Column(
         children: [
-          Icon(Icons.check_circle_rounded, size: 56),
-          SizedBox(height: 8),
-          Text('Sent. The other device has your taste.'),
+          const Icon(Icons.check_circle_rounded, size: 56),
+          const SizedBox(height: 8),
+          Text(L.of(context).xferSent),
         ],
       );
     } else if (_delivered == false) {
-      body = const Text('Closed — the code expired or was guessed wrong too '
-          'often. Start again for a new one.');
+      body = Text(L.of(context).xferClosed);
     } else {
       body = Column(
         children: [
           Text(
-            'On the other device open Settings → Move your taste → Receive, '
-            'then pick this device and type:',
+            L.of(context).xferSendHow,
             textAlign: TextAlign.center,
             style: t.textTheme.bodyMedium,
           ),
@@ -357,14 +352,15 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
           const SizedBox(height: 14),
           if (_addresses.isEmpty)
             Text(
-              'No Wi-Fi address found — connect both devices to the same '
-              'network.',
+              L.of(context).xferNoWifi,
               style: t.textTheme.bodySmall?.copyWith(color: t.colorScheme.error),
             )
           else
             Text(
-              'This device: ${_addresses.join(' · ')} '
-              '(port ${_server.listeningPort})',
+              L.of(context).xferThisDevice(
+                _addresses.join(' · '),
+                _server.listeningPort,
+              ),
               style: t.textTheme.bodySmall?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
@@ -373,7 +369,7 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
           const LinearProgressIndicator(),
           const SizedBox(height: 6),
           Text(
-            'Waiting for the other device… (closes after 5 minutes)',
+            L.of(context).xferWaiting,
             style: t.textTheme.labelMedium,
           ),
         ],
@@ -385,13 +381,17 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Send your taste', style: t.textTheme.titleLarge),
+            Text(L.of(context).xferSendTitle, style: t.textTheme.titleLarge),
             const SizedBox(height: 16),
             body,
             const SizedBox(height: 18),
             FilledButton.tonal(
               onPressed: () => Navigator.pop(context),
-              child: Text(_delivered == null ? 'Cancel' : 'Done'),
+              child: Text(
+                _delivered == null
+                    ? L.of(context).actionCancel
+                    : L.of(context).actionDone,
+              ),
             ),
           ],
         ),
@@ -446,23 +446,23 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Code shown on $name'),
+        title: Text(L.of(context).xferCodeFor(name)),
         content: TextField(
           controller: field,
           autofocus: true,
           keyboardType: TextInputType.number,
           maxLength: 6,
-          decoration: const InputDecoration(labelText: '6-digit code'),
+          decoration: InputDecoration(labelText: L.of(context).xferCodeLabel),
           onSubmitted: (v) => Navigator.pop(context, v),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(L.of(context).actionCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(context, field.text),
-            child: const Text('Receive'),
+            child: Text(L.of(context).xferReceiveAction),
           ),
         ],
       ),
@@ -474,7 +474,7 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
     if (pin == null || pin.trim().isEmpty || !mounted) return;
     setState(() {
       _busy = true;
-      _status = 'Receiving from ${device.name}…';
+      _status = L.of(context).xferReceivingFrom(device.name);
     });
     try {
       final map = await TransferClient.fetch(device, pin);
@@ -485,15 +485,15 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
         setState(() {
           _busy = false;
           _status = e.message == 'wrong code'
-              ? 'Wrong code. Check the number on the other device.'
-              : 'That was not a TuneBox taste.';
+              ? L.of(context).xferWrongCode
+              : L.of(context).xferNotTaste;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _busy = false;
-          _status = 'Could not reach it: $e';
+          _status = L.of(context).xferCouldNotReach('$e');
         });
       }
     }
@@ -504,7 +504,7 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
     if (host.isEmpty) return;
     setState(() {
       _busy = true;
-      _status = 'Looking for $host…';
+      _status = L.of(context).xferLooking(host);
     });
     final parts = host.split(':');
     final device = await TransferClient.probe(
@@ -516,7 +516,7 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
     if (!mounted) return;
     setState(() => _busy = false);
     if (device == null) {
-      setState(() => _status = 'Nothing answered at $host. Is Send open there?');
+      setState(() => _status = L.of(context).xferNothingAt(host));
       return;
     }
     await _receive(device);
@@ -538,29 +538,29 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Receive a taste', style: t.textTheme.titleLarge),
+              Text(L.of(context).xferReceiveTitle, style: t.textTheme.titleLarge),
               const SizedBox(height: 4),
               Text(
-                'Open Send on the other device first (same Wi-Fi).',
+                L.of(context).xferOpenSendFirst,
                 style: t.textTheme.bodySmall?.copyWith(
                   color: t.colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 12),
               if (_searching)
-                const Row(
+                Row(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                    SizedBox(width: 12),
-                    Text('Looking for nearby devices…'),
+                    const SizedBox(width: 12),
+                    Text(L.of(context).xferSearching),
                   ],
                 )
               else if (_devices.isEmpty)
-                const Text('No sender found yet.')
+                Text(L.of(context).xferNoSender)
               else
                 for (final d in _devices)
                   ListTile(
@@ -574,10 +574,10 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
                 TextButton.icon(
                   onPressed: _busy ? null : _search,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Search again'),
+                  label: Text(L.of(context).xferSearchAgain),
                 ),
               const Divider(height: 24),
-              Text('Not listed? Type its address', style: t.textTheme.titleSmall),
+              Text(L.of(context).xferTypeAddress, style: t.textTheme.titleSmall),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -596,7 +596,7 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
                   const SizedBox(width: 8),
                   FilledButton.tonal(
                     onPressed: _busy ? null : _manual,
-                    child: const Text('Connect'),
+                    child: Text(L.of(context).xferConnect),
                   ),
                 ],
               ),

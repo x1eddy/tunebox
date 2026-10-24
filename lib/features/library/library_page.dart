@@ -7,7 +7,10 @@ import '../../app/theme.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
+import '../../state/settings.dart';
+import '../detail/playlist_actions.dart';
 import '../../ui/common.dart';
+import '../../ui/motion.dart';
 import '../../l10n/app_localizations.dart';
 
 enum _Sort { recent, alpha, plays, year }
@@ -20,8 +23,17 @@ class LibraryPage extends ConsumerStatefulWidget {
 }
 
 class _LibraryPageState extends ConsumerState<LibraryPage> {
-  _Sort _sort = _Sort.recent;
+  late _Sort _sort = _Sort.values.firstWhere(
+    (s) => s.name == ref.read(prefsProvider).getString('librarySort'),
+    orElse: () => _Sort.recent,
+  );
   bool _grid = true;
+
+  void _setSort(_Sort sort) {
+    setState(() => _sort = sort);
+    ref.read(prefsProvider).setString('librarySort', sort.name);
+  }
+
   final _sortCache = <String, List<Song>>{};
   final _sortSignatures = <String, String>{};
 
@@ -29,7 +41,8 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
   /// switching tabs, and this page rebuilds on every database tick. The result
   /// only changes when the list or the chosen order does.
   List<Song> _sorted(List<Song> songs, String key) {
-    final signature = '$_sort|${songs.length}|'
+    final signature =
+        '$_sort|${songs.length}|'
         '${songs.isEmpty ? '' : songs.first.id}|'
         '${songs.isEmpty ? '' : songs.last.id}';
     if (_sortSignatures[key] == signature) return _sortCache[key]!;
@@ -45,7 +58,9 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
       case _Sort.recent:
         out.sort((a, b) => b.addedAt.compareTo(a.addedAt));
       case _Sort.alpha:
-        out.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+        out.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
       case _Sort.plays:
         out.sort((a, b) => b.playCount.compareTo(a.playCount));
       case _Sort.year:
@@ -57,7 +72,10 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    final library = ref.watch(libraryProvider).value ?? const <Song>[];
+    final libraryAsync = ref.watch(libraryProvider);
+    final library = libraryAsync.value ?? const <Song>[];
+    // First launch of the screen: say "loading", not "nothing here yet".
+    final loading = libraryAsync.isLoading && !libraryAsync.hasValue;
     final liked = ref.watch(likedProvider).value ?? const <Song>[];
     final downloaded = ref.watch(downloadedProvider).value ?? const <Song>[];
     final imported = ref.watch(importedProvider).value ?? const <Song>[];
@@ -98,25 +116,52 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
         ),
         body: Column(
           children: [
-            _SortRow(sort: _sort, onSort: (v) => setState(() => _sort = v)),
+            // Sorting means nothing for playlists (tab 0) and artists (tab 2).
+            Builder(
+              builder: (context) {
+                final tabs = DefaultTabController.of(context);
+                return AnimatedBuilder(
+                  animation: tabs.animation!,
+                  builder: (context, _) {
+                    final index = tabs.animation!.value.round();
+                    return AnimatedSize(
+                      duration: Motion.fast,
+                      curve: Motion.emphasized,
+                      alignment: Alignment.topCenter,
+                      child: index == 0 || index == 2
+                          ? const SizedBox(width: double.infinity)
+                          : _SortRow(sort: _sort, onSort: _setSort),
+                    );
+                  },
+                );
+              },
+            ),
             Expanded(
-              child: TabBarView(
-                children: [
-                  _PlaylistsTab(grid: _grid),
-                  _SongsTab(songs: _sorted(library, 'library'), origin: 'library'),
-                  _ArtistsTab(library: library),
-                  _SongsTab(songs: _sorted(liked, 'liked'), origin: 'liked'),
-                  _SongsTab(
-                    songs: _sorted(downloaded, 'downloaded'),
-                    origin: 'downloads',
-                    banner: _DownloadBanner(songs: downloaded),
-                  ),
-                  _SongsTab(
-                    songs: _sorted(imported, 'imported'),
-                    origin: 'imported',
-                  ),
-                ],
-              ),
+              child: loading
+                  ? const SingleChildScrollView(child: SongListSkeleton())
+                  : TabBarView(
+                      children: [
+                        _PlaylistsTab(grid: _grid),
+                        _SongsTab(
+                          songs: _sorted(library, 'library'),
+                          origin: 'library',
+                        ),
+                        _ArtistsTab(library: library),
+                        _SongsTab(
+                          songs: _sorted(liked, 'liked'),
+                          origin: 'liked',
+                        ),
+                        _SongsTab(
+                          songs: _sorted(downloaded, 'downloaded'),
+                          origin: 'downloads',
+                          banner: _DownloadBanner(songs: downloaded),
+                        ),
+                        _SongsTab(
+                          songs: _sorted(imported, 'imported'),
+                          origin: 'imported',
+                        ),
+                      ],
+                    ),
             ),
           ],
         ),
@@ -220,9 +265,7 @@ class _SongsTab extends ConsumerWidget {
                   child: FilledButton.tonalIcon(
                     onPressed: () {
                       final shuffled = [...songs]..shuffle();
-                      ref
-                          .read(musicProvider)
-                          .playAll(shuffled, origin: origin);
+                      ref.read(musicProvider).playAll(shuffled, origin: origin);
                     },
                     icon: const Icon(Icons.shuffle_rounded),
                     label: const Text('Shuffle'),
@@ -331,7 +374,12 @@ class _PlaylistsTab extends ConsumerWidget {
           subtitle: 'Playlist',
           icon: Icons.queue_music_rounded,
           onTap: () => pushDetail(context, 'playlist/${p.id}'),
-          onLongPress: () => ref.read(dbProvider).deletePlaylist(p.id),
+          onLongPress: () => showPlaylistMenu(
+            context,
+            ref,
+            id: p.id,
+            name: p.name,
+          ),
         ),
       _CollectionTile(
         title: 'New playlist',
@@ -342,7 +390,10 @@ class _PlaylistsTab extends ConsumerWidget {
           if (name == null) return;
           await ref
               .read(dbProvider)
-              .createPlaylist('pl${DateTime.now().millisecondsSinceEpoch}', name);
+              .createPlaylist(
+                'pl${DateTime.now().millisecondsSinceEpoch}',
+                name,
+              );
         },
       ),
     ];
@@ -489,15 +540,9 @@ class _ArtistsTab extends StatelessWidget {
       itemBuilder: (_, i) {
         final entry = artists[i];
         return ListTile(
-          onTap: () => pushDetail(
-            context,
-            'artist/${Uri.encodeComponent(entry.key)}',
-          ),
-          leading: CoverArt(
-            song: entry.value.first,
-            size: 50,
-            circle: true,
-          ),
+          onTap: () =>
+              pushDetail(context, 'artist/${Uri.encodeComponent(entry.key)}'),
+          leading: CoverArt(song: entry.value.first, size: 50, circle: true),
           title: Text(entry.key),
           subtitle: Text(
             '${entry.value.length} songs · '

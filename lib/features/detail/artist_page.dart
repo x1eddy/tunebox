@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
+import '../../l10n/app_localizations.dart';
 import '../../ui/common.dart';
 
 class ArtistPage extends ConsumerWidget {
@@ -78,7 +79,7 @@ class ArtistPage extends ConsumerWidget {
                             ),
                           ),
                           Text(
-                            '${songs.length} songs · $plays plays'
+                            '${L.of(context).libSongCount(songs.length)} · $plays plays'
                             '${rule == 1 ? " · boosted" : rule == -1 ? " · blocked" : ""}',
                             style: t.textTheme.bodySmall?.copyWith(
                               color: t.colorScheme.onSurfaceVariant,

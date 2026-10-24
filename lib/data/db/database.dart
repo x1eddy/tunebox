@@ -288,6 +288,43 @@ class AppDatabase extends _$AppDatabase {
         .write(const SongsCompanion(inLibrary: Value(true)));
   }
 
+  /// Many songs in one transaction, in order, skipping ones already there.
+  Future<void> addAllToPlaylist(String playlistId, List<String> songIds) =>
+      transaction(() async {
+        final have = {
+          for (final e in await (select(playlistEntries)
+                ..where((e) => e.playlistId.equals(playlistId)))
+              .get())
+            e.songId,
+        };
+        var position = have.length;
+        for (final id in songIds) {
+          if (!have.add(id)) continue;
+          await into(playlistEntries).insert(
+            PlaylistEntriesCompanion.insert(
+              playlistId: playlistId,
+              songId: id,
+              position: position++,
+            ),
+          );
+        }
+        await (update(songs)..where((s) => s.id.isIn(songIds)))
+            .write(const SongsCompanion(inLibrary: Value(true)));
+      });
+
+  Future<void> renamePlaylist(String id, String name) =>
+      (update(playlists)..where((p) => p.id.equals(id)))
+          .write(PlaylistsCompanion(name: Value(name)));
+
+  /// Song ids of a playlist, in order (for undoing a delete).
+  Future<List<String>> playlistSongIds(String playlistId) async {
+    final rows = await (select(playlistEntries)
+          ..where((e) => e.playlistId.equals(playlistId))
+          ..orderBy([(e) => OrderingTerm.asc(e.position)]))
+        .get();
+    return [for (final r in rows) r.songId];
+  }
+
   Future<void> removeFromPlaylist(String playlistId, String songId) =>
       (delete(playlistEntries)
             ..where((e) =>

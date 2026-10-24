@@ -5,7 +5,9 @@ import '../../app/theme.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
+import '../../l10n/app_localizations.dart';
 import '../../ui/common.dart';
+import 'playlist_actions.dart';
 
 /// One screen for real playlists and for the built-in ones
 /// (liked / downloads / imported).
@@ -59,7 +61,20 @@ class PlaylistPage extends ConsumerWidget {
             pinned: true,
             expandedHeight: 300,
             actions: [
+              if (!const {'liked', 'downloads', 'imported'}.contains(id))
+                IconButton(
+                  tooltip: L.of(context).plRenameOrDelete,
+                  onPressed: () => showPlaylistMenu(
+                    context,
+                    ref,
+                    id: id,
+                    name: title,
+                    onDeleted: () => Navigator.of(context).maybePop(),
+                  ),
+                  icon: const Icon(Icons.more_vert_rounded),
+                ),
               IconButton(
+                tooltip: 'Shuffle',
                 onPressed: () => ref
                     .read(musicProvider)
                     .playAll([...songs]..shuffle(), origin: 'playlist:$id'),
@@ -121,7 +136,7 @@ class PlaylistPage extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${songs.length} songs · '
+                                  '${L.of(context).libSongCount(songs.length)} · '
                                   '${formatDuration(total)}',
                                   style: t.textTheme.bodySmall?.copyWith(
                                     color: t.colorScheme.onSurfaceVariant,
@@ -190,12 +205,57 @@ class PlaylistPage extends ConsumerWidget {
           else
             SliverList.builder(
               itemCount: songs.length,
-              itemBuilder: (_, i) => SongTile(
-                song: songs[i],
-                queue: songs,
-                origin: 'playlist:$id',
-                leadingIndex: i + 1,
-              ),
+              itemBuilder: (_, i) {
+                final tile = SongTile(
+                  song: songs[i],
+                  queue: songs,
+                  origin: 'playlist:$id',
+                  leadingIndex: i + 1,
+                );
+                // built-in lists are views over the library, not editable
+                if (const {'liked', 'downloads', 'imported'}.contains(id)) {
+                  return tile;
+                }
+                final song = songs[i];
+                return Dismissible(
+                  key: ValueKey('${id}_${song.id}'),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (_) {
+                    final db = ref.read(dbProvider);
+                    db.removeFromPlaylist(id, song.id);
+                    ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showTimed(
+                        SnackBar(
+                          duration: const Duration(seconds: 5),
+                          content: Text(
+                            L.of(context).qRemoved(song.title),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          action: SnackBarAction(
+                            label: L.of(context).qUndo,
+                            onPressed: () => db.addAllToPlaylist(id, [song.id]),
+                          ),
+                        ),
+                      );
+                  },
+                  background: ColoredBox(
+                    color: t.colorScheme.errorContainer,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: Icon(
+                          Icons.playlist_remove_rounded,
+                          color: t.colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: tile,
+                );
+              },
             ),
           const SliverToBoxAdapter(child: SizedBox(height: 28)),
         ],

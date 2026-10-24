@@ -166,7 +166,10 @@ class SongTile extends ConsumerWidget {
         () => ref
             .read(musicProvider)
             .playSong(song, queue: queue, origin: origin);
-    void longPress() => showSongSheet(context, song);
+    void longPress() {
+      ref.read(musicProvider).haptic();
+      showSongSheet(context, song);
+    }
     Widget row(Widget child) => reduce
         ? InkWell(onTap: tap, onLongPress: longPress, child: child)
         : Pressable(
@@ -271,7 +274,7 @@ class SongTile extends ConsumerWidget {
               ),
             trailing ??
                 IconButton(
-                  visualDensity: VisualDensity.compact,
+                  tooltip: 'More',
                   onPressed: () => showSongSheet(context, song),
                   icon: const Icon(Icons.more_vert_rounded, size: 20),
                 ),
@@ -558,6 +561,7 @@ void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
 void showSongSheet(BuildContext context, Song song) {
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     builder: (sheetContext) => Consumer(
       builder: (context, ref, _) {
@@ -688,6 +692,7 @@ Future<void> startRadio(WidgetRef ref, Song seed) =>
 void showAddToPlaylist(BuildContext context, Song song) {
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     builder: (sheetContext) => Consumer(
       builder: (context, ref, _) {
         final playlists = ref.watch(playlistsProvider).value ?? const [];
@@ -733,42 +738,78 @@ void showAddToPlaylist(BuildContext context, Song song) {
   );
 }
 
-Future<String?> promptForName(BuildContext context, String title) {
-  final controller = TextEditingController();
-  return _promptForName(
-    context,
-    title,
-    controller,
-  ).whenComplete(controller.dispose);
-}
-
-Future<String?> _promptForName(
+Future<String?> promptForName(
   BuildContext context,
-  String title,
-  TextEditingController controller,
-) {
+  String title, {
+  String initial = '',
+  String confirm = '',
+}) {
   return showDialog<String>(
     context: context,
-    builder: (context) => AlertDialog(
-      title: Text(title),
+    builder: (context) => _NameDialog(
+      title: title,
+      initial: initial,
+      confirm: confirm.isEmpty ? (initial.isEmpty ? 'Create' : 'Save') : confirm,
+    ),
+  );
+}
+
+/// Name prompt that owns its controller and will not accept an empty name.
+class _NameDialog extends StatefulWidget {
+  const _NameDialog({
+    required this.title,
+    required this.initial,
+    required this.confirm,
+  });
+
+  final String title;
+  final String initial;
+  final String confirm;
+
+  @override
+  State<_NameDialog> createState() => _NameDialogState();
+}
+
+class _NameDialogState extends State<_NameDialog> {
+  late final _controller = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.title),
       content: TextField(
-        controller: controller,
+        controller: _controller,
         autofocus: true,
+        maxLength: 60,
+        textCapitalization: TextCapitalization.sentences,
         decoration: const InputDecoration(hintText: 'Name'),
-        onSubmitted: (v) => Navigator.pop(context, v.trim()),
+        onSubmitted: (v) {
+          if (v.trim().isNotEmpty) Navigator.pop(context, v.trim());
+        },
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, controller.text.trim()),
-          child: const Text('Create'),
+        ValueListenableBuilder(
+          valueListenable: _controller,
+          builder: (context, value, _) => FilledButton(
+            onPressed: value.text.trim().isEmpty
+                ? null
+                : () => Navigator.pop(context, value.text.trim()),
+            child: Text(widget.confirm),
+          ),
         ),
       ],
-    ),
-  ).then((value) => (value == null || value.isEmpty) ? null : value);
+    );
+  }
 }
 
 class EmptyState extends StatelessWidget {

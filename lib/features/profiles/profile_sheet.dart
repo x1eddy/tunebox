@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/router.dart';
 import '../../state/profiles.dart';
+import '../../l10n/app_localizations.dart';
 import '../../state/providers.dart';
 
 /// The round initial that stands for a profile.
@@ -48,6 +49,7 @@ class ProfileButton extends ConsumerWidget {
 void showProfileSheet(BuildContext context) {
   showModalBottomSheet<void>(
     context: context,
+    useRootNavigator: true,
     isScrollControlled: true,
     showDragHandle: true,
     builder: (_) => const _ProfileSheet(),
@@ -75,13 +77,12 @@ class _ProfileSheet extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-                child: Text('Who is listening?', style: t.textTheme.titleLarge),
+                child: Text(L.of(context).profWho, style: t.textTheme.titleLarge),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
                 child: Text(
-                  'Each profile has its own library, likes, playlists and '
-                  'taste.',
+                  L.of(context).profExplain,
                   style: t.textTheme.bodySmall?.copyWith(
                     color: t.colorScheme.onSurfaceVariant,
                   ),
@@ -92,7 +93,7 @@ class _ProfileSheet extends ConsumerWidget {
                   leading: ProfileAvatar(p),
                   title: Text(p.name),
                   subtitle: p.id == controller.active.id
-                      ? const Text('Active')
+                      ? Text(L.of(context).profActive)
                       : null,
                   selected: p.id == controller.active.id,
                   onTap: () async {
@@ -103,7 +104,7 @@ class _ProfileSheet extends ConsumerWidget {
                   trailing: PopupMenuButton<String>(
                     onSelected: (v) async {
                       if (v == 'rename') {
-                        final name = await _askName(context, p.name, 'Rename');
+                        final name = await _askName(context, p.name, L.of(context).profRename);
                         if (name != null) await controller.rename(p.id, name);
                       } else if (v == 'delete') {
                         final ok = await _confirmDelete(context, p.name);
@@ -111,21 +112,21 @@ class _ProfileSheet extends ConsumerWidget {
                       }
                     },
                     itemBuilder: (_) => [
-                      const PopupMenuItem(value: 'rename', child: Text('Rename')),
+                      PopupMenuItem(value: 'rename', child: Text(L.of(context).profRename)),
                       if (p.id != controller.active.id &&
                           controller.profiles.length > 1)
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
-                          child: Text('Delete profile'),
+                          child: Text(L.of(context).profDeleteMenu),
                         ),
                     ],
                   ),
                 ),
               ListTile(
                 leading: const CircleAvatar(child: Icon(Icons.add_rounded)),
-                title: const Text('Add profile'),
+                title: Text(L.of(context).profAdd),
                 onTap: () async {
-                  final name = await _askName(context, '', 'New profile');
+                  final name = await _askName(context, '', L.of(context).profNew);
                   if (name == null || !context.mounted) return;
                   Navigator.pop(context);
                   await controller.create(name);
@@ -151,17 +152,17 @@ Future<String?> _askName(BuildContext context, String initial, String title) {
         autofocus: true,
         textCapitalization: TextCapitalization.words,
         maxLength: 24,
-        decoration: const InputDecoration(labelText: 'Name'),
+        decoration: InputDecoration(labelText: L.of(context).profName),
         onSubmitted: (v) => Navigator.pop(context, v.trim()),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(L.of(context).actionCancel),
         ),
         FilledButton(
           onPressed: () => Navigator.pop(context, field.text.trim()),
-          child: const Text('OK'),
+          child: Text(L.of(context).actionOk),
         ),
       ],
     ),
@@ -173,19 +174,16 @@ Future<bool> _confirmDelete(BuildContext context, String name) async {
     context: context,
     builder: (context) => AlertDialog(
       icon: const Icon(Icons.warning_amber_rounded),
-      title: Text('Delete "$name"?'),
-      content: const Text(
-        'Its library, likes, playlists and learned taste are removed for '
-        'good. Music files stay on the device.',
-      ),
+      title: Text(L.of(context).profDeleteTitle(name)),
+      content: Text(L.of(context).profDeleteBody),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Keep'),
+          child: Text(L.of(context).profKeep),
         ),
         FilledButton.tonal(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Delete'),
+          child: Text(L.of(context).actionDelete),
         ),
       ],
     ),

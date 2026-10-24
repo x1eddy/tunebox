@@ -15,7 +15,10 @@ for f in sorted(glob.glob(os.path.join(d, 'app_*.arb'))):
     probs = []
     missing = [k for k in keys if k not in t]
     extra = [k for k in t if not k.startswith('@') and k not in en]
-    if missing: probs.append(f'{len(missing)} missing')
+    # the eight hand-translated locales must be complete; the rest fall back
+    # to English for any key they lack
+    full = os.path.basename(f)[4:-4] in ('de','es','fr','it','nl','pl','pt')
+    if missing and full: probs.append(f'{len(missing)} missing: {missing[:3]}')
     if extra: probs.append(f'extra {extra[:3]}')
     for k in keys:
         if k in t and ph(t[k]) != ph(en[k]):

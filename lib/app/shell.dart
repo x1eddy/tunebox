@@ -1,7 +1,9 @@
 import '../ui/common.dart';
 import '../ui/tab_scroll.dart';
 import 'package:animations/animations.dart';
+import 'package:audio_service/audio_service.dart' show AudioProcessingState;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,6 +12,7 @@ import '../data/services/download_service.dart';
 import '../state/providers.dart';
 import '../ui/artwork.dart';
 import '../ui/equalizer.dart';
+import '../ui/play_glyph.dart';
 import 'theme.dart';
 import '../l10n/app_localizations.dart';
 
@@ -29,68 +32,126 @@ class AppShell extends ConsumerWidget {
         ..showTimed(SnackBar(content: Text(message)));
     });
 
-    return Scaffold(
-      // Tabs cross-fade instead of cutting, which is most of what makes an app
-      // feel expensive.
-      body: PageTransitionSwitcher(
-        duration: const Duration(milliseconds: 260),
-        transitionBuilder: (child, animation, secondaryAnimation) =>
-            FadeThroughTransition(
-              animation: animation,
-              secondaryAnimation: secondaryAnimation,
-              fillColor: Colors.transparent,
-              child: child,
-            ),
-        child: KeyedSubtree(key: ValueKey(shell.currentIndex), child: shell),
-      ),
+    final destinations = [
+      (Icons.home_outlined, Icons.home_rounded, l.navHome),
+      (Icons.search_rounded, Icons.travel_explore_rounded, l.navExplore),
+      (Icons.library_music_outlined, Icons.library_music_rounded, l.navLibrary),
+      (Icons.auto_awesome_outlined, Icons.auto_awesome_rounded, l.navTaste),
+      (Icons.settings_outlined, Icons.settings_rounded, l.setTitle),
+    ];
+    void select(int i) {
+      final same = i == shell.currentIndex;
+      shell.goBranch(i, initialLocation: same);
+      // Arriving on a tab always starts at its top.
+      scrollTabToTop(i, animate: same);
+    }
+
+    // A desktop window is not a tall phone: past ~900dp the tabs move to a
+    // side rail and the content stops stretching across a 1600px monitor.
+    final wide = MediaQuery.sizeOf(context).width >= 900;
+
+    // Tabs cross-fade instead of cutting, which is most of what makes an app
+    // feel expensive.
+    final content = PageTransitionSwitcher(
+      duration: const Duration(milliseconds: 260),
+      transitionBuilder: (child, animation, secondaryAnimation) =>
+          FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            fillColor: Colors.transparent,
+            child: child,
+          ),
+      child: KeyedSubtree(key: ValueKey(shell.currentIndex), child: shell),
+    );
+
+    final scaffold = Scaffold(
+      body: wide
+          ? Row(
+              children: [
+                MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: 1.3,
+                  child: NavigationRail(
+                    selectedIndex: shell.currentIndex,
+                    onDestinationSelected: select,
+                    labelType: NavigationRailLabelType.all,
+                    backgroundColor: Theme.of(context)
+                        .navigationBarTheme
+                        .backgroundColor,
+                    destinations: [
+                      for (final d in destinations)
+                        NavigationRailDestination(
+                          icon: Icon(d.$1),
+                          selectedIcon: Icon(d.$2),
+                          label: Text(d.$3),
+                        ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1100),
+                      child: content,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : content,
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const _DownloadBar(),
           const MiniPlayer(),
-          // Nav labels have a fixed slot; past ~1.3x "Your taste" is clipped,
-          // so the bar caps what the accessibility text scale does to it.
-          MediaQuery.withClampedTextScaling(
-            maxScaleFactor: 1.3,
-            child: NavigationBar(
-              selectedIndex: shell.currentIndex,
-              onDestinationSelected: (i) {
-                final same = i == shell.currentIndex;
-                shell.goBranch(i, initialLocation: same);
-                // Arriving on a tab always starts at its top.
-                scrollTabToTop(i, animate: same);
-              },
-              destinations: [
-                NavigationDestination(
-                  icon: const Icon(Icons.home_outlined),
-                  selectedIcon: const Icon(Icons.home_rounded),
-                  label: l.navHome,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.search_rounded),
-                  selectedIcon: const Icon(Icons.travel_explore_rounded),
-                  label: l.navExplore,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.library_music_outlined),
-                  selectedIcon: const Icon(Icons.library_music_rounded),
-                  label: l.navLibrary,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.auto_awesome_outlined),
-                  selectedIcon: const Icon(Icons.auto_awesome_rounded),
-                  label: l.navTaste,
-                ),
-                NavigationDestination(
-                  icon: const Icon(Icons.settings_outlined),
-                  selectedIcon: const Icon(Icons.settings_rounded),
-                  label: l.setTitle,
-                ),
-              ],
+          if (!wide)
+            // Nav labels have a fixed slot; past ~1.3x "Your taste" is
+            // clipped, so the bar caps what the text scale does to it.
+            MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.3,
+              child: NavigationBar(
+                selectedIndex: shell.currentIndex,
+                onDestinationSelected: select,
+                destinations: [
+                  for (final d in destinations)
+                    NavigationDestination(
+                      icon: Icon(d.$1),
+                      selectedIcon: Icon(d.$2),
+                      label: d.$3,
+                    ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
+    );
+
+    // Space plays and pauses, arrows skip — unless a text field has focus.
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
+            ref.read(musicProvider).toggle(),
+        const SingleActivator(LogicalKeyboardKey.mediaTrackNext): () =>
+            ref.read(musicProvider).next(),
+        const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious): () =>
+            ref.read(musicProvider).previous(),
+        if (wide) ...{
+          const SingleActivator(LogicalKeyboardKey.keyN, control: true): () =>
+              ref.read(musicProvider).next(),
+          const SingleActivator(LogicalKeyboardKey.keyP, control: true): () =>
+              ref.read(musicProvider).previous(),
+          const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
+              select(1),
+          const SingleActivator(LogicalKeyboardKey.slash): () {
+            if (FocusManager.instance.primaryFocus?.context
+                    ?.findAncestorWidgetOfExactType<EditableText>() ==
+                null) {
+              select(1);
+            }
+          },
+        },
+      },
+      child: Focus(autofocus: true, child: scaffold),
     );
   }
 }
@@ -178,6 +239,8 @@ class MiniPlayer extends ConsumerWidget {
 
     final state = ref.watch(playbackStateProvider).value;
     final playing = state?.playing ?? false;
+    final buffering = state?.processingState == AudioProcessingState.loading ||
+        state?.processingState == AudioProcessingState.buffering;
     final music = ref.read(musicProvider);
 
     return Padding(
@@ -188,7 +251,21 @@ class MiniPlayer extends ConsumerWidget {
         clipBehavior: Clip.antiAlias,
         child: GestureDetector(
           onVerticalDragEnd: (d) {
-            if ((d.primaryVelocity ?? 0) < -120) context.push('/player');
+            final v = d.primaryVelocity ?? 0;
+            if (v < -120) {
+              context.push('/player');
+            } else if (v > 600) {
+              music.dismissPlayer();
+            }
+          },
+          // swipe the card like a page: left = next, right = previous
+          onHorizontalDragEnd: (d) {
+            final v = d.primaryVelocity ?? 0;
+            if (v < -400) {
+              music.next();
+            } else if (v > 400) {
+              music.previous();
+            }
           },
           child: InkWell(
             onTap: () => context.push('/player'),
@@ -244,6 +321,7 @@ class MiniPlayer extends ConsumerWidget {
                         ),
                       ),
                       IconButton(
+                        tooltip: song.liked ? 'Unlike' : 'Like',
                         onPressed: () => music.like(song),
                         icon: Icon(
                           song.liked
@@ -254,15 +332,16 @@ class MiniPlayer extends ConsumerWidget {
                         color: song.liked ? t.colorScheme.primary : null,
                       ),
                       IconButton(
+                        tooltip: playing ? 'Pause' : 'Play',
                         onPressed: music.toggle,
-                        icon: Icon(
-                          playing
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          size: 30,
+                        icon: PlayPauseGlyph(
+                          playing: playing,
+                          buffering: buffering,
+                          size: 28,
                         ),
                       ),
                       IconButton(
+                        tooltip: 'Next',
                         onPressed: music.next,
                         icon: const Icon(Icons.skip_next_rounded, size: 26),
                       ),

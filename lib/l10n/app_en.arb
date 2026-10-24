@@ -506,5 +506,268 @@
     "placeholders": {
       "version": {}
     }
-  }
+  },
+  "homeCantReach": "Can't reach YouTube",
+  "homeOfflineHint": "Check your connection. Everything already on this device still works.",
+  "actionRetry": "Try again",
+  "actionClear": "Clear",
+  "searchFailed": "Search didn't work",
+  "profWho": "Who is listening?",
+  "profExplain": "Each profile has its own library, likes, playlists and taste.",
+  "profActive": "Active",
+  "profRename": "Rename",
+  "profDeleteMenu": "Delete profile",
+  "profAdd": "Add profile",
+  "profNew": "New profile",
+  "profName": "Name",
+  "profDeleteTitle": "Delete \"{name}\"?",
+  "@profDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profDeleteBody": "Its library, likes, playlists and learned taste are removed for good. Music files stay on the device.",
+  "profKeep": "Keep",
+  "actionOk": "OK",
+  "actionDelete": "Delete",
+  "xferTitle": "Move your taste",
+  "xferIntro": "Likes, plays and artist rules of \"{profile}\". Receiving merges into this profile and is safe to repeat — nothing is doubled.",
+  "@xferIntro": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "xferSectionWifi": "Between devices on the same Wi-Fi",
+  "xferSend": "Send to a nearby device",
+  "xferSendSub": "Shows a code; the other device finds this one",
+  "xferReceive": "Receive from a nearby device",
+  "xferReceiveSub": "Finds senders automatically — you type the code",
+  "xferSectionFile": "With a file",
+  "xferSave": "Save to a file",
+  "xferSaveSub": "Pick where it goes: Downloads, USB, a chat…",
+  "xferLoad": "Load from a file",
+  "xferLoadSub": "Any TuneBox taste file, old or new",
+  "xferSectionText": "As text",
+  "xferCopy": "Copy as text",
+  "xferCopySub": "One line you can paste into any chat or note",
+  "xferPaste": "Paste text",
+  "xferPasteSub": "From the clipboard",
+  "xferSaveDialog": "Save your taste",
+  "xferSaved": "Saved {kb} KB. On the other device choose \"Load from a file\".",
+  "@xferSaved": {
+    "placeholders": {
+      "kb": {
+        "type": "String"
+      }
+    }
+  },
+  "xferSaveFailed": "Could not save: {error}",
+  "@xferSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferFileUnreadable": "That file could not be read as a taste: {error}",
+  "@xferFileUnreadable": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferCopied": "Copied ({kb} KB of text). Paste it on the other device with \"Paste text\".",
+  "@xferCopied": {
+    "placeholders": {
+      "kb": {
+        "type": "String"
+      }
+    }
+  },
+  "xferCopyFailed": "Could not copy: {error}",
+  "@xferCopyFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferClipboardEmpty": "The clipboard does not hold a TuneBox taste. Copy it on the other device first.",
+  "xferNewerTitle": "Newer than this app",
+  "xferNewerBody": "This taste was made by a newer TuneBox. Update this device first.",
+  "xferMergeTitle": "Merge into \"{profile}\"?",
+  "@xferMergeTitle": {
+    "placeholders": {
+      "profile": {
+        "type": "String"
+      }
+    }
+  },
+  "xferMergeBody": "From {source}:\n• {songs} songs, {liked} liked\n• {plays} plays\n• {rules} artist rules\n\nYour own likes and history stay. Doing this twice changes nothing.",
+  "@xferMergeBody": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "songs": {
+        "type": "int"
+      },
+      "liked": {
+        "type": "int"
+      },
+      "plays": {
+        "type": "int"
+      },
+      "rules": {
+        "type": "int"
+      }
+    }
+  },
+  "xferSourceFile": "the file",
+  "xferSourceClipboard": "the clipboard",
+  "xferMerge": "Merge",
+  "xferMerging": "Merging…",
+  "xferMerged": "Merged: {summary}",
+  "@xferMerged": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "xferMergeFailed": "Merge failed: {error}",
+  "@xferMergeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferSendTitle": "Send your taste",
+  "xferCouldNotStart": "Could not start: {error}",
+  "@xferCouldNotStart": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferSent": "Sent. The other device has your taste.",
+  "xferClosed": "Closed — the code expired or was guessed wrong too often. Start again for a new one.",
+  "xferSendHow": "On the other device open Settings → Move your taste → Receive, then pick this device and type:",
+  "xferNoWifi": "No Wi-Fi address found — connect both devices to the same network.",
+  "xferThisDevice": "This device: {addresses} (port {port})",
+  "@xferThisDevice": {
+    "placeholders": {
+      "addresses": {
+        "type": "String"
+      },
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "xferWaiting": "Waiting for the other device… (closes after 5 minutes)",
+  "xferCodeFor": "Code shown on {name}",
+  "@xferCodeFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xferCodeLabel": "6-digit code",
+  "xferReceiveAction": "Receive",
+  "xferReceivingFrom": "Receiving from {name}…",
+  "@xferReceivingFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "xferWrongCode": "Wrong code. Check the number on the other device.",
+  "xferNotTaste": "That was not a TuneBox taste.",
+  "xferCouldNotReach": "Could not reach it: {error}",
+  "@xferCouldNotReach": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "xferLooking": "Looking for {host}…",
+  "@xferLooking": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "xferNothingAt": "Nothing answered at {host}. Is Send open there?",
+  "@xferNothingAt": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "xferReceiveTitle": "Receive a taste",
+  "xferOpenSendFirst": "Open Send on the other device first (same Wi-Fi).",
+  "xferSearching": "Looking for nearby devices…",
+  "xferNoSender": "No sender found yet.",
+  "xferSearchAgain": "Search again",
+  "xferTypeAddress": "Not listed? Type its address",
+  "xferConnect": "Connect",
+  "qUndo": "Undo",
+  "qRemoved": "Removed \"{title}\"",
+  "@qRemoved": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "qCleared": "Queue cleared",
+  "qSaved": "Saved {songs} to \"{name}\"",
+  "@qSaved": {
+    "placeholders": {
+      "songs": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "qTitle": "Queue · {count}",
+  "@qTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "qSavePlaylist": "Save as playlist",
+  "qClear": "Clear queue",
+  "qClearSub": "Keeps the song that is playing",
+  "qEmptyTitle": "The queue is empty",
+  "qEmptyBody": "Play something and it fills up here.",
+  "qDrag": "Drag to reorder",
+  "plDeleted": "Deleted \"{name}\"",
+  "@plDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "plDeleteSub": "The songs stay in your library",
+  "plDelete": "Delete playlist",
+  "plRenameOrDelete": "Rename or delete"
 }

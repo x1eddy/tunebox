@@ -188,6 +188,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(languageName(s.localeCode)),
             onTap: () => showModalBottomSheet<void>(
               context: context,
+    useRootNavigator: true,
               isScrollControlled: true,
               showDragHandle: true,
               builder: (_) => _LanguageSheet(
@@ -304,6 +305,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(s.qualityLabel),
             onTap: () => showModalBottomSheet<void>(
               context: context,
+    useRootNavigator: true,
               builder: (sheet) => SafeArea(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

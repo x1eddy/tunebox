@@ -1886,6 +1886,558 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Looking for a newer version…'**
   String get setChecking;
+
+  /// No description provided for @homeCantReach.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t reach YouTube'**
+  String get homeCantReach;
+
+  /// No description provided for @homeOfflineHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection. Everything already on this device still works.'**
+  String get homeOfflineHint;
+
+  /// No description provided for @actionRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get actionRetry;
+
+  /// No description provided for @actionClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get actionClear;
+
+  /// No description provided for @searchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search didn\'t work'**
+  String get searchFailed;
+
+  /// No description provided for @profWho.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is listening?'**
+  String get profWho;
+
+  /// No description provided for @profExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Each profile has its own library, likes, playlists and taste.'**
+  String get profExplain;
+
+  /// No description provided for @profActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get profActive;
+
+  /// No description provided for @profRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get profRename;
+
+  /// No description provided for @profDeleteMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete profile'**
+  String get profDeleteMenu;
+
+  /// No description provided for @profAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add profile'**
+  String get profAdd;
+
+  /// No description provided for @profNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New profile'**
+  String get profNew;
+
+  /// No description provided for @profName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get profName;
+
+  /// No description provided for @profDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String profDeleteTitle(String name);
+
+  /// No description provided for @profDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Its library, likes, playlists and learned taste are removed for good. Music files stay on the device.'**
+  String get profDeleteBody;
+
+  /// No description provided for @profKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get profKeep;
+
+  /// No description provided for @actionOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get actionOk;
+
+  /// No description provided for @actionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get actionDelete;
+
+  /// No description provided for @xferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Move your taste'**
+  String get xferTitle;
+
+  /// No description provided for @xferIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes, plays and artist rules of \"{profile}\". Receiving merges into this profile and is safe to repeat — nothing is doubled.'**
+  String xferIntro(String profile);
+
+  /// No description provided for @xferSectionWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'Between devices on the same Wi-Fi'**
+  String get xferSectionWifi;
+
+  /// No description provided for @xferSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to a nearby device'**
+  String get xferSend;
+
+  /// No description provided for @xferSendSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows a code; the other device finds this one'**
+  String get xferSendSub;
+
+  /// No description provided for @xferReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive from a nearby device'**
+  String get xferReceive;
+
+  /// No description provided for @xferReceiveSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Finds senders automatically — you type the code'**
+  String get xferReceiveSub;
+
+  /// No description provided for @xferSectionFile.
+  ///
+  /// In en, this message translates to:
+  /// **'With a file'**
+  String get xferSectionFile;
+
+  /// No description provided for @xferSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to a file'**
+  String get xferSave;
+
+  /// No description provided for @xferSaveSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick where it goes: Downloads, USB, a chat…'**
+  String get xferSaveSub;
+
+  /// No description provided for @xferLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load from a file'**
+  String get xferLoad;
+
+  /// No description provided for @xferLoadSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Any TuneBox taste file, old or new'**
+  String get xferLoadSub;
+
+  /// No description provided for @xferSectionText.
+  ///
+  /// In en, this message translates to:
+  /// **'As text'**
+  String get xferSectionText;
+
+  /// No description provided for @xferCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy as text'**
+  String get xferCopy;
+
+  /// No description provided for @xferCopySub.
+  ///
+  /// In en, this message translates to:
+  /// **'One line you can paste into any chat or note'**
+  String get xferCopySub;
+
+  /// No description provided for @xferPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste text'**
+  String get xferPaste;
+
+  /// No description provided for @xferPasteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'From the clipboard'**
+  String get xferPasteSub;
+
+  /// No description provided for @xferSaveDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your taste'**
+  String get xferSaveDialog;
+
+  /// No description provided for @xferSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {kb} KB. On the other device choose \"Load from a file\".'**
+  String xferSaved(String kb);
+
+  /// No description provided for @xferSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save: {error}'**
+  String xferSaveFailed(String error);
+
+  /// No description provided for @xferFileUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'That file could not be read as a taste: {error}'**
+  String xferFileUnreadable(String error);
+
+  /// No description provided for @xferCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied ({kb} KB of text). Paste it on the other device with \"Paste text\".'**
+  String xferCopied(String kb);
+
+  /// No description provided for @xferCopyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not copy: {error}'**
+  String xferCopyFailed(String error);
+
+  /// No description provided for @xferClipboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The clipboard does not hold a TuneBox taste. Copy it on the other device first.'**
+  String get xferClipboardEmpty;
+
+  /// No description provided for @xferNewerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Newer than this app'**
+  String get xferNewerTitle;
+
+  /// No description provided for @xferNewerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This taste was made by a newer TuneBox. Update this device first.'**
+  String get xferNewerBody;
+
+  /// No description provided for @xferMergeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge into \"{profile}\"?'**
+  String xferMergeTitle(String profile);
+
+  /// No description provided for @xferMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'From {source}:\n• {songs} songs, {liked} liked\n• {plays} plays\n• {rules} artist rules\n\nYour own likes and history stay. Doing this twice changes nothing.'**
+  String xferMergeBody(
+    String source,
+    int songs,
+    int liked,
+    int plays,
+    int rules,
+  );
+
+  /// No description provided for @xferSourceFile.
+  ///
+  /// In en, this message translates to:
+  /// **'the file'**
+  String get xferSourceFile;
+
+  /// No description provided for @xferSourceClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'the clipboard'**
+  String get xferSourceClipboard;
+
+  /// No description provided for @xferMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge'**
+  String get xferMerge;
+
+  /// No description provided for @xferMerging.
+  ///
+  /// In en, this message translates to:
+  /// **'Merging…'**
+  String get xferMerging;
+
+  /// No description provided for @xferMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged: {summary}'**
+  String xferMerged(String summary);
+
+  /// No description provided for @xferMergeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge failed: {error}'**
+  String xferMergeFailed(String error);
+
+  /// No description provided for @xferSendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Send your taste'**
+  String get xferSendTitle;
+
+  /// No description provided for @xferCouldNotStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start: {error}'**
+  String xferCouldNotStart(String error);
+
+  /// No description provided for @xferSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent. The other device has your taste.'**
+  String get xferSent;
+
+  /// No description provided for @xferClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed — the code expired or was guessed wrong too often. Start again for a new one.'**
+  String get xferClosed;
+
+  /// No description provided for @xferSendHow.
+  ///
+  /// In en, this message translates to:
+  /// **'On the other device open Settings → Move your taste → Receive, then pick this device and type:'**
+  String get xferSendHow;
+
+  /// No description provided for @xferNoWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'No Wi-Fi address found — connect both devices to the same network.'**
+  String get xferNoWifi;
+
+  /// No description provided for @xferThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device: {addresses} (port {port})'**
+  String xferThisDevice(String addresses, int port);
+
+  /// No description provided for @xferWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the other device… (closes after 5 minutes)'**
+  String get xferWaiting;
+
+  /// No description provided for @xferCodeFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Code shown on {name}'**
+  String xferCodeFor(String name);
+
+  /// No description provided for @xferCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit code'**
+  String get xferCodeLabel;
+
+  /// No description provided for @xferReceiveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive'**
+  String get xferReceiveAction;
+
+  /// No description provided for @xferReceivingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving from {name}…'**
+  String xferReceivingFrom(String name);
+
+  /// No description provided for @xferWrongCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong code. Check the number on the other device.'**
+  String get xferWrongCode;
+
+  /// No description provided for @xferNotTaste.
+  ///
+  /// In en, this message translates to:
+  /// **'That was not a TuneBox taste.'**
+  String get xferNotTaste;
+
+  /// No description provided for @xferCouldNotReach.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach it: {error}'**
+  String xferCouldNotReach(String error);
+
+  /// No description provided for @xferLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for {host}…'**
+  String xferLooking(String host);
+
+  /// No description provided for @xferNothingAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing answered at {host}. Is Send open there?'**
+  String xferNothingAt(String host);
+
+  /// No description provided for @xferReceiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive a taste'**
+  String get xferReceiveTitle;
+
+  /// No description provided for @xferOpenSendFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Send on the other device first (same Wi-Fi).'**
+  String get xferOpenSendFirst;
+
+  /// No description provided for @xferSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for nearby devices…'**
+  String get xferSearching;
+
+  /// No description provided for @xferNoSender.
+  ///
+  /// In en, this message translates to:
+  /// **'No sender found yet.'**
+  String get xferNoSender;
+
+  /// No description provided for @xferSearchAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Search again'**
+  String get xferSearchAgain;
+
+  /// No description provided for @xferTypeAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Not listed? Type its address'**
+  String get xferTypeAddress;
+
+  /// No description provided for @xferConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get xferConnect;
+
+  /// No description provided for @qUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get qUndo;
+
+  /// No description provided for @qRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed \"{title}\"'**
+  String qRemoved(String title);
+
+  /// No description provided for @qCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue cleared'**
+  String get qCleared;
+
+  /// No description provided for @qSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {songs} to \"{name}\"'**
+  String qSaved(String songs, String name);
+
+  /// No description provided for @qTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue · {count}'**
+  String qTitle(int count);
+
+  /// No description provided for @qSavePlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as playlist'**
+  String get qSavePlaylist;
+
+  /// No description provided for @qClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear queue'**
+  String get qClear;
+
+  /// No description provided for @qClearSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps the song that is playing'**
+  String get qClearSub;
+
+  /// No description provided for @qEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The queue is empty'**
+  String get qEmptyTitle;
+
+  /// No description provided for @qEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Play something and it fills up here.'**
+  String get qEmptyBody;
+
+  /// No description provided for @qDrag.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder'**
+  String get qDrag;
+
+  /// No description provided for @plDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted \"{name}\"'**
+  String plDeleted(String name);
+
+  /// No description provided for @plDeleteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'The songs stay in your library'**
+  String get plDeleteSub;
+
+  /// No description provided for @plDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete playlist'**
+  String get plDelete;
+
+  /// No description provided for @plRenameOrDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename or delete'**
+  String get plRenameOrDelete;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

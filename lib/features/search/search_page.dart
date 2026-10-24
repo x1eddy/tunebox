@@ -7,7 +7,10 @@ import '../../app/router.dart';
 import '../../dev/tour.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
+import '../../state/profiles.dart';
+import '../../state/settings.dart';
 import '../../ui/common.dart';
+import '../../ui/motion.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Live YouTube search, plus whatever is already in the library.
@@ -25,7 +28,22 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   bool _loading = false;
   String? _error;
   List<Song> _results = const [];
-  final _recent = <String>[];
+  late final List<String> _recent = [
+    ...(ref.read(prefsProvider).getStringList(profileKey('recentSearches')) ?? const []),
+  ];
+
+  void _rememberRecent(String query) {
+    _recent
+      ..remove(query)
+      ..insert(0, query);
+    if (_recent.length > 10) _recent.removeLast();
+    ref.read(prefsProvider).setStringList(profileKey('recentSearches'), _recent);
+  }
+
+  void _forgetRecent(String? query) {
+    setState(() => query == null ? _recent.clear() : _recent.remove(query));
+    ref.read(prefsProvider).setStringList(profileKey('recentSearches'), _recent);
+  }
 
   /// Search results by normalised query, as song ids. Kept for the life of
   /// the app, so repeating a search — or backing out of a result and coming
@@ -143,8 +161,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         _results = [...local, ...songs];
         _lastResults = _results;
         _loading = false;
-        if (!_recent.contains(query)) _recent.insert(0, query);
-        if (_recent.length > 8) _recent.removeLast();
+        _rememberRecent(query);
       });
     } catch (e) {
       if (!mounted || gen != _gen) return;
@@ -190,9 +207,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
-                  )
-                else if (_query.isNotEmpty)
+                  ),
+                // the clear button stays reachable while a search is running
+                if (_query.isNotEmpty)
                   IconButton(
+                    tooltip: l.actionClear,
                     icon: const Icon(Icons.close_rounded),
                     onPressed: () {
                       _controller.clear();
@@ -207,20 +226,54 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           if (_error != null)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  'Search failed: $_error',
-                  style: t.textTheme.bodySmall?.copyWith(
-                    color: t.colorScheme.error,
-                  ),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.cloud_off_rounded,
+                      size: 40,
+                      color: t.colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      l.searchFailed,
+                      style: t.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l.homeOfflineHint,
+                      textAlign: TextAlign.center,
+                      style: t.textTheme.bodyMedium?.copyWith(
+                        color: t.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton.tonalIcon(
+                      onPressed: () => _run(_controller.text),
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: Text(l.actionRetry),
+                    ),
+                  ],
                 ),
               ),
             ),
           if (_query.isEmpty)
-            SliverToBoxAdapter(child: _Suggestions(recent: _recent, onTap: (q) {
-              _controller.text = q;
-              _run(q);
-            }))
+            SliverToBoxAdapter(
+              child: _Suggestions(
+                recent: _recent,
+                onForget: _forgetRecent,
+                onTap: (q) {
+                  _controller.text = q;
+                  _run(q);
+                },
+              ),
+            )
+          else if (_results.isEmpty && _loading)
+            const SliverToBoxAdapter(child: SongListSkeleton())
+          else if (_results.isEmpty && _error != null)
+            const SliverToBoxAdapter(child: SizedBox.shrink())
           else if (_results.isEmpty && !_loading)
             const SliverFillRemaining(
               hasScrollBody: false,
@@ -273,7 +326,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 }
 
 class _Suggestions extends ConsumerWidget {
-  const _Suggestions({required this.recent, required this.onTap});
+  const _Suggestions({
+    required this.recent,
+    required this.onTap,
+    required this.onForget,
+  });
+  final void Function(String? query) onForget;
   final List<String> recent;
   final ValueChanged<String> onTap;
 
@@ -303,13 +361,21 @@ class _Suggestions extends ConsumerWidget {
         if (recent.isNotEmpty) ...[
           SectionHeader(
             title: L.of(context).searchRecent,
-            padding: EdgeInsets.fromLTRB(16, 8, 8, 4),
+            padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
+            trailing: TextButton(
+              onPressed: () => onForget(null),
+              child: Text(L.of(context).actionClear),
+            ),
           ),
           for (final q in recent)
             ListTile(
               leading: const Icon(Icons.history_rounded),
               title: Text(q),
-              trailing: const Icon(Icons.north_west_rounded, size: 18),
+              trailing: IconButton(
+                tooltip: 'Remove',
+                icon: const Icon(Icons.close_rounded, size: 18),
+                onPressed: () => onForget(q),
+              ),
               onTap: () => onTap(q),
             ),
         ],

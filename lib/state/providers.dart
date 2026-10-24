@@ -310,8 +310,17 @@ class MusicActions {
     await playAll([seed, ...songs], origin: 'radio');
   }
 
-  Future<void> toggle() =>
-      _handler.playbackState.value.playing ? _handler.pause() : _handler.play();
+  Future<void> toggle() {
+    _tap();
+    return _handler.playbackState.value.playing
+        ? _handler.pause()
+        : _handler.play();
+  }
+
+  Future<void> dismissPlayer() {
+    _tap();
+    return _handler.dismiss();
+  }
 
   Future<void> next() {
     _tap();
@@ -327,6 +336,21 @@ class MusicActions {
   void reorderQueue(int oldIndex, int newIndex) =>
       _handler.reorder(oldIndex, newIndex);
   void removeFromQueue(int index) => _handler.removeAt(index);
+  void insertIntoQueue(int index, Song song) => _handler.insertAt(index, song);
+
+  /// Drops everything except the song playing; returns the old queue for undo.
+  List<Song> clearQueue() {
+    final before = _handler.queueSongs;
+    final current = _handler.currentSong;
+    _handler.setQueueKeepingCurrent([?current]);
+    _tap();
+    return before;
+  }
+
+  void restoreQueue(List<Song> songs) => _handler.setQueueKeepingCurrent(songs);
+
+  /// A small tap for the UI to use, when the setting allows it.
+  void haptic() => _tap();
 
   Future<void> cycleRepeat() {
     final state = _handler.playbackState.value.repeatMode;

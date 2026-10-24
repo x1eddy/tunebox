@@ -94,21 +94,18 @@ class HomePage extends ConsumerWidget {
               SliverToBoxAdapter(child: _QuickPicks(library: library)),
             if (library.isEmpty)
               const SliverToBoxAdapter(child: _FirstRunCard()),
-            ...switch (shelves) {
-              AsyncData(:final value) => [
+            // While a refresh runs (a like, a block, pull-to-refresh) the
+            // previous shelves stay on screen instead of collapsing into
+            // skeletons and throwing the scroll position away.
+            ...switch (shelves.value) {
+              final value? => [
                 for (final shelf in value)
                   SliverToBoxAdapter(child: _ShelfView(shelf: shelf)),
               ],
-              AsyncError(:final error) => [
+              _ when shelves.hasError => [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Text(
-                      l.homeCouldNotReach('$error'),
-                      style: t.textTheme.bodySmall?.copyWith(
-                        color: t.colorScheme.error,
-                      ),
-                    ),
+                  child: _HomeError(
+                    onRetry: () => ref.read(musicProvider).refreshHome(),
                   ),
                 ),
               ],
@@ -414,6 +411,53 @@ class _ShelfView extends ConsumerWidget {
           ),
         },
       ],
+    );
+  }
+}
+
+/// What Home says when YouTube cannot be reached: a calm sentence and a way to
+/// try again, not an exception message.
+class _HomeError extends StatelessWidget {
+  const _HomeError({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final t = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 40, 24, 24),
+      child: Column(
+        children: [
+          Icon(
+            Icons.cloud_off_rounded,
+            size: 44,
+            color: t.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l.homeCantReach,
+            style: t.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l.homeOfflineHint,
+            textAlign: TextAlign.center,
+            style: t.textTheme.bodyMedium?.copyWith(
+              color: t.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.tonalIcon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh_rounded),
+            label: Text(l.actionRetry),
+          ),
+        ],
+      ),
     );
   }
 }

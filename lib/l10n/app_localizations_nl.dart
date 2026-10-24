@@ -950,4 +950,341 @@ class LNl extends L {
 
   @override
   String get setChecking => 'Zoeken naar een nieuwere versie…';
+
+  @override
+  String get homeCantReach => 'YouTube is niet bereikbaar';
+
+  @override
+  String get homeOfflineHint =>
+      'Controleer je verbinding. Alles wat al op dit apparaat staat, werkt nog.';
+
+  @override
+  String get actionRetry => 'Opnieuw proberen';
+
+  @override
+  String get actionClear => 'Wissen';
+
+  @override
+  String get searchFailed => 'Zoeken is mislukt';
+
+  @override
+  String get profWho => 'Wie luistert er?';
+
+  @override
+  String get profExplain =>
+      'Elk profiel heeft een eigen bibliotheek, likes, afspeellijsten en smaak.';
+
+  @override
+  String get profActive => 'Actief';
+
+  @override
+  String get profRename => 'Hernoemen';
+
+  @override
+  String get profDeleteMenu => 'Profiel verwijderen';
+
+  @override
+  String get profAdd => 'Profiel toevoegen';
+
+  @override
+  String get profNew => 'Nieuw profiel';
+
+  @override
+  String get profName => 'Naam';
+
+  @override
+  String profDeleteTitle(String name) {
+    return '\"$name\" verwijderen?';
+  }
+
+  @override
+  String get profDeleteBody =>
+      'De bibliotheek, likes, afspeellijsten en geleerde smaak worden definitief verwijderd. Muziekbestanden blijven op het apparaat.';
+
+  @override
+  String get profKeep => 'Behouden';
+
+  @override
+  String get actionOk => 'OK';
+
+  @override
+  String get actionDelete => 'Verwijderen';
+
+  @override
+  String get xferTitle => 'Verplaats je smaak';
+
+  @override
+  String xferIntro(String profile) {
+    return 'Likes, afspeelbeurten en artiestregels van \"$profile\". Ontvangen voegt samen met dit profiel en kan veilig herhaald worden — er wordt niets dubbel.';
+  }
+
+  @override
+  String get xferSectionWifi => 'Tussen apparaten op hetzelfde Wi-Fi';
+
+  @override
+  String get xferSend => 'Naar een apparaat in de buurt sturen';
+
+  @override
+  String get xferSendSub =>
+      'Toont een code; het andere apparaat vindt dit apparaat';
+
+  @override
+  String get xferReceive => 'Van een apparaat in de buurt ontvangen';
+
+  @override
+  String get xferReceiveSub => 'Vindt zenders automatisch — jij typt de code';
+
+  @override
+  String get xferSectionFile => 'Met een bestand';
+
+  @override
+  String get xferSave => 'Opslaan in een bestand';
+
+  @override
+  String get xferSaveSub =>
+      'Kies waar het heen gaat: Downloads, USB, een chat…';
+
+  @override
+  String get xferLoad => 'Laden uit een bestand';
+
+  @override
+  String get xferLoadSub => 'Elk TuneBox-smaakbestand, oud of nieuw';
+
+  @override
+  String get xferSectionText => 'Als tekst';
+
+  @override
+  String get xferCopy => 'Kopiëren als tekst';
+
+  @override
+  String get xferCopySub =>
+      'Eén regel die je in elke chat of notitie kunt plakken';
+
+  @override
+  String get xferPaste => 'Tekst plakken';
+
+  @override
+  String get xferPasteSub => 'Van het klembord';
+
+  @override
+  String get xferSaveDialog => 'Sla je smaak op';
+
+  @override
+  String xferSaved(String kb) {
+    return '$kb KB opgeslagen. Kies op het andere apparaat \"Laden uit een bestand\".';
+  }
+
+  @override
+  String xferSaveFailed(String error) {
+    return 'Opslaan mislukt: $error';
+  }
+
+  @override
+  String xferFileUnreadable(String error) {
+    return 'Dat bestand kon niet als smaak worden gelezen: $error';
+  }
+
+  @override
+  String xferCopied(String kb) {
+    return 'Gekopieerd ($kb KB tekst). Plak het op het andere apparaat met \"Tekst plakken\".';
+  }
+
+  @override
+  String xferCopyFailed(String error) {
+    return 'Kopiëren mislukt: $error';
+  }
+
+  @override
+  String get xferClipboardEmpty =>
+      'Het klembord bevat geen TuneBox-smaak. Kopieer die eerst op het andere apparaat.';
+
+  @override
+  String get xferNewerTitle => 'Nieuwer dan deze app';
+
+  @override
+  String get xferNewerBody =>
+      'Deze smaak is gemaakt met een nieuwere versie van TuneBox. Werk eerst dit apparaat bij.';
+
+  @override
+  String xferMergeTitle(String profile) {
+    return 'Samenvoegen met \"$profile\"?';
+  }
+
+  @override
+  String xferMergeBody(
+    String source,
+    int songs,
+    int liked,
+    int plays,
+    int rules,
+  ) {
+    return 'Van $source:\n• $songs nummers, $liked geliked\n• $plays afspeelbeurten\n• $rules artiestregels\n\nJe eigen likes en geschiedenis blijven behouden. Twee keer doen verandert niets.';
+  }
+
+  @override
+  String get xferSourceFile => 'het bestand';
+
+  @override
+  String get xferSourceClipboard => 'het klembord';
+
+  @override
+  String get xferMerge => 'Samenvoegen';
+
+  @override
+  String get xferMerging => 'Samenvoegen…';
+
+  @override
+  String xferMerged(String summary) {
+    return 'Samengevoegd: $summary';
+  }
+
+  @override
+  String xferMergeFailed(String error) {
+    return 'Samenvoegen mislukt: $error';
+  }
+
+  @override
+  String get xferSendTitle => 'Verstuur je smaak';
+
+  @override
+  String xferCouldNotStart(String error) {
+    return 'Starten mislukt: $error';
+  }
+
+  @override
+  String get xferSent => 'Verzonden. Het andere apparaat heeft je smaak.';
+
+  @override
+  String get xferClosed =>
+      'Gesloten — de code is verlopen of te vaak verkeerd geraden. Begin opnieuw voor een nieuwe.';
+
+  @override
+  String get xferSendHow =>
+      'Open op het andere apparaat Instellingen → Verplaats je smaak → Ontvangen, kies dit apparaat en typ:';
+
+  @override
+  String get xferNoWifi =>
+      'Geen Wi-Fi-adres gevonden — verbind beide apparaten met hetzelfde netwerk.';
+
+  @override
+  String xferThisDevice(String addresses, int port) {
+    return 'Dit apparaat: $addresses (poort $port)';
+  }
+
+  @override
+  String get xferWaiting =>
+      'Wachten op het andere apparaat… (sluit na 5 minuten)';
+
+  @override
+  String xferCodeFor(String name) {
+    return 'Code getoond op $name';
+  }
+
+  @override
+  String get xferCodeLabel => 'Code van 6 cijfers';
+
+  @override
+  String get xferReceiveAction => 'Ontvangen';
+
+  @override
+  String xferReceivingFrom(String name) {
+    return 'Ontvangen van $name…';
+  }
+
+  @override
+  String get xferWrongCode =>
+      'Verkeerde code. Controleer het nummer op het andere apparaat.';
+
+  @override
+  String get xferNotTaste => 'Dat was geen TuneBox-smaak.';
+
+  @override
+  String xferCouldNotReach(String error) {
+    return 'Niet bereikbaar: $error';
+  }
+
+  @override
+  String xferLooking(String host) {
+    return 'Zoeken naar $host…';
+  }
+
+  @override
+  String xferNothingAt(String host) {
+    return 'Niets antwoordde op $host. Is Versturen daar open?';
+  }
+
+  @override
+  String get xferReceiveTitle => 'Een smaak ontvangen';
+
+  @override
+  String get xferOpenSendFirst =>
+      'Open eerst Versturen op het andere apparaat (hetzelfde Wi-Fi).';
+
+  @override
+  String get xferSearching => 'Zoeken naar apparaten in de buurt…';
+
+  @override
+  String get xferNoSender => 'Nog geen zender gevonden.';
+
+  @override
+  String get xferSearchAgain => 'Opnieuw zoeken';
+
+  @override
+  String get xferTypeAddress => 'Niet in de lijst? Typ het adres';
+
+  @override
+  String get xferConnect => 'Verbinden';
+
+  @override
+  String get qUndo => 'Ongedaan maken';
+
+  @override
+  String qRemoved(String title) {
+    return '\"$title\" verwijderd';
+  }
+
+  @override
+  String get qCleared => 'Wachtrij gewist';
+
+  @override
+  String qSaved(String songs, String name) {
+    return '$songs opgeslagen in \"$name\"';
+  }
+
+  @override
+  String qTitle(int count) {
+    return 'Wachtrij · $count';
+  }
+
+  @override
+  String get qSavePlaylist => 'Opslaan als afspeellijst';
+
+  @override
+  String get qClear => 'Wachtrij wissen';
+
+  @override
+  String get qClearSub => 'Houdt het nummer dat speelt';
+
+  @override
+  String get qEmptyTitle => 'De wachtrij is leeg';
+
+  @override
+  String get qEmptyBody => 'Speel iets af en hij vult zich hier.';
+
+  @override
+  String get qDrag => 'Sleep om te herschikken';
+
+  @override
+  String plDeleted(String name) {
+    return '\"$name\" verwijderd';
+  }
+
+  @override
+  String get plDeleteSub => 'De nummers blijven in je bibliotheek';
+
+  @override
+  String get plDelete => 'Afspeellijst verwijderen';
+
+  @override
+  String get plRenameOrDelete => 'Hernoemen of verwijderen';
 }

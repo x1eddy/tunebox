@@ -1,7 +1,7 @@
 name: tunebox
 description: "A music app with an on-device AI that learns what you like."
 publish_to: 'none'
-version: 0.8.1+8001
+version: 0.9.0+9000
 
 environment:
   sdk: ^3.10.0

@@ -959,4 +959,339 @@ class LRo extends L {
 
   @override
   String get setChecking => 'Se caută o versiune mai nouă…';
+
+  @override
+  String get homeCantReach => 'Can\'t reach YouTube';
+
+  @override
+  String get homeOfflineHint =>
+      'Check your connection. Everything already on this device still works.';
+
+  @override
+  String get actionRetry => 'Try again';
+
+  @override
+  String get actionClear => 'Clear';
+
+  @override
+  String get searchFailed => 'Search didn\'t work';
+
+  @override
+  String get profWho => 'Who is listening?';
+
+  @override
+  String get profExplain =>
+      'Each profile has its own library, likes, playlists and taste.';
+
+  @override
+  String get profActive => 'Active';
+
+  @override
+  String get profRename => 'Rename';
+
+  @override
+  String get profDeleteMenu => 'Delete profile';
+
+  @override
+  String get profAdd => 'Add profile';
+
+  @override
+  String get profNew => 'New profile';
+
+  @override
+  String get profName => 'Name';
+
+  @override
+  String profDeleteTitle(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get profDeleteBody =>
+      'Its library, likes, playlists and learned taste are removed for good. Music files stay on the device.';
+
+  @override
+  String get profKeep => 'Keep';
+
+  @override
+  String get actionOk => 'OK';
+
+  @override
+  String get actionDelete => 'Delete';
+
+  @override
+  String get xferTitle => 'Move your taste';
+
+  @override
+  String xferIntro(String profile) {
+    return 'Likes, plays and artist rules of \"$profile\". Receiving merges into this profile and is safe to repeat — nothing is doubled.';
+  }
+
+  @override
+  String get xferSectionWifi => 'Between devices on the same Wi-Fi';
+
+  @override
+  String get xferSend => 'Send to a nearby device';
+
+  @override
+  String get xferSendSub => 'Shows a code; the other device finds this one';
+
+  @override
+  String get xferReceive => 'Receive from a nearby device';
+
+  @override
+  String get xferReceiveSub =>
+      'Finds senders automatically — you type the code';
+
+  @override
+  String get xferSectionFile => 'With a file';
+
+  @override
+  String get xferSave => 'Save to a file';
+
+  @override
+  String get xferSaveSub => 'Pick where it goes: Downloads, USB, a chat…';
+
+  @override
+  String get xferLoad => 'Load from a file';
+
+  @override
+  String get xferLoadSub => 'Any TuneBox taste file, old or new';
+
+  @override
+  String get xferSectionText => 'As text';
+
+  @override
+  String get xferCopy => 'Copy as text';
+
+  @override
+  String get xferCopySub => 'One line you can paste into any chat or note';
+
+  @override
+  String get xferPaste => 'Paste text';
+
+  @override
+  String get xferPasteSub => 'From the clipboard';
+
+  @override
+  String get xferSaveDialog => 'Save your taste';
+
+  @override
+  String xferSaved(String kb) {
+    return 'Saved $kb KB. On the other device choose \"Load from a file\".';
+  }
+
+  @override
+  String xferSaveFailed(String error) {
+    return 'Could not save: $error';
+  }
+
+  @override
+  String xferFileUnreadable(String error) {
+    return 'That file could not be read as a taste: $error';
+  }
+
+  @override
+  String xferCopied(String kb) {
+    return 'Copied ($kb KB of text). Paste it on the other device with \"Paste text\".';
+  }
+
+  @override
+  String xferCopyFailed(String error) {
+    return 'Could not copy: $error';
+  }
+
+  @override
+  String get xferClipboardEmpty =>
+      'The clipboard does not hold a TuneBox taste. Copy it on the other device first.';
+
+  @override
+  String get xferNewerTitle => 'Newer than this app';
+
+  @override
+  String get xferNewerBody =>
+      'This taste was made by a newer TuneBox. Update this device first.';
+
+  @override
+  String xferMergeTitle(String profile) {
+    return 'Merge into \"$profile\"?';
+  }
+
+  @override
+  String xferMergeBody(
+    String source,
+    int songs,
+    int liked,
+    int plays,
+    int rules,
+  ) {
+    return 'From $source:\n• $songs songs, $liked liked\n• $plays plays\n• $rules artist rules\n\nYour own likes and history stay. Doing this twice changes nothing.';
+  }
+
+  @override
+  String get xferSourceFile => 'the file';
+
+  @override
+  String get xferSourceClipboard => 'the clipboard';
+
+  @override
+  String get xferMerge => 'Merge';
+
+  @override
+  String get xferMerging => 'Merging…';
+
+  @override
+  String xferMerged(String summary) {
+    return 'Merged: $summary';
+  }
+
+  @override
+  String xferMergeFailed(String error) {
+    return 'Merge failed: $error';
+  }
+
+  @override
+  String get xferSendTitle => 'Send your taste';
+
+  @override
+  String xferCouldNotStart(String error) {
+    return 'Could not start: $error';
+  }
+
+  @override
+  String get xferSent => 'Sent. The other device has your taste.';
+
+  @override
+  String get xferClosed =>
+      'Closed — the code expired or was guessed wrong too often. Start again for a new one.';
+
+  @override
+  String get xferSendHow =>
+      'On the other device open Settings → Move your taste → Receive, then pick this device and type:';
+
+  @override
+  String get xferNoWifi =>
+      'No Wi-Fi address found — connect both devices to the same network.';
+
+  @override
+  String xferThisDevice(String addresses, int port) {
+    return 'This device: $addresses (port $port)';
+  }
+
+  @override
+  String get xferWaiting =>
+      'Waiting for the other device… (closes after 5 minutes)';
+
+  @override
+  String xferCodeFor(String name) {
+    return 'Code shown on $name';
+  }
+
+  @override
+  String get xferCodeLabel => '6-digit code';
+
+  @override
+  String get xferReceiveAction => 'Receive';
+
+  @override
+  String xferReceivingFrom(String name) {
+    return 'Receiving from $name…';
+  }
+
+  @override
+  String get xferWrongCode =>
+      'Wrong code. Check the number on the other device.';
+
+  @override
+  String get xferNotTaste => 'That was not a TuneBox taste.';
+
+  @override
+  String xferCouldNotReach(String error) {
+    return 'Could not reach it: $error';
+  }
+
+  @override
+  String xferLooking(String host) {
+    return 'Looking for $host…';
+  }
+
+  @override
+  String xferNothingAt(String host) {
+    return 'Nothing answered at $host. Is Send open there?';
+  }
+
+  @override
+  String get xferReceiveTitle => 'Receive a taste';
+
+  @override
+  String get xferOpenSendFirst =>
+      'Open Send on the other device first (same Wi-Fi).';
+
+  @override
+  String get xferSearching => 'Looking for nearby devices…';
+
+  @override
+  String get xferNoSender => 'No sender found yet.';
+
+  @override
+  String get xferSearchAgain => 'Search again';
+
+  @override
+  String get xferTypeAddress => 'Not listed? Type its address';
+
+  @override
+  String get xferConnect => 'Connect';
+
+  @override
+  String get qUndo => 'Undo';
+
+  @override
+  String qRemoved(String title) {
+    return 'Removed \"$title\"';
+  }
+
+  @override
+  String get qCleared => 'Queue cleared';
+
+  @override
+  String qSaved(String songs, String name) {
+    return 'Saved $songs to \"$name\"';
+  }
+
+  @override
+  String qTitle(int count) {
+    return 'Queue · $count';
+  }
+
+  @override
+  String get qSavePlaylist => 'Save as playlist';
+
+  @override
+  String get qClear => 'Clear queue';
+
+  @override
+  String get qClearSub => 'Keeps the song that is playing';
+
+  @override
+  String get qEmptyTitle => 'The queue is empty';
+
+  @override
+  String get qEmptyBody => 'Play something and it fills up here.';
+
+  @override
+  String get qDrag => 'Drag to reorder';
+
+  @override
+  String plDeleted(String name) {
+    return 'Deleted \"$name\"';
+  }
+
+  @override
+  String get plDeleteSub => 'The songs stay in your library';
+
+  @override
+  String get plDelete => 'Delete playlist';
+
+  @override
+  String get plRenameOrDelete => 'Rename or delete';
 }
