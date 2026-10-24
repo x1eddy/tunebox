@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TuneBox — a music player that learns your taste</title>
+<meta name="description" content="TuneBox is a free, open-source music player for Android, Linux and iPhone. Stream from YouTube, play your own files, download for offline — and an AI that runs entirely on your device learns what you like. No account, no ads, no tracking.">
+<meta name="theme-color" content="#12101a">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="canonical" href="https://x1eddy.github.io/tunebox/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="TuneBox — a music player that learns your taste">
+<meta property="og:description" content="Free and open source. Android, Linux, iPhone. The AI runs on your device — no account, no ads, no tracking.">
+<meta property="og:image" content="https://x1eddy.github.io/tunebox/img/og.png">
+<meta property="og:url" content="https://x1eddy.github.io/tunebox/">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  :root{
+    --bg:#fbf8ff; --surface:#ffffff; --surface2:#f1ebfa; --text:#1b1626; --muted:#625b73;
+    --accent:#b4489f; --accent2:#5b5fe0; --on-accent:#fff; --line:#e4dcf0;
+    --shadow:0 18px 50px rgba(60,30,100,.14);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12101a; --surface:#1b1826; --surface2:#242035; --text:#f3eefb; --muted:#aaa2bd;
+      --line:#2f2a42; --shadow:0 18px 50px rgba(0,0,0,.45);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;text-decoration:none}
+  .brand img{width:34px;height:34px;border-radius:9px}
+  nav a{margin-left:20px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem}
+  nav a:hover{color:var(--text)}
+  @media(max-width:560px){nav a.hide-s{display:none}}
+
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:36px 0 70px}
+  @media(max-width:860px){.hero{grid-template-columns:1fr;text-align:center;padding-top:10px}.cta,.platforms{justify-content:center}}
+  h1{font-size:clamp(2.1rem,5.4vw,3.6rem);line-height:1.08;letter-spacing:-.03em;margin:0 0 16px;font-weight:850}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:1.15rem;color:var(--muted);max-width:34em;margin:0 0 26px}
+  @media(max-width:860px){.lead{margin-inline:auto}}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;
+    text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--on-accent);border:0}
+  .platforms{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+  .pill{padding:4px 12px;border-radius:999px;background:var(--surface2);font-weight:600}
+  .shots{position:relative;height:560px;width:100%}
+  .shots img{position:absolute;height:auto;border-radius:26px;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--surface)}
+  .shots .a{width:54%;left:0;top:50px;transform:rotate(-4deg)}
+  .shots .b{width:54%;right:0;top:0;transform:rotate(3deg)}
+  @media(max-width:860px){.shots{height:470px;max-width:440px;margin:0 auto}}
+
+  section{padding:64px 0}
+  section h2{font-size:clamp(1.6rem,3.6vw,2.3rem);letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}
+  section .sub{color:var(--muted);margin:0 0 34px;max-width:40em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
+  .card .ico{font-size:1.7rem;margin-bottom:8px}
+  .card h3{margin:0 0 6px;font-size:1.1rem}
+  .card p{margin:0;color:var(--muted)}
+
+  .gallery{display:flex;gap:18px;overflow-x:auto;padding:6px 4px 22px;scroll-snap-type:x mandatory}
+  .gallery figure{margin:0;flex:0 0 auto;scroll-snap-align:center;text-align:center}
+  .gallery img{height:480px;width:auto;max-width:none;border-radius:22px;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .gallery figcaption{margin-top:10px;color:var(--muted);font-size:.92rem}
+
+  .how{background:var(--surface2);border-radius:28px;padding:34px}
+  .how ol{margin:0;padding-left:1.2em}
+  .how li{margin:.5em 0}
+  .how b{color:var(--text)}
+
+  .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .dl .card h3{display:flex;align-items:center;gap:8px}
+  .dl .card .btn{margin-top:14px}
+  .dl small{display:block;color:var(--muted);margin-top:10px}
+  code{background:var(--surface2);padding:2px 7px;border-radius:7px;font-size:.9em}
+  details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin:10px 0}
+  summary{cursor:pointer;font-weight:700}
+  details p{color:var(--muted);margin:.6em 0 0}
+
+  footer{padding:40px 0 60px;color:var(--muted);font-size:.92rem;border-top:1px solid var(--line)}
+  footer .row{display:flex;flex-wrap:wrap;gap:18px 30px;justify-content:space-between}
+  footer a{color:var(--muted)}
+  .skip{position:absolute;left:-999px}.skip:focus{left:10px;top:10px;background:var(--surface);padding:8px 12px;border-radius:8px;z-index:9}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#download">Skip to downloads</a>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><img src="img/icon-256.png" alt="" width="34" height="34">TuneBox</a>
+    <nav>
+      <a class="hide-s" href="#features">Features</a>
+      <a class="hide-s" href="#how">How it works</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/x1eddy/tunebox">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+  <div class="hero">
+    <div>
+      <h1>A music player that <em>learns your taste</em> — on your device.</h1>
+      <p class="lead">Stream from YouTube, play your own files, download for offline. Swipe through songs to teach it what you like — all the learning happens on your phone. No account, no ads, no tracking.</p>
+      <div class="cta">
+        <a class="btn primary" id="cta-main" href="#download">Download TuneBox</a>
+        <a class="btn" href="https://github.com/x1eddy/tunebox">★ Star on GitHub</a>
+      </div>
+      <div class="platforms"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span></div>
+    </div>
+    <div class="shots" aria-hidden="true">
+      <img class="a" src="img/taste.png" alt="" width="420" height="840" loading="eager">
+      <img class="b" src="img/home.png" alt="" width="420" height="840" loading="eager">
+    </div>
+  </div>
+
+  <section id="features">
+    <h2>Built to feel like the music apps you know</h2>
+    <p class="sub">Without the account, the subscription or the company reading over your shoulder.</p>
+    <div class="grid">
+      <div class="card"><div class="ico">🧠</div><h3>It learns what you like</h3><p>Plays, skips, likes and a swipe-to-rate training round teach an on-device model. See exactly what it thinks of you — and change its mind.</p></div>
+      <div class="card"><div class="ico">▶️</div><h3>YouTube and your own music</h3><p>Search and stream YouTube Music, or point TuneBox at a folder. Background playback, queue, shuffle by taste, radio when the queue ends.</p></div>
+      <div class="card"><div class="ico">⬇️</div><h3>Offline when you want it</h3><p>Hit the heart and the song is saved. Wi-Fi-only, a storage budget and a data saver keep it from eating your plan.</p></div>
+      <div class="card"><div class="ico">👥</div><h3>Profiles for everyone</h3><p>Each listener gets their own library, likes and taste. Switch with one tap — no accounts involved.</p></div>
+      <div class="card"><div class="ico">🌍</div><h3>85 languages</h3><p>Including right-to-left ones, with a searchable language picker. Text size, high contrast and Reduce motion are built in.</p></div>
+      <div class="card"><div class="ico">🔁</div><h3>Move your taste anywhere</h3><p>Send it to another device over Wi-Fi with a code, or via a file or plain text. Merging twice never doubles anything.</p></div>
+    </div>
+  </section>
+
+  <section id="screens">
+    <h2>See it</h2>
+    <p class="sub">Home shelves built from your listening, search that answers as you type, and a page that shows what the AI learned.</p>
+    <div class="gallery">
+      <figure><img src="img/home.png" alt="TuneBox home screen with quick picks and shelves" width="420" height="840" loading="lazy"><figcaption>Home</figcaption></figure>
+      <figure><img src="img/search.png" alt="TuneBox search with results" width="420" height="840" loading="lazy"><figcaption>Search</figcaption></figure>
+      <figure><img src="img/taste.png" alt="TuneBox taste page showing confidence and controls" width="420" height="840" loading="lazy"><figcaption>Your taste</figcaption></figure>
+      <figure><img src="img/desktop.png" alt="TuneBox on Linux desktop" width="520" height="866" loading="lazy"><figcaption>Linux desktop</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="how">
+      <h2>How it works — and what stays private</h2>
+      <ol>
+        <li><b>You listen.</b> Every finished play, skip and like becomes a small signal about artists, genres and decades.</li>
+        <li><b>It scores songs locally.</b> A transparent weighting model on your device ranks what to show you — no cloud, no account.</li>
+        <li><b>You steer.</b> Rate songs in a training round, boost or block artists, freeze learning, or reset everything.</li>
+        <li><b>Nothing leaves the device.</b> The only network traffic is talking to YouTube for songs. No analytics, no ads, no sign-in.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="download">
+    <h2>Download</h2>
+    <p class="sub">Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.</p>
+    <div class="dl">
+      <div class="card"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
+        <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/latest">Download APK</a>
+        <small>Open it on the phone and allow installing from that app once. Signed with a real release key; after that the app updates itself.</small></div>
+      <div class="card"><h3>🐧 Linux</h3><p>x86_64. Installs into your home folder, no root.</p>
+        <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/latest">Download .tar.gz</a>
+        <small>Extract, run <code>./install.sh</code>. Needs <code>libmpv</code> (<code>sudo apt install libmpv2</code>).</small></div>
+      <div class="card"><h3> iPhone</h3><p>iOS 15+. Unsigned build you sign with your own Apple ID.</p>
+        <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/latest">Download .ipa</a>
+        <small>Install with <a href="https://sidestore.io">SideStore</a> or <a href="https://altstore.io">AltStore</a>; a free Apple ID needs a refresh every 7 days (they do it for you).</small></div>
+    </div>
+
+    <h2 style="margin-top:48px">Questions</h2>
+    <details><summary>Is it safe? My phone shows a warning.</summary><p>Android's Play Protect warns about any app it hasn't seen before — that is "unknown", not "malicious". The app asks for very little: internet, notifications, playback service and (only if you import music) audio files. No contacts, location, camera or SMS. The code is public on GitHub.</p></details>
+    <details><summary>Is this official? Is it legal?</summary><p>TuneBox is an independent, unofficial project and is not affiliated with or endorsed by YouTube or Google. It is a personal-use player; please respect the terms of the services you use.</p></details>
+    <details><summary>Does it cost anything or show ads?</summary><p>No. It is free and open source under the MIT licence, with no ads, no accounts and no analytics.</p></details>
+    <details><summary>Something broke — where do I report it?</summary><p>Open an issue on <a href="https://github.com/x1eddy/tunebox/issues">GitHub</a>. Say which device and version (Settings → About) and what you tapped.</p></details>
+  </section>
+  </main>
+
+  <footer>
+    <div class="row">
+      <div>© TuneBox · MIT licence · unofficial, not affiliated with YouTube or Google</div>
+      <div><a href="https://github.com/x1eddy/tunebox">Source</a> · <a href="https://github.com/x1eddy/tunebox/releases">All releases</a> · <a href="https://github.com/x1eddy/tunebox/issues">Report a bug</a></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Always point the buttons at the newest release; the fallback links above keep working without JS.
+  fetch('https://api.github.com/repos/x1eddy/tunebox/releases/latest')
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (rel) {
+      document.getElementById('ver').textContent = rel.tag_name;
+      var map = { 'dl-android': /\.apk$/i, 'dl-linux': /\.tar\.gz$/i, 'dl-ios': /\.ipa$/i };
+      Object.keys(map).forEach(function (id) {
+        var a = (rel.assets || []).filter(function (x) { return map[id].test(x.name); })[0];
+        if (a) document.getElementById(id).href = a.browser_download_url;
+      });
+    })
+    .catch(function () { document.getElementById('ver').textContent = 'see Releases'; });
+</script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 # TuneBox
 
+**Website: https://x1eddy.github.io/tunebox/** — screenshots, downloads and install help.
+
 A music player for Android, iPhone and Linux, with a recommender that runs entirely on
 your device. Music comes from YouTube and from your own files; what the app
 learns about your taste never leaves the phone.

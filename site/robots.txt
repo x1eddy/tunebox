@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://x1eddy.github.io/tunebox/sitemap.xml
