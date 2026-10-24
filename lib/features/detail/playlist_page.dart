@@ -17,22 +17,23 @@ class PlaylistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
 
     final (title, subtitle, songs) = switch (id) {
       'liked' => (
-        'Liked songs',
-        'Everything you hit the heart on',
+        l.libLikedSongs,
+        l.aPlLikedSub,
         ref.watch(likedProvider).value ?? const <Song>[],
       ),
       'downloads' => (
-        'Downloads',
-        'Plays with no connection',
+        l.libDownloads,
+        l.aPlDownloadsSub,
         ref.watch(downloadedProvider).value ?? const <Song>[],
       ),
       'imported' => (
-        'My own files',
-        'Music you added from this device',
+        l.libMyFiles,
+        l.aPlImportedSub,
         ref.watch(importedProvider).value ?? const <Song>[],
       ),
       _ => (
@@ -42,8 +43,8 @@ class PlaylistPage extends ConsumerWidget {
                 ?.where((p) => p.id == id)
                 .firstOrNull
                 ?.name ??
-            'Playlist',
-        'Playlist',
+            l.aPlaylistLabel,
+        l.aPlaylistLabel,
         ref.watch(playlistSongsProvider(id)).value ?? const <Song>[],
       ),
     };
@@ -63,7 +64,7 @@ class PlaylistPage extends ConsumerWidget {
             actions: [
               if (!const {'liked', 'downloads', 'imported'}.contains(id))
                 IconButton(
-                  tooltip: L.of(context).plRenameOrDelete,
+                  tooltip: l.plRenameOrDelete,
                   onPressed: () => showPlaylistMenu(
                     context,
                     ref,
@@ -74,7 +75,7 @@ class PlaylistPage extends ConsumerWidget {
                   icon: const Icon(Icons.more_vert_rounded),
                 ),
               IconButton(
-                tooltip: 'Shuffle',
+                tooltip: l.actionShuffle,
                 onPressed: () => ref
                     .read(musicProvider)
                     .playAll([...songs]..shuffle(), origin: 'playlist:$id'),
@@ -136,7 +137,7 @@ class PlaylistPage extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${L.of(context).libSongCount(songs.length)} · '
+                                  '${l.libSongCount(songs.length)} · '
                                   '${formatDuration(total)}',
                                   style: t.textTheme.bodySmall?.copyWith(
                                     color: t.colorScheme.onSurfaceVariant,
@@ -166,26 +167,31 @@ class PlaylistPage extends ConsumerWidget {
                                 .read(musicProvider)
                                 .playAll(songs, origin: 'playlist:$id'),
                       icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text('Play'),
+                      label: Text(l.actionPlay),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: FilledButton.tonalIcon(
-                      onPressed: songs.every((s) => s.source != SongSource.youtube)
+                      onPressed:
+                          songs.every((s) => s.source != SongSource.youtube)
                           ? null
                           : () => _downloadAll(context, ref, songs),
                       icon: Icon(
                         songs.isNotEmpty &&
-                                songs.every((s) => s.source != SongSource.youtube)
+                                songs.every(
+                                  (s) => s.source != SongSource.youtube,
+                                )
                             ? Icons.download_done_rounded
                             : Icons.download_outlined,
                       ),
                       label: Text(
                         songs.isNotEmpty &&
-                                songs.every((s) => s.source != SongSource.youtube)
-                            ? 'Downloaded'
-                            : 'Download',
+                                songs.every(
+                                  (s) => s.source != SongSource.youtube,
+                                )
+                            ? l.sheetDownloaded
+                            : l.sheetDownload,
                       ),
                     ),
                   ),
@@ -194,12 +200,12 @@ class PlaylistPage extends ConsumerWidget {
             ),
           ),
           if (songs.isEmpty)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               hasScrollBody: false,
               child: EmptyState(
                 icon: Icons.queue_music_rounded,
-                title: 'Empty for now',
-                body: 'Add songs from the ⋮ menu on any track.',
+                title: l.aPlEmptyTitle,
+                body: l.aPlEmptyBody,
               ),
             )
           else
@@ -270,7 +276,11 @@ class PlaylistPage extends ConsumerWidget {
       music.download(song);
     }
     ScaffoldMessenger.of(context).showTimed(
-      SnackBar(content: Text('Downloading ${todo.length} songs…')),
+      SnackBar(
+        content: Text(
+          L.of(context).aPlDownloading(L.of(context).libSongCount(todo.length)),
+        ),
+      ),
     );
   }
 }

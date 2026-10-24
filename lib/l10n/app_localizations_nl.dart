@@ -1287,4 +1287,426 @@ class LNl extends L {
 
   @override
   String get plRenameOrDelete => 'Hernoemen of verwijderen';
+
+  @override
+  String get aLibListView => 'Lijstweergave';
+
+  @override
+  String get aLibGridView => 'Rasterweergave';
+
+  @override
+  String get aLibSortAlpha => 'A–Z';
+
+  @override
+  String get aLibSortYear => 'Jaar';
+
+  @override
+  String get aLibNothingYet => 'Hier is nog niets';
+
+  @override
+  String get aLibImportedEmptyBody =>
+      'Voeg de muziek toe die al op dit apparaat staat.';
+
+  @override
+  String get aLibEmptyBody =>
+      'Speel of download iets en het komt hier terecht.';
+
+  @override
+  String aLibBannerSummary(String songs, String size) {
+    return '$songs · $size op dit apparaat';
+  }
+
+  @override
+  String get aLibOfflineNote => 'Deze spelen zonder enige verbinding';
+
+  @override
+  String aLibAiPicked(String count) {
+    return '$count daarvan koos de AI voor jou';
+  }
+
+  @override
+  String get aPlaylistLabel => 'Afspeellijst';
+
+  @override
+  String get aLibNoArtists => 'Nog geen artiesten';
+
+  @override
+  String get aLibNoArtistsBody =>
+      'Speel een paar nummers en ze verzamelen zich hier.';
+
+  @override
+  String get aHomeSearch => 'Zoeken';
+
+  @override
+  String get aHomeInYourLibrary => 'In je bibliotheek';
+
+  @override
+  String get aHomeInYourLibrarySub => 'Wat je tot nu toe hebt toegevoegd';
+
+  @override
+  String get aSearchHintDots => 'Nummers, artiesten, albums…';
+
+  @override
+  String get aSearchEmptyBody =>
+      'Probeer een andere spelling of plak een YouTube-link.';
+
+  @override
+  String get aSearchTrySomething => 'Probeer iets';
+
+  @override
+  String get aSearchLearnedFrom => 'Van wat de AI heeft geleerd';
+
+  @override
+  String get aSearchAnything => 'Zoek alles op YouTube';
+
+  @override
+  String get aSearchSeedTap => 'Tik op een startpunt om rond te snuffelen';
+
+  @override
+  String get aSearchArtistsYouPlay => 'Artiesten die je luistert';
+
+  @override
+  String aSearchAffinity(String percent) {
+    return '$percent% affiniteit';
+  }
+
+  @override
+  String get aArtistAlwaysMore => 'Altijd meer hiervan';
+
+  @override
+  String get aArtistClearRule => 'Regel wissen';
+
+  @override
+  String get aArtistBoosted => 'voorgetrokken';
+
+  @override
+  String get aArtistBlocked => 'geblokkeerd';
+
+  @override
+  String get aArtistRadio => 'Radio';
+
+  @override
+  String get aPlLikedSub => 'Alles waar je het hartje bij hebt aangetikt';
+
+  @override
+  String get aPlDownloadsSub => 'Speelt zonder verbinding';
+
+  @override
+  String get aPlImportedSub => 'Muziek die je van dit apparaat hebt toegevoegd';
+
+  @override
+  String get aPlEmptyTitle => 'Voorlopig leeg';
+
+  @override
+  String get aPlEmptyBody => 'Voeg nummers toe via het ⋮-menu bij elk nummer.';
+
+  @override
+  String aPlDownloading(String songs) {
+    return '$songs downloaden…';
+  }
+
+  @override
+  String bTasteAiBudgetSub(String count, String gb) {
+    return 'Tot $count nummers per dag, $gb GB budget';
+  }
+
+  @override
+  String get bTasteSongsPerDay => 'Nummers per dag';
+
+  @override
+  String get bTasteStorageMayUse => 'Opslag die ze mag gebruiken';
+
+  @override
+  String bTasteGb(String gb) {
+    return '$gb GB';
+  }
+
+  @override
+  String get bTasteNothingToDownload =>
+      'Op dit moment niets nieuws om te downloaden.';
+
+  @override
+  String bTasteQueuedSongs(String count) {
+    return '$count nummers die de AI koos staan in de wachtrij.';
+  }
+
+  @override
+  String get bTasteFetchNow => 'Nu ophalen';
+
+  @override
+  String get bTasteNotEnoughListening =>
+      'Nog niet genoeg geluisterd. Speel een paar nummers af of start hieronder een trainingsronde.';
+
+  @override
+  String get bTasteFamiliar => 'Vertrouwd';
+
+  @override
+  String get bTasteDiscoveryCap1 => 'Vooral nummers die je al kent';
+
+  @override
+  String get bTasteDiscoveryCap2 => 'Een paar nieuwe nummers per plank';
+
+  @override
+  String get bTasteDiscoveryCap3 => 'De helft van Home is nieuw voor je';
+
+  @override
+  String get bTasteDiscoveryCap4 => 'Laat me dingen horen die ik nooit hoorde';
+
+  @override
+  String get bTasteCalm => 'Rustig';
+
+  @override
+  String get bTasteHighEnergy => 'Vol energie';
+
+  @override
+  String get bTasteEnergyCaption => 'Duwt de keuzes richting luider en sneller';
+
+  @override
+  String get bTasteTimeless => 'Tijdloos';
+
+  @override
+  String get bTasteFresh => 'Vers';
+
+  @override
+  String get bTasteRecencyCaption =>
+      'Hoe zwaar \"Nieuw ⭐\" op de releasedatum leunt';
+
+  @override
+  String get bTasteRarely => 'Zelden';
+
+  @override
+  String get bTasteOften => 'Vaak';
+
+  @override
+  String get bTasteNostalgiaCaption =>
+      'Hoe diep te graven naar vergeten oude hits';
+
+  @override
+  String get bTasteListeningHistory => 'Luistergeschiedenis';
+
+  @override
+  String bTastePlaysRecorded(String count) {
+    return '$count afspeelbeurten vastgelegd';
+  }
+
+  @override
+  String get bTasteSkips => 'Overgeslagen';
+
+  @override
+  String bTasteSkipsCounted(String count) {
+    return '$count keer overslaan telt tegen nummers';
+  }
+
+  @override
+  String get bTasteTimeOfDaySub => 'Andere keuzes om 08:00 en 23:00';
+
+  @override
+  String get bTasteYoutubeRelated => 'Gerelateerde YouTube-nummers';
+
+  @override
+  String get bTasteYoutubeRelatedSub =>
+      'Haalt nummers binnen die je nog niet hebt';
+
+  @override
+  String get bTasteResetSub =>
+      'Wist afspeelbeurten, overslagen en gewichten. Bibliotheek blijft.';
+
+  @override
+  String get bTasteResetDialogTitle => 'AI resetten?';
+
+  @override
+  String get bTasteResetDialogBody =>
+      'Je bibliotheek, afspeellijsten en downloads blijven. Alles wat ze over jou leerde wordt gewist en Home gaat terug naar de standaard.';
+
+  @override
+  String get bTasteResetAction => 'Resetten';
+
+  @override
+  String get bTrainHearIt => 'Beluister';
+
+  @override
+  String bImportDoneAdded(String count) {
+    return 'Klaar · $count nieuwe nummers toegevoegd';
+  }
+
+  @override
+  String bImportScanningProgress(String scanned, String total) {
+    return 'Scannen · $scanned van $total bestanden';
+  }
+
+  @override
+  String get bImportWatchedFolders => 'Gevolgde mappen';
+
+  @override
+  String get bImportWatchedFoldersSub =>
+      'Opnieuw gescand bij het starten van de app';
+
+  @override
+  String get bImportNoneYet =>
+      'Nog geen. Kies een map en die wordt automatisch gevolgd.';
+
+  @override
+  String get bImportFoundOnDevice => 'Gevonden op dit apparaat';
+
+  @override
+  String get bImportFoundOnDeviceSub =>
+      'Tik om te scannen en te blijven volgen';
+
+  @override
+  String get bImportYourFiles => 'Je bestanden';
+
+  @override
+  String bImportImportedSoFar(String count) {
+    return '$count tot nu toe geïmporteerd';
+  }
+
+  @override
+  String get bImportFilesStayNote =>
+      'Bestanden blijven waar ze zijn — TuneBox indexeert ze alleen. Verwijder je een bestand, dan verdwijnt het bij de volgende scan stilletjes uit je bibliotheek.';
+
+  @override
+  String get bImportRescan => 'Opnieuw scannen';
+
+  @override
+  String get cMore => 'Meer';
+
+  @override
+  String cBlockedSnack(String title) {
+    return '\"$title\" geblokkeerd — de AI mijdt het';
+  }
+
+  @override
+  String get cLike => 'Leuk vinden';
+
+  @override
+  String get cUnlike => 'Niet meer leuk';
+
+  @override
+  String get cRemoveFromLiked => 'Verwijderen uit leuk';
+
+  @override
+  String get cLikeSub => 'De AI leert er meteen van';
+
+  @override
+  String get cSave => 'Opslaan';
+
+  @override
+  String get cNothingPlaying => 'Er speelt niets';
+
+  @override
+  String get cNothingPlayingBody => 'Kies een nummer en het verschijnt hier.';
+
+  @override
+  String get cPlayingFrom => 'Speelt af van';
+
+  @override
+  String get cSeek => 'Zoeken';
+
+  @override
+  String cTimeOf(String done, String total) {
+    return '$done van $total';
+  }
+
+  @override
+  String get cShuffleOn => 'Willekeurig: aan';
+
+  @override
+  String get cShuffleOff => 'Willekeurig: uit';
+
+  @override
+  String get cPrevious => 'Vorige';
+
+  @override
+  String get cNext => 'Volgende';
+
+  @override
+  String get cPause => 'Pauze';
+
+  @override
+  String get cRepeatOne => 'Herhalen: dit nummer';
+
+  @override
+  String get cRepeatOff => 'Herhalen: uit';
+
+  @override
+  String get cRepeatAll => 'Herhalen: hele wachtrij';
+
+  @override
+  String get cSaved => 'Opgeslagen';
+
+  @override
+  String get cAudio => 'Audio';
+
+  @override
+  String get cSpeed => 'Snelheid';
+
+  @override
+  String get cAndroidOnly => 'Alleen Android';
+
+  @override
+  String get cPlaylist => 'Afspeellijst';
+
+  @override
+  String get cSearchResults => 'Zoekresultaten';
+
+  @override
+  String get cYourLibrary => 'Jouw bibliotheek';
+
+  @override
+  String get cRadio => 'Radio';
+
+  @override
+  String get cYourQueue => 'Jouw wachtrij';
+
+  @override
+  String cDownloadFailed(String title) {
+    return 'Download mislukt: $title';
+  }
+
+  @override
+  String cAiDownloading(String title) {
+    return 'AI downloadt $title';
+  }
+
+  @override
+  String cDownloading(String title) {
+    return '$title wordt gedownload';
+  }
+
+  @override
+  String get cSaveQueueAs => 'Wachtrij opslaan als';
+
+  @override
+  String cProfileSwitch(String count) {
+    return 'Profiel · tik om te wisselen ($count)';
+  }
+
+  @override
+  String get cProfileAddAnother =>
+      'Profiel · tik om nog een luisteraar toe te voegen';
+
+  @override
+  String get cUseIt => 'Gebruiken';
+
+  @override
+  String cAiBudgetSub(String daily, String gb) {
+    return 'Tot $daily/dag · budget van $gb GB · aan te passen bij Jouw smaak';
+  }
+
+  @override
+  String cFoldersWatched(String count) {
+    return '$count mappen in de gaten gehouden';
+  }
+
+  @override
+  String get cMoveTasteSub =>
+      'Tussen apparaten via wifi, of met een bestand of tekst';
+
+  @override
+  String get cSearchLanguages => 'Talen zoeken';
+
+  @override
+  String cNoLanguageMatch(String query) {
+    return 'Geen taal komt overeen met \"$query\"';
+  }
 }

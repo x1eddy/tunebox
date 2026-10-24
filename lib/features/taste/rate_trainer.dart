@@ -26,6 +26,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
   String? _error;
   int _i = 0;
   double _before = 0;
+
   /// Verdicts are held here until the round finishes, so leaving really does
   /// throw the round away — which is what the warning promises.
   final _verdicts = <String, bool>{};
@@ -69,7 +70,8 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
       // The profile is usually already warm from the Taste tab.
       unawaited(() async {
         final warm = ref.read(tasteProfileProvider).value;
-        _before = warm?.confidence ??
+        _before =
+            warm?.confidence ??
             (await ref.read(aiProvider).profile()).confidence;
       }());
 
@@ -359,7 +361,10 @@ class _Card extends ConsumerWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  [song.artist, if (song.year != null) '${song.year}'].join(' · '),
+                  [
+                    song.artist,
+                    if (song.year != null) '${song.year}',
+                  ].join(' · '),
                   style: t.textTheme.bodyMedium?.copyWith(
                     color: t.colorScheme.onSurfaceVariant,
                   ),
@@ -383,7 +388,7 @@ class _Card extends ConsumerWidget {
                   onPressed: () =>
                       ref.read(musicProvider).playSong(song, origin: 'trainer'),
                   icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
-                  label: const Text('Hear it'),
+                  label: Text(L.of(context).bTrainHearIt),
                 ),
               ],
             ),
@@ -474,6 +479,7 @@ class _Done extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final after = ref.watch(tasteProfileProvider).value?.confidence ?? before;
     return Center(
@@ -488,11 +494,15 @@ class _Done extends ConsumerWidget {
               color: t.colorScheme.primary,
             ),
             const SizedBox(height: 14),
-            Text('Round complete', style: t.textTheme.headlineSmall),
+            Text(l.trainDone, style: t.textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(
-              '$liked kept · $blocked blocked. Confidence '
-              '${(before * 100).round()}% → ${(after * 100).round()}%.',
+              l.trainSummary(
+                liked,
+                blocked,
+                (before * 100).round(),
+                (after * 100).round(),
+              ),
               textAlign: TextAlign.center,
               style: t.textTheme.bodyMedium?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
@@ -504,7 +514,7 @@ class _Done extends ConsumerWidget {
                 ref.read(musicProvider).refreshHome();
                 Navigator.pop(context);
               },
-              child: const Text('Back to Your taste'),
+              child: Text(l.trainBackToTaste),
             ),
           ],
         ),

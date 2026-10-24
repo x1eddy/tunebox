@@ -29,7 +29,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   String? _error;
   List<Song> _results = const [];
   late final List<String> _recent = [
-    ...(ref.read(prefsProvider).getStringList(profileKey('recentSearches')) ?? const []),
+    ...(ref.read(prefsProvider).getStringList(profileKey('recentSearches')) ??
+        const []),
   ];
 
   void _rememberRecent(String query) {
@@ -37,12 +38,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       ..remove(query)
       ..insert(0, query);
     if (_recent.length > 10) _recent.removeLast();
-    ref.read(prefsProvider).setStringList(profileKey('recentSearches'), _recent);
+    ref
+        .read(prefsProvider)
+        .setStringList(profileKey('recentSearches'), _recent);
   }
 
   void _forgetRecent(String? query) {
     setState(() => query == null ? _recent.clear() : _recent.remove(query));
-    ref.read(prefsProvider).setStringList(profileKey('recentSearches'), _recent);
+    ref
+        .read(prefsProvider)
+        .setStringList(profileKey('recentSearches'), _recent);
   }
 
   /// Search results by normalised query, as song ids. Kept for the life of
@@ -98,7 +103,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final library = ref.read(libraryProvider).value ?? const <Song>[];
     final local = library.where((s) => !s.blocked && _matches(s, tokens));
     final carried = _lastResults.where(
-      (s) => !s.blocked && _matches(s, tokens) && !local.any((l) => l.id == s.id),
+      (s) =>
+          !s.blocked && _matches(s, tokens) && !local.any((l) => l.id == s.id),
     );
     setState(() {
       _query = q;
@@ -107,7 +113,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       _loading = true;
     });
     final cached = _cache[q];
-    final fresh = cached != null && DateTime.now().difference(cached.at) < _cacheTtl;
+    final fresh =
+        cached != null && DateTime.now().difference(cached.at) < _cacheTtl;
     _debounce = Timer(
       fresh ? Duration.zero : Duration(milliseconds: q.length < 3 ? 260 : 120),
       () => _run(value),
@@ -141,7 +148,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       List<Song> songs;
       final hit = _cache[key];
       if (hit != null && DateTime.now().difference(hit.at) < _cacheTtl) {
-        songs = (await db.songsByIds(hit.ids)).where((s) => !s.blocked).toList();
+        songs = (await db.songsByIds(
+          hit.ids,
+        )).where((s) => !s.blocked).toList();
       } else {
         final found = await ref.read(ytProvider).search(query, max: 30);
         await db.cacheSongs(found);
@@ -186,7 +195,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             toolbarHeight: 66,
             title: SearchBar(
               controller: _controller,
-              hintText: 'Songs, artists, albums…',
+              hintText: l.aSearchHintDots,
               elevation: const WidgetStatePropertyAll(0),
               backgroundColor: WidgetStatePropertyAll(
                 t.colorScheme.surfaceContainerHigh,
@@ -275,12 +284,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           else if (_results.isEmpty && _error != null)
             const SliverToBoxAdapter(child: SizedBox.shrink())
           else if (_results.isEmpty && !_loading)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               hasScrollBody: false,
               child: EmptyState(
                 icon: Icons.search_off_rounded,
-                title: 'Nothing found',
-                body: 'Try a different spelling, or paste a YouTube link.',
+                title: l.searchEmptyTitle,
+                body: l.aSearchEmptyBody,
               ),
             )
           else ...[
@@ -302,7 +311,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           .read(musicProvider)
                           .playAll(_results, origin: 'search'),
                       icon: const Icon(Icons.play_arrow_rounded, size: 18),
-                      label: const Text('Play all'),
+                      label: Text(l.actionPlayAll),
                     ),
                   ],
                 ),
@@ -337,6 +346,7 @@ class _Suggestions extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final profile = ref.watch(tasteProfileProvider).value;
     final artists = [
@@ -360,11 +370,11 @@ class _Suggestions extends ConsumerWidget {
       children: [
         if (recent.isNotEmpty) ...[
           SectionHeader(
-            title: L.of(context).searchRecent,
+            title: l.searchRecent,
             padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
             trailing: TextButton(
               onPressed: () => onForget(null),
-              child: Text(L.of(context).actionClear),
+              child: Text(l.actionClear),
             ),
           ),
           for (final q in recent)
@@ -372,7 +382,7 @@ class _Suggestions extends ConsumerWidget {
               leading: const Icon(Icons.history_rounded),
               title: Text(q),
               trailing: IconButton(
-                tooltip: 'Remove',
+                tooltip: l.actionRemove,
                 icon: const Icon(Icons.close_rounded, size: 18),
                 onPressed: () => onForget(q),
               ),
@@ -380,10 +390,8 @@ class _Suggestions extends ConsumerWidget {
             ),
         ],
         SectionHeader(
-          title: seeds.isEmpty ? 'Try something' : 'From what the AI learned',
-          subtitle: seeds.isEmpty
-              ? 'Search for anything on YouTube'
-              : 'Tap a seed to dig around it',
+          title: seeds.isEmpty ? l.aSearchTrySomething : l.aSearchLearnedFrom,
+          subtitle: seeds.isEmpty ? l.aSearchAnything : l.aSearchSeedTap,
           padding: const EdgeInsets.fromLTRB(16, 18, 8, 10),
         ),
         Padding(
@@ -392,16 +400,17 @@ class _Suggestions extends ConsumerWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              for (final q in (seeds.isEmpty
-                  ? const [
-                      'new music this week',
-                      'lo-fi beats',
-                      'rock classics',
-                      'top 50 songs',
-                      'electronic 2026',
-                      'jazz for studying',
-                    ]
-                  : seeds))
+              for (final q
+                  in (seeds.isEmpty
+                      ? const [
+                          'new music this week',
+                          'lo-fi beats',
+                          'rock classics',
+                          'top 50 songs',
+                          'electronic 2026',
+                          'jazz for studying',
+                        ]
+                      : seeds))
                 ActionChip(
                   label: Text(q),
                   onPressed: () => onTap(q),
@@ -417,7 +426,7 @@ class _Suggestions extends ConsumerWidget {
           ),
         ),
         if (profile != null && profile.artists.isNotEmpty) ...[
-          const SectionHeader(title: 'Artists you play'),
+          SectionHeader(title: l.aSearchArtistsYouPlay),
           for (final a in profile.artists.take(6))
             ListTile(
               leading: CircleAvatar(
@@ -428,11 +437,9 @@ class _Suggestions extends ConsumerWidget {
                 ),
               ),
               title: Text(a.$1),
-              subtitle: Text('${(a.$2 * 100).round()}% affinity'),
-              onTap: () => pushDetail(
-                context,
-                'artist/${Uri.encodeComponent(a.$1)}',
-              ),
+              subtitle: Text(l.aSearchAffinity('${(a.$2 * 100).round()}')),
+              onTap: () =>
+                  pushDetail(context, 'artist/${Uri.encodeComponent(a.$1)}'),
             ),
         ],
         const SizedBox(height: 20),

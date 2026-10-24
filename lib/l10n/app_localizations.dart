@@ -2438,6 +2438,732 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Rename or delete'**
   String get plRenameOrDelete;
+
+  /// No description provided for @aLibListView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get aLibListView;
+
+  /// No description provided for @aLibGridView.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid view'**
+  String get aLibGridView;
+
+  /// No description provided for @aLibSortAlpha.
+  ///
+  /// In en, this message translates to:
+  /// **'A–Z'**
+  String get aLibSortAlpha;
+
+  /// No description provided for @aLibSortYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get aLibSortYear;
+
+  /// No description provided for @aLibNothingYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet'**
+  String get aLibNothingYet;
+
+  /// No description provided for @aLibImportedEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the music that is already on this device.'**
+  String get aLibImportedEmptyBody;
+
+  /// No description provided for @aLibEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Play or download something and it lands here.'**
+  String get aLibEmptyBody;
+
+  /// No description provided for @aLibBannerSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{songs} · {size} on this device'**
+  String aLibBannerSummary(String songs, String size);
+
+  /// No description provided for @aLibOfflineNote.
+  ///
+  /// In en, this message translates to:
+  /// **'These play with no connection at all'**
+  String get aLibOfflineNote;
+
+  /// No description provided for @aLibAiPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of them the AI picked for you'**
+  String aLibAiPicked(String count);
+
+  /// No description provided for @aPlaylistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlist'**
+  String get aPlaylistLabel;
+
+  /// No description provided for @aLibNoArtists.
+  ///
+  /// In en, this message translates to:
+  /// **'No artists yet'**
+  String get aLibNoArtists;
+
+  /// No description provided for @aLibNoArtistsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a few songs and they collect here.'**
+  String get aLibNoArtistsBody;
+
+  /// No description provided for @aHomeSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get aHomeSearch;
+
+  /// No description provided for @aHomeInYourLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'In your library'**
+  String get aHomeInYourLibrary;
+
+  /// No description provided for @aHomeInYourLibrarySub.
+  ///
+  /// In en, this message translates to:
+  /// **'What you have added so far'**
+  String get aHomeInYourLibrarySub;
+
+  /// No description provided for @aSearchHintDots.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs, artists, albums…'**
+  String get aSearchHintDots;
+
+  /// No description provided for @aSearchEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a different spelling, or paste a YouTube link.'**
+  String get aSearchEmptyBody;
+
+  /// No description provided for @aSearchTrySomething.
+  ///
+  /// In en, this message translates to:
+  /// **'Try something'**
+  String get aSearchTrySomething;
+
+  /// No description provided for @aSearchLearnedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From what the AI learned'**
+  String get aSearchLearnedFrom;
+
+  /// No description provided for @aSearchAnything.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for anything on YouTube'**
+  String get aSearchAnything;
+
+  /// No description provided for @aSearchSeedTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a seed to dig around it'**
+  String get aSearchSeedTap;
+
+  /// No description provided for @aSearchArtistsYouPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists you play'**
+  String get aSearchArtistsYouPlay;
+
+  /// No description provided for @aSearchAffinity.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% affinity'**
+  String aSearchAffinity(String percent);
+
+  /// No description provided for @aArtistAlwaysMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Always more of this'**
+  String get aArtistAlwaysMore;
+
+  /// No description provided for @aArtistClearRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear rule'**
+  String get aArtistClearRule;
+
+  /// No description provided for @aArtistBoosted.
+  ///
+  /// In en, this message translates to:
+  /// **'boosted'**
+  String get aArtistBoosted;
+
+  /// No description provided for @aArtistBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'blocked'**
+  String get aArtistBlocked;
+
+  /// No description provided for @aArtistRadio.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio'**
+  String get aArtistRadio;
+
+  /// No description provided for @aPlLikedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you hit the heart on'**
+  String get aPlLikedSub;
+
+  /// No description provided for @aPlDownloadsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays with no connection'**
+  String get aPlDownloadsSub;
+
+  /// No description provided for @aPlImportedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Music you added from this device'**
+  String get aPlImportedSub;
+
+  /// No description provided for @aPlEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty for now'**
+  String get aPlEmptyTitle;
+
+  /// No description provided for @aPlEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add songs from the ⋮ menu on any track.'**
+  String get aPlEmptyBody;
+
+  /// No description provided for @aPlDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {songs}…'**
+  String aPlDownloading(String songs);
+
+  /// No description provided for @bTasteAiBudgetSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {count} songs a day, {gb} GB budget'**
+  String bTasteAiBudgetSub(String count, String gb);
+
+  /// No description provided for @bTasteSongsPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs per day'**
+  String get bTasteSongsPerDay;
+
+  /// No description provided for @bTasteStorageMayUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage it may use'**
+  String get bTasteStorageMayUse;
+
+  /// No description provided for @bTasteGb.
+  ///
+  /// In en, this message translates to:
+  /// **'{gb} GB'**
+  String bTasteGb(String gb);
+
+  /// No description provided for @bTasteNothingToDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new worth downloading right now.'**
+  String get bTasteNothingToDownload;
+
+  /// No description provided for @bTasteQueuedSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued {count} songs the AI picked.'**
+  String bTasteQueuedSongs(String count);
+
+  /// No description provided for @bTasteFetchNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch some now'**
+  String get bTasteFetchNow;
+
+  /// No description provided for @bTasteNotEnoughListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough listening yet. Play a handful of songs, or run a training round below.'**
+  String get bTasteNotEnoughListening;
+
+  /// No description provided for @bTasteFamiliar.
+  ///
+  /// In en, this message translates to:
+  /// **'Familiar'**
+  String get bTasteFamiliar;
+
+  /// No description provided for @bTasteDiscoveryCap1.
+  ///
+  /// In en, this message translates to:
+  /// **'Mostly songs you already know'**
+  String get bTasteDiscoveryCap1;
+
+  /// No description provided for @bTasteDiscoveryCap2.
+  ///
+  /// In en, this message translates to:
+  /// **'A few new songs per shelf'**
+  String get bTasteDiscoveryCap2;
+
+  /// No description provided for @bTasteDiscoveryCap3.
+  ///
+  /// In en, this message translates to:
+  /// **'Half of Home will be new to you'**
+  String get bTasteDiscoveryCap3;
+
+  /// No description provided for @bTasteDiscoveryCap4.
+  ///
+  /// In en, this message translates to:
+  /// **'Show me things I have never heard'**
+  String get bTasteDiscoveryCap4;
+
+  /// No description provided for @bTasteCalm.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get bTasteCalm;
+
+  /// No description provided for @bTasteHighEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'High energy'**
+  String get bTasteHighEnergy;
+
+  /// No description provided for @bTasteEnergyCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Nudges picks louder and faster'**
+  String get bTasteEnergyCaption;
+
+  /// No description provided for @bTasteTimeless.
+  ///
+  /// In en, this message translates to:
+  /// **'Timeless'**
+  String get bTasteTimeless;
+
+  /// No description provided for @bTasteFresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh'**
+  String get bTasteFresh;
+
+  /// No description provided for @bTasteRecencyCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'How much \"New ⭐\" leans on release date'**
+  String get bTasteRecencyCaption;
+
+  /// No description provided for @bTasteRarely.
+  ///
+  /// In en, this message translates to:
+  /// **'Rarely'**
+  String get bTasteRarely;
+
+  /// No description provided for @bTasteOften.
+  ///
+  /// In en, this message translates to:
+  /// **'Often'**
+  String get bTasteOften;
+
+  /// No description provided for @bTasteNostalgiaCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'How hard to dig for old forgotten hits'**
+  String get bTasteNostalgiaCaption;
+
+  /// No description provided for @bTasteListeningHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening history'**
+  String get bTasteListeningHistory;
+
+  /// No description provided for @bTastePlaysRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} plays recorded'**
+  String bTastePlaysRecorded(String count);
+
+  /// No description provided for @bTasteSkips.
+  ///
+  /// In en, this message translates to:
+  /// **'Skips'**
+  String get bTasteSkips;
+
+  /// No description provided for @bTasteSkipsCounted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} skips counted against songs'**
+  String bTasteSkipsCounted(String count);
+
+  /// No description provided for @bTasteTimeOfDaySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Different picks at 08:00 and 23:00'**
+  String get bTasteTimeOfDaySub;
+
+  /// No description provided for @bTasteYoutubeRelated.
+  ///
+  /// In en, this message translates to:
+  /// **'YouTube related tracks'**
+  String get bTasteYoutubeRelated;
+
+  /// No description provided for @bTasteYoutubeRelatedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull in songs you do not own yet'**
+  String get bTasteYoutubeRelatedSub;
+
+  /// No description provided for @bTasteResetSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Clears plays, skips and weights. Keeps library.'**
+  String get bTasteResetSub;
+
+  /// No description provided for @bTasteResetDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset the AI?'**
+  String get bTasteResetDialogTitle;
+
+  /// No description provided for @bTasteResetDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library, playlists and downloads stay. Everything it learned about you is deleted and Home goes back to defaults.'**
+  String get bTasteResetDialogBody;
+
+  /// No description provided for @bTasteResetAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get bTasteResetAction;
+
+  /// No description provided for @bTrainHearIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Hear it'**
+  String get bTrainHearIt;
+
+  /// No description provided for @bImportDoneAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Done · {count} new songs added'**
+  String bImportDoneAdded(String count);
+
+  /// No description provided for @bImportScanningProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning · {scanned} of {total} files'**
+  String bImportScanningProgress(String scanned, String total);
+
+  /// No description provided for @bImportWatchedFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Watched folders'**
+  String get bImportWatchedFolders;
+
+  /// No description provided for @bImportWatchedFoldersSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescanned when the app starts'**
+  String get bImportWatchedFoldersSub;
+
+  /// No description provided for @bImportNoneYet.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet. Pick a folder and it gets watched automatically.'**
+  String get bImportNoneYet;
+
+  /// No description provided for @bImportFoundOnDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Found on this device'**
+  String get bImportFoundOnDevice;
+
+  /// No description provided for @bImportFoundOnDeviceSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to scan and keep watching'**
+  String get bImportFoundOnDeviceSub;
+
+  /// No description provided for @bImportYourFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Your files'**
+  String get bImportYourFiles;
+
+  /// No description provided for @bImportImportedSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} imported so far'**
+  String bImportImportedSoFar(String count);
+
+  /// No description provided for @bImportFilesStayNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Files stay where they are — TuneBox only indexes them. Delete a file and it quietly leaves your library on the next scan.'**
+  String get bImportFilesStayNote;
+
+  /// No description provided for @bImportRescan.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescan'**
+  String get bImportRescan;
+
+  /// No description provided for @cMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get cMore;
+
+  /// No description provided for @cBlockedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked \"{title}\" — the AI will avoid it'**
+  String cBlockedSnack(String title);
+
+  /// No description provided for @cLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Like'**
+  String get cLike;
+
+  /// No description provided for @cUnlike.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlike'**
+  String get cUnlike;
+
+  /// No description provided for @cRemoveFromLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from liked'**
+  String get cRemoveFromLiked;
+
+  /// No description provided for @cLikeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaches the AI straight away'**
+  String get cLikeSub;
+
+  /// No description provided for @cSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get cSave;
+
+  /// No description provided for @cNothingPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing playing'**
+  String get cNothingPlaying;
+
+  /// No description provided for @cNothingPlayingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a song and it shows up here.'**
+  String get cNothingPlayingBody;
+
+  /// No description provided for @cPlayingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Playing from'**
+  String get cPlayingFrom;
+
+  /// No description provided for @cSeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Seek'**
+  String get cSeek;
+
+  /// No description provided for @cTimeOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String cTimeOf(String done, String total);
+
+  /// No description provided for @cShuffleOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle: on'**
+  String get cShuffleOn;
+
+  /// No description provided for @cShuffleOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle: off'**
+  String get cShuffleOff;
+
+  /// No description provided for @cPrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get cPrevious;
+
+  /// No description provided for @cNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get cNext;
+
+  /// No description provided for @cPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get cPause;
+
+  /// No description provided for @cRepeatOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat: this song'**
+  String get cRepeatOne;
+
+  /// No description provided for @cRepeatOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat: off'**
+  String get cRepeatOff;
+
+  /// No description provided for @cRepeatAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat: whole queue'**
+  String get cRepeatAll;
+
+  /// No description provided for @cSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get cSaved;
+
+  /// No description provided for @cAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get cAudio;
+
+  /// No description provided for @cSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get cSpeed;
+
+  /// No description provided for @cAndroidOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Android only'**
+  String get cAndroidOnly;
+
+  /// No description provided for @cPlaylist.
+  ///
+  /// In en, this message translates to:
+  /// **'Playlist'**
+  String get cPlaylist;
+
+  /// No description provided for @cSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results'**
+  String get cSearchResults;
+
+  /// No description provided for @cYourLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library'**
+  String get cYourLibrary;
+
+  /// No description provided for @cRadio.
+  ///
+  /// In en, this message translates to:
+  /// **'Radio'**
+  String get cRadio;
+
+  /// No description provided for @cYourQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Your queue'**
+  String get cYourQueue;
+
+  /// No description provided for @cDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed: {title}'**
+  String cDownloadFailed(String title);
+
+  /// No description provided for @cAiDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'AI is downloading {title}'**
+  String cAiDownloading(String title);
+
+  /// No description provided for @cDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading {title}'**
+  String cDownloading(String title);
+
+  /// No description provided for @cSaveQueueAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save queue as'**
+  String get cSaveQueueAs;
+
+  /// No description provided for @cProfileSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile · tap to switch ({count})'**
+  String cProfileSwitch(String count);
+
+  /// No description provided for @cProfileAddAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile · tap to add another listener'**
+  String get cProfileAddAnother;
+
+  /// No description provided for @cUseIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Use it'**
+  String get cUseIt;
+
+  /// No description provided for @cAiBudgetSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {daily}/day · {gb} GB budget · tune it in Your taste'**
+  String cAiBudgetSub(String daily, String gb);
+
+  /// No description provided for @cFoldersWatched.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} folders watched'**
+  String cFoldersWatched(String count);
+
+  /// No description provided for @cMoveTasteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Between devices over Wi-Fi, or with a file or text'**
+  String get cMoveTasteSub;
+
+  /// No description provided for @cSearchLanguages.
+  ///
+  /// In en, this message translates to:
+  /// **'Search languages'**
+  String get cSearchLanguages;
+
+  /// No description provided for @cNoLanguageMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No language matches \"{query}\"'**
+  String cNoLanguageMatch(String query);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

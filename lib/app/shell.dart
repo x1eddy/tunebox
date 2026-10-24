@@ -74,9 +74,9 @@ class AppShell extends ConsumerWidget {
                     selectedIndex: shell.currentIndex,
                     onDestinationSelected: select,
                     labelType: NavigationRailLabelType.all,
-                    backgroundColor: Theme.of(context)
-                        .navigationBarTheme
-                        .backgroundColor,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).navigationBarTheme.backgroundColor,
                     destinations: [
                       for (final d in destinations)
                         NavigationRailDestination(
@@ -166,6 +166,7 @@ class _DownloadBar extends ConsumerWidget {
     final active = tasks.where((t) => t.stage != DownloadStage.done).toList();
     if (active.isEmpty) return const SizedBox.shrink();
     final t = Theme.of(context);
+    final l = L.of(context);
     final first = active.first;
 
     return Padding(
@@ -190,10 +191,9 @@ class _DownloadBar extends ConsumerWidget {
               Expanded(
                 child: Text(
                   first.stage == DownloadStage.failed
-                      ? 'Download failed: ${first.title}'
+                      ? '${l.cDownloadFailed(first.title)}'
                             '${first.error == null ? "" : " — ${first.error}"}'
-                      : '${first.auto ? "AI is downloading" : "Downloading"} '
-                            '${first.title}'
+                      : '${first.auto ? l.cAiDownloading(first.title) : l.cDownloading(first.title)}'
                             '${active.length > 1 ? " +${active.length - 1}" : ""}',
                   maxLines: first.stage == DownloadStage.failed ? 3 : 1,
                   overflow: TextOverflow.ellipsis,
@@ -234,12 +234,14 @@ class MiniPlayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final song = ref.watch(nowPlayingProvider);
     if (song == null) return const SizedBox.shrink();
 
     final state = ref.watch(playbackStateProvider).value;
     final playing = state?.playing ?? false;
-    final buffering = state?.processingState == AudioProcessingState.loading ||
+    final buffering =
+        state?.processingState == AudioProcessingState.loading ||
         state?.processingState == AudioProcessingState.buffering;
     final music = ref.read(musicProvider);
 
@@ -321,7 +323,7 @@ class MiniPlayer extends ConsumerWidget {
                         ),
                       ),
                       IconButton(
-                        tooltip: song.liked ? 'Unlike' : 'Like',
+                        tooltip: song.liked ? l.cUnlike : l.cLike,
                         onPressed: () => music.like(song),
                         icon: Icon(
                           song.liked
@@ -332,7 +334,7 @@ class MiniPlayer extends ConsumerWidget {
                         color: song.liked ? t.colorScheme.primary : null,
                       ),
                       IconButton(
-                        tooltip: playing ? 'Pause' : 'Play',
+                        tooltip: playing ? l.cPause : l.actionPlay,
                         onPressed: music.toggle,
                         icon: PlayPauseGlyph(
                           playing: playing,
@@ -341,7 +343,7 @@ class MiniPlayer extends ConsumerWidget {
                         ),
                       ),
                       IconButton(
-                        tooltip: 'Next',
+                        tooltip: l.cNext,
                         onPressed: music.next,
                         icon: const Icon(Icons.skip_next_rounded, size: 26),
                       ),

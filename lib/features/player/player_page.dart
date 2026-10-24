@@ -22,6 +22,7 @@ class PlayerPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final song = ref.watch(nowPlayingProvider);
     if (song == null) {
       return Scaffold(
@@ -32,10 +33,10 @@ class PlayerPage extends ConsumerWidget {
             onPressed: () => context.pop(),
           ),
         ),
-        body: const EmptyState(
+        body: EmptyState(
           icon: Icons.music_note_outlined,
-          title: 'Nothing playing',
-          body: 'Pick a song and it shows up here.',
+          title: l.cNothingPlaying,
+          body: l.cNothingPlayingBody,
         ),
       );
     }
@@ -147,8 +148,8 @@ class PlayerPage extends ConsumerWidget {
                             ),
                             IconButton(
                               tooltip: song.blocked
-                                  ? 'Blocked — tap to allow again'
-                                  : 'Not for me',
+                                  ? l.sheetBlocked
+                                  : l.sheetNotForMe,
                               onPressed: () => song.blocked
                                   ? music.unblock(song)
                                   : dislikeWithUndo(context, ref, song),
@@ -161,7 +162,7 @@ class PlayerPage extends ConsumerWidget {
                               ),
                             ),
                             IconButton(
-                              tooltip: song.liked ? 'Unlike' : 'Like',
+                              tooltip: song.liked ? l.cUnlike : l.cLike,
                               onPressed: () => music.like(song),
                               iconSize: 26,
                               color: song.liked ? t.colorScheme.primary : null,
@@ -172,7 +173,7 @@ class PlayerPage extends ConsumerWidget {
                               ),
                             ),
                             IconButton(
-                              tooltip: 'More',
+                              tooltip: l.cMore,
                               onPressed: () => showSongSheet(context, song),
                               iconSize: 24,
                               icon: const Icon(Icons.more_vert_rounded),
@@ -292,6 +293,7 @@ class _TopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final queue = ref.watch(audioHandlerProvider).queueSongs;
     return Padding(
       padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
@@ -305,15 +307,15 @@ class _TopBar extends ConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  'PLAYING FROM',
+                  l.cPlayingFrom.toUpperCase(),
                   style: t.textTheme.labelSmall?.copyWith(
                     letterSpacing: 1.4,
                     color: t.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Text(
-                  '${_originLabel(ref.watch(audioHandlerProvider).origin, ref)}'
-                  ' · ${L.of(context).libSongCount(queue.length)}',
+                  '${_originLabel(ref.watch(audioHandlerProvider).origin, ref, l)}'
+                  ' · ${l.libSongCount(queue.length)}',
                   style: t.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -398,9 +400,10 @@ class _SeekState extends State<_Seek> {
               context,
             ).copyWith(showValueIndicator: ShowValueIndicator.onDrag),
             child: Semantics(
-              label: 'Seek',
-              value:
-                  '${formatDuration(shown)} of ${formatDuration(widget.total)}',
+              label: L.of(context).cSeek,
+              value: L
+                  .of(context)
+                  .cTimeOf(formatDuration(shown), formatDuration(widget.total)),
               child: Slider(
                 value: value,
                 label: formatDuration(shown),
@@ -456,6 +459,7 @@ class _Controls extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final music = ref.read(musicProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 6, 18, 6),
@@ -463,21 +467,21 @@ class _Controls extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            tooltip: shuffled ? 'Shuffle: on' : 'Shuffle: off',
+            tooltip: shuffled ? l.cShuffleOn : l.cShuffleOff,
             onPressed: music.toggleShuffle,
             iconSize: 24,
             color: shuffled ? t.colorScheme.primary : null,
             icon: const Icon(Icons.shuffle_rounded),
           ),
           IconButton(
-            tooltip: 'Previous',
+            tooltip: l.cPrevious,
             onPressed: music.previous,
             iconSize: 38,
             icon: const Icon(Icons.skip_previous_rounded),
           ),
           Semantics(
             button: true,
-            label: playing ? 'Pause' : 'Play',
+            label: playing ? l.cPause : l.actionPlay,
             excludeSemantics: true,
             onTap: music.toggle,
             child: SizedBox(
@@ -503,16 +507,16 @@ class _Controls extends ConsumerWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Next',
+            tooltip: l.cNext,
             onPressed: music.next,
             iconSize: 38,
             icon: const Icon(Icons.skip_next_rounded),
           ),
           IconButton(
             tooltip: switch (repeat) {
-              AudioServiceRepeatMode.one => 'Repeat: this song',
-              AudioServiceRepeatMode.none => 'Repeat: off',
-              _ => 'Repeat: whole queue',
+              AudioServiceRepeatMode.one => l.cRepeatOne,
+              AudioServiceRepeatMode.none => l.cRepeatOff,
+              _ => l.cRepeatAll,
             },
             onPressed: music.cycleRepeat,
             iconSize: 24,
@@ -538,6 +542,7 @@ class _BottomBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final downloaded = song.source == SongSource.downloaded;
+    final l = L.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
       child: Row(
@@ -553,19 +558,19 @@ class _BottomBar extends ConsumerWidget {
                   : Icons.download_outlined,
               size: 19,
             ),
-            label: Text(downloaded ? 'Saved' : 'Download'),
+            label: Text(downloaded ? l.cSaved : l.sheetDownload),
           ),
           TextButton.icon(
             onPressed: () => _showTuning(context, ref),
             icon: const Icon(Icons.tune_rounded, size: 19),
-            label: const Text('Audio'),
+            label: Text(l.cAudio),
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(
               context,
             ).push(MaterialPageRoute<void>(builder: (_) => const QueuePage())),
             icon: const Icon(Icons.playlist_play_rounded, size: 20),
-            label: const Text('Queue'),
+            label: Text(l.sheetQueue),
           ),
         ],
       ),
@@ -595,6 +600,7 @@ class _TuningSheetState extends ConsumerState<_TuningSheet> {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final settings = ref.watch(settingsProvider);
     final handler = ref.read(audioHandlerProvider);
 
@@ -605,9 +611,9 @@ class _TuningSheetState extends ConsumerState<_TuningSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Playback', style: t.textTheme.titleLarge),
+            Text(l.setPlayback, style: t.textTheme.titleLarge),
             const SizedBox(height: 14),
-            Text('Speed  ${_speed.toStringAsFixed(2)}×'),
+            Text('${l.cSpeed}  ${_speed.toStringAsFixed(2)}×'),
             Slider(
               value: _speed,
               min: 0.5,
@@ -627,8 +633,8 @@ class _TuningSheetState extends ConsumerState<_TuningSheet> {
                     .update((s) => s.copyWith(skipSilence: v));
                 handler.setSkipSilence(v);
               },
-              title: const Text('Skip silence'),
-              subtitle: const Text('Android only'),
+              title: Text(l.setSkipSilence),
+              subtitle: Text(l.cAndroidOnly),
             ),
             const SizedBox(height: 10),
           ],
@@ -639,13 +645,13 @@ class _TuningSheetState extends ConsumerState<_TuningSheet> {
 }
 
 /// A human name for where the queue came from.
-String _originLabel(String origin, WidgetRef ref) {
+String _originLabel(String origin, WidgetRef ref, L l) {
   if (origin.startsWith('playlist:')) {
     final id = origin.substring(9);
     return switch (id) {
-      'liked' => 'Liked songs',
-      'downloads' => 'Downloads',
-      'imported' => 'My own files',
+      'liked' => l.libLikedSongs,
+      'downloads' => l.libDownloads,
+      'imported' => l.libMyFiles,
       _ =>
         ref
                 .read(playlistsProvider)
@@ -653,17 +659,17 @@ String _originLabel(String origin, WidgetRef ref) {
                 ?.where((p) => p.id == id)
                 .firstOrNull
                 ?.name ??
-            'Playlist',
+            l.cPlaylist,
     };
   }
   return switch (origin) {
-    'search' => 'Search results',
-    'library' => 'Your library',
-    'liked' => 'Liked songs',
-    'downloads' => 'Downloads',
-    'imported' => 'My own files',
-    'radio' => 'Radio',
-    'training' => 'Training round',
-    _ => 'Your queue',
+    'search' => l.cSearchResults,
+    'library' => l.cYourLibrary,
+    'liked' => l.libLikedSongs,
+    'downloads' => l.libDownloads,
+    'imported' => l.libMyFiles,
+    'radio' => l.cRadio,
+    'training' => l.trainTitle,
+    _ => l.cYourQueue,
   };
 }

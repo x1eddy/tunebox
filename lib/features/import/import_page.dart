@@ -10,6 +10,7 @@ import '../../data/services/import_service.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../ui/common.dart';
+import '../../l10n/app_localizations.dart';
 
 /// "Install" your own music: pick folders or files, read their tags, keep them
 /// watched so new files show up on their own.
@@ -60,7 +61,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
     final granted = await importer.ensurePermission();
     if (!mounted) return;
     if (!granted) {
-      setState(() => _message = 'Permission denied — cannot read your music.');
+      setState(() => _message = L.of(context).importDenied);
       return;
     }
     final dir = await FilePicker.getDirectoryPath();
@@ -74,7 +75,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
     final granted = await importer.ensurePermission();
     if (!mounted) return;
     if (!granted) {
-      setState(() => _message = 'Permission denied — cannot read your music.');
+      setState(() => _message = L.of(context).importDenied);
       return;
     }
     final files = await FilePicker.pickFiles(type: FileType.audio);
@@ -89,6 +90,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final imported = ref.watch(importedProvider).value ?? const <Song>[];
@@ -96,11 +98,11 @@ class _ImportPageState extends ConsumerState<ImportPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add music'),
+        title: Text(l.importTitle),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Done'),
+            child: Text(l.actionDone),
           ),
           const SizedBox(width: 6),
         ],
@@ -116,7 +118,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                   child: FilledButton.icon(
                     onPressed: _pickFolder,
                     icon: const Icon(Icons.create_new_folder_outlined),
-                    label: const Text('Pick a folder'),
+                    label: Text(l.importPickFolder),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -124,7 +126,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                   child: FilledButton.tonalIcon(
                     onPressed: _pickFiles,
                     icon: const Icon(Icons.audio_file_outlined),
-                    label: const Text('Pick files'),
+                    label: Text(l.importPickFiles),
                   ),
                 ),
               ],
@@ -170,9 +172,11 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                       Expanded(
                         child: Text(
                           progress.done
-                              ? 'Done · ${progress.added} new songs added'
-                              : 'Scanning · ${progress.scanned} of '
-                                    '${progress.total} files',
+                              ? l.bImportDoneAdded('${progress.added}')
+                              : l.bImportScanningProgress(
+                                  '${progress.scanned}',
+                                  '${progress.total}',
+                                ),
                           style: t.textTheme.titleSmall,
                         ),
                       ),
@@ -201,15 +205,15 @@ class _ImportPageState extends ConsumerState<ImportPage> {
               ),
             ),
 
-          const SectionHeader(
-            title: 'Watched folders',
-            subtitle: 'Rescanned when the app starts',
+          SectionHeader(
+            title: l.bImportWatchedFolders,
+            subtitle: l.bImportWatchedFoldersSub,
           ),
           if (settings.watchedFolders.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'None yet. Pick a folder and it gets watched automatically.',
+                l.bImportNoneYet,
                 style: t.textTheme.bodySmall?.copyWith(
                   color: t.colorScheme.onSurfaceVariant,
                 ),
@@ -235,10 +239,10 @@ class _ImportPageState extends ConsumerState<ImportPage> {
             ),
 
           if (_suggested.isNotEmpty) ...[
-            const SectionHeader(
-              title: 'Found on this device',
-              subtitle: 'Tap to scan and keep watching',
-              padding: EdgeInsets.fromLTRB(16, 18, 8, 8),
+            SectionHeader(
+              title: l.bImportFoundOnDevice,
+              subtitle: l.bImportFoundOnDeviceSub,
+              padding: const EdgeInsets.fromLTRB(16, 18, 8, 8),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -255,9 +259,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                             .read(settingsProvider.notifier)
                             .addWatchedFolder(folder);
                         _run(
-                          ref
-                              .read(importServiceProvider)
-                              .scanFolders([folder]),
+                          ref.read(importServiceProvider).scanFolders([folder]),
                         );
                       },
                     ),
@@ -267,17 +269,21 @@ class _ImportPageState extends ConsumerState<ImportPage> {
           ],
 
           SectionHeader(
-            title: 'Your files',
-            subtitle: '${imported.length} imported so far',
+            title: l.bImportYourFiles,
+            subtitle: l.bImportImportedSoFar('${imported.length}'),
           ),
           for (final s in imported.take(40))
-            SongTile(song: s, showAlbum: true, queue: imported, origin: 'imported'),
+            SongTile(
+              song: s,
+              showAlbum: true,
+              queue: imported,
+              origin: 'imported',
+            ),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Files stay where they are — TuneBox only indexes them. Delete a '
-              'file and it quietly leaves your library on the next scan.',
+              l.bImportFilesStayNote,
               style: t.textTheme.bodySmall?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
@@ -294,7 +300,7 @@ class _ImportPageState extends ConsumerState<ImportPage> {
                     .scanFolders(settings.watchedFolders),
               ),
         icon: const Icon(Icons.sync_rounded),
-        label: const Text('Rescan'),
+        label: Text(l.bImportRescan),
       ),
     );
   }

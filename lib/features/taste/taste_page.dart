@@ -72,29 +72,29 @@ class TastePage extends ConsumerWidget {
                 value: settings.downloadLikes,
                 onChanged: (v) =>
                     set.update((s) => s.copyWith(downloadLikes: v)),
-                title: const Text('Download everything I like'),
-                subtitle: const Text(
-                  'Hit the heart and the file is saved for offline',
-                ),
+                title: Text(l.tasteDownloadLikes),
+                subtitle: Text(l.tasteDownloadLikesSub),
                 secondary: const Icon(Icons.favorite_rounded),
               ),
               SwitchListTile(
                 value: settings.aiAutoDownload,
                 onChanged: (v) =>
                     set.update((s) => s.copyWith(aiAutoDownload: v)),
-                title: const Text('Let the AI install music it picks'),
+                title: Text(l.tasteAiInstall),
                 subtitle: Text(
                   settings.aiAutoDownload
-                      ? 'Up to ${settings.aiDailyDownloads} songs a day, '
-                            '${settings.aiStorageBudgetMb ~/ 1024} GB budget'
-                      : 'It will fetch tracks it is confident about',
+                      ? l.bTasteAiBudgetSub(
+                          '${settings.aiDailyDownloads}',
+                          '${settings.aiStorageBudgetMb ~/ 1024}',
+                        )
+                      : l.tasteAiInstallSub,
                 ),
                 secondary: const Icon(Icons.auto_awesome_rounded),
               ),
               if (settings.aiAutoDownload) ...[
                 _Stepper(
                   icon: Icons.numbers_rounded,
-                  label: 'Songs per day',
+                  label: l.bTasteSongsPerDay,
                   value: '${settings.aiDailyDownloads}',
                   onMinus: settings.aiDailyDownloads <= 1
                       ? null
@@ -113,8 +113,8 @@ class TastePage extends ConsumerWidget {
                 ),
                 _Stepper(
                   icon: Icons.sd_storage_outlined,
-                  label: 'Storage it may use',
-                  value: '${settings.aiStorageBudgetMb ~/ 1024} GB',
+                  label: l.bTasteStorageMayUse,
+                  value: l.bTasteGb('${settings.aiStorageBudgetMb ~/ 1024}'),
                   onMinus: settings.aiStorageBudgetMb <= 1024
                       ? null
                       : () => set.update(
@@ -140,14 +140,14 @@ class TastePage extends ConsumerWidget {
                         SnackBar(
                           content: Text(
                             n == 0
-                                ? 'Nothing new worth downloading right now.'
-                                : 'Queued $n songs the AI picked.',
+                                ? l.bTasteNothingToDownload
+                                : l.bTasteQueuedSongs('$n'),
                           ),
                         ),
                       );
                     },
                     icon: const Icon(Icons.download_rounded),
-                    label: const Text('Fetch some now'),
+                    label: Text(l.bTasteFetchNow),
                   ),
                 ),
               ],
@@ -158,12 +158,9 @@ class TastePage extends ConsumerWidget {
                 subtitle: l.tasteWhatItThinksSub,
               ),
               if (profile == null || profile.tags.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Not enough listening yet. Play a handful of songs, or '
-                    'run a training round below.',
-                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(l.bTasteNotEnoughListening),
                 )
               else
                 _TagBars(tags: profile.tags),
@@ -191,80 +188,72 @@ class TastePage extends ConsumerWidget {
               ],
 
               // --------------------------------------------------- dials
-              SectionHeader(
-                title: l.tasteTune,
-                subtitle: l.tasteTuneSub,
-              ),
+              SectionHeader(title: l.tasteTune, subtitle: l.tasteTuneSub),
               _Dial(
                 icon: Icons.explore_rounded,
-                left: 'Familiar',
-                right: 'Discovery',
+                left: l.bTasteFamiliar,
+                right: l.tasteDiscovery,
                 value: settings.discovery,
                 caption: switch (settings.discovery) {
-                  < 0.25 => 'Mostly songs you already know',
-                  < 0.55 => 'A few new songs per shelf',
-                  < 0.8 => 'Half of Home will be new to you',
-                  _ => 'Show me things I have never heard',
+                  < 0.25 => l.bTasteDiscoveryCap1,
+                  < 0.55 => l.bTasteDiscoveryCap2,
+                  < 0.8 => l.bTasteDiscoveryCap3,
+                  _ => l.bTasteDiscoveryCap4,
                 },
                 onChanged: (v) => set.update((s) => s.copyWith(discovery: v)),
               ),
               _Dial(
                 icon: Icons.bolt_rounded,
-                left: 'Calm',
-                right: 'High energy',
+                left: l.bTasteCalm,
+                right: l.bTasteHighEnergy,
                 value: settings.energy,
-                caption: 'Nudges picks louder and faster',
+                caption: l.bTasteEnergyCaption,
                 onChanged: (v) => set.update((s) => s.copyWith(energy: v)),
               ),
               _Dial(
                 icon: Icons.new_releases_outlined,
-                left: 'Timeless',
-                right: 'Fresh',
+                left: l.bTasteTimeless,
+                right: l.bTasteFresh,
                 value: settings.recency,
-                caption: 'How much "New ⭐" leans on release date',
+                caption: l.bTasteRecencyCaption,
                 onChanged: (v) => set.update((s) => s.copyWith(recency: v)),
               ),
               _Dial(
                 icon: Icons.history_toggle_off_rounded,
-                left: 'Rarely',
-                right: 'Often',
+                left: l.bTasteRarely,
+                right: l.bTasteOften,
                 value: settings.nostalgia,
-                caption: 'How hard to dig for old forgotten hits',
+                caption: l.bTasteNostalgiaCaption,
                 onChanged: (v) => set.update((s) => s.copyWith(nostalgia: v)),
               ),
 
               // ------------------------------------------------- signals
-              SectionHeader(
-                title: l.tasteSignals,
-                subtitle: l.tasteSignalsSub,
-              ),
+              SectionHeader(title: l.tasteSignals, subtitle: l.tasteSignalsSub),
               SwitchListTile(
                 value: settings.useHistory,
                 onChanged: (v) => set.update((s) => s.copyWith(useHistory: v)),
-                title: const Text('Listening history'),
-                subtitle: Text('${profile?.plays ?? 0} plays recorded'),
+                title: Text(l.bTasteListeningHistory),
+                subtitle: Text(l.bTastePlaysRecorded('${profile?.plays ?? 0}')),
               ),
               SwitchListTile(
                 value: settings.useSkips,
                 onChanged: (v) => set.update((s) => s.copyWith(useSkips: v)),
-                title: const Text('Skips'),
-                subtitle: Text(
-                  '${profile?.skips ?? 0} skips counted against songs',
-                ),
+                title: Text(l.bTasteSkips),
+                subtitle: Text(l.bTasteSkipsCounted('${profile?.skips ?? 0}')),
               ),
               SwitchListTile(
                 value: settings.useTimeOfDay,
                 onChanged: (v) =>
                     set.update((s) => s.copyWith(useTimeOfDay: v)),
-                title: const Text('Time of day'),
-                subtitle: const Text('Different picks at 08:00 and 23:00'),
+                title: Text(l.tasteUseTime),
+                subtitle: Text(l.bTasteTimeOfDaySub),
               ),
               SwitchListTile(
                 value: settings.useYouTubeSignals,
                 onChanged: (v) =>
                     set.update((s) => s.copyWith(useYouTubeSignals: v)),
-                title: const Text('YouTube related tracks'),
-                subtitle: const Text('Pull in songs you do not own yet'),
+                title: Text(l.bTasteYoutubeRelated),
+                subtitle: Text(l.bTasteYoutubeRelatedSub),
               ),
 
               // ---------------------------------------------- overrides
@@ -384,11 +373,7 @@ class _ProfileCard extends StatelessWidget {
           Text(
             profile == null
                 ? l.homeBuilding
-                : l.tasteCounts(
-                    profile!.plays,
-                    profile!.skips,
-                    profile!.likes,
-                  ),
+                : l.tasteCounts(profile!.plays, profile!.skips, profile!.likes),
             style: t.textTheme.bodySmall?.copyWith(
               color: t.colorScheme.onPrimaryContainer,
             ),
@@ -734,7 +719,7 @@ class _RuleChips extends StatelessWidget {
           ),
         ActionChip(
           avatar: const Icon(Icons.add_rounded, size: 16),
-          label: const Text('Add'),
+          label: Text(L.of(context).actionAdd),
           onPressed: onAdd,
         ),
       ],
@@ -799,33 +784,28 @@ class _ResetTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: ListTile(
         leading: Icon(Icons.restart_alt_rounded, color: t.colorScheme.error),
-        title: Text(
-          'Reset what it learned',
-          style: TextStyle(color: t.colorScheme.error),
-        ),
-        subtitle: const Text('Clears plays, skips and weights. Keeps library.'),
+        title: Text(l.tasteReset, style: TextStyle(color: t.colorScheme.error)),
+        subtitle: Text(l.bTasteResetSub),
         onTap: () async {
           final ok = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Reset the AI?'),
-              content: const Text(
-                'Your library, playlists and downloads stay. Everything it '
-                'learned about you is deleted and Home goes back to defaults.',
-              ),
+              title: Text(l.bTasteResetDialogTitle),
+              content: Text(l.bTasteResetDialogBody),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel'),
+                  child: Text(l.actionCancel),
                 ),
                 FilledButton(
                   onPressed: () => Navigator.pop(context, true),
-                  child: const Text('Reset'),
+                  child: Text(l.bTasteResetAction),
                 ),
               ],
             ),

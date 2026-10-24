@@ -13,6 +13,7 @@ class ArtistPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final songsAsync = ref.watch(artistSongsProvider(name));
     final rules = ref.watch(artistRulesProvider).value ?? const <ArtistRule>[];
@@ -40,10 +41,10 @@ class ArtistPage extends ConsumerWidget {
                     music.setArtistRule(name, value);
                   }
                 },
-                itemBuilder: (_) => const [
-                  PopupMenuItem(value: 1, child: Text('Always more of this')),
-                  PopupMenuItem(value: -1, child: Text('Never again')),
-                  PopupMenuItem(value: 0, child: Text('Clear rule')),
+                itemBuilder: (_) => [
+                  PopupMenuItem(value: 1, child: Text(l.aArtistAlwaysMore)),
+                  PopupMenuItem(value: -1, child: Text(l.tasteNeverAgain)),
+                  PopupMenuItem(value: 0, child: Text(l.aArtistClearRule)),
                 ],
               ),
             ],
@@ -79,8 +80,12 @@ class ArtistPage extends ConsumerWidget {
                             ),
                           ),
                           Text(
-                            '${L.of(context).libSongCount(songs.length)} · $plays plays'
-                            '${rule == 1 ? " · boosted" : rule == -1 ? " · blocked" : ""}',
+                            '${l.libSongCount(songs.length)} · ${l.reasonPlays(plays)}'
+                            '${rule == 1
+                                ? " · ${l.aArtistBoosted}"
+                                : rule == -1
+                                ? " · ${l.aArtistBlocked}"
+                                : ""}',
                             style: t.textTheme.bodySmall?.copyWith(
                               color: t.colorScheme.onSurfaceVariant,
                             ),
@@ -106,7 +111,7 @@ class ArtistPage extends ConsumerWidget {
                                 .read(musicProvider)
                                 .playAll(songs, origin: 'artist'),
                       icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text('Play'),
+                      label: Text(l.actionPlay),
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -116,7 +121,7 @@ class ArtistPage extends ConsumerWidget {
                           ? null
                           : () => startRadio(ref, songs.first),
                       icon: const Icon(Icons.radio_rounded),
-                      label: const Text('Radio'),
+                      label: Text(l.aArtistRadio),
                     ),
                   ),
                 ],
@@ -130,7 +135,7 @@ class ArtistPage extends ConsumerWidget {
                 child: Center(child: CircularProgressIndicator()),
               ),
             ),
-          const SliverToBoxAdapter(child: SectionHeader(title: 'Songs')),
+          SliverToBoxAdapter(child: SectionHeader(title: l.libSongs)),
           SliverList.builder(
             itemCount: songs.length,
             itemBuilder: (_, i) => SongTile(

@@ -42,8 +42,8 @@ class SettingsPage extends ConsumerWidget {
                   title: Text(profiles.active.name),
                   subtitle: Text(
                     profiles.profiles.length > 1
-                        ? 'Profile · tap to switch (${profiles.profiles.length})'
-                        : 'Profile · tap to add another listener',
+                        ? l.cProfileSwitch('${profiles.profiles.length}')
+                        : l.cProfileAddAnother,
                   ),
                   trailing: const Icon(Icons.swap_horiz_rounded),
                   onTap: () => showProfileSheet(context),
@@ -101,7 +101,7 @@ class SettingsPage extends ConsumerWidget {
               final ok = await showDialog<bool>(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('Pick any colour'),
+                  title: Text(l.setPickColour),
                   content: SingleChildScrollView(
                     child: ColorPicker(
                       pickerColor: s.accentColor,
@@ -113,11 +113,11 @@ class SettingsPage extends ConsumerWidget {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
+                      child: Text(l.actionCancel),
                     ),
                     FilledButton(
                       onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Use it'),
+                      child: Text(l.cUseIt),
                     ),
                   ],
                 ),
@@ -188,7 +188,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(languageName(s.localeCode)),
             onTap: () => showModalBottomSheet<void>(
               context: context,
-    useRootNavigator: true,
+              useRootNavigator: true,
               isScrollControlled: true,
               showDragHandle: true,
               builder: (_) => _LanguageSheet(
@@ -305,7 +305,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: Text(s.qualityLabel),
             onTap: () => showModalBottomSheet<void>(
               context: context,
-    useRootNavigator: true,
+              useRootNavigator: true,
               builder: (sheet) => SafeArea(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -350,8 +350,10 @@ class SettingsPage extends ConsumerWidget {
             onChanged: (v) => set.update((x) => x.copyWith(aiAutoDownload: v)),
             title: Text(l.setAiInstall),
             subtitle: Text(
-              'Up to ${s.aiDailyDownloads}/day · '
-              '${s.aiStorageBudgetMb ~/ 1024} GB budget · tune it in Your taste',
+              l.cAiBudgetSub(
+                '${s.aiDailyDownloads}',
+                '${s.aiStorageBudgetMb ~/ 1024}',
+              ),
             ),
           ),
           SwitchListTile(
@@ -375,15 +377,13 @@ class SettingsPage extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.library_add_outlined),
             title: Text(l.setImport),
-            subtitle: Text('${s.watchedFolders.length} folders watched'),
+            subtitle: Text(l.cFoldersWatched('${s.watchedFolders.length}')),
             onTap: () => pushDetail(context, 'import'),
           ),
           ListTile(
             leading: const Icon(Icons.sync_alt_rounded),
-            title: const Text('Move your taste'),
-            subtitle: const Text(
-              'Between devices over Wi-Fi, or with a file or text',
-            ),
+            title: Text(l.xferTitle),
+            subtitle: Text(l.cMoveTasteSub),
             onTap: () => pushDetail(context, 'transfer'),
           ),
           ListTile(
@@ -393,9 +393,7 @@ class SettingsPage extends ConsumerWidget {
             onTap: () async {
               final messenger = ScaffoldMessenger.of(context);
               final n = await ref.read(importServiceProvider).pruneMissing();
-              messenger.showTimed(
-                SnackBar(content: Text('Removed $n missing files.')),
-              );
+              messenger.showTimed(SnackBar(content: Text(l.setCleanupDone(n))));
             },
           ),
 
@@ -421,9 +419,7 @@ class SettingsPage extends ConsumerWidget {
                 final messenger = ScaffoldMessenger.of(context);
                 if (!UpdateService.canInstall) {
                   await Clipboard.setData(ClipboardData(text: update.url));
-                  messenger.showTimed(
-                    SnackBar(content: Text(l.setLinkCopied)),
-                  );
+                  messenger.showTimed(SnackBar(content: Text(l.setLinkCopied)));
                   return;
                 }
                 try {
@@ -470,8 +466,7 @@ class SettingsPage extends ConsumerWidget {
             leading: const Icon(Icons.info_outline_rounded),
             title: const Text('TuneBox $kAppVersion'),
             subtitle: Text(
-              'Music from YouTube and your own files. The AI runs entirely on '
-              'this device — nothing leaves the phone.',
+              l.setAboutBody,
               style: t.textTheme.bodySmall?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
@@ -511,7 +506,8 @@ class _SwatchGrid extends StatelessWidget {
               _Swatch(
                 color: entry.value,
                 label: entry.key,
-                selected: enabled && entry.value.toARGB32() == selected.toARGB32(),
+                selected:
+                    enabled && entry.value.toARGB32() == selected.toARGB32(),
                 onTap: () => onPick(entry.value),
               ),
             InkWell(
@@ -596,6 +592,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
+    final l = L.of(context);
     final q = _query.trim().toLowerCase();
     final matches = [
       for (final e in kLanguageInfo.entries)
@@ -619,7 +616,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: SearchBar(
-                  hintText: 'Search languages',
+                  hintText: l.cSearchLanguages,
                   elevation: const WidgetStatePropertyAll(0),
                   backgroundColor: WidgetStatePropertyAll(
                     t.colorScheme.surfaceContainerHigh,
@@ -632,7 +629,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
                 child: matches.isEmpty
                     ? Center(
                         child: Text(
-                          'No language matches "$_query"',
+                          l.cNoLanguageMatch(_query),
                           style: t.textTheme.bodyMedium?.copyWith(
                             color: t.colorScheme.onSurfaceVariant,
                           ),

@@ -170,6 +170,7 @@ class SongTile extends ConsumerWidget {
       ref.read(musicProvider).haptic();
       showSongSheet(context, song);
     }
+
     Widget row(Widget child) => reduce
         ? InkWell(onTap: tap, onLongPress: longPress, child: child)
         : Pressable(
@@ -274,7 +275,7 @@ class SongTile extends ConsumerWidget {
               ),
             trailing ??
                 IconButton(
-                  tooltip: 'More',
+                  tooltip: L.of(context).cMore,
                   onPressed: () => showSongSheet(context, song),
                   icon: const Icon(Icons.more_vert_rounded, size: 20),
                 ),
@@ -545,12 +546,12 @@ void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
     ..showTimed(
       SnackBar(
         content: Text(
-          'Blocked "${song.title}" — the AI will avoid it',
+          L.of(context).cBlockedSnack(song.title),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         action: SnackBarAction(
-          label: 'Undo',
+          label: L.of(context).undo,
           onPressed: () => music.unblock(song, restoreLike: wasLiked),
         ),
       ),
@@ -597,8 +598,8 @@ void showSongSheet(BuildContext context, Song song) {
                         : Icons.favorite_border_rounded,
                     color: current.liked ? t.colorScheme.primary : null,
                   ),
-                  title: Text(current.liked ? 'Remove from liked' : 'Like'),
-                  subtitle: const Text('Teaches the AI straight away'),
+                  title: Text(current.liked ? l.cRemoveFromLiked : l.cLike),
+                  subtitle: Text(l.cLikeSub),
                   onTap: () {
                     music.like(current);
                     Navigator.pop(sheetContext);
@@ -697,23 +698,24 @@ void showAddToPlaylist(BuildContext context, Song song) {
       builder: (context, ref, _) {
         final playlists = ref.watch(playlistsProvider).value ?? const [];
         final db = ref.read(dbProvider);
+        final l = L.of(context);
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                 child: SectionHeader(
-                  title: 'Add to playlist',
+                  title: l.sheetAddToPlaylist,
                   padding: EdgeInsets.zero,
                 ),
               ),
               ListTile(
                 leading: const Icon(Icons.add_rounded),
-                title: const Text('New playlist'),
+                title: Text(l.libNewPlaylist),
                 onTap: () async {
                   Navigator.pop(sheetContext);
-                  final name = await promptForName(context, 'New playlist');
+                  final name = await promptForName(context, l.libNewPlaylist);
                   if (name == null) return;
                   final id = 'pl${DateTime.now().millisecondsSinceEpoch}';
                   await db.createPlaylist(id, name);
@@ -746,11 +748,8 @@ Future<String?> promptForName(
 }) {
   return showDialog<String>(
     context: context,
-    builder: (context) => _NameDialog(
-      title: title,
-      initial: initial,
-      confirm: confirm.isEmpty ? (initial.isEmpty ? 'Create' : 'Save') : confirm,
-    ),
+    builder: (context) =>
+        _NameDialog(title: title, initial: initial, confirm: confirm),
   );
 }
 
@@ -781,6 +780,10 @@ class _NameDialogState extends State<_NameDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
+    final confirm = widget.confirm.isEmpty
+        ? (widget.initial.isEmpty ? l.actionCreate : l.cSave)
+        : widget.confirm;
     return AlertDialog(
       title: Text(widget.title),
       content: TextField(
@@ -788,7 +791,7 @@ class _NameDialogState extends State<_NameDialog> {
         autofocus: true,
         maxLength: 60,
         textCapitalization: TextCapitalization.sentences,
-        decoration: const InputDecoration(hintText: 'Name'),
+        decoration: InputDecoration(hintText: l.actionName),
         onSubmitted: (v) {
           if (v.trim().isNotEmpty) Navigator.pop(context, v.trim());
         },
@@ -796,7 +799,7 @@ class _NameDialogState extends State<_NameDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l.actionCancel),
         ),
         ValueListenableBuilder(
           valueListenable: _controller,
@@ -804,7 +807,7 @@ class _NameDialogState extends State<_NameDialog> {
             onPressed: value.text.trim().isEmpty
                 ? null
                 : () => Navigator.pop(context, value.text.trim()),
-            child: Text(widget.confirm),
+            child: Text(confirm),
           ),
         ),
       ],

@@ -1293,4 +1293,427 @@ class LFr extends L {
 
   @override
   String get plRenameOrDelete => 'Renommer ou supprimer';
+
+  @override
+  String get aLibListView => 'Vue en liste';
+
+  @override
+  String get aLibGridView => 'Vue en grille';
+
+  @override
+  String get aLibSortAlpha => 'A–Z';
+
+  @override
+  String get aLibSortYear => 'Année';
+
+  @override
+  String get aLibNothingYet => 'Rien ici pour l\'instant';
+
+  @override
+  String get aLibImportedEmptyBody =>
+      'Ajoute la musique déjà présente sur cet appareil.';
+
+  @override
+  String get aLibEmptyBody =>
+      'Écoute ou télécharge quelque chose et ça apparaît ici.';
+
+  @override
+  String aLibBannerSummary(String songs, String size) {
+    return '$songs · $size sur cet appareil';
+  }
+
+  @override
+  String get aLibOfflineNote => 'Elles se lisent sans aucune connexion';
+
+  @override
+  String aLibAiPicked(String count) {
+    return '$count d\'entre elles ont été choisies par l\'IA pour toi';
+  }
+
+  @override
+  String get aPlaylistLabel => 'Playlist';
+
+  @override
+  String get aLibNoArtists => 'Pas encore d\'artistes';
+
+  @override
+  String get aLibNoArtistsBody =>
+      'Écoute quelques titres et ils s\'accumuleront ici.';
+
+  @override
+  String get aHomeSearch => 'Rechercher';
+
+  @override
+  String get aHomeInYourLibrary => 'Dans ta bibliothèque';
+
+  @override
+  String get aHomeInYourLibrarySub => 'Ce que tu as ajouté jusqu\'ici';
+
+  @override
+  String get aSearchHintDots => 'Titres, artistes, albums…';
+
+  @override
+  String get aSearchEmptyBody =>
+      'Essaie une autre orthographe ou colle un lien YouTube.';
+
+  @override
+  String get aSearchTrySomething => 'Essaie quelque chose';
+
+  @override
+  String get aSearchLearnedFrom => 'D\'après ce que l\'IA a appris';
+
+  @override
+  String get aSearchAnything => 'Cherche n\'importe quoi sur YouTube';
+
+  @override
+  String get aSearchSeedTap => 'Touche une piste pour explorer autour';
+
+  @override
+  String get aSearchArtistsYouPlay => 'Artistes que tu écoutes';
+
+  @override
+  String aSearchAffinity(String percent) {
+    return '$percent% d\'affinité';
+  }
+
+  @override
+  String get aArtistAlwaysMore => 'Toujours plus de ça';
+
+  @override
+  String get aArtistClearRule => 'Effacer la règle';
+
+  @override
+  String get aArtistBoosted => 'favorisé';
+
+  @override
+  String get aArtistBlocked => 'bloqué';
+
+  @override
+  String get aArtistRadio => 'Radio';
+
+  @override
+  String get aPlLikedSub => 'Tout ce que tu as aimé avec le cœur';
+
+  @override
+  String get aPlDownloadsSub => 'Se lit sans connexion';
+
+  @override
+  String get aPlImportedSub => 'Musique que tu as ajoutée depuis cet appareil';
+
+  @override
+  String get aPlEmptyTitle => 'Vide pour l\'instant';
+
+  @override
+  String get aPlEmptyBody =>
+      'Ajoute des titres depuis le menu ⋮ de n\'importe quel morceau.';
+
+  @override
+  String aPlDownloading(String songs) {
+    return 'Téléchargement de $songs…';
+  }
+
+  @override
+  String bTasteAiBudgetSub(String count, String gb) {
+    return 'Jusqu\'à $count titres par jour, $gb Go de budget';
+  }
+
+  @override
+  String get bTasteSongsPerDay => 'Titres par jour';
+
+  @override
+  String get bTasteStorageMayUse => 'Stockage autorisé';
+
+  @override
+  String bTasteGb(String gb) {
+    return '$gb Go';
+  }
+
+  @override
+  String get bTasteNothingToDownload =>
+      'Rien de nouveau à télécharger pour le moment.';
+
+  @override
+  String bTasteQueuedSongs(String count) {
+    return '$count titres choisis par l\'IA mis en file.';
+  }
+
+  @override
+  String get bTasteFetchNow => 'En récupérer maintenant';
+
+  @override
+  String get bTasteNotEnoughListening =>
+      'Pas encore assez d\'écoute. Joue quelques titres ou lance une session d\'entraînement ci-dessous.';
+
+  @override
+  String get bTasteFamiliar => 'Familier';
+
+  @override
+  String get bTasteDiscoveryCap1 => 'Surtout des titres que tu connais déjà';
+
+  @override
+  String get bTasteDiscoveryCap2 => 'Quelques nouveaux titres par étagère';
+
+  @override
+  String get bTasteDiscoveryCap3 =>
+      'La moitié de l\'accueil sera nouvelle pour toi';
+
+  @override
+  String get bTasteDiscoveryCap4 => 'Montre-moi ce que je n\'ai jamais entendu';
+
+  @override
+  String get bTasteCalm => 'Calme';
+
+  @override
+  String get bTasteHighEnergy => 'Plein d\'énergie';
+
+  @override
+  String get bTasteEnergyCaption =>
+      'Pousse les choix vers plus fort et plus rapide';
+
+  @override
+  String get bTasteTimeless => 'Intemporel';
+
+  @override
+  String get bTasteFresh => 'Récent';
+
+  @override
+  String get bTasteRecencyCaption =>
+      'Poids de la date de sortie dans « Nouveau ⭐ »';
+
+  @override
+  String get bTasteRarely => 'Rarement';
+
+  @override
+  String get bTasteOften => 'Souvent';
+
+  @override
+  String get bTasteNostalgiaCaption =>
+      'Jusqu\'où chercher de vieux tubes oubliés';
+
+  @override
+  String get bTasteListeningHistory => 'Historique d\'écoute';
+
+  @override
+  String bTastePlaysRecorded(String count) {
+    return '$count lectures enregistrées';
+  }
+
+  @override
+  String get bTasteSkips => 'Passages';
+
+  @override
+  String bTasteSkipsCounted(String count) {
+    return '$count passages comptés contre des titres';
+  }
+
+  @override
+  String get bTasteTimeOfDaySub => 'Des choix différents à 08:00 et à 23:00';
+
+  @override
+  String get bTasteYoutubeRelated => 'Titres associés sur YouTube';
+
+  @override
+  String get bTasteYoutubeRelatedSub =>
+      'Ajoute des titres que tu n\'as pas encore';
+
+  @override
+  String get bTasteResetSub =>
+      'Efface lectures, passages et pondérations. Garde la bibliothèque.';
+
+  @override
+  String get bTasteResetDialogTitle => 'Réinitialiser l\'IA ?';
+
+  @override
+  String get bTasteResetDialogBody =>
+      'Ta bibliothèque, tes playlists et tes téléchargements restent. Tout ce qu\'elle a appris sur toi est effacé et l\'accueil revient aux réglages par défaut.';
+
+  @override
+  String get bTasteResetAction => 'Réinitialiser';
+
+  @override
+  String get bTrainHearIt => 'Écouter';
+
+  @override
+  String bImportDoneAdded(String count) {
+    return 'Terminé · $count nouveaux titres ajoutés';
+  }
+
+  @override
+  String bImportScanningProgress(String scanned, String total) {
+    return 'Analyse · $scanned sur $total fichiers';
+  }
+
+  @override
+  String get bImportWatchedFolders => 'Dossiers surveillés';
+
+  @override
+  String get bImportWatchedFoldersSub => 'Réanalysés au lancement de l\'appli';
+
+  @override
+  String get bImportNoneYet =>
+      'Aucun pour l\'instant. Choisis un dossier et il sera surveillé automatiquement.';
+
+  @override
+  String get bImportFoundOnDevice => 'Trouvés sur cet appareil';
+
+  @override
+  String get bImportFoundOnDeviceSub => 'Touche pour analyser et surveiller';
+
+  @override
+  String get bImportYourFiles => 'Tes fichiers';
+
+  @override
+  String bImportImportedSoFar(String count) {
+    return '$count importés jusqu\'ici';
+  }
+
+  @override
+  String get bImportFilesStayNote =>
+      'Les fichiers restent où ils sont : TuneBox ne fait que les indexer. Supprime un fichier et il quittera discrètement ta bibliothèque au prochain scan.';
+
+  @override
+  String get bImportRescan => 'Réanalyser';
+
+  @override
+  String get cMore => 'Plus';
+
+  @override
+  String cBlockedSnack(String title) {
+    return '\"$title\" bloqué — l\'IA l\'évitera';
+  }
+
+  @override
+  String get cLike => 'J\'aime';
+
+  @override
+  String get cUnlike => 'Je n\'aime plus';
+
+  @override
+  String get cRemoveFromLiked => 'Retirer des titres aimés';
+
+  @override
+  String get cLikeSub => 'L\'IA apprend tout de suite';
+
+  @override
+  String get cSave => 'Enregistrer';
+
+  @override
+  String get cNothingPlaying => 'Rien en lecture';
+
+  @override
+  String get cNothingPlayingBody => 'Choisis un titre et il apparaîtra ici.';
+
+  @override
+  String get cPlayingFrom => 'Lecture depuis';
+
+  @override
+  String get cSeek => 'Position';
+
+  @override
+  String cTimeOf(String done, String total) {
+    return '$done sur $total';
+  }
+
+  @override
+  String get cShuffleOn => 'Aléatoire : activé';
+
+  @override
+  String get cShuffleOff => 'Aléatoire : désactivé';
+
+  @override
+  String get cPrevious => 'Précédent';
+
+  @override
+  String get cNext => 'Suivant';
+
+  @override
+  String get cPause => 'Pause';
+
+  @override
+  String get cRepeatOne => 'Répéter : ce titre';
+
+  @override
+  String get cRepeatOff => 'Répéter : désactivé';
+
+  @override
+  String get cRepeatAll => 'Répéter : toute la file';
+
+  @override
+  String get cSaved => 'Enregistré';
+
+  @override
+  String get cAudio => 'Audio';
+
+  @override
+  String get cSpeed => 'Vitesse';
+
+  @override
+  String get cAndroidOnly => 'Android uniquement';
+
+  @override
+  String get cPlaylist => 'Playlist';
+
+  @override
+  String get cSearchResults => 'Résultats de recherche';
+
+  @override
+  String get cYourLibrary => 'Ta bibliothèque';
+
+  @override
+  String get cRadio => 'Radio';
+
+  @override
+  String get cYourQueue => 'Ta file d\'attente';
+
+  @override
+  String cDownloadFailed(String title) {
+    return 'Échec du téléchargement : $title';
+  }
+
+  @override
+  String cAiDownloading(String title) {
+    return 'L\'IA télécharge $title';
+  }
+
+  @override
+  String cDownloading(String title) {
+    return 'Téléchargement de $title';
+  }
+
+  @override
+  String get cSaveQueueAs => 'Enregistrer la file sous';
+
+  @override
+  String cProfileSwitch(String count) {
+    return 'Profil · touche pour changer ($count)';
+  }
+
+  @override
+  String get cProfileAddAnother =>
+      'Profil · touche pour ajouter un autre auditeur';
+
+  @override
+  String get cUseIt => 'Utiliser';
+
+  @override
+  String cAiBudgetSub(String daily, String gb) {
+    return 'Jusqu\'à $daily/jour · budget de $gb Go · à régler dans Tes goûts';
+  }
+
+  @override
+  String cFoldersWatched(String count) {
+    return '$count dossiers surveillés';
+  }
+
+  @override
+  String get cMoveTasteSub =>
+      'Entre appareils via Wi-Fi, ou avec un fichier ou du texte';
+
+  @override
+  String get cSearchLanguages => 'Rechercher des langues';
+
+  @override
+  String cNoLanguageMatch(String query) {
+    return 'Aucune langue ne correspond à \"$query\"';
+  }
 }

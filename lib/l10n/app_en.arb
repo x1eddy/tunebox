@@ -769,5 +769,288 @@
   },
   "plDeleteSub": "The songs stay in your library",
   "plDelete": "Delete playlist",
-  "plRenameOrDelete": "Rename or delete"
+  "plRenameOrDelete": "Rename or delete",
+  "aLibListView": "List view",
+  "aLibGridView": "Grid view",
+  "aLibSortAlpha": "A–Z",
+  "aLibSortYear": "Year",
+  "aLibNothingYet": "Nothing here yet",
+  "aLibImportedEmptyBody": "Add the music that is already on this device.",
+  "aLibEmptyBody": "Play or download something and it lands here.",
+  "aLibBannerSummary": "{songs} · {size} on this device",
+  "@aLibBannerSummary": {
+    "placeholders": {
+      "songs": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "aLibOfflineNote": "These play with no connection at all",
+  "aLibAiPicked": "{count} of them the AI picked for you",
+  "@aLibAiPicked": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "aPlaylistLabel": "Playlist",
+  "aLibNoArtists": "No artists yet",
+  "aLibNoArtistsBody": "Play a few songs and they collect here.",
+  "aHomeSearch": "Search",
+  "aHomeInYourLibrary": "In your library",
+  "aHomeInYourLibrarySub": "What you have added so far",
+  "aSearchHintDots": "Songs, artists, albums…",
+  "aSearchEmptyBody": "Try a different spelling, or paste a YouTube link.",
+  "aSearchTrySomething": "Try something",
+  "aSearchLearnedFrom": "From what the AI learned",
+  "aSearchAnything": "Search for anything on YouTube",
+  "aSearchSeedTap": "Tap a seed to dig around it",
+  "aSearchArtistsYouPlay": "Artists you play",
+  "aSearchAffinity": "{percent}% affinity",
+  "@aSearchAffinity": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "aArtistAlwaysMore": "Always more of this",
+  "aArtistClearRule": "Clear rule",
+  "aArtistBoosted": "boosted",
+  "aArtistBlocked": "blocked",
+  "aArtistRadio": "Radio",
+  "aPlLikedSub": "Everything you hit the heart on",
+  "aPlDownloadsSub": "Plays with no connection",
+  "aPlImportedSub": "Music you added from this device",
+  "aPlEmptyTitle": "Empty for now",
+  "aPlEmptyBody": "Add songs from the ⋮ menu on any track.",
+  "aPlDownloading": "Downloading {songs}…",
+  "@aPlDownloading": {
+    "placeholders": {
+      "songs": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteAiBudgetSub": "Up to {count} songs a day, {gb} GB budget",
+  "@bTasteAiBudgetSub": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteSongsPerDay": "Songs per day",
+  "bTasteStorageMayUse": "Storage it may use",
+  "bTasteGb": "{gb} GB",
+  "@bTasteGb": {
+    "placeholders": {
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteNothingToDownload": "Nothing new worth downloading right now.",
+  "bTasteQueuedSongs": "Queued {count} songs the AI picked.",
+  "@bTasteQueuedSongs": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteFetchNow": "Fetch some now",
+  "bTasteNotEnoughListening": "Not enough listening yet. Play a handful of songs, or run a training round below.",
+  "bTasteFamiliar": "Familiar",
+  "bTasteDiscoveryCap1": "Mostly songs you already know",
+  "bTasteDiscoveryCap2": "A few new songs per shelf",
+  "bTasteDiscoveryCap3": "Half of Home will be new to you",
+  "bTasteDiscoveryCap4": "Show me things I have never heard",
+  "bTasteCalm": "Calm",
+  "bTasteHighEnergy": "High energy",
+  "bTasteEnergyCaption": "Nudges picks louder and faster",
+  "bTasteTimeless": "Timeless",
+  "bTasteFresh": "Fresh",
+  "bTasteRecencyCaption": "How much \"New ⭐\" leans on release date",
+  "bTasteRarely": "Rarely",
+  "bTasteOften": "Often",
+  "bTasteNostalgiaCaption": "How hard to dig for old forgotten hits",
+  "bTasteListeningHistory": "Listening history",
+  "bTastePlaysRecorded": "{count} plays recorded",
+  "@bTastePlaysRecorded": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteSkips": "Skips",
+  "bTasteSkipsCounted": "{count} skips counted against songs",
+  "@bTasteSkipsCounted": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bTasteTimeOfDaySub": "Different picks at 08:00 and 23:00",
+  "bTasteYoutubeRelated": "YouTube related tracks",
+  "bTasteYoutubeRelatedSub": "Pull in songs you do not own yet",
+  "bTasteResetSub": "Clears plays, skips and weights. Keeps library.",
+  "bTasteResetDialogTitle": "Reset the AI?",
+  "bTasteResetDialogBody": "Your library, playlists and downloads stay. Everything it learned about you is deleted and Home goes back to defaults.",
+  "bTasteResetAction": "Reset",
+  "bTrainHearIt": "Hear it",
+  "bImportDoneAdded": "Done · {count} new songs added",
+  "@bImportDoneAdded": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bImportScanningProgress": "Scanning · {scanned} of {total} files",
+  "@bImportScanningProgress": {
+    "placeholders": {
+      "scanned": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "bImportWatchedFolders": "Watched folders",
+  "bImportWatchedFoldersSub": "Rescanned when the app starts",
+  "bImportNoneYet": "None yet. Pick a folder and it gets watched automatically.",
+  "bImportFoundOnDevice": "Found on this device",
+  "bImportFoundOnDeviceSub": "Tap to scan and keep watching",
+  "bImportYourFiles": "Your files",
+  "bImportImportedSoFar": "{count} imported so far",
+  "@bImportImportedSoFar": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bImportFilesStayNote": "Files stay where they are — TuneBox only indexes them. Delete a file and it quietly leaves your library on the next scan.",
+  "bImportRescan": "Rescan",
+  "cMore": "More",
+  "cBlockedSnack": "Blocked \"{title}\" — the AI will avoid it",
+  "@cBlockedSnack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cLike": "Like",
+  "cUnlike": "Unlike",
+  "cRemoveFromLiked": "Remove from liked",
+  "cLikeSub": "Teaches the AI straight away",
+  "cSave": "Save",
+  "cNothingPlaying": "Nothing playing",
+  "cNothingPlayingBody": "Pick a song and it shows up here.",
+  "cPlayingFrom": "Playing from",
+  "cSeek": "Seek",
+  "cTimeOf": "{done} of {total}",
+  "@cTimeOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "cShuffleOn": "Shuffle: on",
+  "cShuffleOff": "Shuffle: off",
+  "cPrevious": "Previous",
+  "cNext": "Next",
+  "cPause": "Pause",
+  "cRepeatOne": "Repeat: this song",
+  "cRepeatOff": "Repeat: off",
+  "cRepeatAll": "Repeat: whole queue",
+  "cSaved": "Saved",
+  "cAudio": "Audio",
+  "cSpeed": "Speed",
+  "cAndroidOnly": "Android only",
+  "cPlaylist": "Playlist",
+  "cSearchResults": "Search results",
+  "cYourLibrary": "Your library",
+  "cRadio": "Radio",
+  "cYourQueue": "Your queue",
+  "cDownloadFailed": "Download failed: {title}",
+  "@cDownloadFailed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cAiDownloading": "AI is downloading {title}",
+  "@cAiDownloading": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cDownloading": "Downloading {title}",
+  "@cDownloading": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "cSaveQueueAs": "Save queue as",
+  "cProfileSwitch": "Profile · tap to switch ({count})",
+  "@cProfileSwitch": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "cProfileAddAnother": "Profile · tap to add another listener",
+  "cUseIt": "Use it",
+  "cAiBudgetSub": "Up to {daily}/day · {gb} GB budget · tune it in Your taste",
+  "@cAiBudgetSub": {
+    "placeholders": {
+      "daily": {
+        "type": "String"
+      },
+      "gb": {
+        "type": "String"
+      }
+    }
+  },
+  "cFoldersWatched": "{count} folders watched",
+  "@cFoldersWatched": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "cMoveTasteSub": "Between devices over Wi-Fi, or with a file or text",
+  "cSearchLanguages": "Search languages",
+  "cNoLanguageMatch": "No language matches \"{query}\"",
+  "@cNoLanguageMatch": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -1284,4 +1284,425 @@ class LPt extends L {
 
   @override
   String get plRenameOrDelete => 'Mudar nome ou eliminar';
+
+  @override
+  String get aLibListView => 'Vista em lista';
+
+  @override
+  String get aLibGridView => 'Vista em grelha';
+
+  @override
+  String get aLibSortAlpha => 'A–Z';
+
+  @override
+  String get aLibSortYear => 'Ano';
+
+  @override
+  String get aLibNothingYet => 'Ainda não há nada aqui';
+
+  @override
+  String get aLibImportedEmptyBody =>
+      'Adiciona a música que já está neste dispositivo.';
+
+  @override
+  String get aLibEmptyBody => 'Reproduz ou descarrega algo e aparece aqui.';
+
+  @override
+  String aLibBannerSummary(String songs, String size) {
+    return '$songs · $size neste dispositivo';
+  }
+
+  @override
+  String get aLibOfflineNote => 'Estas tocam sem qualquer ligação';
+
+  @override
+  String aLibAiPicked(String count) {
+    return '$count delas foram escolhidas pela IA para ti';
+  }
+
+  @override
+  String get aPlaylistLabel => 'Playlist';
+
+  @override
+  String get aLibNoArtists => 'Ainda sem artistas';
+
+  @override
+  String get aLibNoArtistsBody =>
+      'Reproduz algumas músicas e elas reúnem-se aqui.';
+
+  @override
+  String get aHomeSearch => 'Pesquisar';
+
+  @override
+  String get aHomeInYourLibrary => 'Na tua biblioteca';
+
+  @override
+  String get aHomeInYourLibrarySub => 'O que adicionaste até agora';
+
+  @override
+  String get aSearchHintDots => 'Músicas, artistas, álbuns…';
+
+  @override
+  String get aSearchEmptyBody =>
+      'Experimenta outra grafia ou cola uma ligação do YouTube.';
+
+  @override
+  String get aSearchTrySomething => 'Experimenta algo';
+
+  @override
+  String get aSearchLearnedFrom => 'Do que a IA aprendeu';
+
+  @override
+  String get aSearchAnything => 'Pesquisa qualquer coisa no YouTube';
+
+  @override
+  String get aSearchSeedTap => 'Toca numa semente para explorar à volta';
+
+  @override
+  String get aSearchArtistsYouPlay => 'Artistas que ouves';
+
+  @override
+  String aSearchAffinity(String percent) {
+    return '$percent% de afinidade';
+  }
+
+  @override
+  String get aArtistAlwaysMore => 'Sempre mais disto';
+
+  @override
+  String get aArtistClearRule => 'Limpar regra';
+
+  @override
+  String get aArtistBoosted => 'favorecido';
+
+  @override
+  String get aArtistBlocked => 'bloqueado';
+
+  @override
+  String get aArtistRadio => 'Rádio';
+
+  @override
+  String get aPlLikedSub => 'Tudo o que marcaste com o coração';
+
+  @override
+  String get aPlDownloadsSub => 'Toca sem ligação';
+
+  @override
+  String get aPlImportedSub =>
+      'Música que adicionaste a partir deste dispositivo';
+
+  @override
+  String get aPlEmptyTitle => 'Vazia por agora';
+
+  @override
+  String get aPlEmptyBody =>
+      'Adiciona músicas a partir do menu ⋮ de qualquer faixa.';
+
+  @override
+  String aPlDownloading(String songs) {
+    return 'A descarregar $songs…';
+  }
+
+  @override
+  String bTasteAiBudgetSub(String count, String gb) {
+    return 'Até $count músicas por dia, orçamento de $gb GB';
+  }
+
+  @override
+  String get bTasteSongsPerDay => 'Músicas por dia';
+
+  @override
+  String get bTasteStorageMayUse => 'Armazenamento que pode usar';
+
+  @override
+  String bTasteGb(String gb) {
+    return '$gb GB';
+  }
+
+  @override
+  String get bTasteNothingToDownload =>
+      'Nada de novo que valha a pena baixar agora.';
+
+  @override
+  String bTasteQueuedSongs(String count) {
+    return '$count músicas escolhidas pela IA na fila.';
+  }
+
+  @override
+  String get bTasteFetchNow => 'Buscar agora';
+
+  @override
+  String get bTasteNotEnoughListening =>
+      'Ainda pouca audição. Toca algumas músicas ou inicia uma rodada de treino abaixo.';
+
+  @override
+  String get bTasteFamiliar => 'Familiar';
+
+  @override
+  String get bTasteDiscoveryCap1 => 'Principalmente músicas que já conheces';
+
+  @override
+  String get bTasteDiscoveryCap2 => 'Algumas músicas novas por prateleira';
+
+  @override
+  String get bTasteDiscoveryCap3 => 'Metade do Início será novidade para ti';
+
+  @override
+  String get bTasteDiscoveryCap4 => 'Mostra-me coisas que nunca ouvi';
+
+  @override
+  String get bTasteCalm => 'Calmo';
+
+  @override
+  String get bTasteHighEnergy => 'Muita energia';
+
+  @override
+  String get bTasteEnergyCaption =>
+      'Empurra as escolhas para mais alto e rápido';
+
+  @override
+  String get bTasteTimeless => 'Intemporal';
+
+  @override
+  String get bTasteFresh => 'Recente';
+
+  @override
+  String get bTasteRecencyCaption =>
+      'Quanto \"Novo ⭐\" depende da data de lançamento';
+
+  @override
+  String get bTasteRarely => 'Raramente';
+
+  @override
+  String get bTasteOften => 'Muitas vezes';
+
+  @override
+  String get bTasteNostalgiaCaption =>
+      'Quanto procurar velhos êxitos esquecidos';
+
+  @override
+  String get bTasteListeningHistory => 'Histórico de audição';
+
+  @override
+  String bTastePlaysRecorded(String count) {
+    return '$count reproduções registadas';
+  }
+
+  @override
+  String get bTasteSkips => 'Saltos';
+
+  @override
+  String bTasteSkipsCounted(String count) {
+    return '$count saltos contam contra as músicas';
+  }
+
+  @override
+  String get bTasteTimeOfDaySub => 'Escolhas diferentes às 08:00 e às 23:00';
+
+  @override
+  String get bTasteYoutubeRelated => 'Faixas relacionadas do YouTube';
+
+  @override
+  String get bTasteYoutubeRelatedSub => 'Traz músicas que ainda não tens';
+
+  @override
+  String get bTasteResetSub =>
+      'Limpa reproduções, saltos e pesos. Mantém a biblioteca.';
+
+  @override
+  String get bTasteResetDialogTitle => 'Repor a IA?';
+
+  @override
+  String get bTasteResetDialogBody =>
+      'A tua biblioteca, playlists e transferências ficam. Tudo o que ela aprendeu sobre ti é apagado e o Início volta ao padrão.';
+
+  @override
+  String get bTasteResetAction => 'Repor';
+
+  @override
+  String get bTrainHearIt => 'Ouvir';
+
+  @override
+  String bImportDoneAdded(String count) {
+    return 'Concluído · $count músicas novas adicionadas';
+  }
+
+  @override
+  String bImportScanningProgress(String scanned, String total) {
+    return 'A analisar · $scanned de $total ficheiros';
+  }
+
+  @override
+  String get bImportWatchedFolders => 'Pastas monitorizadas';
+
+  @override
+  String get bImportWatchedFoldersSub => 'Reanalisadas ao iniciar a app';
+
+  @override
+  String get bImportNoneYet =>
+      'Ainda nenhuma. Escolhe uma pasta e ela será monitorizada automaticamente.';
+
+  @override
+  String get bImportFoundOnDevice => 'Encontradas neste dispositivo';
+
+  @override
+  String get bImportFoundOnDeviceSub =>
+      'Toca para analisar e continuar a monitorizar';
+
+  @override
+  String get bImportYourFiles => 'Os teus ficheiros';
+
+  @override
+  String bImportImportedSoFar(String count) {
+    return '$count importados até agora';
+  }
+
+  @override
+  String get bImportFilesStayNote =>
+      'Os ficheiros ficam onde estão — o TuneBox apenas os indexa. Apaga um ficheiro e ele sai discretamente da biblioteca na próxima análise.';
+
+  @override
+  String get bImportRescan => 'Reanalisar';
+
+  @override
+  String get cMore => 'Mais';
+
+  @override
+  String cBlockedSnack(String title) {
+    return '\"$title\" bloqueada — a IA vai evitá-la';
+  }
+
+  @override
+  String get cLike => 'Gostar';
+
+  @override
+  String get cUnlike => 'Não gostar mais';
+
+  @override
+  String get cRemoveFromLiked => 'Remover dos curtidos';
+
+  @override
+  String get cLikeSub => 'A IA aprende na hora';
+
+  @override
+  String get cSave => 'Salvar';
+
+  @override
+  String get cNothingPlaying => 'Nada tocando';
+
+  @override
+  String get cNothingPlayingBody => 'Escolhe uma música e ela aparece aqui.';
+
+  @override
+  String get cPlayingFrom => 'A tocar de';
+
+  @override
+  String get cSeek => 'Procurar';
+
+  @override
+  String cTimeOf(String done, String total) {
+    return '$done de $total';
+  }
+
+  @override
+  String get cShuffleOn => 'Aleatório: ligado';
+
+  @override
+  String get cShuffleOff => 'Aleatório: desligado';
+
+  @override
+  String get cPrevious => 'Anterior';
+
+  @override
+  String get cNext => 'Seguinte';
+
+  @override
+  String get cPause => 'Pausar';
+
+  @override
+  String get cRepeatOne => 'Repetir: esta música';
+
+  @override
+  String get cRepeatOff => 'Repetir: desligado';
+
+  @override
+  String get cRepeatAll => 'Repetir: toda a fila';
+
+  @override
+  String get cSaved => 'Salvo';
+
+  @override
+  String get cAudio => 'Áudio';
+
+  @override
+  String get cSpeed => 'Velocidade';
+
+  @override
+  String get cAndroidOnly => 'Só no Android';
+
+  @override
+  String get cPlaylist => 'Playlist';
+
+  @override
+  String get cSearchResults => 'Resultados da pesquisa';
+
+  @override
+  String get cYourLibrary => 'A tua biblioteca';
+
+  @override
+  String get cRadio => 'Rádio';
+
+  @override
+  String get cYourQueue => 'A tua fila';
+
+  @override
+  String cDownloadFailed(String title) {
+    return 'Falha na transferência: $title';
+  }
+
+  @override
+  String cAiDownloading(String title) {
+    return 'A IA está a transferir $title';
+  }
+
+  @override
+  String cDownloading(String title) {
+    return 'A transferir $title';
+  }
+
+  @override
+  String get cSaveQueueAs => 'Guardar a fila como';
+
+  @override
+  String cProfileSwitch(String count) {
+    return 'Perfil · toca para mudar ($count)';
+  }
+
+  @override
+  String get cProfileAddAnother => 'Perfil · toca para adicionar outro ouvinte';
+
+  @override
+  String get cUseIt => 'Usar';
+
+  @override
+  String cAiBudgetSub(String daily, String gb) {
+    return 'Até $daily/dia · orçamento de $gb GB · ajusta em O teu gosto';
+  }
+
+  @override
+  String cFoldersWatched(String count) {
+    return '$count pastas monitorizadas';
+  }
+
+  @override
+  String get cMoveTasteSub =>
+      'Entre dispositivos por Wi-Fi, ou com um ficheiro ou texto';
+
+  @override
+  String get cSearchLanguages => 'Pesquisar idiomas';
+
+  @override
+  String cNoLanguageMatch(String query) {
+    return 'Nenhum idioma corresponde a \"$query\"';
+  }
 }

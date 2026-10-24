@@ -266,7 +266,7 @@ class _FirstRunCard extends ConsumerWidget {
               OutlinedButton.icon(
                 onPressed: () => goToTab(context, '/explore'),
                 icon: const Icon(Icons.search_rounded),
-                label: const Text('Search'),
+                label: Text(l.aHomeSearch),
               ),
             ],
           ),
@@ -283,6 +283,7 @@ class _QuickPicks extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final played = library.where((s) => s.lastPlayed != null).toList()
       ..sort((a, b) => b.lastPlayed!.compareTo(a.lastPlayed!));
@@ -293,10 +294,10 @@ class _QuickPicks extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          title: played.isEmpty ? 'In your library' : 'Quick picks',
+          title: played.isEmpty ? l.aHomeInYourLibrary : l.homeQuickPicks,
           subtitle: played.isEmpty
-              ? 'What you have added so far'
-              : 'Straight back into what you were on',
+              ? l.aHomeInYourLibrarySub
+              : l.homeQuickPicksSub,
         ),
         SizedBox(
           // One row per song, up to four — a fixed four left a hole in the
@@ -390,11 +391,7 @@ class _ShelfView extends ConsumerWidget {
             height: 92,
             children: [
               for (final pick in shelf.picks)
-                WideCard(
-                  pick: pick,
-                  queue: songs,
-                  origin: 'shelf:${shelf.id}',
-                ),
+                WideCard(pick: pick, queue: songs, origin: 'shelf:${shelf.id}'),
             ],
           ),
           _ => HorizontalStrip(

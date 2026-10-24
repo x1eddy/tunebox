@@ -51,7 +51,8 @@ class _QueuePageState extends ConsumerState<QueuePage> {
     // Same song twice in a queue must still get distinct, stable keys.
     final seen = <String, int>{};
     final keys = [
-      for (final s in songs) '${s.id}#${seen.update(s.id, (n) => n + 1, ifAbsent: () => 0)}',
+      for (final s in songs)
+        '${s.id}#${seen.update(s.id, (n) => n + 1, ifAbsent: () => 0)}',
     ];
 
     void remove(int i) {
@@ -85,7 +86,7 @@ class _QueuePageState extends ConsumerState<QueuePage> {
             icon: const Icon(Icons.shuffle_rounded),
           ),
           PopupMenuButton<String>(
-            tooltip: 'More',
+            tooltip: L.of(context).cMore,
             onSelected: (v) async {
               final messenger = ScaffoldMessenger.of(context);
               final l = L.of(context);
@@ -104,7 +105,7 @@ class _QueuePageState extends ConsumerState<QueuePage> {
                     ),
                   );
               } else if (v == 'save') {
-                final name = await promptForName(context, 'Save queue as');
+                final name = await promptForName(context, l.cSaveQueueAs);
                 if (name == null || !context.mounted) return;
                 final db = ref.read(dbProvider);
                 final id = 'pl${DateTime.now().millisecondsSinceEpoch}';
@@ -112,9 +113,7 @@ class _QueuePageState extends ConsumerState<QueuePage> {
                 await db.addAllToPlaylist(id, [for (final s in songs) s.id]);
                 messenger.showTimed(
                   SnackBar(
-                    content: Text(
-                      l.qSaved(l.libSongCount(songs.length), name),
-                    ),
+                    content: Text(l.qSaved(l.libSongCount(songs.length), name)),
                   ),
                 );
               }
@@ -193,8 +192,9 @@ class _QueueRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey('dismiss-${key.toString()}'),
-      direction:
-          isCurrent ? DismissDirection.none : DismissDirection.endToStart,
+      direction: isCurrent
+          ? DismissDirection.none
+          : DismissDirection.endToStart,
       onDismissed: (_) => onRemove(),
       background: ColoredBox(
         color: color.errorContainer,

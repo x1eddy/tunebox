@@ -87,12 +87,12 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
           title: Text(l.navLibrary),
           actions: [
             IconButton(
-              tooltip: 'Add music from this device',
+              tooltip: l.homeAddMusic,
               onPressed: () => pushDetail(context, 'import'),
               icon: const Icon(Icons.library_add_outlined),
             ),
             IconButton(
-              tooltip: _grid ? 'List view' : 'Grid view',
+              tooltip: _grid ? l.aLibListView : l.aLibGridView,
               onPressed: () => setState(() => _grid = !_grid),
               icon: Icon(
                 _grid ? Icons.view_list_rounded : Icons.grid_view_rounded,
@@ -167,7 +167,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => pushDetail(context, 'import'),
-          tooltip: 'Add music',
+          tooltip: l.importTitle,
           child: const Icon(Icons.add_rounded),
         ),
       ),
@@ -180,16 +180,17 @@ class _SortRow extends StatelessWidget {
   final _Sort sort;
   final ValueChanged<_Sort> onSort;
 
-  static const labels = {
-    _Sort.recent: 'Recently added',
-    _Sort.alpha: 'A–Z',
-    _Sort.plays: 'Most played',
-    _Sort.year: 'Year',
+  static Map<_Sort, String> _labels(L l) => {
+    _Sort.recent: l.libSortRecent,
+    _Sort.alpha: l.aLibSortAlpha,
+    _Sort.plays: l.libSortPlays,
+    _Sort.year: l.aLibSortYear,
   };
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
+    final labels = _labels(L.of(context));
     return SizedBox(
       height: 46,
       child: ListView(
@@ -226,17 +227,16 @@ class _SongsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     if (songs.isEmpty) {
       return EmptyState(
         icon: Icons.music_note_outlined,
-        title: 'Nothing here yet',
-        body: origin == 'imported'
-            ? 'Add the music that is already on this device.'
-            : 'Play or download something and it lands here.',
+        title: l.aLibNothingYet,
+        body: origin == 'imported' ? l.aLibImportedEmptyBody : l.aLibEmptyBody,
         action: FilledButton.icon(
           onPressed: () => pushDetail(context, 'import'),
           icon: const Icon(Icons.library_add_outlined),
-          label: const Text('Add music'),
+          label: Text(l.importTitle),
         ),
       );
     }
@@ -257,7 +257,7 @@ class _SongsTab extends ConsumerWidget {
                     onPressed: () =>
                         ref.read(musicProvider).playAll(songs, origin: origin),
                     icon: const Icon(Icons.play_arrow_rounded),
-                    label: const Text('Play'),
+                    label: Text(l.actionPlay),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -268,7 +268,7 @@ class _SongsTab extends ConsumerWidget {
                       ref.read(musicProvider).playAll(shuffled, origin: origin);
                     },
                     icon: const Icon(Icons.shuffle_rounded),
-                    label: const Text('Shuffle'),
+                    label: Text(l.actionShuffle),
                   ),
                 ),
               ],
@@ -292,6 +292,7 @@ class _DownloadBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final bytes = songs.fold<int>(0, (a, s) => a + s.fileSize);
     final auto = songs.where((s) => s.autoAdded).length;
@@ -314,16 +315,17 @@ class _DownloadBanner extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${songs.length} songs · ${prettyBytes(bytes)} on this device',
+                  l.aLibBannerSummary(
+                    l.libSongCount(songs.length),
+                    prettyBytes(bytes),
+                  ),
                   style: t.textTheme.titleSmall?.copyWith(
                     color: t.colorScheme.onSecondaryContainer,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  auto == 0
-                      ? 'These play with no connection at all'
-                      : '$auto of them the AI picked for you',
+                  auto == 0 ? l.aLibOfflineNote : l.aLibAiPicked('$auto'),
                   style: t.textTheme.bodySmall?.copyWith(
                     color: t.colorScheme.onSecondaryContainer,
                   ),
@@ -343,6 +345,7 @@ class _PlaylistsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final playlists = ref.watch(playlistsProvider).value ?? const <Playlist>[];
     final liked = ref.watch(likedProvider).value ?? const <Song>[];
@@ -350,9 +353,14 @@ class _PlaylistsTab extends ConsumerWidget {
     final imported = ref.watch(importedProvider).value ?? const <Song>[];
 
     final smart = [
-      ('liked', 'Liked songs', '${liked.length} songs', liked),
-      ('downloads', 'Downloads', '${downloaded.length} offline', downloaded),
-      ('imported', 'My own files', '${imported.length} files', imported),
+      ('liked', l.libLikedSongs, l.libSongCount(liked.length), liked),
+      (
+        'downloads',
+        l.libDownloads,
+        l.libOfflineCount(downloaded.length),
+        downloaded,
+      ),
+      ('imported', l.libMyFiles, l.libFileCount(imported.length), imported),
     ];
 
     final tiles = <_CollectionTile>[
@@ -371,22 +379,18 @@ class _PlaylistsTab extends ConsumerWidget {
       for (final p in playlists)
         _CollectionTile(
           title: p.name,
-          subtitle: 'Playlist',
+          subtitle: l.aPlaylistLabel,
           icon: Icons.queue_music_rounded,
           onTap: () => pushDetail(context, 'playlist/${p.id}'),
-          onLongPress: () => showPlaylistMenu(
-            context,
-            ref,
-            id: p.id,
-            name: p.name,
-          ),
+          onLongPress: () =>
+              showPlaylistMenu(context, ref, id: p.id, name: p.name),
         ),
       _CollectionTile(
-        title: 'New playlist',
-        subtitle: 'Make one',
+        title: l.libNewPlaylist,
+        subtitle: l.libMakeOne,
         icon: Icons.add_rounded,
         onTap: () async {
-          final name = await promptForName(context, 'New playlist');
+          final name = await promptForName(context, l.libNewPlaylist);
           if (name == null) return;
           await ref
               .read(dbProvider)
@@ -517,6 +521,7 @@ class _ArtistsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final t = Theme.of(context);
     final counts = <String, List<Song>>{};
     for (final s in library) {
@@ -527,10 +532,10 @@ class _ArtistsTab extends StatelessWidget {
       ..sort((a, b) => b.value.length.compareTo(a.value.length));
 
     if (artists.isEmpty) {
-      return const EmptyState(
+      return EmptyState(
         icon: Icons.person_outline_rounded,
-        title: 'No artists yet',
-        body: 'Play a few songs and they collect here.',
+        title: l.aLibNoArtists,
+        body: l.aLibNoArtistsBody,
       );
     }
 
@@ -545,8 +550,8 @@ class _ArtistsTab extends StatelessWidget {
           leading: CoverArt(song: entry.value.first, size: 50, circle: true),
           title: Text(entry.key),
           subtitle: Text(
-            '${entry.value.length} songs · '
-            '${entry.value.fold<int>(0, (a, s) => a + s.playCount)} plays',
+            '${l.libSongCount(entry.value.length)} · '
+            '${l.reasonPlays(entry.value.fold<int>(0, (a, s) => a + s.playCount))}',
             style: t.textTheme.bodySmall?.copyWith(
               color: t.colorScheme.onSurfaceVariant,
             ),
