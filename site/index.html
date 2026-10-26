@@ -131,7 +131,7 @@
         <a class="btn primary" id="cta-main" href="#download">Download TuneBox</a>
         <a class="btn" href="https://github.com/x1eddy/tunebox">★ Star on GitHub</a>
       </div>
-      <div class="platforms"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span></div>
+      <div class="platforms"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span><span class="pill" id="count-pill" hidden></span></div>
     </div>
     <div class="shots" aria-hidden="true">
       <img class="a" src="img/taste.png" alt="" width="420" height="840" loading="eager">
@@ -214,7 +214,7 @@
 
   <section id="download">
     <h2>Download</h2>
-    <p class="sub">Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.</p>
+    <p class="sub">Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
     <div class="dl">
       <div class="card"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
         <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/latest">Download APK</a>
@@ -245,7 +245,8 @@
 
 <script>
   // Always point the buttons at the newest release; the fallback links above keep working without JS.
-  fetch('https://api.github.com/repos/x1eddy/tunebox/releases/latest')
+  var API = 'https://api.github.com/repos/x1eddy/tunebox/releases';
+  fetch(API + '/latest')
     .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
     .then(function (rel) {
       document.getElementById('ver').textContent = rel.tag_name;
@@ -256,6 +257,34 @@
       });
     })
     .catch(function () { document.getElementById('ver').textContent = 'see Releases'; });
+
+  // Total downloads: GitHub already counts every release file, so nothing here tracks anyone.
+  // Stays hidden if the request fails or is rate limited.
+  (function () {
+    function show(n) {
+      var txt = n.toLocaleString();
+      var pill = document.getElementById('count-pill');
+      pill.textContent = txt + ' downloads'; pill.hidden = false;
+      document.getElementById('count-n').textContent = txt;
+      document.getElementById('count-line').hidden = false;
+    }
+    var cached = null;
+    try { cached = parseInt(sessionStorage.getItem('tb-downloads'), 10); } catch (e) {}
+    if (cached > 0) { show(cached); return; }
+    fetch(API + '?per_page=100')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (list) {
+        var n = 0;
+        list.forEach(function (rel) {
+          (rel.assets || []).forEach(function (a) { n += a.download_count || 0; });
+        });
+        if (n > 0) {
+          show(n);
+          try { sessionStorage.setItem('tb-downloads', String(n)); } catch (e) {}
+        }
+      })
+      .catch(function () {});
+  })();
 </script>
 </body>
 </html>
