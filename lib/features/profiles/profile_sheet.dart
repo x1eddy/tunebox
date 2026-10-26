@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/router.dart';
+import '../../state/owner.dart';
 import '../../state/profiles.dart';
 import '../../l10n/app_localizations.dart';
 import '../../state/providers.dart';
@@ -14,18 +15,77 @@ class ProfileAvatar extends StatelessWidget {
   final double radius;
 
   @override
-  Widget build(BuildContext context) => CircleAvatar(
-    radius: radius,
-    backgroundColor: profile.color,
-    child: Text(
-      profile.initial,
-      style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w700,
-        fontSize: radius * 0.95,
+  Widget build(BuildContext context) {
+    final avatar = CircleAvatar(
+      radius: radius,
+      backgroundColor: profile.color,
+      child: Text(
+        profile.initial,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: radius * 0.95,
+        ),
       ),
-    ),
-  );
+    );
+    if (!isOwnerProfile(profile.id)) return avatar;
+    final crown = radius * 0.95;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        avatar,
+        Positioned(
+          right: -radius * 0.2,
+          bottom: -radius * 0.2,
+          child: Container(
+            width: crown,
+            height: crown,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFC107),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Theme.of(context).colorScheme.surface,
+                width: 1.5,
+              ),
+            ),
+            child: Icon(
+              Icons.workspace_premium_rounded,
+              size: crown * 0.68,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// "Owner" tag next to the owner's profile name (owner builds only).
+class OwnerChip extends StatelessWidget {
+  const OwnerChip(this.profileId, {super.key});
+
+  final String profileId;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isOwnerProfile(profileId)) return const SizedBox.shrink();
+    return Container(
+      margin: const EdgeInsetsDirectional.only(start: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFC107),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: const Text(
+        'Owner',
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
 }
 
 /// Small avatar button for app bars: shows who is listening, opens the sheet.
@@ -91,7 +151,12 @@ class _ProfileSheet extends ConsumerWidget {
               for (final p in controller.profiles)
                 ListTile(
                   leading: ProfileAvatar(p),
-                  title: Text(p.name),
+                  title: Row(
+                    children: [
+                      Flexible(child: Text(p.name)),
+                      OwnerChip(p.id),
+                    ],
+                  ),
                   subtitle: p.id == controller.active.id
                       ? Text(L.of(context).profActive)
                       : null,

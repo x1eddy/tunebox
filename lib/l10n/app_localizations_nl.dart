@@ -802,6 +802,19 @@ class LNl extends L {
       'Muziek van YouTube en uit je eigen bestanden. De AI draait volledig op dit apparaat — er gaat niets weg.';
 
   @override
+  String get setShare => 'TuneBox delen';
+
+  @override
+  String get setShareBody => 'Stuur de link naar een vriend';
+
+  @override
+  String get setShareText =>
+      'TuneBox: een gratis muziekspeler die je smaak leert kennen, op je eigen toestel. Geen account, geen reclame: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link gekopieerd';
+
+  @override
   String get setSource => 'Broncode';
 
   @override

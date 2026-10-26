@@ -807,6 +807,19 @@ class LCa extends L {
       'Música de YouTube i dels teus fitxers. La IA s\'executa íntegrament en aquest dispositiu: res no en surt.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Codi font';
 
   @override

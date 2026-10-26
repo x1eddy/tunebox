@@ -780,6 +780,19 @@ class LKo extends L {
       'YouTube와 내 파일의 음악. AI는 전적으로 이 기기에서 실행되며 어떤 데이터도 기기 밖으로 나가지 않아요.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => '소스 코드';
 
   @override

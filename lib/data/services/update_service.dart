@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app/theme.dart' show kAppVersion;
+import '../../state/owner.dart' show kOwnerBuild, logEvent;
 
 /// A release newer than the one running.
 @immutable
@@ -144,6 +145,9 @@ class UpdateService {
 
   /// One check, and the download if there is one, announcing nothing.
   Future<Update?> checkAndFetch({required bool mayDownload}) async {
+    // An owner build is installed by hand; the public release would replace it
+    // with one that has no owner tools.
+    if (kOwnerBuild) return null;
     try {
       final update = await check();
       if (update == null) return null;
@@ -155,7 +159,7 @@ class UpdateService {
       if (!_state.isClosed) _state.add(update);
       return update;
     } catch (e) {
-      debugPrint('update check failed — $e');
+      logEvent('update check failed — $e');
       return null;
     }
   }

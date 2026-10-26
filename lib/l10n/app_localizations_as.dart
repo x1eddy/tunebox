@@ -800,6 +800,19 @@ class LAs extends L {
       'YouTube আৰু আপোনাৰ নিজৰ ফাইলৰ সংগীত। AI সম্পূৰ্ণৰূপে এই ডিভাইচতে চলে — একো বাহিৰলৈ নাযায়।';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ছ\'ৰ্চ ক\'ড';
 
   @override

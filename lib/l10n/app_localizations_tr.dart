@@ -800,6 +800,19 @@ class LTr extends L {
       'YouTube\'dan ve kendi dosyalarından müzik. Yapay zekâ tamamen bu cihazda çalışır — hiçbir şey dışarı çıkmaz.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Kaynak kodu';
 
   @override

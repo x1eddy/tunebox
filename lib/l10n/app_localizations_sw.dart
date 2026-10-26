@@ -805,6 +805,19 @@ class LSw extends L {
       'Muziki kutoka YouTube na faili zako mwenyewe. AI inafanya kazi kabisa kwenye kifaa hiki — hakuna kinachotoka.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Msimbo chanzo';
 
   @override

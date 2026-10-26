@@ -797,6 +797,19 @@ class LPt extends L {
       'Música do YouTube e dos teus próprios ficheiros. A IA corre inteiramente neste dispositivo — nada sai daqui.';
 
   @override
+  String get setShare => 'Partilhar o TuneBox';
+
+  @override
+  String get setShareBody => 'Envia a ligação a um amigo';
+
+  @override
+  String get setShareText =>
+      'TuneBox: um leitor de música gratuito que aprende o teu gosto, no teu dispositivo. Sem conta, sem anúncios: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Ligação copiada';
+
+  @override
   String get setSource => 'Código-fonte';
 
   @override

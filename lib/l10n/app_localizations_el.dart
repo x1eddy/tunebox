@@ -814,6 +814,19 @@ class LEl extends L {
       'Μουσική από το YouTube και τα δικά σου αρχεία. Η τεχνητή νοημοσύνη τρέχει εξ ολοκλήρου σε αυτή τη συσκευή — τίποτα δεν φεύγει από αυτήν.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Πηγαίος κώδικας';
 
   @override

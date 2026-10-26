@@ -815,6 +815,19 @@ class LBe extends L {
       'Музыка з YouTube і твае ўласныя файлы. ШІ працуе цалкам на гэтай прыладзе — нічога не пакідае яе.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Зыходны код';
 
   @override

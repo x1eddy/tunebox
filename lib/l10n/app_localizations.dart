@@ -1623,6 +1623,30 @@ abstract class L {
   /// **'Music from YouTube and your own files. The AI runs entirely on this device — nothing leaves it.'**
   String get setAboutBody;
 
+  /// No description provided for @setShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share TuneBox'**
+  String get setShare;
+
+  /// No description provided for @setShareBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the link to a friend'**
+  String get setShareBody;
+
+  /// No description provided for @setShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev'**
+  String get setShareText;
+
+  /// No description provided for @setShareCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get setShareCopied;
+
   /// No description provided for @setSource.
   ///
   /// In en, this message translates to:

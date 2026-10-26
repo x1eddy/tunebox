@@ -805,6 +805,19 @@ class LEs extends L {
       'Música de YouTube y de tus propios archivos. La IA funciona por completo en este dispositivo: nada sale de aquí.';
 
   @override
+  String get setShare => 'Compartir TuneBox';
+
+  @override
+  String get setShareBody => 'Envía el enlace a un amigo';
+
+  @override
+  String get setShareText =>
+      'TuneBox: un reproductor de música gratuito que aprende tus gustos, en tu dispositivo. Sin cuenta, sin anuncios: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Enlace copiado';
+
+  @override
   String get setSource => 'Código fuente';
 
   @override

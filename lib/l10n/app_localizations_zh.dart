@@ -776,6 +776,19 @@ class LZh extends L {
   String get setAboutBody => '来自 YouTube 和你自己文件的音乐。AI 完全在本设备上运行 — 任何数据都不会外传。';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => '源代码';
 
   @override

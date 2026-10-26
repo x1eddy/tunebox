@@ -803,6 +803,19 @@ class LPa extends L {
       'YouTube ਅਤੇ ਤੁਹਾਡੀਆਂ ਆਪਣੀਆਂ ਫ਼ਾਈਲਾਂ ਤੋਂ ਸੰਗੀਤ। AI ਪੂਰੀ ਤਰ੍ਹਾਂ ਇਸ ਡੀਵਾਈਸ ਤੇ ਚੱਲਦਾ ਹੈ — ਕੁਝ ਵੀ ਬਾਹਰ ਨਹੀਂ ਜਾਂਦਾ।';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ਸੋਰਸ ਕੋਡ';
 
   @override

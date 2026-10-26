@@ -802,6 +802,19 @@ class LSv extends L {
       'Musik från YouTube och dina egna filer. AI:n körs helt på den här enheten – inget lämnar den.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Källkod';
 
   @override

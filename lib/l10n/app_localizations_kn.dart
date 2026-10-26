@@ -805,6 +805,19 @@ class LKn extends L {
       'YouTube ಮತ್ತು ನಿಮ್ಮದೇ ಫೈಲ್‌ಗಳ ಸಂಗೀತ. AI ಸಂಪೂರ್ಣವಾಗಿ ಈ ಸಾಧನದಲ್ಲೇ ಚಲಿಸುತ್ತದೆ — ಏನೂ ಹೊರಗೆ ಹೋಗುವುದಿಲ್ಲ.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ಸೋರ್ಸ್ ಕೋಡ್';
 
   @override

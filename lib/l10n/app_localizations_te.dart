@@ -803,6 +803,19 @@ class LTe extends L {
       'YouTube మరియు మీ సొంత ఫైళ్ల నుండి సంగీతం. AI పూర్తిగా ఈ పరికరంలోనే నడుస్తుంది — ఏదీ బయటకు వెళ్లదు.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'సోర్స్ కోడ్';
 
   @override

@@ -805,6 +805,19 @@ class LFr extends L {
       'De la musique depuis YouTube et tes propres fichiers. L\'IA tourne entièrement sur cet appareil — rien n\'en sort.';
 
   @override
+  String get setShare => 'Partager TuneBox';
+
+  @override
+  String get setShareBody => 'Envoie le lien à un ami';
+
+  @override
+  String get setShareText =>
+      'TuneBox : un lecteur de musique gratuit qui apprend tes goûts, sur ton appareil. Sans compte, sans pub : https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Lien copié';
+
+  @override
   String get setSource => 'Code source';
 
   @override

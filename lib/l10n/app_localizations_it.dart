@@ -802,6 +802,19 @@ class LIt extends L {
       'Musica da YouTube e dai tuoi file. L\'IA gira interamente su questo dispositivo: non esce niente.';
 
   @override
+  String get setShare => 'Condividi TuneBox';
+
+  @override
+  String get setShareBody => 'Manda il link a un amico';
+
+  @override
+  String get setShareText =>
+      'TuneBox: un lettore musicale gratuito che impara i tuoi gusti, sul tuo dispositivo. Senza account, senza pubblicità: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copiato';
+
+  @override
   String get setSource => 'Codice sorgente';
 
   @override

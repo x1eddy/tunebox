@@ -779,6 +779,19 @@ class LJa extends L {
       'YouTubeと自分のファイルの音楽。AIはすべてこのデバイス内で動作し、外部には何も送信されません。';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ソースコード';
 
   @override

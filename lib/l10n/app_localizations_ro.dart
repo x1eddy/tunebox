@@ -810,6 +810,19 @@ class LRo extends L {
       'Muzică de pe YouTube și din fișierele tale. IA rulează în întregime pe acest dispozitiv — nimic nu pleacă de pe el.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Cod sursă';
 
   @override

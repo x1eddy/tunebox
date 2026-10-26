@@ -800,6 +800,19 @@ class LOr extends L {
       'YouTube ଓ ଆପଣଙ୍କ ନିଜ ଫାଇଲ୍‌ରୁ ସଙ୍ଗୀତ। AI ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ଏହି ଡିଭାଇସରେ ଚାଲେ — କିଛି ବାହାରକୁ ଯାଏ ନାହିଁ।';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ସୋର୍ସ କୋଡ୍';
 
   @override

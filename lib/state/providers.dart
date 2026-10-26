@@ -24,6 +24,7 @@ import '../data/services/yt_service.dart';
 import '../playback/audio_handler.dart';
 import '../playback/stream_proxy.dart';
 import '../ui/artwork.dart';
+import 'owner.dart';
 import 'profiles.dart';
 import 'settings.dart';
 
@@ -565,7 +566,7 @@ final startupProvider = FutureProvider<void>((ref) async {
         }
       }
     } catch (e) {
-      debugPrint('resume failed — $e');
+      logEvent('resume failed — $e');
     }
   }
 
@@ -577,7 +578,7 @@ final startupProvider = FutureProvider<void>((ref) async {
     try {
       await body();
     } catch (e) {
-      debugPrint('startup: $what failed — $e');
+      logEvent('startup: $what failed — $e');
     }
   }
 

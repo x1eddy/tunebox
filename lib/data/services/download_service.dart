@@ -10,6 +10,7 @@ import '../db/database.dart';
 import 'artwork_service.dart';
 import 'innertube.dart';
 import 'yt_service.dart';
+import '../../state/owner.dart' show logEvent;
 
 enum DownloadStage { queued, running, done, failed }
 
@@ -260,6 +261,7 @@ class DownloadService {
           }
         }
       } catch (_) {}
+      logEvent('download failed: ${task.title} — $e');
       if (_isPermanent(e)) onPermanentFailure?.call(task.songId);
       _queue[task.songId] = (_queue[task.songId] ?? task).copyWith(
         stage: DownloadStage.failed,

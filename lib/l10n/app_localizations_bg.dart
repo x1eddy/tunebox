@@ -803,6 +803,19 @@ class LBg extends L {
       'Музика от YouTube и твои собствени файлове. ИИ работи изцяло на това устройство — нищо не го напуска.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Изходен код';
 
   @override

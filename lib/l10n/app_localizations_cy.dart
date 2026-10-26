@@ -834,6 +834,19 @@ class LCy extends L {
       'Cerddoriaeth o YouTube a\'ch ffeiliau eich hun. Mae\'r AI yn rhedeg yn gyfan gwbl ar y ddyfais hon – does dim byd yn ei gadael.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Cod ffynhonnell';
 
   @override

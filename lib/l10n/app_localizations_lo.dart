@@ -791,6 +791,19 @@ class LLo extends L {
       'ເພງຈາກ YouTube ແລະ ໄຟລ໌ຂອງທ່ານເອງ. AI ເຮັດວຽກທັງໝົດໃນອຸປະກອນນີ້ — ບໍ່ມີຫຍັງອອກໄປຂ້າງນອກ.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ໂຄ້ດຕົ້ນສະບັບ';
 
   @override

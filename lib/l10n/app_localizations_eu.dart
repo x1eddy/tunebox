@@ -805,6 +805,19 @@ class LEu extends L {
       'YouTube-ko musika eta zure fitxategiak. IA gailu honetan bakarrik exekutatzen da — ez da ezer gailutik ateratzen.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Iturburu-kodea';
 
   @override

@@ -800,6 +800,19 @@ class LHe extends L {
       'מוזיקה מ-YouTube ומהקבצים שלך. הבינה המלאכותית פועלת כולה במכשיר הזה — שום דבר לא יוצא ממנו.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'קוד מקור';
 
   @override

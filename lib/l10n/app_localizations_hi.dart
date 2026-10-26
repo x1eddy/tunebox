@@ -800,6 +800,19 @@ class LHi extends L {
       'YouTube और आपकी अपनी फ़ाइलों से संगीत। AI पूरी तरह इसी डिवाइस पर चलता है — कुछ भी बाहर नहीं जाता।';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'सोर्स कोड';
 
   @override

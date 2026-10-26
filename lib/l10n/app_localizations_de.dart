@@ -806,6 +806,19 @@ class LDe extends L {
       'Musik von YouTube und aus deinen eigenen Dateien. Die KI läuft komplett auf diesem Gerät – nichts verlässt es.';
 
   @override
+  String get setShare => 'TuneBox teilen';
+
+  @override
+  String get setShareBody => 'Schick den Link an einen Freund';
+
+  @override
+  String get setShareText =>
+      'TuneBox – ein kostenloser Musikplayer, der deinen Geschmack lernt, direkt auf deinem Gerät. Ohne Konto, ohne Werbung: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link kopiert';
+
+  @override
   String get setSource => 'Quellcode';
 
   @override

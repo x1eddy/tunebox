@@ -806,6 +806,19 @@ class LMl extends L {
       'YouTube-ൽ നിന്നും നിങ്ങളുടെ സ്വന്തം ഫയലുകളിൽ നിന്നുമുള്ള സംഗീതം. AI പൂർണ്ണമായും ഈ ഉപകരണത്തിൽ തന്നെ പ്രവർത്തിക്കുന്നു — ഒന്നും പുറത്തുപോകുന്നില്ല.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'സോഴ്സ് കോഡ്';
 
   @override

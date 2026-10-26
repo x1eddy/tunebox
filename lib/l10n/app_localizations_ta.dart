@@ -809,6 +809,19 @@ class LTa extends L {
       'YouTube மற்றும் உங்கள் சொந்தக் கோப்புகளிலிருந்து இசை. AI முழுவதுமாக இந்தச் சாதனத்திலேயே இயங்குகிறது — எதுவும் வெளியே செல்லாது.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'மூலக் குறியீடு';
 
   @override

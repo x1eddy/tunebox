@@ -1,13 +1,18 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../ai/ai_engine.dart';
 import '../../data/services/update_service.dart';
 import '../../app/router.dart';
 import '../../app/theme.dart';
+import '../../state/owner.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../profiles/profile_sheet.dart';
@@ -39,7 +44,12 @@ class SettingsPage extends ConsumerWidget {
                 listenable: profiles,
                 builder: (context, _) => ListTile(
                   leading: ProfileAvatar(profiles.active),
-                  title: Text(profiles.active.name),
+                  title: Row(
+                    children: [
+                      Flexible(child: Text(profiles.active.name)),
+                      OwnerChip(profiles.active.id),
+                    ],
+                  ),
                   subtitle: Text(
                     profiles.profiles.length > 1
                         ? l.cProfileSwitch('${profiles.profiles.length}')
@@ -463,17 +473,77 @@ class SettingsPage extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(16, 4, 8, 6),
           ),
           ListTile(
-            leading: const Icon(Icons.info_outline_rounded),
-            title: const Text('TuneBox $kAppVersion'),
-            subtitle: Text(
-              l.setAboutBody,
-              style: t.textTheme.bodySmall?.copyWith(
-                color: t.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            leading: const Icon(Icons.ios_share_rounded),
+            title: Text(l.setShare),
+            subtitle: Text(l.setShareBody),
+            onTap: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              // The desktop share sheet is a mail window, which is no help
+              // for a chat link; copying it is what people actually want.
+              if (Platform.isLinux || Platform.isWindows) {
+                await Clipboard.setData(ClipboardData(text: l.setShareText));
+                messenger.showTimed(SnackBar(content: Text(l.setShareCopied)));
+              } else {
+                await SharePlus.instance.share(
+                  ShareParams(text: l.setShareText),
+                );
+              }
+            },
           ),
+          const _VersionTile(),
+          if (kOwnerBuild)
+            ListTile(
+              leading: const Icon(Icons.workspace_premium_rounded),
+              title: const Text('Owner tools'),
+              subtitle: const Text('Diagnostics, log and maintenance'),
+              onTap: () => pushDetail(context, 'owner'),
+            ),
         ],
       ),
+    );
+  }
+}
+
+/// The version row. In an owner build, seven quick taps open the owner tools.
+class _VersionTile extends StatefulWidget {
+  const _VersionTile();
+
+  @override
+  State<_VersionTile> createState() => _VersionTileState();
+}
+
+class _VersionTileState extends State<_VersionTile> {
+  var _taps = 0;
+  Timer? _reset;
+
+  @override
+  void dispose() {
+    _reset?.cancel();
+    super.dispose();
+  }
+
+  void _tap() {
+    if (!kOwnerBuild) return;
+    _reset?.cancel();
+    _reset = Timer(const Duration(seconds: 2), () => _taps = 0);
+    if (++_taps < 7) return;
+    _taps = 0;
+    pushDetail(context, 'owner');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return ListTile(
+      leading: const Icon(Icons.info_outline_rounded),
+      title: const Text('TuneBox $kAppVersion'),
+      subtitle: Text(
+        L.of(context).setAboutBody,
+        style: t.textTheme.bodySmall?.copyWith(
+          color: t.colorScheme.onSurfaceVariant,
+        ),
+      ),
+      onTap: _tap,
     );
   }
 }

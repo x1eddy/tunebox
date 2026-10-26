@@ -804,6 +804,19 @@ class LKy extends L {
       'YouTube\'дан жана өз файлдарыңыздан музыка. ЖИ толугу менен ушул түзмөктө иштейт — эч нерсе сыртка чыкпайт.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Булак коду';
 
   @override

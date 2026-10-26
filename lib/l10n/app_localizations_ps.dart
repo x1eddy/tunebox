@@ -799,6 +799,19 @@ class LPs extends L {
       'له YouTube او ستاسو له خپلو فایلونو موسیقي. AI بشپړ په همدې وسیله کې چلیږي — هېڅ شی نه وځي.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'سرچینه کوډ';
 
   @override

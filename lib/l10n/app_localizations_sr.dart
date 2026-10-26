@@ -808,6 +808,19 @@ class LSr extends L {
       'Музика са YouTube-а и твоје сопствене датотеке. Вештачка интелигенција ради у потпуности на овом уређају — ништа га не напушта.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Изворни кôд';
 
   @override

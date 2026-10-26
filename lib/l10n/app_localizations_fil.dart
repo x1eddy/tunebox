@@ -809,6 +809,19 @@ class LFil extends L {
       'Musika mula sa YouTube at sarili mong mga file. Ang AI ay tumatakbo nang buo sa device na ito — walang lumalabas dito.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Source code';
 
   @override

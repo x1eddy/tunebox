@@ -798,6 +798,19 @@ class LSi extends L {
       'YouTube සහ ඔබේම ගොනු වලින් සංගීතය. AI සම්පූර්ණයෙන්ම මෙම උපාංගයේ ධාවනය වේ — කිසිවක් පිටතට නොයයි.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'මූලාශ්‍ර කේතය';
 
   @override

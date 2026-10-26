@@ -803,6 +803,19 @@ class LGsw extends L {
       'Musig vo YouTube und dine eigete Dateie. D KI laufft komplett uf dem Gerät – nüt verlaht s.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'Quellcode';
 
   @override

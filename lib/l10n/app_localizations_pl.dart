@@ -812,6 +812,19 @@ class LPl extends L {
       'Muzyka z YouTube i z twoich własnych plików. AI działa w całości na tym urządzeniu — nic stąd nie wychodzi.';
 
   @override
+  String get setShare => 'Udostępnij TuneBox';
+
+  @override
+  String get setShareBody => 'Wyślij link znajomemu';
+
+  @override
+  String get setShareText =>
+      'TuneBox – darmowy odtwarzacz muzyki, który uczy się twojego gustu, na twoim urządzeniu. Bez konta i reklam: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Skopiowano link';
+
+  @override
   String get setSource => 'Kod źródłowy';
 
   @override

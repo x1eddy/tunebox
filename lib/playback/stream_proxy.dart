@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 
 import '../data/services/innertube.dart';
+import '../state/owner.dart' show logEvent;
 
 /// A loopback HTTP server that sits between the audio player and YouTube.
 ///
@@ -168,6 +169,7 @@ class StreamProxy {
         } catch (e) {
           position += received;
           if (clientGone) break;
+          logEvent('stream $id dropped at byte $position (try ${failures + 1}) — $e');
           if (++failures > 4) rethrow;
           if (e is _Expired || failures > 1) {
             format = await resolve(id, force: true);
@@ -179,6 +181,7 @@ class StreamProxy {
       }
       await request.response.close();
     } catch (e, st) {
+      logEvent('stream gave up — $e');
       assert(() {
         // ignore: avoid_print
         print('[proxy] $e\n$st');

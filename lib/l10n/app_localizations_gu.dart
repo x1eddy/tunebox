@@ -797,6 +797,19 @@ class LGu extends L {
       'YouTube અને તમારી પોતાની ફાઇલોમાંથી સંગીત. AI સંપૂર્ણપણે આ ડિવાઇસ પર ચાલે છે — કંઈ બહાર જતું નથી.';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'સોર્સ કોડ';
 
   @override

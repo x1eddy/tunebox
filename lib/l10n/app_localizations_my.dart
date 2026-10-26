@@ -805,6 +805,19 @@ class LMy extends L {
       'YouTube နှင့် သင့်ကိုယ်ပိုင်ဖိုင်များမှ ဂီတ။ AI သည် ဤစက်ထဲတွင်သာ အပြည့်အဝ အလုပ်လုပ်သည် — ဘာမှ ပြင်ပသို့ မထွက်ပါ။';
 
   @override
+  String get setShare => 'Share TuneBox';
+
+  @override
+  String get setShareBody => 'Send the link to a friend';
+
+  @override
+  String get setShareText =>
+      'TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev';
+
+  @override
+  String get setShareCopied => 'Link copied';
+
+  @override
   String get setSource => 'ရင်းမြစ်ကုဒ်';
 
   @override
