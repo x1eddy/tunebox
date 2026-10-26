@@ -75,6 +75,18 @@
   .gallery img{height:480px;width:auto;max-width:none;border-radius:22px;box-shadow:var(--shadow);border:1px solid var(--line)}
   .gallery figcaption{margin-top:10px;color:var(--muted);font-size:.92rem}
 
+  .news{display:grid;gap:14px}
+  .item{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 24px;display:grid;grid-template-columns:130px 1fr;gap:6px 24px}
+  @media(max-width:620px){.item{grid-template-columns:1fr}}
+  .item .when{color:var(--muted);font-size:.9rem;font-weight:600}
+  .item .when b{display:inline-block;margin-bottom:4px;padding:2px 11px;border-radius:999px;background:var(--surface2);color:var(--text)}
+  .item .when .new{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--on-accent)}
+  .item h3{margin:0 0 6px;font-size:1.12rem}
+  .item p,.item ul{margin:0;color:var(--muted)}
+  .item ul{padding-left:1.1em}
+  .item li{margin:.2em 0}
+  .more{margin-top:18px}
+
   .how{background:var(--surface2);border-radius:28px;padding:34px}
   .how ol{margin:0;padding-left:1.2em}
   .how li{margin:.5em 0}
@@ -103,6 +115,7 @@
     <a class="brand" href="#"><img src="img/icon-256.png" alt="" width="34" height="34">TuneBox</a>
     <nav>
       <a class="hide-s" href="#features">Features</a>
+      <a class="hide-s" href="#news">News</a>
       <a class="hide-s" href="#how">How it works</a>
       <a href="#download">Download</a>
       <a href="https://github.com/x1eddy/tunebox">GitHub</a>
@@ -148,6 +161,43 @@
       <figure><img src="img/taste.png" alt="TuneBox taste page showing confidence and controls" width="420" height="840" loading="lazy"><figcaption>Your taste</figcaption></figure>
       <figure><img src="img/desktop.png" alt="TuneBox on Linux desktop" width="520" height="866" loading="lazy"><figcaption>Linux desktop</figcaption></figure>
     </div>
+  </section>
+
+  <section id="news">
+    <h2>News</h2>
+    <p class="sub">What changed lately. Every update installs over the old one and keeps your library and taste.</p>
+    <div class="news">
+      <article class="item">
+        <div class="when"><b class="new">New</b><br>0.9.1 · 24 Oct 2026</div>
+        <div><h3>Small fixes</h3>
+          <ul>
+            <li>Adding a song to a playlist now says so, instead of closing without a word.</li>
+            <li>A video YouTube refuses for good (age-restricted, private, removed) is no longer retried on every launch.</li>
+          </ul></div>
+      </article>
+      <article class="item">
+        <div class="when"><b>0.9.0</b><br>24 Oct 2026</div>
+        <div><h3>The polish pass</h3>
+          <ul>
+            <li>Play/pause morphs and shows a loading ring while a song starts.</li>
+            <li>Seek bar with a time bubble; mini-player swipes for next and previous.</li>
+            <li>Queue and playlists: undo for remove and clear, rename, delete, swipe to remove.</li>
+            <li>Loading placeholders instead of empty screens, and recent searches that stick.</li>
+            <li>On big screens: a side navigation rail and keyboard shortcuts.</li>
+          </ul></div>
+      </article>
+      <article class="item">
+        <div class="when"><b>0.7.0</b><br>3 Oct 2026</div>
+        <div><h3>85 languages, smoother and faster</h3>
+          <p>A searchable language picker, an iOS-style feel (turn it off with Reduce motion), instant search, and a lighter footprint on phones with little memory.</p></div>
+      </article>
+      <article class="item">
+        <div class="when"><b>0.6.0</b><br>1 Oct 2026</div>
+        <div><h3>Profiles and a taste transfer that works</h3>
+          <p>Every listener gets their own library and taste. The training round opens faster, songs stream without skipping, and moving your taste to another device is safe to repeat.</p></div>
+      </article>
+    </div>
+    <p class="more"><a href="https://github.com/x1eddy/tunebox/releases">Read every release note on GitHub →</a></p>
   </section>
 
   <section id="how">
