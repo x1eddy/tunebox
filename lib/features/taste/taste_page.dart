@@ -73,6 +73,21 @@ class TastePage extends ConsumerWidget {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Material(
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  borderRadius: R.card,
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    leading: const Icon(Icons.blur_on_rounded),
+                    title: Text(l.glxTitle),
+                    subtitle: Text(l.glxEntry),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => pushDetail(context, 'galaxy'),
+                  ),
+                ),
+              ),
               ...groupSections(context, [
                 SwitchListTile(
                   value: settings.learning,

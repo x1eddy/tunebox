@@ -2287,4 +2287,59 @@ class LNl extends L {
   String swQueued(String title) {
     return '\"$title\" komt hierna';
   }
+
+  @override
+  String get glxTitle => 'Smaakgalaxie';
+
+  @override
+  String get glxEntry => 'Je artiesten als sterrenkaart';
+
+  @override
+  String get glxHint =>
+      'Grote sterren speel je het meest. Buren klinken hetzelfde. Tik op een ster.';
+
+  @override
+  String get glxLasso => 'Om een groep tekenen';
+
+  @override
+  String get glxLassoHint =>
+      'Teken een lus om sterren om dat hoekje van je smaak te horen';
+
+  @override
+  String get glxLassoEmpty => 'Geen sterren binnen de lus';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Speelt $count artiesten',
+      one: 'Speelt 1 artiest',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Terug naar de hele hemel';
+
+  @override
+  String glxPlay(String artist) {
+    return '$artist afspelen';
+  }
+
+  @override
+  String get glxOpen => 'Artiestpagina openen';
+
+  @override
+  String get glxMore => 'Meer van deze artiest';
+
+  @override
+  String get glxNever => 'Deze artiest nooit afspelen';
+
+  @override
+  String get glxEmpty => 'Je hemel is nog donker';
+
+  @override
+  String get glxEmptyBody =>
+      'Voeg nummers van een paar artiesten toe en de sterren verschijnen.';
 }

@@ -654,5 +654,19 @@
   "stCodeBad": "To nie jest kod motywu TuneBox",
   "stReset": "Przywróć domyślny wygląd",
   "swLiked": "Polubiono „{title}”",
-  "swQueued": "„{title}” zagra jako następny"
+  "swQueued": "„{title}” zagra jako następny",
+  "glxTitle": "Galaktyka gustu",
+  "glxEntry": "Twoi artyści jako mapa gwiazd",
+  "glxHint": "Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Dotknij gwiazdy.",
+  "glxLasso": "Zakreśl grupę",
+  "glxLassoHint": "Zakreśl kilka gwiazd, by posłuchać tego zakątka twojego gustu",
+  "glxLassoEmpty": "Brak gwiazd w środku",
+  "glxLassoPlaying": "{count, plural, =1{Gra 1 artysta} few{Gra {count} artystów} other{Gra {count} artystów}}",
+  "glxRecenter": "Pokaż całe niebo",
+  "glxPlay": "Odtwórz: {artist}",
+  "glxOpen": "Otwórz stronę artysty",
+  "glxMore": "Więcej tego artysty",
+  "glxNever": "Nigdy nie odtwarzaj tego artysty",
+  "glxEmpty": "Twoje niebo jest jeszcze ciemne",
+  "glxEmptyBody": "Dodaj utwory kilku artystów, a pojawią się gwiazdy."
 }

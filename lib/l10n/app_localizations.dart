@@ -4190,6 +4190,90 @@ abstract class L {
   /// In en, this message translates to:
   /// **'\"{title}\" plays next'**
   String swQueued(String title);
+
+  /// No description provided for @glxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Taste Galaxy'**
+  String get glxTitle;
+
+  /// No description provided for @glxEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Your artists as a map of stars'**
+  String get glxEntry;
+
+  /// No description provided for @glxHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Big stars are played most. Neighbours sound alike. Tap a star.'**
+  String get glxHint;
+
+  /// No description provided for @glxLasso.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw around a cluster'**
+  String get glxLasso;
+
+  /// No description provided for @glxLassoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw a loop around some stars to play that corner of your taste'**
+  String get glxLassoHint;
+
+  /// No description provided for @glxLassoEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No stars inside that loop'**
+  String get glxLassoEmpty;
+
+  /// No description provided for @glxLassoPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Playing 1 artist} other{Playing {count} artists}}'**
+  String glxLassoPlaying(int count);
+
+  /// No description provided for @glxRecenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the whole sky'**
+  String get glxRecenter;
+
+  /// No description provided for @glxPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play {artist}'**
+  String glxPlay(String artist);
+
+  /// No description provided for @glxOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open artist page'**
+  String get glxOpen;
+
+  /// No description provided for @glxMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More of this artist'**
+  String get glxMore;
+
+  /// No description provided for @glxNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Never play this artist'**
+  String get glxNever;
+
+  /// No description provided for @glxEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sky is still dark'**
+  String get glxEmpty;
+
+  /// No description provided for @glxEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add songs from a few different artists and the stars appear.'**
+  String get glxEmptyBody;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

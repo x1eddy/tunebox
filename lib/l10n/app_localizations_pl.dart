@@ -2296,4 +2296,60 @@ class LPl extends L {
   String swQueued(String title) {
     return '„$title” zagra jako następny';
   }
+
+  @override
+  String get glxTitle => 'Galaktyka gustu';
+
+  @override
+  String get glxEntry => 'Twoi artyści jako mapa gwiazd';
+
+  @override
+  String get glxHint =>
+      'Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Dotknij gwiazdy.';
+
+  @override
+  String get glxLasso => 'Zakreśl grupę';
+
+  @override
+  String get glxLassoHint =>
+      'Zakreśl kilka gwiazd, by posłuchać tego zakątka twojego gustu';
+
+  @override
+  String get glxLassoEmpty => 'Brak gwiazd w środku';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Gra $count artystów',
+      few: 'Gra $count artystów',
+      one: 'Gra 1 artysta',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Pokaż całe niebo';
+
+  @override
+  String glxPlay(String artist) {
+    return 'Odtwórz: $artist';
+  }
+
+  @override
+  String get glxOpen => 'Otwórz stronę artysty';
+
+  @override
+  String get glxMore => 'Więcej tego artysty';
+
+  @override
+  String get glxNever => 'Nigdy nie odtwarzaj tego artysty';
+
+  @override
+  String get glxEmpty => 'Twoje niebo jest jeszcze ciemne';
+
+  @override
+  String get glxEmptyBody =>
+      'Dodaj utwory kilku artystów, a pojawią się gwiazdy.';
 }

@@ -654,5 +654,19 @@
   "stCodeBad": "Das ist kein TuneBox-Theme-Code",
   "stReset": "Zurück zum Standard",
   "swLiked": "\"{title}\" gefällt dir",
-  "swQueued": "\"{title}\" kommt als Nächstes"
+  "swQueued": "\"{title}\" kommt als Nächstes",
+  "glxTitle": "Geschmacks-Galaxie",
+  "glxEntry": "Deine Artists als Sternenkarte",
+  "glxHint": "Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Tipp einen Stern an.",
+  "glxLasso": "Um eine Gruppe zeichnen",
+  "glxLassoHint": "Zeichne eine Schleife um Sterne, um diese Ecke deines Geschmacks zu hören",
+  "glxLassoEmpty": "In der Schleife sind keine Sterne",
+  "glxLassoPlaying": "{count, plural, =1{Spielt 1 Artist} other{Spielt {count} Artists}}",
+  "glxRecenter": "Zurück zum ganzen Himmel",
+  "glxPlay": "{artist} abspielen",
+  "glxOpen": "Artist-Seite öffnen",
+  "glxMore": "Mehr von diesem Artist",
+  "glxNever": "Diesen Artist nie spielen",
+  "glxEmpty": "Dein Himmel ist noch dunkel",
+  "glxEmptyBody": "Füg Songs von ein paar verschiedenen Artists hinzu, dann erscheinen die Sterne."
 }

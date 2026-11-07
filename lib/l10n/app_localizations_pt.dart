@@ -2279,4 +2279,59 @@ class LPt extends L {
   String swQueued(String title) {
     return '\"$title\" toca a seguir';
   }
+
+  @override
+  String get glxTitle => 'Galáxia do teu gosto';
+
+  @override
+  String get glxEntry => 'Os teus artistas como um mapa de estrelas';
+
+  @override
+  String get glxHint =>
+      'As estrelas grandes são as mais ouvidas. As vizinhas soam parecido. Toca numa.';
+
+  @override
+  String get glxLasso => 'Rodear um grupo';
+
+  @override
+  String get glxLassoHint =>
+      'Desenha um laço à volta de estrelas para ouvir esse canto do teu gosto';
+
+  @override
+  String get glxLassoEmpty => 'Nenhuma estrela lá dentro';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'A tocar $count artistas',
+      one: 'A tocar 1 artista',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Ver o céu todo';
+
+  @override
+  String glxPlay(String artist) {
+    return 'Tocar $artist';
+  }
+
+  @override
+  String get glxOpen => 'Abrir página do artista';
+
+  @override
+  String get glxMore => 'Mais deste artista';
+
+  @override
+  String get glxNever => 'Nunca tocar este artista';
+
+  @override
+  String get glxEmpty => 'O teu céu ainda está escuro';
+
+  @override
+  String get glxEmptyBody =>
+      'Junta músicas de alguns artistas e as estrelas aparecem.';
 }

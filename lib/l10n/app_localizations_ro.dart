@@ -2283,4 +2283,59 @@ class LRo extends L {
   String swQueued(String title) {
     return '\"$title\" plays next';
   }
+
+  @override
+  String get glxTitle => 'Taste Galaxy';
+
+  @override
+  String get glxEntry => 'Your artists as a map of stars';
+
+  @override
+  String get glxHint =>
+      'Big stars are played most. Neighbours sound alike. Tap a star.';
+
+  @override
+  String get glxLasso => 'Draw around a cluster';
+
+  @override
+  String get glxLassoHint =>
+      'Draw a loop around some stars to play that corner of your taste';
+
+  @override
+  String get glxLassoEmpty => 'No stars inside that loop';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Playing $count artists',
+      one: 'Playing 1 artist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Back to the whole sky';
+
+  @override
+  String glxPlay(String artist) {
+    return 'Play $artist';
+  }
+
+  @override
+  String get glxOpen => 'Open artist page';
+
+  @override
+  String get glxMore => 'More of this artist';
+
+  @override
+  String get glxNever => 'Never play this artist';
+
+  @override
+  String get glxEmpty => 'Your sky is still dark';
+
+  @override
+  String get glxEmptyBody =>
+      'Add songs from a few different artists and the stars appear.';
 }

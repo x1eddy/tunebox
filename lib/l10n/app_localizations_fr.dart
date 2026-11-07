@@ -2296,4 +2296,59 @@ class LFr extends L {
   String swQueued(String title) {
     return '\"$title\" passe ensuite';
   }
+
+  @override
+  String get glxTitle => 'Galaxie de tes goûts';
+
+  @override
+  String get glxEntry => 'Tes artistes en carte du ciel';
+
+  @override
+  String get glxHint =>
+      'Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Touche une étoile.';
+
+  @override
+  String get glxLasso => 'Entourer un groupe';
+
+  @override
+  String get glxLassoHint =>
+      'Entoure des étoiles pour écouter ce coin de tes goûts';
+
+  @override
+  String get glxLassoEmpty => 'Aucune étoile à l\'intérieur';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Lecture de $count artistes',
+      one: 'Lecture d\'1 artiste',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Revoir tout le ciel';
+
+  @override
+  String glxPlay(String artist) {
+    return 'Écouter $artist';
+  }
+
+  @override
+  String get glxOpen => 'Ouvrir la page de l\'artiste';
+
+  @override
+  String get glxMore => 'Plus de cet artiste';
+
+  @override
+  String get glxNever => 'Ne plus jamais jouer cet artiste';
+
+  @override
+  String get glxEmpty => 'Ton ciel est encore sombre';
+
+  @override
+  String get glxEmptyBody =>
+      'Ajoute des morceaux de quelques artistes et les étoiles apparaissent.';
 }

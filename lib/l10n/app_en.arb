@@ -1320,5 +1320,33 @@
         "type": "String"
       }
     }
-  }
+  },
+  "glxTitle": "Taste Galaxy",
+  "glxEntry": "Your artists as a map of stars",
+  "glxHint": "Big stars are played most. Neighbours sound alike. Tap a star.",
+  "glxLasso": "Draw around a cluster",
+  "glxLassoHint": "Draw a loop around some stars to play that corner of your taste",
+  "glxLassoEmpty": "No stars inside that loop",
+  "glxLassoPlaying": "{count, plural, =1{Playing 1 artist} other{Playing {count} artists}}",
+  "@glxLassoPlaying": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "glxRecenter": "Back to the whole sky",
+  "glxPlay": "Play {artist}",
+  "@glxPlay": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "glxOpen": "Open artist page",
+  "glxMore": "More of this artist",
+  "glxNever": "Never play this artist",
+  "glxEmpty": "Your sky is still dark",
+  "glxEmptyBody": "Add songs from a few different artists and the stars appear."
 }

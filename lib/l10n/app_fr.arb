@@ -654,5 +654,19 @@
   "stCodeBad": "Ce n'est pas un code de thème TuneBox",
   "stReset": "Revenir au style par défaut",
   "swLiked": "\"{title}\" aimé",
-  "swQueued": "\"{title}\" passe ensuite"
+  "swQueued": "\"{title}\" passe ensuite",
+  "glxTitle": "Galaxie de tes goûts",
+  "glxEntry": "Tes artistes en carte du ciel",
+  "glxHint": "Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Touche une étoile.",
+  "glxLasso": "Entourer un groupe",
+  "glxLassoHint": "Entoure des étoiles pour écouter ce coin de tes goûts",
+  "glxLassoEmpty": "Aucune étoile à l'intérieur",
+  "glxLassoPlaying": "{count, plural, =1{Lecture d'1 artiste} other{Lecture de {count} artistes}}",
+  "glxRecenter": "Revoir tout le ciel",
+  "glxPlay": "Écouter {artist}",
+  "glxOpen": "Ouvrir la page de l'artiste",
+  "glxMore": "Plus de cet artiste",
+  "glxNever": "Ne plus jamais jouer cet artiste",
+  "glxEmpty": "Ton ciel est encore sombre",
+  "glxEmptyBody": "Ajoute des morceaux de quelques artistes et les étoiles apparaissent."
 }

@@ -2280,4 +2280,59 @@ class LIt extends L {
   String swQueued(String title) {
     return '\"$title\" sarà il prossimo';
   }
+
+  @override
+  String get glxTitle => 'Galassia dei gusti';
+
+  @override
+  String get glxEntry => 'I tuoi artisti come una mappa stellare';
+
+  @override
+  String get glxHint =>
+      'Le stelle grandi sono le più ascoltate. Le vicine si somigliano. Tocca una stella.';
+
+  @override
+  String get glxLasso => 'Cerchia un gruppo';
+
+  @override
+  String get glxLassoHint =>
+      'Disegna un cerchio attorno ad alcune stelle per ascoltare quell\'angolo dei tuoi gusti';
+
+  @override
+  String get glxLassoEmpty => 'Nessuna stella dentro';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Riproduco $count artisti',
+      one: 'Riproduco 1 artista',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Torna a tutto il cielo';
+
+  @override
+  String glxPlay(String artist) {
+    return 'Riproduci $artist';
+  }
+
+  @override
+  String get glxOpen => 'Apri la pagina dell\'artista';
+
+  @override
+  String get glxMore => 'Più di questo artista';
+
+  @override
+  String get glxNever => 'Non riprodurre mai questo artista';
+
+  @override
+  String get glxEmpty => 'Il tuo cielo è ancora buio';
+
+  @override
+  String get glxEmptyBody =>
+      'Aggiungi brani di qualche artista diverso e appariranno le stelle.';
 }

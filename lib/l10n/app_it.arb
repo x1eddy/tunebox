@@ -654,5 +654,19 @@
   "stCodeBad": "Questo non è un codice tema di TuneBox",
   "stReset": "Torna allo stile predefinito",
   "swLiked": "Ti piace \"{title}\"",
-  "swQueued": "\"{title}\" sarà il prossimo"
+  "swQueued": "\"{title}\" sarà il prossimo",
+  "glxTitle": "Galassia dei gusti",
+  "glxEntry": "I tuoi artisti come una mappa stellare",
+  "glxHint": "Le stelle grandi sono le più ascoltate. Le vicine si somigliano. Tocca una stella.",
+  "glxLasso": "Cerchia un gruppo",
+  "glxLassoHint": "Disegna un cerchio attorno ad alcune stelle per ascoltare quell'angolo dei tuoi gusti",
+  "glxLassoEmpty": "Nessuna stella dentro",
+  "glxLassoPlaying": "{count, plural, =1{Riproduco 1 artista} other{Riproduco {count} artisti}}",
+  "glxRecenter": "Torna a tutto il cielo",
+  "glxPlay": "Riproduci {artist}",
+  "glxOpen": "Apri la pagina dell'artista",
+  "glxMore": "Più di questo artista",
+  "glxNever": "Non riprodurre mai questo artista",
+  "glxEmpty": "Il tuo cielo è ancora buio",
+  "glxEmptyBody": "Aggiungi brani di qualche artista diverso e appariranno le stelle."
 }

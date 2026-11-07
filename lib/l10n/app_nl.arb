@@ -654,5 +654,19 @@
   "stCodeBad": "Dat is geen TuneBox-themacode",
   "stReset": "Terug naar standaard",
   "swLiked": "\"{title}\" geliked",
-  "swQueued": "\"{title}\" komt hierna"
+  "swQueued": "\"{title}\" komt hierna",
+  "glxTitle": "Smaakgalaxie",
+  "glxEntry": "Je artiesten als sterrenkaart",
+  "glxHint": "Grote sterren speel je het meest. Buren klinken hetzelfde. Tik op een ster.",
+  "glxLasso": "Om een groep tekenen",
+  "glxLassoHint": "Teken een lus om sterren om dat hoekje van je smaak te horen",
+  "glxLassoEmpty": "Geen sterren binnen de lus",
+  "glxLassoPlaying": "{count, plural, =1{Speelt 1 artiest} other{Speelt {count} artiesten}}",
+  "glxRecenter": "Terug naar de hele hemel",
+  "glxPlay": "{artist} afspelen",
+  "glxOpen": "Artiestpagina openen",
+  "glxMore": "Meer van deze artiest",
+  "glxNever": "Deze artiest nooit afspelen",
+  "glxEmpty": "Je hemel is nog donker",
+  "glxEmptyBody": "Voeg nummers van een paar artiesten toe en de sterren verschijnen."
 }

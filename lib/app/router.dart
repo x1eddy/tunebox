@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/detail/artist_page.dart';
 import '../features/detail/playlist_page.dart';
+import '../features/galaxy/galaxy_page.dart';
 import '../features/home/home_page.dart';
 import '../features/import/import_page.dart';
 import '../features/library/library_page.dart';
@@ -42,6 +43,7 @@ List<RouteBase> _details() => [
   GoRoute(path: 'sound', builder: (_, _) => const SoundPage()),
   GoRoute(path: 'rewind', builder: (_, _) => const RewindPage()),
   GoRoute(path: 'studio', builder: (_, _) => const StudioPage()),
+  GoRoute(path: 'galaxy', builder: (_, _) => const GalaxyPage()),
   GoRoute(
     path: 'mix',
     builder: (_, s) => MixPage(initial: s.uri.queryParameters['q']),

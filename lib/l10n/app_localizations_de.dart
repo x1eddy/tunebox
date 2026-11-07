@@ -2292,4 +2292,59 @@ class LDe extends L {
   String swQueued(String title) {
     return '\"$title\" kommt als Nächstes';
   }
+
+  @override
+  String get glxTitle => 'Geschmacks-Galaxie';
+
+  @override
+  String get glxEntry => 'Deine Artists als Sternenkarte';
+
+  @override
+  String get glxHint =>
+      'Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Tipp einen Stern an.';
+
+  @override
+  String get glxLasso => 'Um eine Gruppe zeichnen';
+
+  @override
+  String get glxLassoHint =>
+      'Zeichne eine Schleife um Sterne, um diese Ecke deines Geschmacks zu hören';
+
+  @override
+  String get glxLassoEmpty => 'In der Schleife sind keine Sterne';
+
+  @override
+  String glxLassoPlaying(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Spielt $count Artists',
+      one: 'Spielt 1 Artist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get glxRecenter => 'Zurück zum ganzen Himmel';
+
+  @override
+  String glxPlay(String artist) {
+    return '$artist abspielen';
+  }
+
+  @override
+  String get glxOpen => 'Artist-Seite öffnen';
+
+  @override
+  String get glxMore => 'Mehr von diesem Artist';
+
+  @override
+  String get glxNever => 'Diesen Artist nie spielen';
+
+  @override
+  String get glxEmpty => 'Dein Himmel ist noch dunkel';
+
+  @override
+  String get glxEmptyBody =>
+      'Füg Songs von ein paar verschiedenen Artists hinzu, dann erscheinen die Sterne.';
 }
