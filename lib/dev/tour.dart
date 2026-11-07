@@ -127,8 +127,8 @@ class _TourDriverState extends State<TourDriver> {
     switch (verb) {
       case 'go':
         router.go(arg);
-      case 'push':
-        router.push(arg);
+      case 'push': // the way the app opens pages
+        openPage(arg);
       case 'pop':
         router.pop();
       case 'tap':

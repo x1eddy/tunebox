@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/router.dart' show openPage;
 import '../../data/db/database.dart';
 import '../../state/appearance.dart';
 import '../../state/providers.dart';
@@ -765,7 +766,7 @@ class _TuningSheet extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () {
                 Navigator.pop(context);
-                context.push('/settings/sound');
+                openPage('/settings/sound');
               },
             ),
           ],

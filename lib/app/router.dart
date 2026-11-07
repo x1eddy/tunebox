@@ -61,7 +61,22 @@ void pushDetail(BuildContext context, String sub) {
   final branch = path
       .split('/')
       .firstWhere((e) => e.isNotEmpty, orElse: () => 'home');
-  context.push('/$branch/$sub');
+  openPage('/$branch/$sub');
+}
+
+/// Opens a page that lives inside a tab. While the full-screen player (a
+/// page above the tabs) is open, pushing a tab page on top of it made
+/// go_router build the tab stack twice — a duplicate-key crash. From there
+/// the player closes and the tab opens on that page instead.
+void openPage(String location) {
+  // A pushed page shows up as the last match, not in the address.
+  final matches = router.routerDelegate.currentConfiguration.matches;
+  final top = matches.isEmpty ? '' : matches.last.matchedLocation;
+  if (top == '/player') {
+    router.go(location);
+  } else {
+    router.push(location);
+  }
 }
 
 void goToTab(BuildContext context, String path) => context.go(path);
