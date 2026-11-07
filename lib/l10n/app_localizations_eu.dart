@@ -1878,4 +1878,20 @@ class LEu extends L {
 
   @override
   String get sleepCancel => 'Turn off';
+
+  @override
+  String get lyrRetry => 'Try again';
+
+  @override
+  String get lyrOffline =>
+      'Lyrics need a connection the first time. After that they work offline.';
+
+  @override
+  String get lyrCredit => 'Lyrics from LRCLIB, an open community database';
+
+  @override
+  String get lyrShow => 'Show lyrics';
+
+  @override
+  String get lyrShowArt => 'Show cover';
 }

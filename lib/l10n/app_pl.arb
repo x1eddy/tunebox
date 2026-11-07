@@ -537,5 +537,10 @@
   "sleepAfterSong": "Zatrzyma się po tym utworze",
   "sleepAfterQueue": "Zatrzyma się po końcu kolejki",
   "sleepShake": "Potrząśnij telefonem, aby dodać 10 minut",
-  "sleepCancel": "Wyłącz"
+  "sleepCancel": "Wyłącz",
+  "lyrRetry": "Spróbuj ponownie",
+  "lyrOffline": "Tekst za pierwszym razem wymaga internetu. Potem działa offline.",
+  "lyrCredit": "Teksty z LRCLIB, otwartej bazy tworzonej przez społeczność",
+  "lyrShow": "Pokaż tekst",
+  "lyrShowArt": "Pokaż okładkę"
 }

@@ -537,5 +537,10 @@
   "sleepAfterSong": "Para depois desta música",
   "sleepAfterQueue": "Para quando a fila acabar",
   "sleepShake": "Abana o telemóvel para mais 10 minutos",
-  "sleepCancel": "Desligar"
+  "sleepCancel": "Desligar",
+  "lyrRetry": "Tentar novamente",
+  "lyrOffline": "A letra precisa de ligação da primeira vez. Depois funciona sem rede.",
+  "lyrCredit": "Letras do LRCLIB, uma base de dados aberta e comunitária",
+  "lyrShow": "Mostrar letra",
+  "lyrShowArt": "Mostrar capa"
 }

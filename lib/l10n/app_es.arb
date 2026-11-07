@@ -537,5 +537,10 @@
   "sleepAfterSong": "Se detiene tras esta canción",
   "sleepAfterQueue": "Se detiene al acabar la cola",
   "sleepShake": "Agita el móvil para 10 minutos más",
-  "sleepCancel": "Desactivar"
+  "sleepCancel": "Desactivar",
+  "lyrRetry": "Reintentar",
+  "lyrOffline": "La letra necesita conexión la primera vez. Después funciona sin conexión.",
+  "lyrCredit": "Letras de LRCLIB, una base de datos abierta y comunitaria",
+  "lyrShow": "Ver letra",
+  "lyrShowArt": "Ver portada"
 }

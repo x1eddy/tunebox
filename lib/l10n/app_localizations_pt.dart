@@ -1879,4 +1879,21 @@ class LPt extends L {
 
   @override
   String get sleepCancel => 'Desligar';
+
+  @override
+  String get lyrRetry => 'Tentar novamente';
+
+  @override
+  String get lyrOffline =>
+      'A letra precisa de ligação da primeira vez. Depois funciona sem rede.';
+
+  @override
+  String get lyrCredit =>
+      'Letras do LRCLIB, uma base de dados aberta e comunitária';
+
+  @override
+  String get lyrShow => 'Mostrar letra';
+
+  @override
+  String get lyrShowArt => 'Mostrar capa';
 }

@@ -90,6 +90,23 @@ class ArtistRules extends Table {
   Set<Column<Object>> get primaryKey => {artist};
 }
 
+/// Lyrics fetched once and kept, so they work offline and cost nothing the
+/// second time. An empty row (both null) means "looked, found none".
+class LyricsCache extends Table {
+  TextColumn get songId => text()();
+
+  /// LRC text: "[mm:ss.xx] line" per line.
+  TextColumn get synced => text().nullable()();
+  TextColumn get plain => text().nullable()();
+
+  /// lrclib | file | none
+  TextColumn get source => text().withDefault(const Constant('none'))();
+  DateTimeColumn get fetchedAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column<Object>> get primaryKey => {songId};
+}
+
 @DriftDatabase(
   tables: [
     Songs,
@@ -98,6 +115,7 @@ class ArtistRules extends Table {
     PlayEvents,
     Affinities,
     ArtistRules,
+    LyricsCache,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -108,7 +126,34 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.named(String name) : super(driftDatabase(name: name));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onUpgrade: (m, from, to) async {
+      // 1 -> 2: the lyrics cache. Nothing existing changes.
+      if (from < 2) await m.createTable(lyricsCache);
+    },
+  );
+
+  // ----------------------------------------------------------------- lyrics
+
+  Future<LyricsCacheData?> cachedLyrics(String songId) =>
+      (select(lyricsCache)..where((l) => l.songId.equals(songId)))
+          .getSingleOrNull();
+
+  Future<void> saveLyrics(LyricsCacheCompanion row) =>
+      into(lyricsCache).insertOnConflictUpdate(row);
+
+  // ------------------------------------------------------------------ stats
+
+  /// Every listen in [from, to), oldest first. Rewind is built from this.
+  Future<List<PlayEvent>> eventsBetween(DateTime from, DateTime to) =>
+      (select(playEvents)
+            ..where((e) => e.at.isBiggerOrEqualValue(from))
+            ..where((e) => e.at.isSmallerThanValue(to))
+            ..orderBy([(e) => OrderingTerm.asc(e.at)]))
+          .get();
 
   // ------------------------------------------------------------------ songs
 

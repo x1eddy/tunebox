@@ -537,5 +537,10 @@
   "sleepAfterSong": "S'arrête après ce morceau",
   "sleepAfterQueue": "S'arrête à la fin de la file",
   "sleepShake": "Secoue le téléphone pour 10 minutes de plus",
-  "sleepCancel": "Désactiver"
+  "sleepCancel": "Désactiver",
+  "lyrRetry": "Réessayer",
+  "lyrOffline": "Les paroles ont besoin d'internet la première fois. Ensuite, elles marchent hors ligne.",
+  "lyrCredit": "Paroles de LRCLIB, une base de données ouverte et communautaire",
+  "lyrShow": "Afficher les paroles",
+  "lyrShowArt": "Afficher la pochette"
 }

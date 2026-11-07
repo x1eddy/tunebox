@@ -1885,4 +1885,21 @@ class LEs extends L {
 
   @override
   String get sleepCancel => 'Desactivar';
+
+  @override
+  String get lyrRetry => 'Reintentar';
+
+  @override
+  String get lyrOffline =>
+      'La letra necesita conexión la primera vez. Después funciona sin conexión.';
+
+  @override
+  String get lyrCredit =>
+      'Letras de LRCLIB, una base de datos abierta y comunitaria';
+
+  @override
+  String get lyrShow => 'Ver letra';
+
+  @override
+  String get lyrShowArt => 'Ver portada';
 }

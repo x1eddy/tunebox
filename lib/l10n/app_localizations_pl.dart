@@ -1889,4 +1889,21 @@ class LPl extends L {
 
   @override
   String get sleepCancel => 'Wyłącz';
+
+  @override
+  String get lyrRetry => 'Spróbuj ponownie';
+
+  @override
+  String get lyrOffline =>
+      'Tekst za pierwszym razem wymaga internetu. Potem działa offline.';
+
+  @override
+  String get lyrCredit =>
+      'Teksty z LRCLIB, otwartej bazy tworzonej przez społeczność';
+
+  @override
+  String get lyrShow => 'Pokaż tekst';
+
+  @override
+  String get lyrShowArt => 'Pokaż okładkę';
 }

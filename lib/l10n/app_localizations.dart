@@ -3488,6 +3488,36 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Turn off'**
   String get sleepCancel;
+
+  /// No description provided for @lyrRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get lyrRetry;
+
+  /// No description provided for @lyrOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics need a connection the first time. After that they work offline.'**
+  String get lyrOffline;
+
+  /// No description provided for @lyrCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics from LRCLIB, an open community database'**
+  String get lyrCredit;
+
+  /// No description provided for @lyrShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show lyrics'**
+  String get lyrShow;
+
+  /// No description provided for @lyrShowArt.
+  ///
+  /// In en, this message translates to:
+  /// **'Show cover'**
+  String get lyrShowArt;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -1887,4 +1887,21 @@ class LDe extends L {
 
   @override
   String get sleepCancel => 'Ausschalten';
+
+  @override
+  String get lyrRetry => 'Erneut versuchen';
+
+  @override
+  String get lyrOffline =>
+      'Songtexte brauchen beim ersten Mal Internet. Danach gehen sie auch offline.';
+
+  @override
+  String get lyrCredit =>
+      'Songtexte von LRCLIB, einer offenen Community-Datenbank';
+
+  @override
+  String get lyrShow => 'Songtext zeigen';
+
+  @override
+  String get lyrShowArt => 'Cover zeigen';
 }

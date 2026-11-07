@@ -1883,4 +1883,20 @@ class LNl extends L {
 
   @override
   String get sleepCancel => 'Uitzetten';
+
+  @override
+  String get lyrRetry => 'Opnieuw';
+
+  @override
+  String get lyrOffline =>
+      'Songteksten hebben de eerste keer internet nodig. Daarna werken ze offline.';
+
+  @override
+  String get lyrCredit => 'Songteksten van LRCLIB, een open communitydatabase';
+
+  @override
+  String get lyrShow => 'Songtekst tonen';
+
+  @override
+  String get lyrShowArt => 'Hoes tonen';
 }

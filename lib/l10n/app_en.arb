@@ -1134,5 +1134,10 @@
   "sleepAfterSong": "Stops after this song",
   "sleepAfterQueue": "Stops when the queue ends",
   "sleepShake": "Shake the phone for 10 more minutes",
-  "sleepCancel": "Turn off"
+  "sleepCancel": "Turn off",
+  "lyrRetry": "Try again",
+  "lyrOffline": "Lyrics need a connection the first time. After that they work offline.",
+  "lyrCredit": "Lyrics from LRCLIB, an open community database",
+  "lyrShow": "Show lyrics",
+  "lyrShowArt": "Show cover"
 }

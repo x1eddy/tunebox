@@ -20,6 +20,7 @@ import '../../ui/kit/living_background.dart';
 import '../../ui/kit/seek_bar.dart';
 import '../../ui/play_glyph.dart';
 import 'queue_page.dart';
+import 'lyrics_view.dart';
 import 'stages.dart';
 
 class PlayerPage extends ConsumerWidget {
@@ -77,18 +78,21 @@ class PlayerPage extends ConsumerWidget {
                     children: [
                       _TopBar(song: song),
                       Expanded(
-                        child: PlayerStage(
-                          song: song,
-                          style: look.player,
-                          playing: playing,
-                          speed: speed,
-                          reduceMotion: reduceMotion,
-                          onDoubleTap: look.doubleTapLike && !song.liked
-                              ? () {
-                                  HapticFeedback.mediumImpact();
-                                  music.like(song);
-                                }
-                              : null,
+                        child: _StagePager(
+                          stage: PlayerStage(
+                            song: song,
+                            style: look.player,
+                            playing: playing,
+                            speed: speed,
+                            reduceMotion: reduceMotion,
+                            onDoubleTap: look.doubleTapLike && !song.liked
+                                ? () {
+                                    HapticFeedback.mediumImpact();
+                                    music.like(song);
+                                  }
+                                : null,
+                          ),
+                          lyrics: LyricsView(song: song, onSeek: music.seek),
                         ),
                       ),
                       Padding(
@@ -216,6 +220,76 @@ class PlayerPage extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The art and the lyrics side by side: swipe between them, or tap the dots.
+class _StagePager extends StatefulWidget {
+  const _StagePager({required this.stage, required this.lyrics});
+  final Widget stage;
+  final Widget lyrics;
+
+  @override
+  State<_StagePager> createState() => _StagePagerState();
+}
+
+class _StagePagerState extends State<_StagePager> {
+  final _pages = PageController();
+  int _page = 0;
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final l = L.of(context);
+    return Column(
+      children: [
+        Expanded(
+          child: PageView(
+            controller: _pages,
+            onPageChanged: (p) => setState(() => _page = p),
+            children: [widget.stage, widget.lyrics],
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < 2; i++)
+              Semantics(
+                button: true,
+                label: i == 0 ? l.lyrShowArt : l.lyrShow,
+                child: GestureDetector(
+                  onTap: () => _pages.animateToPage(
+                    i,
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOutCubic,
+                  ),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 8,
+                    ),
+                    width: i == _page ? 22 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: i == _page
+                          ? cs.primary
+                          : cs.onSurface.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

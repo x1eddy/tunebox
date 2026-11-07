@@ -21,6 +21,7 @@ import 'state/profiles.dart';
 import 'ui/scroll_behavior.dart';
 import 'state/providers.dart';
 import 'state/appearance.dart';
+import 'state/lyrics.dart';
 import 'state/settings.dart';
 import 'state/sound_wiring.dart';
 
@@ -161,6 +162,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     });
     handler.setSkipSilence(ref.read(settingsProvider).skipSilence);
     ref.read(soundWiringProvider);
+    ref.read(lyricsPrefetchProvider);
     if (kTour) startFrameStats();
   }
 

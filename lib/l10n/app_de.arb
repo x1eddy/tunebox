@@ -537,5 +537,10 @@
   "sleepAfterSong": "Stoppt nach diesem Song",
   "sleepAfterQueue": "Stoppt am Ende der Warteschlange",
   "sleepShake": "Handy schütteln für 10 Minuten mehr",
-  "sleepCancel": "Ausschalten"
+  "sleepCancel": "Ausschalten",
+  "lyrRetry": "Erneut versuchen",
+  "lyrOffline": "Songtexte brauchen beim ersten Mal Internet. Danach gehen sie auch offline.",
+  "lyrCredit": "Songtexte von LRCLIB, einer offenen Community-Datenbank",
+  "lyrShow": "Songtext zeigen",
+  "lyrShowArt": "Cover zeigen"
 }

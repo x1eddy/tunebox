@@ -1890,4 +1890,21 @@ class LFr extends L {
 
   @override
   String get sleepCancel => 'Désactiver';
+
+  @override
+  String get lyrRetry => 'Réessayer';
+
+  @override
+  String get lyrOffline =>
+      'Les paroles ont besoin d\'internet la première fois. Ensuite, elles marchent hors ligne.';
+
+  @override
+  String get lyrCredit =>
+      'Paroles de LRCLIB, une base de données ouverte et communautaire';
+
+  @override
+  String get lyrShow => 'Afficher les paroles';
+
+  @override
+  String get lyrShowArt => 'Afficher la pochette';
 }

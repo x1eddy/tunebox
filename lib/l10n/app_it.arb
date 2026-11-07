@@ -537,5 +537,10 @@
   "sleepAfterSong": "Si ferma dopo questo brano",
   "sleepAfterQueue": "Si ferma a fine coda",
   "sleepShake": "Scuoti il telefono per altri 10 minuti",
-  "sleepCancel": "Disattiva"
+  "sleepCancel": "Disattiva",
+  "lyrRetry": "Riprova",
+  "lyrOffline": "I testi servono la connessione la prima volta. Poi funzionano offline.",
+  "lyrCredit": "Testi da LRCLIB, un database aperto della community",
+  "lyrShow": "Mostra testo",
+  "lyrShowArt": "Mostra copertina"
 }

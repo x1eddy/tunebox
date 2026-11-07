@@ -537,5 +537,10 @@
   "sleepAfterSong": "Stopt na dit nummer",
   "sleepAfterQueue": "Stopt als de wachtrij op is",
   "sleepShake": "Schud de telefoon voor 10 minuten extra",
-  "sleepCancel": "Uitzetten"
+  "sleepCancel": "Uitzetten",
+  "lyrRetry": "Opnieuw",
+  "lyrOffline": "Songteksten hebben de eerste keer internet nodig. Daarna werken ze offline.",
+  "lyrCredit": "Songteksten van LRCLIB, een open communitydatabase",
+  "lyrShow": "Songtekst tonen",
+  "lyrShowArt": "Hoes tonen"
 }

@@ -1879,4 +1879,20 @@ class LIt extends L {
 
   @override
   String get sleepCancel => 'Disattiva';
+
+  @override
+  String get lyrRetry => 'Riprova';
+
+  @override
+  String get lyrOffline =>
+      'I testi servono la connessione la prima volta. Poi funzionano offline.';
+
+  @override
+  String get lyrCredit => 'Testi da LRCLIB, un database aperto della community';
+
+  @override
+  String get lyrShow => 'Mostra testo';
+
+  @override
+  String get lyrShowArt => 'Mostra copertina';
 }
