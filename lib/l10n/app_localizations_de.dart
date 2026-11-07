@@ -2061,4 +2061,76 @@ class LDe extends L {
 
   @override
   String get shelfOnThisDaySub => 'Was du um diese Zeit gehört hast';
+
+  @override
+  String get mixTitle => 'Mix beschreiben';
+
+  @override
+  String get mixEntry => 'Mix beschreiben…';
+
+  @override
+  String get mixAsk => 'Was willst du hören?';
+
+  @override
+  String get mixHint => 'Regensonntag, 2000er Rock, ohne Linkin Park';
+
+  @override
+  String get mixPrivate =>
+      'Wird auf dem Handy gelesen. Deine Worte verlassen es nie.';
+
+  @override
+  String get mixMake => 'Los';
+
+  @override
+  String get mixTry => 'Probier eins davon';
+
+  @override
+  String get mixEx1 => 'Lofi zum Lernen, 1 Stunde';
+
+  @override
+  String get mixEx2 => 'Workout Hip-Hop, immer schneller';
+
+  @override
+  String get mixEx3 => '80er Synthwave wie The Midnight';
+
+  @override
+  String get mixEx4 => 'Party-Afrobeats, 20 Songs';
+
+  @override
+  String get mixNothing => 'Dazu passt noch nichts';
+
+  @override
+  String get mixNothingBody =>
+      'Versuch es mit weniger Bedingungen oder schalte YouTube-Vorschläge unter Dein Geschmack ein.';
+
+  @override
+  String get mixUnderstood => 'Verstanden als';
+
+  @override
+  String mixLike(String artist) {
+    return 'wie $artist';
+  }
+
+  @override
+  String get mixRising => 'immer schneller';
+
+  @override
+  String get mixFalling => 'zum Runterkommen';
+
+  @override
+  String get mixSave => 'Als Playlist speichern';
+
+  @override
+  String get mixSaveAs => 'Name der Playlist';
+
+  @override
+  String get mixAgain => 'Neu mischen';
+
+  @override
+  String reasonMatches(String what) {
+    return 'Passt: $what';
+  }
+
+  @override
+  String get reasonNewFind => 'Neu entdeckt';
 }

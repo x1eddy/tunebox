@@ -1219,5 +1219,41 @@
   "rwAllRounderSub": "A bit of everything, in good balance.",
   "shelfYearAgo": "A year ago",
   "shelfMonthAgo": "A month ago",
-  "shelfOnThisDaySub": "What you were playing around this day"
+  "shelfOnThisDaySub": "What you were playing around this day",
+  "mixTitle": "Describe a mix",
+  "mixEntry": "Describe a mix…",
+  "mixAsk": "What do you want to hear?",
+  "mixHint": "rainy sunday 2000s rock, no Linkin Park",
+  "mixPrivate": "Read on this phone. Your words never leave it.",
+  "mixMake": "Make it",
+  "mixTry": "Try one of these",
+  "mixEx1": "chill lofi to study, 1 hour",
+  "mixEx2": "workout hip hop, getting faster",
+  "mixEx3": "80s synthwave like The Midnight",
+  "mixEx4": "party afrobeats, 20 songs",
+  "mixNothing": "Nothing fits that yet",
+  "mixNothingBody": "Try fewer conditions, or turn on YouTube suggestions in Your taste.",
+  "mixUnderstood": "Understood as",
+  "mixLike": "like {artist}",
+  "@mixLike": {
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "mixRising": "getting faster",
+  "mixFalling": "winding down",
+  "mixSave": "Save as playlist",
+  "mixSaveAs": "Name for this playlist",
+  "mixAgain": "Shuffle it up",
+  "reasonMatches": "Fits: {what}",
+  "@reasonMatches": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "reasonNewFind": "A new find"
 }

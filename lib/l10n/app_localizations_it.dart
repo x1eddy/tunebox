@@ -2050,4 +2050,75 @@ class LIt extends L {
 
   @override
   String get shelfOnThisDaySub => 'Cosa ascoltavi in questi giorni';
+
+  @override
+  String get mixTitle => 'Descrivi un mix';
+
+  @override
+  String get mixEntry => 'Descrivi un mix…';
+
+  @override
+  String get mixAsk => 'Cosa vuoi ascoltare?';
+
+  @override
+  String get mixHint => 'domenica piovosa, rock anni 2000, senza Linkin Park';
+
+  @override
+  String get mixPrivate => 'Letto sul telefono. Le tue parole non escono mai.';
+
+  @override
+  String get mixMake => 'Crea';
+
+  @override
+  String get mixTry => 'Prova uno di questi';
+
+  @override
+  String get mixEx1 => 'lofi rilassante per studiare, 1 ora';
+
+  @override
+  String get mixEx2 => 'hip hop per allenarsi, sempre più veloce';
+
+  @override
+  String get mixEx3 => 'synthwave anni 80 come The Midnight';
+
+  @override
+  String get mixEx4 => 'afrobeats da festa, 20 brani';
+
+  @override
+  String get mixNothing => 'Ancora niente di adatto';
+
+  @override
+  String get mixNothingBody =>
+      'Prova con meno condizioni o attiva i suggerimenti di YouTube in I tuoi gusti.';
+
+  @override
+  String get mixUnderstood => 'Capito come';
+
+  @override
+  String mixLike(String artist) {
+    return 'come $artist';
+  }
+
+  @override
+  String get mixRising => 'sempre più veloce';
+
+  @override
+  String get mixFalling => 'sempre più calmo';
+
+  @override
+  String get mixSave => 'Salva come playlist';
+
+  @override
+  String get mixSaveAs => 'Nome della playlist';
+
+  @override
+  String get mixAgain => 'Rimescola';
+
+  @override
+  String reasonMatches(String what) {
+    return 'Adatto: $what';
+  }
+
+  @override
+  String get reasonNewFind => 'Una scoperta';
 }

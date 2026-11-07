@@ -14,6 +14,7 @@ import '../playback/audio_handler.dart';
 import '../state/settings.dart';
 import '../state/profiles.dart';
 import 'credit.dart';
+import 'mix_prompt.dart';
 import '../data/services/song_filter.dart';
 
 export '../data/services/song_filter.dart' show looksLikeASong;
@@ -36,6 +37,8 @@ enum ReasonKind {
   neverPlayed,
   playedOnce,
   popular,
+  matches,
+  newFind,
 }
 
 enum AgoUnit { years, months, days }
@@ -733,6 +736,138 @@ class AiEngine {
       if (song != null && !song.blocked) out.add(song);
     }
     return out;
+  }
+
+  // ------------------------------------------------------------ describe
+
+  /// Builds a playlist from a one-line description. Starts from your
+  /// library (scored by what TuneBox knows you like, bent towards what the
+  /// sentence asks), fills up from YouTube Music when the library is short,
+  /// and orders the result along the requested energy curve.
+  Future<List<Pick>> buildMix(MixPrompt p, Settings settings) async {
+    final w = await weights();
+    final rules = {
+      for (final r in await _db.artistRuleList()) r.artist.toLowerCase(): r.rule,
+    };
+    bool excluded(Song s) {
+      if (s.blocked || rules[artistKey(s)] == -1) return true;
+      final artist = creditedArtist(s).toLowerCase();
+      final title = s.title.toLowerCase();
+      for (final no in p.excludeArtists) {
+        if (artist.contains(no) || title.contains(no)) return true;
+      }
+      final tags = tagsOf(s);
+      return p.excludeTags.any(tags.contains);
+    }
+
+    final library = (await _db.library())
+        .where((s) => !excluded(s) && looksLikeASong(s.title, s.durationMs))
+        .toList();
+
+    // Who the "like X" artists are, as tags: their songs in the library
+    // say what they sound like.
+    final seedTags = <String>{...p.tags};
+    final likeKeys = {for (final a in p.likeArtists) a.toLowerCase()};
+    for (final s in library) {
+      if (likeKeys.any(creditedArtist(s).toLowerCase().contains)) {
+        seedTags.addAll(tagsOf(s).take(4));
+      }
+    }
+
+    double fit(Song s) {
+      final tags = tagsOf(s);
+      var score = 0.0;
+      final matched = tags.where(seedTags.contains).length;
+      score += matched * 2.2;
+      if (p.decades.isNotEmpty || p.yearFrom != null) {
+        score += p.yearFits(s.year) ? 3 : (s.year == null ? -0.5 : -6);
+      }
+      final artist = creditedArtist(s).toLowerCase();
+      if (likeKeys.any(artist.contains)) score += 2.5;
+      final e = p.energy;
+      if (e != null) score -= (energyOf(s) - e).abs() * 2;
+      for (final term in p.searchTerms) {
+        if ('${s.title} ${s.album}'.toLowerCase().contains(term)) score += 2;
+      }
+      return score;
+    }
+
+    PickReason reasonFor(Song s, {bool fresh = false}) {
+      final parts = <String>[
+        ...tagsOf(s).where(seedTags.contains).take(2),
+        if ((p.decades.isNotEmpty || p.yearFrom != null) && p.yearFits(s.year))
+          '${s.year! ~/ 10 * 10}s',
+      ];
+      final artist = creditedArtist(s);
+      if (p.likeArtists.isNotEmpty &&
+          likeKeys.any(artist.toLowerCase().contains)) {
+        return PickReason(ReasonKind.near, text: artist);
+      }
+      if (parts.isNotEmpty) {
+        return PickReason(ReasonKind.matches, text: parts.join(' · '));
+      }
+      if (fresh) return const PickReason(ReasonKind.newFind);
+      return s.playCount == 0
+          ? const PickReason(ReasonKind.neverPlayed)
+          : PickReason(ReasonKind.plays, count: s.playCount);
+    }
+
+    final scored = <(Song, double, bool)>[
+      for (final s in library)
+        (s, fit(s) + scoreSong(s, w, settings, rules) * 0.35, false),
+    ];
+    final strong = scored.where((x) => x.$2 > 1.5).length;
+
+    // Not enough in the library: ask YouTube Music for the rest.
+    if (strong < p.songs && settings.useYouTubeSignals) {
+      final queries = <String>[
+        for (final a in p.likeArtists) '$a similar songs',
+        if (p.tags.isNotEmpty || p.decades.isNotEmpty)
+          [
+            ...p.tags.take(3),
+            ...p.decades.map((d) => '${d}s'),
+            if (p.yearFrom != null) '${p.yearFrom}',
+          ].join(' '),
+        ...p.searchTerms.take(2).map((t) => '$t songs'),
+      ].where((q) => q.trim().isNotEmpty).take(4).toList();
+      if (queries.isNotEmpty) {
+        try {
+          final found = await _persistCandidates(
+            await _yt.discover(queries),
+            exclude: library,
+          );
+          for (final s in found.where((s) => !excluded(s))) {
+            // a search hit already matched the words, so it starts ahead
+            scored.add((s, fit(s) + 2.0, true));
+          }
+        } catch (e) {
+          debugPrint('mix search failed — $e');
+        }
+      }
+    }
+
+    scored.sort((a, b) => b.$2.compareTo(a.$2));
+    // At most two songs per artist, unless the sentence asked for them.
+    final perArtist = <String, int>{};
+    final chosen = <(Song, bool)>[];
+    for (final (s, _, fresh) in scored) {
+      final key = artistKey(s);
+      final cap = likeKeys.any(key.contains) ? 5 : 2;
+      if ((perArtist[key] ?? 0) >= cap) continue;
+      perArtist[key] = (perArtist[key] ?? 0) + 1;
+      chosen.add((s, fresh));
+      if (chosen.length >= p.songs) break;
+    }
+
+    switch (p.curve) {
+      case EnergyCurve.rising:
+        chosen.sort((a, b) => energyOf(a.$1).compareTo(energyOf(b.$1)));
+      case EnergyCurve.falling:
+        chosen.sort((a, b) => energyOf(b.$1).compareTo(energyOf(a.$1)));
+      case EnergyCurve.steady:
+        break;
+    }
+    return [for (final (s, fresh) in chosen) Pick(s, reason: reasonFor(s, fresh: fresh))];
   }
 
   // -------------------------------------------------------------- profile

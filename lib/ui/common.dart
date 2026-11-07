@@ -442,6 +442,8 @@ String reasonText(L l, PickReason r) => switch (r.kind) {
   ReasonKind.neverPlayed => l.reasonNeverPlayed,
   ReasonKind.playedOnce => l.reasonPlayedOnce,
   ReasonKind.popular => l.reasonPopular,
+  ReasonKind.matches => l.reasonMatches(r.text),
+  ReasonKind.newFind => l.reasonNewFind,
 };
 
 String _ago(L l, PickReason r) => switch (r.agoUnit) {

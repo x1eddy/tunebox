@@ -2055,4 +2055,77 @@ class LNl extends L {
 
   @override
   String get shelfOnThisDaySub => 'Wat je rond deze dag draaide';
+
+  @override
+  String get mixTitle => 'Beschrijf een mix';
+
+  @override
+  String get mixEntry => 'Beschrijf een mix…';
+
+  @override
+  String get mixAsk => 'Waar heb je zin in?';
+
+  @override
+  String get mixHint =>
+      'regenachtige zondag, rock uit de jaren 2000, geen Linkin Park';
+
+  @override
+  String get mixPrivate =>
+      'Wordt op deze telefoon gelezen. Je woorden gaan nergens heen.';
+
+  @override
+  String get mixMake => 'Maak';
+
+  @override
+  String get mixTry => 'Probeer er een';
+
+  @override
+  String get mixEx1 => 'rustige lofi om te studeren, 1 uur';
+
+  @override
+  String get mixEx2 => 'workout hip hop, steeds sneller';
+
+  @override
+  String get mixEx3 => 'synthwave uit de jaren 80 zoals The Midnight';
+
+  @override
+  String get mixEx4 => 'feest-afrobeats, 20 nummers';
+
+  @override
+  String get mixNothing => 'Daar past nog niets bij';
+
+  @override
+  String get mixNothingBody =>
+      'Probeer minder voorwaarden of zet YouTube-suggesties aan bij Jouw smaak.';
+
+  @override
+  String get mixUnderstood => 'Begrepen als';
+
+  @override
+  String mixLike(String artist) {
+    return 'zoals $artist';
+  }
+
+  @override
+  String get mixRising => 'steeds sneller';
+
+  @override
+  String get mixFalling => 'steeds rustiger';
+
+  @override
+  String get mixSave => 'Opslaan als afspeellijst';
+
+  @override
+  String get mixSaveAs => 'Naam van de afspeellijst';
+
+  @override
+  String get mixAgain => 'Opnieuw mixen';
+
+  @override
+  String reasonMatches(String what) {
+    return 'Past: $what';
+  }
+
+  @override
+  String get reasonNewFind => 'Nieuwe vondst';
 }

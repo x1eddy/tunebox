@@ -2069,4 +2069,75 @@ class LGa extends L {
 
   @override
   String get shelfOnThisDaySub => 'What you were playing around this day';
+
+  @override
+  String get mixTitle => 'Describe a mix';
+
+  @override
+  String get mixEntry => 'Describe a mix…';
+
+  @override
+  String get mixAsk => 'What do you want to hear?';
+
+  @override
+  String get mixHint => 'rainy sunday 2000s rock, no Linkin Park';
+
+  @override
+  String get mixPrivate => 'Read on this phone. Your words never leave it.';
+
+  @override
+  String get mixMake => 'Make it';
+
+  @override
+  String get mixTry => 'Try one of these';
+
+  @override
+  String get mixEx1 => 'chill lofi to study, 1 hour';
+
+  @override
+  String get mixEx2 => 'workout hip hop, getting faster';
+
+  @override
+  String get mixEx3 => '80s synthwave like The Midnight';
+
+  @override
+  String get mixEx4 => 'party afrobeats, 20 songs';
+
+  @override
+  String get mixNothing => 'Nothing fits that yet';
+
+  @override
+  String get mixNothingBody =>
+      'Try fewer conditions, or turn on YouTube suggestions in Your taste.';
+
+  @override
+  String get mixUnderstood => 'Understood as';
+
+  @override
+  String mixLike(String artist) {
+    return 'like $artist';
+  }
+
+  @override
+  String get mixRising => 'getting faster';
+
+  @override
+  String get mixFalling => 'winding down';
+
+  @override
+  String get mixSave => 'Save as playlist';
+
+  @override
+  String get mixSaveAs => 'Name for this playlist';
+
+  @override
+  String get mixAgain => 'Shuffle it up';
+
+  @override
+  String reasonMatches(String what) {
+    return 'Fits: $what';
+  }
+
+  @override
+  String get reasonNewFind => 'A new find';
 }

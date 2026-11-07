@@ -3752,6 +3752,138 @@ abstract class L {
   /// In en, this message translates to:
   /// **'What you were playing around this day'**
   String get shelfOnThisDaySub;
+
+  /// No description provided for @mixTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe a mix'**
+  String get mixTitle;
+
+  /// No description provided for @mixEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe a mix…'**
+  String get mixEntry;
+
+  /// No description provided for @mixAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to hear?'**
+  String get mixAsk;
+
+  /// No description provided for @mixHint.
+  ///
+  /// In en, this message translates to:
+  /// **'rainy sunday 2000s rock, no Linkin Park'**
+  String get mixHint;
+
+  /// No description provided for @mixPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Read on this phone. Your words never leave it.'**
+  String get mixPrivate;
+
+  /// No description provided for @mixMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it'**
+  String get mixMake;
+
+  /// No description provided for @mixTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try one of these'**
+  String get mixTry;
+
+  /// No description provided for @mixEx1.
+  ///
+  /// In en, this message translates to:
+  /// **'chill lofi to study, 1 hour'**
+  String get mixEx1;
+
+  /// No description provided for @mixEx2.
+  ///
+  /// In en, this message translates to:
+  /// **'workout hip hop, getting faster'**
+  String get mixEx2;
+
+  /// No description provided for @mixEx3.
+  ///
+  /// In en, this message translates to:
+  /// **'80s synthwave like The Midnight'**
+  String get mixEx3;
+
+  /// No description provided for @mixEx4.
+  ///
+  /// In en, this message translates to:
+  /// **'party afrobeats, 20 songs'**
+  String get mixEx4;
+
+  /// No description provided for @mixNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing fits that yet'**
+  String get mixNothing;
+
+  /// No description provided for @mixNothingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try fewer conditions, or turn on YouTube suggestions in Your taste.'**
+  String get mixNothingBody;
+
+  /// No description provided for @mixUnderstood.
+  ///
+  /// In en, this message translates to:
+  /// **'Understood as'**
+  String get mixUnderstood;
+
+  /// No description provided for @mixLike.
+  ///
+  /// In en, this message translates to:
+  /// **'like {artist}'**
+  String mixLike(String artist);
+
+  /// No description provided for @mixRising.
+  ///
+  /// In en, this message translates to:
+  /// **'getting faster'**
+  String get mixRising;
+
+  /// No description provided for @mixFalling.
+  ///
+  /// In en, this message translates to:
+  /// **'winding down'**
+  String get mixFalling;
+
+  /// No description provided for @mixSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as playlist'**
+  String get mixSave;
+
+  /// No description provided for @mixSaveAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for this playlist'**
+  String get mixSaveAs;
+
+  /// No description provided for @mixAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle it up'**
+  String get mixAgain;
+
+  /// No description provided for @reasonMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Fits: {what}'**
+  String reasonMatches(String what);
+
+  /// No description provided for @reasonNewFind.
+  ///
+  /// In en, this message translates to:
+  /// **'A new find'**
+  String get reasonNewFind;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

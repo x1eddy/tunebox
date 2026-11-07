@@ -90,6 +90,7 @@ class HomePage extends ConsumerWidget {
                 const SizedBox(width: 4),
               ],
             ),
+            const SliverToBoxAdapter(child: _DescribeBar()),
             const SliverToBoxAdapter(child: _MoodRow()),
             if (library.isNotEmpty)
               SliverToBoxAdapter(child: _QuickPicks(library: library)),
@@ -155,6 +156,49 @@ IconData shelfIcon(String id) => switch (id) {
   'yearago' || 'monthago' => Icons.event_repeat_rounded,
   _ => Icons.music_note_rounded,
 };
+
+/// Looks like a search box; opens "Describe a mix".
+class _DescribeBar extends StatelessWidget {
+  const _DescribeBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+      child: Material(
+        color: t.colorScheme.surfaceContainerHigh,
+        borderRadius: R.pill,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => pushDetail(context, 'mix'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+            child: Row(
+              children: [
+                Icon(Icons.auto_awesome_rounded, color: t.colorScheme.primary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    L.of(context).mixEntry,
+                    style: t.textTheme.bodyLarge?.copyWith(
+                      color: t.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 20,
+                  color: t.colorScheme.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _MoodRow extends ConsumerWidget {
   const _MoodRow();
