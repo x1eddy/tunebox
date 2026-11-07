@@ -2342,4 +2342,75 @@ class LNl extends L {
   @override
   String get glxEmptyBody =>
       'Voeg nummers van een paar artiesten toe en de sterren verschijnen.';
+
+  @override
+  String get blendTitle => 'Samenmix';
+
+  @override
+  String get blendEntry => 'Eén wachtrij uit twee smaken';
+
+  @override
+  String get blendIntro =>
+      'Voor een feest, de auto of een gedeelde speaker. TuneBox vindt wat jullie allebei leuk vinden en wisselt eerlijk af. De andere smaak wordt alleen gelezen, nooit bij de jouwe gevoegd.';
+
+  @override
+  String get blendWith => 'Mixen met';
+
+  @override
+  String get blendProfile => 'Een profiel op dit apparaat';
+
+  @override
+  String get blendPaste => 'Smaakcode van een vriend';
+
+  @override
+  String get blendPasteSub =>
+      'Kopieer hem eerst (Smaak verhuizen → Als tekst), tik dan hier';
+
+  @override
+  String get blendFile => 'Een smaakbestand';
+
+  @override
+  String get blendFriend => 'Je vriend';
+
+  @override
+  String get blendBad => 'Dat is geen TuneBox-smaak';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'Jij en $name';
+  }
+
+  @override
+  String get blendHigh => 'Vrijwel dezelfde oren.';
+
+  @override
+  String get blendMid => 'Veel gemeen, en wat te ontdekken.';
+
+  @override
+  String get blendLow => 'Heel verschillende smaken. Dit wordt een avontuur.';
+
+  @override
+  String get blendPlay => 'Samenmix afspelen';
+
+  @override
+  String get blendOther => 'Met iemand anders mixen';
+
+  @override
+  String get blendLearn => 'Laat de samenmix TuneBox iets leren';
+
+  @override
+  String get blendLearnSub =>
+      'Uit: wat in de samenmix speelt verandert je smaak niet';
+
+  @override
+  String get blendBothArtists => 'Artiesten die jullie allebei hebben';
+
+  @override
+  String get blendQueue => 'De wachtrij';
+
+  @override
+  String get blendBoth => 'jullie allebei';
+
+  @override
+  String get blendYours => 'van jou';
 }

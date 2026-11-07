@@ -2352,4 +2352,75 @@ class LPl extends L {
   @override
   String get glxEmptyBody =>
       'Dodaj utwory kilku artystów, a pojawią się gwiazdy.';
+
+  @override
+  String get blendTitle => 'Mieszanka';
+
+  @override
+  String get blendEntry => 'Jedna kolejka z dwóch gustów';
+
+  @override
+  String get blendIntro =>
+      'Na imprezę, do auta albo na wspólny głośnik. TuneBox znajdzie to, co lubicie oboje, i sprawiedliwie się wymienia. Drugi gust jest tylko czytany, nigdy nie trafia do twojego.';
+
+  @override
+  String get blendWith => 'Połącz z';
+
+  @override
+  String get blendProfile => 'Profil na tym urządzeniu';
+
+  @override
+  String get blendPaste => 'Kod gustu znajomego';
+
+  @override
+  String get blendPasteSub =>
+      'Najpierw skopiuj (Przenieś gust → Jako tekst), potem stuknij tutaj';
+
+  @override
+  String get blendFile => 'Plik gustu';
+
+  @override
+  String get blendFriend => 'Twój znajomy';
+
+  @override
+  String get blendBad => 'To nie jest gust TuneBox';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'Ty i $name';
+  }
+
+  @override
+  String get blendHigh => 'Praktycznie te same uszy.';
+
+  @override
+  String get blendMid => 'Sporo wspólnego i trochę do odkrycia.';
+
+  @override
+  String get blendLow => 'Bardzo różne gusty. To będzie przygoda.';
+
+  @override
+  String get blendPlay => 'Odtwórz mieszankę';
+
+  @override
+  String get blendOther => 'Połącz z kimś innym';
+
+  @override
+  String get blendLearn => 'Pozwól mieszance uczyć TuneBox';
+
+  @override
+  String get blendLearnSub =>
+      'Wyłączone: to, co gra w mieszance, nie zmienia twojego gustu';
+
+  @override
+  String get blendBothArtists => 'Artyści, których macie oboje';
+
+  @override
+  String get blendQueue => 'Kolejka';
+
+  @override
+  String get blendBoth => 'oboje';
+
+  @override
+  String get blendYours => 'twój';
 }

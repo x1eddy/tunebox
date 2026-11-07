@@ -4274,6 +4274,138 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Add songs from a few different artists and the stars appear.'**
   String get glxEmptyBody;
+
+  /// No description provided for @blendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blend'**
+  String get blendTitle;
+
+  /// No description provided for @blendEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'One queue from two tastes'**
+  String get blendEntry;
+
+  /// No description provided for @blendIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'For a party, a car or a shared speaker. TuneBox finds what you both like and takes turns fairly. The other taste is only read, never added to yours.'**
+  String get blendIntro;
+
+  /// No description provided for @blendWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Blend with'**
+  String get blendWith;
+
+  /// No description provided for @blendProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'A profile on this device'**
+  String get blendProfile;
+
+  /// No description provided for @blendPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'A friend\'s taste code'**
+  String get blendPaste;
+
+  /// No description provided for @blendPasteSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy it first (Move your taste → As text), then tap here'**
+  String get blendPasteSub;
+
+  /// No description provided for @blendFile.
+  ///
+  /// In en, this message translates to:
+  /// **'A taste file'**
+  String get blendFile;
+
+  /// No description provided for @blendFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friend'**
+  String get blendFriend;
+
+  /// No description provided for @blendBad.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a TuneBox taste'**
+  String get blendBad;
+
+  /// No description provided for @blendYouAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'You and {name}'**
+  String blendYouAnd(String name);
+
+  /// No description provided for @blendHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Practically the same ears.'**
+  String get blendHigh;
+
+  /// No description provided for @blendMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Plenty in common, and some to discover.'**
+  String get blendMid;
+
+  /// No description provided for @blendLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Very different tastes. This one will be an adventure.'**
+  String get blendLow;
+
+  /// No description provided for @blendPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the blend'**
+  String get blendPlay;
+
+  /// No description provided for @blendOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Blend with someone else'**
+  String get blendOther;
+
+  /// No description provided for @blendLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Let the blend teach TuneBox'**
+  String get blendLearn;
+
+  /// No description provided for @blendLearnSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: what plays in a blend does not change your taste'**
+  String get blendLearnSub;
+
+  /// No description provided for @blendBothArtists.
+  ///
+  /// In en, this message translates to:
+  /// **'Artists you both have'**
+  String get blendBothArtists;
+
+  /// No description provided for @blendQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'The queue'**
+  String get blendQueue;
+
+  /// No description provided for @blendBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'you both'**
+  String get blendBoth;
+
+  /// No description provided for @blendYours.
+  ///
+  /// In en, this message translates to:
+  /// **'yours'**
+  String get blendYours;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

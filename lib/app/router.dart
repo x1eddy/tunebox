@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/blend/blend_page.dart';
 import '../features/detail/artist_page.dart';
 import '../features/detail/playlist_page.dart';
 import '../features/galaxy/galaxy_page.dart';
@@ -44,6 +45,7 @@ List<RouteBase> _details() => [
   GoRoute(path: 'rewind', builder: (_, _) => const RewindPage()),
   GoRoute(path: 'studio', builder: (_, _) => const StudioPage()),
   GoRoute(path: 'galaxy', builder: (_, _) => const GalaxyPage()),
+  GoRoute(path: 'blend', builder: (_, _) => const BlendPage()),
   GoRoute(
     path: 'mix',
     builder: (_, s) => MixPage(initial: s.uri.queryParameters['q']),

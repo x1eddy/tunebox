@@ -2334,4 +2334,75 @@ class LPt extends L {
   @override
   String get glxEmptyBody =>
       'Junta músicas de alguns artistas e as estrelas aparecem.';
+
+  @override
+  String get blendTitle => 'Fusão';
+
+  @override
+  String get blendEntry => 'Uma fila com dois gostos';
+
+  @override
+  String get blendIntro =>
+      'Para uma festa, o carro ou uma coluna partilhada. O TuneBox encontra o que ambos gostam e alterna com justiça. O outro gosto só é lido, nunca junto ao teu.';
+
+  @override
+  String get blendWith => 'Fundir com';
+
+  @override
+  String get blendProfile => 'Um perfil neste dispositivo';
+
+  @override
+  String get blendPaste => 'O código de gosto de um amigo';
+
+  @override
+  String get blendPasteSub =>
+      'Copia-o primeiro (Mover o teu gosto → Como texto) e toca aqui';
+
+  @override
+  String get blendFile => 'Um ficheiro de gosto';
+
+  @override
+  String get blendFriend => 'O teu amigo';
+
+  @override
+  String get blendBad => 'Isso não é um gosto do TuneBox';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'Tu e $name';
+  }
+
+  @override
+  String get blendHigh => 'Praticamente os mesmos ouvidos.';
+
+  @override
+  String get blendMid => 'Muito em comum e algo para descobrir.';
+
+  @override
+  String get blendLow => 'Gostos muito diferentes. Vai ser uma aventura.';
+
+  @override
+  String get blendPlay => 'Tocar a fusão';
+
+  @override
+  String get blendOther => 'Fundir com outra pessoa';
+
+  @override
+  String get blendLearn => 'Deixar a fusão ensinar o TuneBox';
+
+  @override
+  String get blendLearnSub =>
+      'Desligado: o que toca na fusão não muda o teu gosto';
+
+  @override
+  String get blendBothArtists => 'Artistas que ambos têm';
+
+  @override
+  String get blendQueue => 'A fila';
+
+  @override
+  String get blendBoth => 'ambos';
+
+  @override
+  String get blendYours => 'teu';
 }

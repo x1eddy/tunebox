@@ -2347,4 +2347,76 @@ class LDe extends L {
   @override
   String get glxEmptyBody =>
       'Füg Songs von ein paar verschiedenen Artists hinzu, dann erscheinen die Sterne.';
+
+  @override
+  String get blendTitle => 'Mischen';
+
+  @override
+  String get blendEntry => 'Eine Warteschlange aus zwei Geschmäckern';
+
+  @override
+  String get blendIntro =>
+      'Für eine Party, das Auto oder einen gemeinsamen Lautsprecher. TuneBox findet, was ihr beide mögt, und wechselt fair ab. Der andere Geschmack wird nur gelesen, nie zu deinem hinzugefügt.';
+
+  @override
+  String get blendWith => 'Mischen mit';
+
+  @override
+  String get blendProfile => 'Ein Profil auf diesem Gerät';
+
+  @override
+  String get blendPaste => 'Geschmacks-Code von jemandem';
+
+  @override
+  String get blendPasteSub =>
+      'Erst kopieren (Geschmack übertragen → Als Text), dann hier tippen';
+
+  @override
+  String get blendFile => 'Eine Geschmacks-Datei';
+
+  @override
+  String get blendFriend => 'Dein Freund';
+
+  @override
+  String get blendBad => 'Das ist kein TuneBox-Geschmack';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'Du und $name';
+  }
+
+  @override
+  String get blendHigh => 'Praktisch dieselben Ohren.';
+
+  @override
+  String get blendMid => 'Viel gemeinsam, und einiges zu entdecken.';
+
+  @override
+  String get blendLow =>
+      'Sehr unterschiedlicher Geschmack. Das wird ein Abenteuer.';
+
+  @override
+  String get blendPlay => 'Mix abspielen';
+
+  @override
+  String get blendOther => 'Mit jemand anderem mischen';
+
+  @override
+  String get blendLearn => 'Mix darf TuneBox etwas beibringen';
+
+  @override
+  String get blendLearnSub =>
+      'Aus: Was im Mix läuft, ändert deinen Geschmack nicht';
+
+  @override
+  String get blendBothArtists => 'Artists, die ihr beide habt';
+
+  @override
+  String get blendQueue => 'Die Warteschlange';
+
+  @override
+  String get blendBoth => 'ihr beide';
+
+  @override
+  String get blendYours => 'deins';
 }

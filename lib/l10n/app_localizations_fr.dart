@@ -2351,4 +2351,75 @@ class LFr extends L {
   @override
   String get glxEmptyBody =>
       'Ajoute des morceaux de quelques artistes et les étoiles apparaissent.';
+
+  @override
+  String get blendTitle => 'Fusion';
+
+  @override
+  String get blendEntry => 'Une file pour deux goûts';
+
+  @override
+  String get blendIntro =>
+      'Pour une soirée, la voiture ou une enceinte partagée. TuneBox trouve ce que vous aimez tous les deux et alterne équitablement. L\'autre goût est seulement lu, jamais ajouté au tien.';
+
+  @override
+  String get blendWith => 'Fusionner avec';
+
+  @override
+  String get blendProfile => 'Un profil sur cet appareil';
+
+  @override
+  String get blendPaste => 'Le code de goût d\'un ami';
+
+  @override
+  String get blendPasteSub =>
+      'Copie-le d\'abord (Transférer tes goûts → En texte), puis touche ici';
+
+  @override
+  String get blendFile => 'Un fichier de goûts';
+
+  @override
+  String get blendFriend => 'Ton ami';
+
+  @override
+  String get blendBad => 'Ce n\'est pas un goût TuneBox';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'Toi et $name';
+  }
+
+  @override
+  String get blendHigh => 'Pratiquement les mêmes oreilles.';
+
+  @override
+  String get blendMid => 'Beaucoup en commun, et des choses à découvrir.';
+
+  @override
+  String get blendLow => 'Des goûts très différents. Ce sera une aventure.';
+
+  @override
+  String get blendPlay => 'Écouter la fusion';
+
+  @override
+  String get blendOther => 'Fusionner avec quelqu\'un d\'autre';
+
+  @override
+  String get blendLearn => 'Laisser la fusion apprendre à TuneBox';
+
+  @override
+  String get blendLearnSub =>
+      'Désactivé : ce qui passe dans la fusion ne change pas tes goûts';
+
+  @override
+  String get blendBothArtists => 'Artistes que vous avez tous les deux';
+
+  @override
+  String get blendQueue => 'La file';
+
+  @override
+  String get blendBoth => 'vous deux';
+
+  @override
+  String get blendYours => 'à toi';
 }

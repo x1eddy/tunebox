@@ -157,6 +157,11 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     final handler = ref.read(audioHandlerProvider);
     _reports = handler.reports.listen((report) async {
       final settings = ref.read(settingsProvider);
+      // A blend is someone else's taste too; it teaches nothing unless asked.
+      if (report.origin == 'blend' &&
+          !(ref.read(prefsProvider).getBool('blendLearns') ?? false)) {
+        return;
+      }
       await ref.read(aiProvider).learnFromListen(report, settings);
       dropTasteProfileCache();
       ref.invalidate(tasteProfileProvider);

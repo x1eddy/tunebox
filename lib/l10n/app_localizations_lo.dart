@@ -2318,4 +2318,76 @@ class LLo extends L {
   @override
   String get glxEmptyBody =>
       'Add songs from a few different artists and the stars appear.';
+
+  @override
+  String get blendTitle => 'Blend';
+
+  @override
+  String get blendEntry => 'One queue from two tastes';
+
+  @override
+  String get blendIntro =>
+      'For a party, a car or a shared speaker. TuneBox finds what you both like and takes turns fairly. The other taste is only read, never added to yours.';
+
+  @override
+  String get blendWith => 'Blend with';
+
+  @override
+  String get blendProfile => 'A profile on this device';
+
+  @override
+  String get blendPaste => 'A friend\'s taste code';
+
+  @override
+  String get blendPasteSub =>
+      'Copy it first (Move your taste → As text), then tap here';
+
+  @override
+  String get blendFile => 'A taste file';
+
+  @override
+  String get blendFriend => 'Your friend';
+
+  @override
+  String get blendBad => 'That is not a TuneBox taste';
+
+  @override
+  String blendYouAnd(String name) {
+    return 'You and $name';
+  }
+
+  @override
+  String get blendHigh => 'Practically the same ears.';
+
+  @override
+  String get blendMid => 'Plenty in common, and some to discover.';
+
+  @override
+  String get blendLow =>
+      'Very different tastes. This one will be an adventure.';
+
+  @override
+  String get blendPlay => 'Play the blend';
+
+  @override
+  String get blendOther => 'Blend with someone else';
+
+  @override
+  String get blendLearn => 'Let the blend teach TuneBox';
+
+  @override
+  String get blendLearnSub =>
+      'Off: what plays in a blend does not change your taste';
+
+  @override
+  String get blendBothArtists => 'Artists you both have';
+
+  @override
+  String get blendQueue => 'The queue';
+
+  @override
+  String get blendBoth => 'you both';
+
+  @override
+  String get blendYours => 'yours';
 }

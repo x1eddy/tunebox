@@ -1348,5 +1348,34 @@
   "glxMore": "More of this artist",
   "glxNever": "Never play this artist",
   "glxEmpty": "Your sky is still dark",
-  "glxEmptyBody": "Add songs from a few different artists and the stars appear."
+  "glxEmptyBody": "Add songs from a few different artists and the stars appear.",
+  "blendTitle": "Blend",
+  "blendEntry": "One queue from two tastes",
+  "blendIntro": "For a party, a car or a shared speaker. TuneBox finds what you both like and takes turns fairly. The other taste is only read, never added to yours.",
+  "blendWith": "Blend with",
+  "blendProfile": "A profile on this device",
+  "blendPaste": "A friend's taste code",
+  "blendPasteSub": "Copy it first (Move your taste → As text), then tap here",
+  "blendFile": "A taste file",
+  "blendFriend": "Your friend",
+  "blendBad": "That is not a TuneBox taste",
+  "blendYouAnd": "You and {name}",
+  "@blendYouAnd": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "blendHigh": "Practically the same ears.",
+  "blendMid": "Plenty in common, and some to discover.",
+  "blendLow": "Very different tastes. This one will be an adventure.",
+  "blendPlay": "Play the blend",
+  "blendOther": "Blend with someone else",
+  "blendLearn": "Let the blend teach TuneBox",
+  "blendLearnSub": "Off: what plays in a blend does not change your taste",
+  "blendBothArtists": "Artists you both have",
+  "blendQueue": "The queue",
+  "blendBoth": "you both",
+  "blendYours": "yours"
 }
