@@ -147,6 +147,14 @@ class AppDatabase extends _$AppDatabase {
 
   // ------------------------------------------------------------------ stats
 
+  /// Songs heard at least once before [t] (for "new to you" in Rewind).
+  Future<Set<String>> songsPlayedBefore(DateTime t) async {
+    final q = selectOnly(playEvents, distinct: true)
+      ..addColumns([playEvents.songId])
+      ..where(playEvents.at.isSmallerThanValue(t));
+    return {for (final r in await q.get()) r.read(playEvents.songId)!};
+  }
+
   /// Every listen in [from, to), oldest first. Rewind is built from this.
   Future<List<PlayEvent>> eventsBetween(DateTime from, DateTime to) =>
       (select(playEvents)

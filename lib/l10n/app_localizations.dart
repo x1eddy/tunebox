@@ -3518,6 +3518,240 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Show cover'**
   String get lyrShowArt;
+
+  /// No description provided for @rwTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewind'**
+  String get rwTitle;
+
+  /// No description provided for @rwEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Your listening, as a story'**
+  String get rwEntry;
+
+  /// No description provided for @rwWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get rwWeek;
+
+  /// No description provided for @rwMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get rwMonth;
+
+  /// No description provided for @rwYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get rwYear;
+
+  /// No description provided for @rwAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get rwAll;
+
+  /// No description provided for @rwNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough listening yet'**
+  String get rwNotYet;
+
+  /// No description provided for @rwNotYetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Play a few songs in this period and your story fills in. Try a longer period.'**
+  String get rwNotYetBody;
+
+  /// No description provided for @rwShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share this card'**
+  String get rwShare;
+
+  /// No description provided for @rwShareText.
+  ///
+  /// In en, this message translates to:
+  /// **'My listening, from TuneBox — https://tunebox.pages.dev'**
+  String get rwShareText;
+
+  /// No description provided for @rwSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to {path}'**
+  String rwSaved(String path);
+
+  /// No description provided for @rwMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes of music'**
+  String get rwMinutes;
+
+  /// No description provided for @rwPlaysSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'{plays, plural, =1{1 play} other{{plays} plays}} of {songs, plural, =1{1 song} other{{songs} different songs}}'**
+  String rwPlaysSongs(int plays, int songs);
+
+  /// No description provided for @rwPlays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 play} other{{count} plays}}'**
+  String rwPlays(int count);
+
+  /// No description provided for @rwPlaysMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{plays, plural, =1{1 play} other{{plays} plays}} · {minutes} min'**
+  String rwPlaysMinutes(int plays, int minutes);
+
+  /// No description provided for @rwTopSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Your song'**
+  String get rwTopSong;
+
+  /// No description provided for @rwTopSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'On repeat'**
+  String get rwTopSongs;
+
+  /// No description provided for @rwTopArtists.
+  ///
+  /// In en, this message translates to:
+  /// **'Your artists'**
+  String get rwTopArtists;
+
+  /// No description provided for @rwSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sound'**
+  String get rwSound;
+
+  /// No description provided for @rwYourHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Your hour'**
+  String get rwYourHour;
+
+  /// No description provided for @rwStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest streak'**
+  String get rwStreak;
+
+  /// No description provided for @rwDaysInARow.
+  ///
+  /// In en, this message translates to:
+  /// **'days in a row with music'**
+  String get rwDaysInARow;
+
+  /// No description provided for @rwDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of what you played was new to you'**
+  String rwDiscovery(int percent);
+
+  /// No description provided for @rwUnskippable.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t skip it'**
+  String get rwUnskippable;
+
+  /// No description provided for @rwNeverSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Played again and again, not skipped once.'**
+  String get rwNeverSkipped;
+
+  /// No description provided for @rwYouAre.
+  ///
+  /// In en, this message translates to:
+  /// **'You are'**
+  String get rwYouAre;
+
+  /// No description provided for @rwExplorer.
+  ///
+  /// In en, this message translates to:
+  /// **'The Explorer'**
+  String get rwExplorer;
+
+  /// No description provided for @rwExplorerSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Most of what you played was new. Your taste keeps moving.'**
+  String get rwExplorerSub;
+
+  /// No description provided for @rwLoyalist.
+  ///
+  /// In en, this message translates to:
+  /// **'The Loyalist'**
+  String get rwLoyalist;
+
+  /// No description provided for @rwLoyalistSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A few artists, played properly. You know what you love.'**
+  String get rwLoyalistSub;
+
+  /// No description provided for @rwCollector.
+  ///
+  /// In en, this message translates to:
+  /// **'The Collector'**
+  String get rwCollector;
+
+  /// No description provided for @rwCollectorSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Dozens of artists, rarely the same song twice.'**
+  String get rwCollectorSub;
+
+  /// No description provided for @rwRepeater.
+  ///
+  /// In en, this message translates to:
+  /// **'The Repeater'**
+  String get rwRepeater;
+
+  /// No description provided for @rwRepeaterSub.
+  ///
+  /// In en, this message translates to:
+  /// **'When a song gets you, it really gets you.'**
+  String get rwRepeaterSub;
+
+  /// No description provided for @rwAllRounder.
+  ///
+  /// In en, this message translates to:
+  /// **'The All-Rounder'**
+  String get rwAllRounder;
+
+  /// No description provided for @rwAllRounderSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A bit of everything, in good balance.'**
+  String get rwAllRounderSub;
+
+  /// No description provided for @shelfYearAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'A year ago'**
+  String get shelfYearAgo;
+
+  /// No description provided for @shelfMonthAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'A month ago'**
+  String get shelfMonthAgo;
+
+  /// No description provided for @shelfOnThisDaySub.
+  ///
+  /// In en, this message translates to:
+  /// **'What you were playing around this day'**
+  String get shelfOnThisDaySub;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

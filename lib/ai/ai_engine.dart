@@ -463,6 +463,36 @@ class AiEngine {
       ),
     );
 
+    // --- On this day — what you were playing a year (or a month) ago -------
+    for (final (days, slack) in [(365, 3), (30, 2)]) {
+      final centre = now.subtract(Duration(days: days));
+      final then = await _db.eventsBetween(
+        centre.subtract(Duration(days: slack)),
+        centre.add(Duration(days: slack)),
+      );
+      final counts = <String, int>{};
+      for (final e in then) {
+        if (!e.skipped) counts[e.songId] = (counts[e.songId] ?? 0) + 1;
+      }
+      if (counts.length < minimumShelf) continue;
+      final ids = counts.keys.toList()
+        ..sort((a, b) => counts[b]!.compareTo(counts[a]!));
+      final songsThen = await _db.songsByIds(ids.take(30).toList());
+      addShelf(
+        AiShelf(
+          id: days == 365 ? 'yearago' : 'monthago',
+          title: days == 365 ? 'A year ago' : 'A month ago',
+          subtitle: 'What you were playing around this day',
+          picks: claim(
+            songsThen.where((s) => !s.blocked).toList(),
+            12,
+            reason: (s) => PickReason(ReasonKind.plays, count: counts[s.id] ?? 1),
+          ),
+        ),
+      );
+      break;
+    }
+
     // --- New ⭐ — genuinely new: things you do not own yet -----------------
     final seeds = await _seedQueries(library, w);
     final candidates = <Song>[];

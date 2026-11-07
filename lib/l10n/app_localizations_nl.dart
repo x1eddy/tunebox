@@ -1899,4 +1899,160 @@ class LNl extends L {
 
   @override
   String get lyrShowArt => 'Hoes tonen';
+
+  @override
+  String get rwTitle => 'Terugblik';
+
+  @override
+  String get rwEntry => 'Je luistergedrag als verhaal';
+
+  @override
+  String get rwWeek => 'Deze week';
+
+  @override
+  String get rwMonth => 'Deze maand';
+
+  @override
+  String get rwYear => 'Dit jaar';
+
+  @override
+  String get rwAll => 'Altijd';
+
+  @override
+  String get rwNotYet => 'Nog te weinig geluisterd';
+
+  @override
+  String get rwNotYetBody =>
+      'Speel een paar nummers in deze periode en je verhaal vult zich. Probeer een langere periode.';
+
+  @override
+  String get rwShare => 'Deze kaart delen';
+
+  @override
+  String get rwShareText =>
+      'Mijn luistergedrag, uit TuneBox — https://tunebox.pages.dev';
+
+  @override
+  String rwSaved(String path) {
+    return 'Opgeslagen in $path';
+  }
+
+  @override
+  String get rwMinutes => 'minuten muziek';
+
+  @override
+  String rwPlaysSongs(int plays, int songs) {
+    String _temp0 = intl.Intl.pluralLogic(
+      plays,
+      locale: localeName,
+      other: '$plays keer afgespeeld',
+      one: '1 keer afgespeeld',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      songs,
+      locale: localeName,
+      other: '$songs verschillende nummers',
+      one: '1 nummer',
+    );
+    return '$_temp0, $_temp1';
+  }
+
+  @override
+  String rwPlays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count×',
+      one: '1×',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rwPlaysMinutes(int plays, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      plays,
+      locale: localeName,
+      other: '$plays× gespeeld',
+      one: '1× gespeeld',
+    );
+    return '$_temp0 · $minutes min';
+  }
+
+  @override
+  String get rwTopSong => 'Jouw nummer';
+
+  @override
+  String get rwTopSongs => 'Op herhaling';
+
+  @override
+  String get rwTopArtists => 'Jouw artiesten';
+
+  @override
+  String get rwSound => 'Jouw sound';
+
+  @override
+  String get rwYourHour => 'Jouw uur';
+
+  @override
+  String get rwStreak => 'Langste reeks';
+
+  @override
+  String get rwDaysInARow => 'dagen op rij met muziek';
+
+  @override
+  String rwDiscovery(int percent) {
+    return '$percent% van wat je speelde was nieuw voor je';
+  }
+
+  @override
+  String get rwUnskippable => 'Nooit overgeslagen';
+
+  @override
+  String get rwNeverSkipped => 'Keer op keer, geen enkele keer overgeslagen.';
+
+  @override
+  String get rwYouAre => 'Jij bent';
+
+  @override
+  String get rwExplorer => 'De ontdekker';
+
+  @override
+  String get rwExplorerSub =>
+      'Bijna alles was nieuw. Je smaak blijft in beweging.';
+
+  @override
+  String get rwLoyalist => 'De trouwe fan';
+
+  @override
+  String get rwLoyalistSub =>
+      'Een paar artiesten, goed beluisterd. Je weet wat je mooi vindt.';
+
+  @override
+  String get rwCollector => 'De verzamelaar';
+
+  @override
+  String get rwCollectorSub =>
+      'Tientallen artiesten, zelden twee keer hetzelfde nummer.';
+
+  @override
+  String get rwRepeater => 'De herhaler';
+
+  @override
+  String get rwRepeaterSub => 'Als een nummer je pakt, dan ook echt.';
+
+  @override
+  String get rwAllRounder => 'De allrounder';
+
+  @override
+  String get rwAllRounderSub => 'Van alles wat, mooi in balans.';
+
+  @override
+  String get shelfYearAgo => 'Een jaar geleden';
+
+  @override
+  String get shelfMonthAgo => 'Een maand geleden';
+
+  @override
+  String get shelfOnThisDaySub => 'Wat je rond deze dag draaide';
 }

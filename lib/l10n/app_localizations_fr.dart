@@ -1907,4 +1907,160 @@ class LFr extends L {
 
   @override
   String get lyrShowArt => 'Afficher la pochette';
+
+  @override
+  String get rwTitle => 'Rétro';
+
+  @override
+  String get rwEntry => 'Ton écoute, en histoire';
+
+  @override
+  String get rwWeek => 'Cette semaine';
+
+  @override
+  String get rwMonth => 'Ce mois-ci';
+
+  @override
+  String get rwYear => 'Cette année';
+
+  @override
+  String get rwAll => 'Depuis toujours';
+
+  @override
+  String get rwNotYet => 'Pas encore assez d\'écoute';
+
+  @override
+  String get rwNotYetBody =>
+      'Écoute quelques morceaux sur cette période et ton histoire se remplit. Essaie une période plus longue.';
+
+  @override
+  String get rwShare => 'Partager cette carte';
+
+  @override
+  String get rwShareText =>
+      'Mon écoute, depuis TuneBox — https://tunebox.pages.dev';
+
+  @override
+  String rwSaved(String path) {
+    return 'Enregistré dans $path';
+  }
+
+  @override
+  String get rwMinutes => 'minutes de musique';
+
+  @override
+  String rwPlaysSongs(int plays, int songs) {
+    String _temp0 = intl.Intl.pluralLogic(
+      plays,
+      locale: localeName,
+      other: '$plays écoutes',
+      one: '1 écoute',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      songs,
+      locale: localeName,
+      other: '$songs morceaux différents',
+      one: '1 morceau',
+    );
+    return '$_temp0 de $_temp1';
+  }
+
+  @override
+  String rwPlays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fois',
+      one: '1 fois',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rwPlaysMinutes(int plays, int minutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      plays,
+      locale: localeName,
+      other: '$plays écoutes',
+      one: '1 écoute',
+    );
+    return '$_temp0 · $minutes min';
+  }
+
+  @override
+  String get rwTopSong => 'Ton morceau';
+
+  @override
+  String get rwTopSongs => 'En boucle';
+
+  @override
+  String get rwTopArtists => 'Tes artistes';
+
+  @override
+  String get rwSound => 'Ton son';
+
+  @override
+  String get rwYourHour => 'Ton heure';
+
+  @override
+  String get rwStreak => 'Plus longue série';
+
+  @override
+  String get rwDaysInARow => 'jours d\'affilée en musique';
+
+  @override
+  String rwDiscovery(int percent) {
+    return '$percent % de ce que tu as écouté était nouveau pour toi';
+  }
+
+  @override
+  String get rwUnskippable => 'Impossible à zapper';
+
+  @override
+  String get rwNeverSkipped => 'Encore et encore, jamais zappé.';
+
+  @override
+  String get rwYouAre => 'Tu es';
+
+  @override
+  String get rwExplorer => 'L\'explorateur';
+
+  @override
+  String get rwExplorerSub =>
+      'Presque tout était nouveau. Tes goûts bougent sans cesse.';
+
+  @override
+  String get rwLoyalist => 'Le fidèle';
+
+  @override
+  String get rwLoyalistSub =>
+      'Peu d\'artistes, mais à fond. Tu sais ce que tu aimes.';
+
+  @override
+  String get rwCollector => 'Le collectionneur';
+
+  @override
+  String get rwCollectorSub =>
+      'Des dizaines d\'artistes, rarement deux fois le même morceau.';
+
+  @override
+  String get rwRepeater => 'Le rejoueur';
+
+  @override
+  String get rwRepeaterSub => 'Quand un morceau te plaît, c\'est pour de bon.';
+
+  @override
+  String get rwAllRounder => 'Le polyvalent';
+
+  @override
+  String get rwAllRounderSub => 'Un peu de tout, bien équilibré.';
+
+  @override
+  String get shelfYearAgo => 'Il y a un an';
+
+  @override
+  String get shelfMonthAgo => 'Il y a un mois';
+
+  @override
+  String get shelfOnThisDaySub => 'Ce que tu écoutais à cette période';
 }

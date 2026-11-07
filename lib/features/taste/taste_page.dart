@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../ai/ai_engine.dart';
+import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../data/db/database.dart';
 import '../../state/providers.dart';
@@ -57,6 +58,21 @@ class TastePage extends ConsumerWidget {
               // The fastest way to teach the AI belongs next to the score it
               // moves, not at the bottom of a long page.
               const _TrainCard(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                child: Material(
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  borderRadius: R.card,
+                  clipBehavior: Clip.antiAlias,
+                  child: ListTile(
+                    leading: const Icon(Icons.auto_stories_rounded),
+                    title: Text(l.rwTitle),
+                    subtitle: Text(l.rwEntry),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => pushDetail(context, 'rewind'),
+                  ),
+                ),
+              ),
               ...groupSections(context, [
                 SwitchListTile(
                   value: settings.learning,

@@ -137,6 +137,8 @@ class HomePage extends ConsumerWidget {
   'mix' => (l.shelfMix, l.shelfMixSub),
   'added' => (l.shelfAdded, l.shelfAddedSub),
   'starter' => (l.shelfStarter, l.shelfStarterSub),
+  'yearago' => (l.shelfYearAgo, l.shelfOnThisDaySub),
+  'monthago' => (l.shelfMonthAgo, l.shelfOnThisDaySub),
   _ => (shelf.title, shelf.subtitle),
 };
 
@@ -150,6 +152,7 @@ IconData shelfIcon(String id) => switch (id) {
   'mix' => Icons.shuffle_rounded,
   'added' => Icons.download_done_rounded,
   'starter' => Icons.flag_outlined,
+  'yearago' || 'monthago' => Icons.event_repeat_rounded,
   _ => Icons.music_note_rounded,
 };
 

@@ -1139,5 +1139,85 @@
   "lyrOffline": "Lyrics need a connection the first time. After that they work offline.",
   "lyrCredit": "Lyrics from LRCLIB, an open community database",
   "lyrShow": "Show lyrics",
-  "lyrShowArt": "Show cover"
+  "lyrShowArt": "Show cover",
+  "rwTitle": "Rewind",
+  "rwEntry": "Your listening, as a story",
+  "rwWeek": "This week",
+  "rwMonth": "This month",
+  "rwYear": "This year",
+  "rwAll": "All time",
+  "rwNotYet": "Not enough listening yet",
+  "rwNotYetBody": "Play a few songs in this period and your story fills in. Try a longer period.",
+  "rwShare": "Share this card",
+  "rwShareText": "My listening, from TuneBox — https://tunebox.pages.dev",
+  "rwSaved": "Saved to {path}",
+  "@rwSaved": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "rwMinutes": "minutes of music",
+  "rwPlaysSongs": "{plays, plural, =1{1 play} other{{plays} plays}} of {songs, plural, =1{1 song} other{{songs} different songs}}",
+  "@rwPlaysSongs": {
+    "placeholders": {
+      "plays": {
+        "type": "int"
+      },
+      "songs": {
+        "type": "int"
+      }
+    }
+  },
+  "rwPlays": "{count, plural, =1{1 play} other{{count} plays}}",
+  "@rwPlays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rwPlaysMinutes": "{plays, plural, =1{1 play} other{{plays} plays}} · {minutes} min",
+  "@rwPlaysMinutes": {
+    "placeholders": {
+      "plays": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "rwTopSong": "Your song",
+  "rwTopSongs": "On repeat",
+  "rwTopArtists": "Your artists",
+  "rwSound": "Your sound",
+  "rwYourHour": "Your hour",
+  "rwStreak": "Longest streak",
+  "rwDaysInARow": "days in a row with music",
+  "rwDiscovery": "{percent}% of what you played was new to you",
+  "@rwDiscovery": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "rwUnskippable": "Couldn't skip it",
+  "rwNeverSkipped": "Played again and again, not skipped once.",
+  "rwYouAre": "You are",
+  "rwExplorer": "The Explorer",
+  "rwExplorerSub": "Most of what you played was new. Your taste keeps moving.",
+  "rwLoyalist": "The Loyalist",
+  "rwLoyalistSub": "A few artists, played properly. You know what you love.",
+  "rwCollector": "The Collector",
+  "rwCollectorSub": "Dozens of artists, rarely the same song twice.",
+  "rwRepeater": "The Repeater",
+  "rwRepeaterSub": "When a song gets you, it really gets you.",
+  "rwAllRounder": "The All-Rounder",
+  "rwAllRounderSub": "A bit of everything, in good balance.",
+  "shelfYearAgo": "A year ago",
+  "shelfMonthAgo": "A month ago",
+  "shelfOnThisDaySub": "What you were playing around this day"
 }
