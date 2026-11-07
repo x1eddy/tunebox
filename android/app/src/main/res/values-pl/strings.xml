@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Nic nie gra</string>
+    <string name="widget_play">Odtwórz</string>
+    <string name="widget_pause">Pauza</string>
+    <string name="widget_previous">Poprzedni</string>
+    <string name="widget_next">Następny</string>
+    <string name="widget_description">Teraz gra, ze sterowaniem</string>
+    <string name="shortcut_mix">Opisz miks</string>
+    <string name="shortcut_liked">Polubione</string>
+    <string name="shortcut_rewind">Podsumowanie</string>
+    <string name="shortcut_sleep">Wyłącznik czasowy</string>
+</resources>

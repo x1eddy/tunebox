@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="mix" android:enabled="true"
+        android:icon="@drawable/ic_sc_mix"
+        android:shortcutShortLabel="@string/shortcut_mix">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.brito.tunebox"
+            android:targetClass="com.brito.tunebox.MainActivity"
+            android:data="tunebox://app/home/mix" />
+    </shortcut>
+    <shortcut android:shortcutId="liked" android:enabled="true"
+        android:icon="@drawable/ic_sc_liked"
+        android:shortcutShortLabel="@string/shortcut_liked">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.brito.tunebox"
+            android:targetClass="com.brito.tunebox.MainActivity"
+            android:data="tunebox://app/library/playlist/liked" />
+    </shortcut>
+    <shortcut android:shortcutId="rewind" android:enabled="true"
+        android:icon="@drawable/ic_sc_rewind"
+        android:shortcutShortLabel="@string/shortcut_rewind">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.brito.tunebox"
+            android:targetClass="com.brito.tunebox.MainActivity"
+            android:data="tunebox://app/taste/rewind" />
+    </shortcut>
+    <shortcut android:shortcutId="sleep" android:enabled="true"
+        android:icon="@drawable/ic_sc_sleep"
+        android:shortcutShortLabel="@string/shortcut_sleep">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.brito.tunebox"
+            android:targetClass="com.brito.tunebox.MainActivity"
+            android:data="tunebox://app/settings/sound" />
+    </shortcut>
+</shortcuts>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Rien en lecture</string>
+    <string name="widget_play">Lecture</string>
+    <string name="widget_pause">Pause</string>
+    <string name="widget_previous">Précédent</string>
+    <string name="widget_next">Suivant</string>
+    <string name="widget_description">Lecture en cours, avec commandes</string>
+    <string name="shortcut_mix">Décris un mix</string>
+    <string name="shortcut_liked">Titres aimés</string>
+    <string name="shortcut_rewind">Rétro</string>
+    <string name="shortcut_sleep">Minuterie</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Niente in riproduzione</string>
+    <string name="widget_play">Riproduci</string>
+    <string name="widget_pause">Pausa</string>
+    <string name="widget_previous">Precedente</string>
+    <string name="widget_next">Successivo</string>
+    <string name="widget_description">In riproduzione, con i comandi</string>
+    <string name="shortcut_mix">Descrivi un mix</string>
+    <string name="shortcut_liked">Brani preferiti</string>
+    <string name="shortcut_rewind">Riepilogo</string>
+    <string name="shortcut_sleep">Timer</string>
+</resources>

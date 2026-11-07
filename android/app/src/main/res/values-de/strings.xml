@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Gerade läuft nichts</string>
+    <string name="widget_play">Abspielen</string>
+    <string name="widget_pause">Pause</string>
+    <string name="widget_previous">Zurück</string>
+    <string name="widget_next">Weiter</string>
+    <string name="widget_description">Aktueller Song mit Wiedergabe-Tasten</string>
+    <string name="shortcut_mix">Mix beschreiben</string>
+    <string name="shortcut_liked">Lieblingssongs</string>
+    <string name="shortcut_rewind">Rückblick</string>
+    <string name="shortcut_sleep">Sleep-Timer</string>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Nada a tocar</string>
+    <string name="widget_play">Tocar</string>
+    <string name="widget_pause">Pausa</string>
+    <string name="widget_previous">Anterior</string>
+    <string name="widget_next">Seguinte</string>
+    <string name="widget_description">A tocar agora, com controlos</string>
+    <string name="shortcut_mix">Descreve uma mistura</string>
+    <string name="shortcut_liked">Favoritas</string>
+    <string name="shortcut_rewind">Retrospetiva</string>
+    <string name="shortcut_sleep">Temporizador</string>
+</resources>

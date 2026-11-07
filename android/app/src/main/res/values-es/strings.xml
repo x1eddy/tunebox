@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">No suena nada</string>
+    <string name="widget_play">Reproducir</string>
+    <string name="widget_pause">Pausa</string>
+    <string name="widget_previous">Anterior</string>
+    <string name="widget_next">Siguiente</string>
+    <string name="widget_description">Lo que suena, con controles</string>
+    <string name="shortcut_mix">Describe una mezcla</string>
+    <string name="shortcut_liked">Me gusta</string>
+    <string name="shortcut_rewind">Resumen</string>
+    <string name="shortcut_sleep">Temporizador</string>
+</resources>

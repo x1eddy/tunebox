@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_idle">Er speelt niets</string>
+    <string name="widget_play">Afspelen</string>
+    <string name="widget_pause">Pauze</string>
+    <string name="widget_previous">Vorige</string>
+    <string name="widget_next">Volgende</string>
+    <string name="widget_description">Wat er speelt, met bediening</string>
+    <string name="shortcut_mix">Beschrijf een mix</string>
+    <string name="shortcut_liked">Gelikete nummers</string>
+    <string name="shortcut_rewind">Terugblik</string>
+    <string name="shortcut_sleep">Slaaptimer</string>
+</resources>
