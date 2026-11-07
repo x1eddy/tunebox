@@ -109,7 +109,12 @@ class _TourDriverState extends State<TourDriver> {
     if (id == _seen) return;
     _seen = id;
     for (final cmd in parts.skip(1)) {
-      await _run(cmd.trim());
+      try {
+        await _run(cmd.trim());
+      } catch (e) {
+        // ignore: avoid_print
+        print('[tour] $cmd failed: $e');
+      }
     }
     await Future<void>.delayed(const Duration(milliseconds: 700));
     _file(_ackFile, 'tunebox_ack').writeAsStringSync('$id');
@@ -131,19 +136,87 @@ class _TourDriverState extends State<TourDriver> {
         _tap(Offset(double.parse(p[0]), double.parse(p[1])));
       case 'scroll':
         _scroll(double.parse(arg));
+      case 'dtap': // a double tap, 70 ms apart
+        final p = arg.split(',');
+        final at = Offset(double.parse(p[0]), double.parse(p[1]));
+        _tap(at);
+        await Future<void>.delayed(const Duration(milliseconds: 70));
+        _tap(at);
+      case 'spam': // x,y,count: hammering one button
+        final p = arg.split(',');
+        final at = Offset(double.parse(p[0]), double.parse(p[1]));
+        for (var i = 0; i < int.parse(p[2]); i++) {
+          _tap(at);
+          await Future<void>.delayed(const Duration(milliseconds: 25));
+        }
+      case 'swipe': // x1,y1,x2,y2,ms
+        final p = arg.split(',').map(double.parse).toList();
+        await _swipe(Offset(p[0], p[1]), Offset(p[2], p[3]), p[4].round());
+      case 'back': // like a back press, but never leaves the app
+        await WidgetsBinding.instance.endOfFrame;
+        final root = router.routerDelegate.navigatorKey.currentState;
+        if (root != null && root.canPop()) await root.maybePop();
       case 'wait':
         await Future<void>.delayed(Duration(milliseconds: int.parse(arg)));
     }
     await Future<void>.delayed(const Duration(milliseconds: 450));
   }
 
+  int _pointer = 1000;
+
   void _tap(Offset p) {
     final b = GestureBinding.instance;
+    final id = ++_pointer;
     b.handlePointerEvent(
-      PointerDownEvent(position: p, kind: PointerDeviceKind.touch, device: 7),
+      PointerDownEvent(
+        pointer: id,
+        position: p,
+        kind: PointerDeviceKind.touch,
+        device: 7,
+      ),
     );
     b.handlePointerEvent(
-      PointerUpEvent(position: p, kind: PointerDeviceKind.touch, device: 7),
+      PointerUpEvent(
+        pointer: id,
+        position: p,
+        kind: PointerDeviceKind.touch,
+        device: 7,
+      ),
+    );
+  }
+
+  Future<void> _swipe(Offset from, Offset to, int ms) async {
+    final b = GestureBinding.instance;
+    final id = ++_pointer;
+    const steps = 12.0;
+    b.handlePointerEvent(
+      PointerDownEvent(
+        pointer: id,
+        position: from,
+        kind: PointerDeviceKind.touch,
+        device: 7,
+      ),
+    );
+    for (var i = 1; i <= steps; i++) {
+      await Future<void>.delayed(Duration(milliseconds: ms ~/ 12));
+      final p = Offset.lerp(from, to, i / steps)!;
+      b.handlePointerEvent(
+        PointerMoveEvent(
+          pointer: id,
+          position: p,
+          delta: (to - from) / steps,
+          kind: PointerDeviceKind.touch,
+          device: 7,
+        ),
+      );
+    }
+    b.handlePointerEvent(
+      PointerUpEvent(
+        pointer: id,
+        position: to,
+        kind: PointerDeviceKind.touch,
+        device: 7,
+      ),
     );
   }
 
