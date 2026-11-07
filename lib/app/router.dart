@@ -14,6 +14,7 @@ import '../features/settings/settings_page.dart';
 import '../ui/tab_scroll.dart';
 import '../features/taste/taste_page.dart';
 import '../features/owner/owner_page.dart';
+import '../features/sound/sound_page.dart';
 import '../features/transfer/transfer_page.dart';
 import '../state/settings.dart';
 import 'shell.dart';
@@ -35,6 +36,7 @@ List<RouteBase> _details() => [
   GoRoute(path: 'import', builder: (_, _) => const ImportPage()),
   GoRoute(path: 'transfer', builder: (_, _) => const TransferPage()),
   GoRoute(path: 'owner', builder: (_, _) => const OwnerPage()),
+  GoRoute(path: 'sound', builder: (_, _) => const SoundPage()),
   GoRoute(path: 'queue', builder: (_, _) => const QueuePage()),
 ];
 

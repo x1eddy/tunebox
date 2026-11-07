@@ -1729,4 +1729,160 @@ class LCs extends L {
   String addedToPlaylist(String name) {
     return 'Added to \"$name\"';
   }
+
+  @override
+  String get sndTitle => 'Sound';
+
+  @override
+  String get sndSub => 'Crossfade, equaliser, loudness, sleep timer';
+
+  @override
+  String get sndAll => 'All sound settings';
+
+  @override
+  String get sndBetween => 'Between songs';
+
+  @override
+  String get sndCrossfade => 'Crossfade';
+
+  @override
+  String get sndGapless => 'Gapless';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Smart crossfade';
+
+  @override
+  String get sndSmartSub =>
+      'Albums and live sets play straight through; short songs fade quicker';
+
+  @override
+  String get sndLoudness => 'Loudness';
+
+  @override
+  String get sndNormalize => 'Even out loudness';
+
+  @override
+  String get sndNormalizeSub =>
+      'Turns down songs that are mastered louder than the rest';
+
+  @override
+  String get sndQuiet => 'Quiet';
+
+  @override
+  String get sndNormal => 'Normal';
+
+  @override
+  String get sndLoud => 'Loud';
+
+  @override
+  String get sndEq => 'Equaliser';
+
+  @override
+  String get sndEqOn => 'Use the equaliser';
+
+  @override
+  String get sndEqOnlyAndroid => 'The equaliser is available on Android.';
+
+  @override
+  String get sndEqFor => 'Each output keeps its own sound';
+
+  @override
+  String get sndInUse => 'in use';
+
+  @override
+  String get sndSpeaker => 'Speaker';
+
+  @override
+  String get sndWired => 'Wired';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Save as preset';
+
+  @override
+  String get sndPresetName => 'Preset name';
+
+  @override
+  String get sndDeletePreset => 'Delete preset';
+
+  @override
+  String get sndCustom => 'Custom';
+
+  @override
+  String get sndBoost => 'Extra loudness';
+
+  @override
+  String get sndBoostSub =>
+      'Lifts quiet phones and earbuds. Too much can distort.';
+
+  @override
+  String get sndSpeedPitch => 'Speed and pitch';
+
+  @override
+  String get sndSpeed => 'Speed';
+
+  @override
+  String get sndPitch => 'Pitch';
+
+  @override
+  String get sndReset => 'Reset';
+
+  @override
+  String get eqFlat => 'Flat';
+
+  @override
+  String get eqBass => 'Bass';
+
+  @override
+  String get eqVocal => 'Vocal';
+
+  @override
+  String get eqNight => 'Night';
+
+  @override
+  String get eqHeadphones => 'Headphones';
+
+  @override
+  String get eqCar => 'Car';
+
+  @override
+  String get eqTreble => 'Treble';
+
+  @override
+  String get sleepTitle => 'Sleep timer';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'End of song';
+
+  @override
+  String get sleepEndQueue => 'End of queue';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Stops in $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Stops after this song';
+
+  @override
+  String get sleepAfterQueue => 'Stops when the queue ends';
+
+  @override
+  String get sleepShake => 'Shake the phone for 10 more minutes';
+
+  @override
+  String get sleepCancel => 'Turn off';
 }

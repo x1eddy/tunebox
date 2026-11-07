@@ -1734,4 +1734,160 @@ class LFr extends L {
   String addedToPlaylist(String name) {
     return 'Ajouté à « $name »';
   }
+
+  @override
+  String get sndTitle => 'Son';
+
+  @override
+  String get sndSub => 'Fondu, égaliseur, volume, minuterie';
+
+  @override
+  String get sndAll => 'Tous les réglages du son';
+
+  @override
+  String get sndBetween => 'Entre les morceaux';
+
+  @override
+  String get sndCrossfade => 'Fondu enchaîné';
+
+  @override
+  String get sndGapless => 'Sans blanc';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Fondu intelligent';
+
+  @override
+  String get sndSmartSub =>
+      'Albums et lives s\'enchaînent sans fondu ; les morceaux courts fondent plus vite';
+
+  @override
+  String get sndLoudness => 'Volume sonore';
+
+  @override
+  String get sndNormalize => 'Égaliser le volume';
+
+  @override
+  String get sndNormalizeSub =>
+      'Baisse les morceaux mixés plus fort que les autres';
+
+  @override
+  String get sndQuiet => 'Doux';
+
+  @override
+  String get sndNormal => 'Normal';
+
+  @override
+  String get sndLoud => 'Fort';
+
+  @override
+  String get sndEq => 'Égaliseur';
+
+  @override
+  String get sndEqOn => 'Utiliser l\'égaliseur';
+
+  @override
+  String get sndEqOnlyAndroid => 'L\'égaliseur est disponible sur Android.';
+
+  @override
+  String get sndEqFor => 'Chaque sortie garde son propre son';
+
+  @override
+  String get sndInUse => 'actif';
+
+  @override
+  String get sndSpeaker => 'Haut-parleur';
+
+  @override
+  String get sndWired => 'Filaire';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Enregistrer le préréglage';
+
+  @override
+  String get sndPresetName => 'Nom du préréglage';
+
+  @override
+  String get sndDeletePreset => 'Supprimer le préréglage';
+
+  @override
+  String get sndCustom => 'Perso';
+
+  @override
+  String get sndBoost => 'Volume supplémentaire';
+
+  @override
+  String get sndBoostSub =>
+      'Aide les téléphones et écouteurs faibles. Trop peut saturer.';
+
+  @override
+  String get sndSpeedPitch => 'Vitesse et hauteur';
+
+  @override
+  String get sndSpeed => 'Vitesse';
+
+  @override
+  String get sndPitch => 'Hauteur';
+
+  @override
+  String get sndReset => 'Réinitialiser';
+
+  @override
+  String get eqFlat => 'Neutre';
+
+  @override
+  String get eqBass => 'Basses';
+
+  @override
+  String get eqVocal => 'Voix';
+
+  @override
+  String get eqNight => 'Nuit';
+
+  @override
+  String get eqHeadphones => 'Casque';
+
+  @override
+  String get eqCar => 'Voiture';
+
+  @override
+  String get eqTreble => 'Aigus';
+
+  @override
+  String get sleepTitle => 'Minuterie de sommeil';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Fin du morceau';
+
+  @override
+  String get sleepEndQueue => 'Fin de la file';
+
+  @override
+  String sleepLeft(String time) {
+    return 'S\'arrête dans $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'S\'arrête après ce morceau';
+
+  @override
+  String get sleepAfterQueue => 'S\'arrête à la fin de la file';
+
+  @override
+  String get sleepShake => 'Secoue le téléphone pour 10 minutes de plus';
+
+  @override
+  String get sleepCancel => 'Désactiver';
 }

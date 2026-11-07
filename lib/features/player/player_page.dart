@@ -8,6 +8,9 @@ import '../../data/db/database.dart';
 import '../../state/appearance.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
+import '../../state/sleep_timer.dart';
+import '../../state/sound.dart';
+import '../sound/sound_page.dart';
 import '../../l10n/app_localizations.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
@@ -54,7 +57,7 @@ class PlayerPage extends ConsumerWidget {
       settingsProvider.select((s) => s.reduceMotion),
     );
     final palette = ref.watch(artPaletteProvider).value ?? const <Color>[];
-    final speed = ref.read(audioHandlerProvider).player.speed;
+    final speed = ref.watch(soundProvider.select((s) => s.speed));
 
     return Scaffold(
       body: Stack(
@@ -598,8 +601,13 @@ class _BottomBar extends ConsumerWidget {
           ),
           TextButton.icon(
             onPressed: () => _showTuning(context, ref),
-            icon: const Icon(Icons.tune_rounded, size: 19),
-            label: Text(l.cAudio),
+            icon: Icon(
+              ref.watch(sleepTimerProvider).active
+                  ? Icons.bedtime_rounded
+                  : Icons.graphic_eq_rounded,
+              size: 19,
+            ),
+            label: Text(l.sndTitle),
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(
@@ -623,45 +631,49 @@ void _showTuning(BuildContext context, WidgetRef ref) {
   );
 }
 
-class _TuningSheet extends ConsumerStatefulWidget {
+class _TuningSheet extends ConsumerWidget {
   const _TuningSheet();
 
   @override
-  ConsumerState<_TuningSheet> createState() => _TuningSheetState();
-}
-
-class _TuningSheetState extends ConsumerState<_TuningSheet> {
-  late double _speed = ref.read(audioHandlerProvider).player.speed;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
     final l = L.of(context);
     final settings = ref.watch(settingsProvider);
+    final sound = ref.watch(soundProvider);
     final handler = ref.read(audioHandlerProvider);
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(4, 0, 4, 18),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l.setPlayback, style: t.textTheme.titleLarge),
-            const SizedBox(height: 14),
-            Text('${l.cSpeed}  ${_speed.toStringAsFixed(2)}×'),
-            Slider(
-              value: _speed,
-              min: 0.5,
-              max: 2,
-              divisions: 30,
-              onChanged: (v) {
-                setState(() => _speed = v);
-                handler.setSpeed(v);
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+              child: Text(l.sleepTitle, style: t.textTheme.titleLarge),
+            ),
+            const SleepTimerPanel(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Text(
+                '${l.cSpeed}  ${sound.speed.toStringAsFixed(2)}×',
+                style: t.textTheme.titleSmall,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Slider(
+                value: sound.speed,
+                min: 0.5,
+                max: 2,
+                divisions: 30,
+                onChanged: (v) => ref
+                    .read(soundProvider.notifier)
+                    .update((s) => s.copyWith(speed: v)),
+              ),
             ),
             SwitchListTile(
-              contentPadding: EdgeInsets.zero,
               value: settings.skipSilence,
               onChanged: (v) {
                 ref
@@ -672,7 +684,16 @@ class _TuningSheetState extends ConsumerState<_TuningSheet> {
               title: Text(l.setSkipSilence),
               subtitle: Text(l.cAndroidOnly),
             ),
-            const SizedBox(height: 10),
+            ListTile(
+              leading: const Icon(Icons.equalizer_rounded),
+              title: Text(l.sndAll),
+              subtitle: Text(l.sndSub),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {
+                Navigator.pop(context);
+                context.push('/settings/sound');
+              },
+            ),
           ],
         ),
       ),

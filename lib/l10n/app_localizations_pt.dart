@@ -1723,4 +1723,160 @@ class LPt extends L {
   String addedToPlaylist(String name) {
     return 'Adicionada a «$name»';
   }
+
+  @override
+  String get sndTitle => 'Som';
+
+  @override
+  String get sndSub => 'Transição, equalizador, volume, temporizador';
+
+  @override
+  String get sndAll => 'Todas as definições de som';
+
+  @override
+  String get sndBetween => 'Entre músicas';
+
+  @override
+  String get sndCrossfade => 'Transição suave';
+
+  @override
+  String get sndGapless => 'Sem pausas';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Transição inteligente';
+
+  @override
+  String get sndSmartSub =>
+      'Álbuns e concertos tocam seguidos; músicas curtas fazem transição mais rápida';
+
+  @override
+  String get sndLoudness => 'Volume';
+
+  @override
+  String get sndNormalize => 'Igualar o volume';
+
+  @override
+  String get sndNormalizeSub =>
+      'Baixa as músicas masterizadas mais alto do que as outras';
+
+  @override
+  String get sndQuiet => 'Baixo';
+
+  @override
+  String get sndNormal => 'Normal';
+
+  @override
+  String get sndLoud => 'Alto';
+
+  @override
+  String get sndEq => 'Equalizador';
+
+  @override
+  String get sndEqOn => 'Usar o equalizador';
+
+  @override
+  String get sndEqOnlyAndroid => 'O equalizador está disponível no Android.';
+
+  @override
+  String get sndEqFor => 'Cada saída guarda o seu próprio som';
+
+  @override
+  String get sndInUse => 'em uso';
+
+  @override
+  String get sndSpeaker => 'Altifalante';
+
+  @override
+  String get sndWired => 'Com fios';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Guardar predefinição';
+
+  @override
+  String get sndPresetName => 'Nome da predefinição';
+
+  @override
+  String get sndDeletePreset => 'Apagar predefinição';
+
+  @override
+  String get sndCustom => 'Personalizado';
+
+  @override
+  String get sndBoost => 'Volume extra';
+
+  @override
+  String get sndBoostSub =>
+      'Ajuda telemóveis e auriculares fracos. Demasiado pode distorcer.';
+
+  @override
+  String get sndSpeedPitch => 'Velocidade e tom';
+
+  @override
+  String get sndSpeed => 'Velocidade';
+
+  @override
+  String get sndPitch => 'Tom';
+
+  @override
+  String get sndReset => 'Repor';
+
+  @override
+  String get eqFlat => 'Neutro';
+
+  @override
+  String get eqBass => 'Graves';
+
+  @override
+  String get eqVocal => 'Voz';
+
+  @override
+  String get eqNight => 'Noite';
+
+  @override
+  String get eqHeadphones => 'Auscultadores';
+
+  @override
+  String get eqCar => 'Carro';
+
+  @override
+  String get eqTreble => 'Agudos';
+
+  @override
+  String get sleepTitle => 'Temporizador';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Fim da música';
+
+  @override
+  String get sleepEndQueue => 'Fim da fila';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Para dentro de $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Para depois desta música';
+
+  @override
+  String get sleepAfterQueue => 'Para quando a fila acabar';
+
+  @override
+  String get sleepShake => 'Abana o telemóvel para mais 10 minutos';
+
+  @override
+  String get sleepCancel => 'Desligar';
 }

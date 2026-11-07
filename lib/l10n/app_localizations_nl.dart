@@ -1727,4 +1727,160 @@ class LNl extends L {
   String addedToPlaylist(String name) {
     return 'Toegevoegd aan ‘$name’';
   }
+
+  @override
+  String get sndTitle => 'Geluid';
+
+  @override
+  String get sndSub => 'Overgang, equalizer, volume, slaaptimer';
+
+  @override
+  String get sndAll => 'Alle geluidsinstellingen';
+
+  @override
+  String get sndBetween => 'Tussen nummers';
+
+  @override
+  String get sndCrossfade => 'Overvloeien';
+
+  @override
+  String get sndGapless => 'Naadloos';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Slim overvloeien';
+
+  @override
+  String get sndSmartSub =>
+      'Albums en livesets lopen door; korte nummers vloeien sneller over';
+
+  @override
+  String get sndLoudness => 'Luidheid';
+
+  @override
+  String get sndNormalize => 'Volume gelijktrekken';
+
+  @override
+  String get sndNormalizeSub =>
+      'Zet nummers zachter die harder zijn gemasterd dan de rest';
+
+  @override
+  String get sndQuiet => 'Zacht';
+
+  @override
+  String get sndNormal => 'Normaal';
+
+  @override
+  String get sndLoud => 'Hard';
+
+  @override
+  String get sndEq => 'Equalizer';
+
+  @override
+  String get sndEqOn => 'Equalizer gebruiken';
+
+  @override
+  String get sndEqOnlyAndroid => 'De equalizer is beschikbaar op Android.';
+
+  @override
+  String get sndEqFor => 'Elke uitgang houdt zijn eigen geluid';
+
+  @override
+  String get sndInUse => 'in gebruik';
+
+  @override
+  String get sndSpeaker => 'Luidspreker';
+
+  @override
+  String get sndWired => 'Bedraad';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Opslaan als voorkeuze';
+
+  @override
+  String get sndPresetName => 'Naam van voorkeuze';
+
+  @override
+  String get sndDeletePreset => 'Voorkeuze verwijderen';
+
+  @override
+  String get sndCustom => 'Eigen';
+
+  @override
+  String get sndBoost => 'Extra volume';
+
+  @override
+  String get sndBoostSub =>
+      'Helpt bij zachte telefoons en oordopjes. Te veel kan vervormen.';
+
+  @override
+  String get sndSpeedPitch => 'Snelheid en toonhoogte';
+
+  @override
+  String get sndSpeed => 'Snelheid';
+
+  @override
+  String get sndPitch => 'Toonhoogte';
+
+  @override
+  String get sndReset => 'Herstellen';
+
+  @override
+  String get eqFlat => 'Vlak';
+
+  @override
+  String get eqBass => 'Bas';
+
+  @override
+  String get eqVocal => 'Stem';
+
+  @override
+  String get eqNight => 'Nacht';
+
+  @override
+  String get eqHeadphones => 'Koptelefoon';
+
+  @override
+  String get eqCar => 'Auto';
+
+  @override
+  String get eqTreble => 'Hoog';
+
+  @override
+  String get sleepTitle => 'Slaaptimer';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Einde van nummer';
+
+  @override
+  String get sleepEndQueue => 'Einde van wachtrij';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Stopt over $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Stopt na dit nummer';
+
+  @override
+  String get sleepAfterQueue => 'Stopt als de wachtrij op is';
+
+  @override
+  String get sleepShake => 'Schud de telefoon voor 10 minuten extra';
+
+  @override
+  String get sleepCancel => 'Uitzetten';
 }

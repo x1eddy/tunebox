@@ -584,6 +584,11 @@ class PlayerResult {
         (streaming?['adaptiveFormats'] as List?)?.cast<Map<String, dynamic>>() ??
         const [];
 
+    final audioConfig =
+        (json['playerConfig'] as Map<String, dynamic>?)?['audioConfig']
+            as Map<String, dynamic>?;
+    final songLoudness = (audioConfig?['loudnessDb'] as num?)?.toDouble();
+
     final formats = <AudioFormat>[];
     for (final f in adaptive) {
       final mime = f['mimeType'] as String? ?? '';
@@ -596,6 +601,7 @@ class PlayerResult {
           bitrate: f['bitrate'] as int? ?? 0,
           mimeType: mime.split(';').first,
           contentLength: int.tryParse('${f['contentLength'] ?? 0}') ?? 0,
+          loudnessDb: (f['loudnessDb'] as num?)?.toDouble() ?? songLoudness,
         ),
       );
     }
@@ -834,6 +840,7 @@ class AudioFormat {
     required this.bitrate,
     required this.mimeType,
     required this.contentLength,
+    this.loudnessDb,
   });
 
   final String url;
@@ -841,6 +848,10 @@ class AudioFormat {
   final int bitrate;
   final String mimeType;
   final int contentLength;
+
+  /// How much louder than YouTube's reference this file is (dB). Drives
+  /// loudness normalisation; null when YouTube did not say.
+  final double? loudnessDb;
 
   String get extension => mimeType.contains('webm') ? 'webm' : 'm4a';
   int get kbps => (bitrate / 1000).round();

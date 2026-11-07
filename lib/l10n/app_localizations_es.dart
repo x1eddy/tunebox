@@ -1729,4 +1729,160 @@ class LEs extends L {
   String addedToPlaylist(String name) {
     return 'Añadida a «$name»';
   }
+
+  @override
+  String get sndTitle => 'Sonido';
+
+  @override
+  String get sndSub => 'Fundido, ecualizador, volumen, temporizador';
+
+  @override
+  String get sndAll => 'Todos los ajustes de sonido';
+
+  @override
+  String get sndBetween => 'Entre canciones';
+
+  @override
+  String get sndCrossfade => 'Fundido cruzado';
+
+  @override
+  String get sndGapless => 'Sin pausas';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Fundido inteligente';
+
+  @override
+  String get sndSmartSub =>
+      'Los álbumes y directos suenan seguidos; las canciones cortas se funden antes';
+
+  @override
+  String get sndLoudness => 'Volumen';
+
+  @override
+  String get sndNormalize => 'Igualar el volumen';
+
+  @override
+  String get sndNormalizeSub =>
+      'Baja las canciones masterizadas más fuerte que el resto';
+
+  @override
+  String get sndQuiet => 'Bajo';
+
+  @override
+  String get sndNormal => 'Normal';
+
+  @override
+  String get sndLoud => 'Alto';
+
+  @override
+  String get sndEq => 'Ecualizador';
+
+  @override
+  String get sndEqOn => 'Usar el ecualizador';
+
+  @override
+  String get sndEqOnlyAndroid => 'El ecualizador está disponible en Android.';
+
+  @override
+  String get sndEqFor => 'Cada salida guarda su propio sonido';
+
+  @override
+  String get sndInUse => 'en uso';
+
+  @override
+  String get sndSpeaker => 'Altavoz';
+
+  @override
+  String get sndWired => 'Con cable';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Guardar como ajuste';
+
+  @override
+  String get sndPresetName => 'Nombre del ajuste';
+
+  @override
+  String get sndDeletePreset => 'Borrar ajuste';
+
+  @override
+  String get sndCustom => 'Personalizado';
+
+  @override
+  String get sndBoost => 'Volumen extra';
+
+  @override
+  String get sndBoostSub =>
+      'Ayuda con móviles y auriculares flojos. Demasiado puede distorsionar.';
+
+  @override
+  String get sndSpeedPitch => 'Velocidad y tono';
+
+  @override
+  String get sndSpeed => 'Velocidad';
+
+  @override
+  String get sndPitch => 'Tono';
+
+  @override
+  String get sndReset => 'Restablecer';
+
+  @override
+  String get eqFlat => 'Plano';
+
+  @override
+  String get eqBass => 'Graves';
+
+  @override
+  String get eqVocal => 'Voz';
+
+  @override
+  String get eqNight => 'Noche';
+
+  @override
+  String get eqHeadphones => 'Auriculares';
+
+  @override
+  String get eqCar => 'Coche';
+
+  @override
+  String get eqTreble => 'Agudos';
+
+  @override
+  String get sleepTitle => 'Temporizador';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Al acabar la canción';
+
+  @override
+  String get sleepEndQueue => 'Al acabar la cola';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Se detiene en $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Se detiene tras esta canción';
+
+  @override
+  String get sleepAfterQueue => 'Se detiene al acabar la cola';
+
+  @override
+  String get sleepShake => 'Agita el móvil para 10 minutos más';
+
+  @override
+  String get sleepCancel => 'Desactivar';
 }

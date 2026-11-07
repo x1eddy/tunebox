@@ -3194,6 +3194,300 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Added to \"{name}\"'**
   String addedToPlaylist(String name);
+
+  /// No description provided for @sndTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sndTitle;
+
+  /// No description provided for @sndSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Crossfade, equaliser, loudness, sleep timer'**
+  String get sndSub;
+
+  /// No description provided for @sndAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All sound settings'**
+  String get sndAll;
+
+  /// No description provided for @sndBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Between songs'**
+  String get sndBetween;
+
+  /// No description provided for @sndCrossfade.
+  ///
+  /// In en, this message translates to:
+  /// **'Crossfade'**
+  String get sndCrossfade;
+
+  /// No description provided for @sndGapless.
+  ///
+  /// In en, this message translates to:
+  /// **'Gapless'**
+  String get sndGapless;
+
+  /// No description provided for @sndSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} s'**
+  String sndSeconds(int n);
+
+  /// No description provided for @sndSmart.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart crossfade'**
+  String get sndSmart;
+
+  /// No description provided for @sndSmartSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums and live sets play straight through; short songs fade quicker'**
+  String get sndSmartSub;
+
+  /// No description provided for @sndLoudness.
+  ///
+  /// In en, this message translates to:
+  /// **'Loudness'**
+  String get sndLoudness;
+
+  /// No description provided for @sndNormalize.
+  ///
+  /// In en, this message translates to:
+  /// **'Even out loudness'**
+  String get sndNormalize;
+
+  /// No description provided for @sndNormalizeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Turns down songs that are mastered louder than the rest'**
+  String get sndNormalizeSub;
+
+  /// No description provided for @sndQuiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiet'**
+  String get sndQuiet;
+
+  /// No description provided for @sndNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get sndNormal;
+
+  /// No description provided for @sndLoud.
+  ///
+  /// In en, this message translates to:
+  /// **'Loud'**
+  String get sndLoud;
+
+  /// No description provided for @sndEq.
+  ///
+  /// In en, this message translates to:
+  /// **'Equaliser'**
+  String get sndEq;
+
+  /// No description provided for @sndEqOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the equaliser'**
+  String get sndEqOn;
+
+  /// No description provided for @sndEqOnlyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'The equaliser is available on Android.'**
+  String get sndEqOnlyAndroid;
+
+  /// No description provided for @sndEqFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Each output keeps its own sound'**
+  String get sndEqFor;
+
+  /// No description provided for @sndInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'in use'**
+  String get sndInUse;
+
+  /// No description provided for @sndSpeaker.
+  ///
+  /// In en, this message translates to:
+  /// **'Speaker'**
+  String get sndSpeaker;
+
+  /// No description provided for @sndWired.
+  ///
+  /// In en, this message translates to:
+  /// **'Wired'**
+  String get sndWired;
+
+  /// No description provided for @sndBluetooth.
+  ///
+  /// In en, this message translates to:
+  /// **'Bluetooth'**
+  String get sndBluetooth;
+
+  /// No description provided for @sndSavePreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as preset'**
+  String get sndSavePreset;
+
+  /// No description provided for @sndPresetName.
+  ///
+  /// In en, this message translates to:
+  /// **'Preset name'**
+  String get sndPresetName;
+
+  /// No description provided for @sndDeletePreset.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete preset'**
+  String get sndDeletePreset;
+
+  /// No description provided for @sndCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get sndCustom;
+
+  /// No description provided for @sndBoost.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra loudness'**
+  String get sndBoost;
+
+  /// No description provided for @sndBoostSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifts quiet phones and earbuds. Too much can distort.'**
+  String get sndBoostSub;
+
+  /// No description provided for @sndSpeedPitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed and pitch'**
+  String get sndSpeedPitch;
+
+  /// No description provided for @sndSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get sndSpeed;
+
+  /// No description provided for @sndPitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch'**
+  String get sndPitch;
+
+  /// No description provided for @sndReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get sndReset;
+
+  /// No description provided for @eqFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat'**
+  String get eqFlat;
+
+  /// No description provided for @eqBass.
+  ///
+  /// In en, this message translates to:
+  /// **'Bass'**
+  String get eqBass;
+
+  /// No description provided for @eqVocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Vocal'**
+  String get eqVocal;
+
+  /// No description provided for @eqNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night'**
+  String get eqNight;
+
+  /// No description provided for @eqHeadphones.
+  ///
+  /// In en, this message translates to:
+  /// **'Headphones'**
+  String get eqHeadphones;
+
+  /// No description provided for @eqCar.
+  ///
+  /// In en, this message translates to:
+  /// **'Car'**
+  String get eqCar;
+
+  /// No description provided for @eqTreble.
+  ///
+  /// In en, this message translates to:
+  /// **'Treble'**
+  String get eqTreble;
+
+  /// No description provided for @sleepTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep timer'**
+  String get sleepTitle;
+
+  /// No description provided for @sleepMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min'**
+  String sleepMinutes(int n);
+
+  /// No description provided for @sleepEndSong.
+  ///
+  /// In en, this message translates to:
+  /// **'End of song'**
+  String get sleepEndSong;
+
+  /// No description provided for @sleepEndQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'End of queue'**
+  String get sleepEndQueue;
+
+  /// No description provided for @sleepLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops in {time}'**
+  String sleepLeft(String time);
+
+  /// No description provided for @sleepAfterSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops after this song'**
+  String get sleepAfterSong;
+
+  /// No description provided for @sleepAfterQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Stops when the queue ends'**
+  String get sleepAfterQueue;
+
+  /// No description provided for @sleepShake.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake the phone for 10 more minutes'**
+  String get sleepShake;
+
+  /// No description provided for @sleepCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get sleepCancel;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

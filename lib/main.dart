@@ -22,6 +22,7 @@ import 'ui/scroll_behavior.dart';
 import 'state/providers.dart';
 import 'state/appearance.dart';
 import 'state/settings.dart';
+import 'state/sound_wiring.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -159,6 +160,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
       ref.invalidate(tasteProfileProvider);
     });
     handler.setSkipSilence(ref.read(settingsProvider).skipSilence);
+    ref.read(soundWiringProvider);
     if (kTour) startFrameStats();
   }
 

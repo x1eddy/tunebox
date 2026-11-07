@@ -1064,5 +1064,75 @@
         "type": "String"
       }
     }
-  }
+  },
+  "sndTitle": "Sound",
+  "sndSub": "Crossfade, equaliser, loudness, sleep timer",
+  "sndAll": "All sound settings",
+  "sndBetween": "Between songs",
+  "sndCrossfade": "Crossfade",
+  "sndGapless": "Gapless",
+  "sndSeconds": "{n} s",
+  "@sndSeconds": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sndSmart": "Smart crossfade",
+  "sndSmartSub": "Albums and live sets play straight through; short songs fade quicker",
+  "sndLoudness": "Loudness",
+  "sndNormalize": "Even out loudness",
+  "sndNormalizeSub": "Turns down songs that are mastered louder than the rest",
+  "sndQuiet": "Quiet",
+  "sndNormal": "Normal",
+  "sndLoud": "Loud",
+  "sndEq": "Equaliser",
+  "sndEqOn": "Use the equaliser",
+  "sndEqOnlyAndroid": "The equaliser is available on Android.",
+  "sndEqFor": "Each output keeps its own sound",
+  "sndInUse": "in use",
+  "sndSpeaker": "Speaker",
+  "sndWired": "Wired",
+  "sndBluetooth": "Bluetooth",
+  "sndSavePreset": "Save as preset",
+  "sndPresetName": "Preset name",
+  "sndDeletePreset": "Delete preset",
+  "sndCustom": "Custom",
+  "sndBoost": "Extra loudness",
+  "sndBoostSub": "Lifts quiet phones and earbuds. Too much can distort.",
+  "sndSpeedPitch": "Speed and pitch",
+  "sndSpeed": "Speed",
+  "sndPitch": "Pitch",
+  "sndReset": "Reset",
+  "eqFlat": "Flat",
+  "eqBass": "Bass",
+  "eqVocal": "Vocal",
+  "eqNight": "Night",
+  "eqHeadphones": "Headphones",
+  "eqCar": "Car",
+  "eqTreble": "Treble",
+  "sleepTitle": "Sleep timer",
+  "sleepMinutes": "{n} min",
+  "@sleepMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "sleepEndSong": "End of song",
+  "sleepEndQueue": "End of queue",
+  "sleepLeft": "Stops in {time}",
+  "@sleepLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sleepAfterSong": "Stops after this song",
+  "sleepAfterQueue": "Stops when the queue ends",
+  "sleepShake": "Shake the phone for 10 more minutes",
+  "sleepCancel": "Turn off"
 }

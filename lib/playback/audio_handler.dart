@@ -6,6 +6,8 @@ import 'package:drift/drift.dart' show Value;
 import 'package:just_audio/just_audio.dart';
 
 import '../data/db/database.dart';
+import '../state/owner.dart' show logEvent;
+import 'sound_math.dart';
 import 'stream_proxy.dart';
 
 /// What a finished (or abandoned) listen looked like — the AI's raw signal.
@@ -25,18 +27,158 @@ class ListenReport {
   final String origin;
 }
 
-/// Owns the actual audio player, the queue and the OS media notification.
+/// Owns the audio players, the queue and the OS media notification.
+///
+/// There are two players. One plays; the other quietly loads the next song,
+/// so a track change is instant (gapless) and the two can overlap for a
+/// crossfade. They swap roles on every change.
 class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   TuneBoxAudioHandler(this._db, this._proxy) {
-    _player.playbackEventStream.listen(_broadcastState, onError: (_) {});
-    _player.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) unawaited(_advance(skipped: false));
-    });
+    _a = _makePlayer();
+    _b = _makePlayer();
+    _player = _a;
+    for (final p in [_a, _b]) {
+      p.playbackEventStream.listen((e) {
+        if (identical(p, _player)) _broadcastState(e);
+      }, onError: (_) {});
+      p.processingStateStream.listen((state) {
+        if (identical(p, _player) && state == ProcessingState.completed) {
+          unawaited(_advance(skipped: false));
+        }
+      });
+      p.positionStream.listen((pos) {
+        if (!identical(p, _player)) return;
+        if (!_positions.isClosed) _positions.add(pos);
+        _watchForFade(pos);
+      });
+      p.playingStream.listen((_) {
+        if (identical(p, _player)) _syncListenClock();
+      });
+    }
   }
 
   AppDatabase _db;
   final StreamProxy _proxy;
-  final AudioPlayer _player = AudioPlayer();
+  late final AudioPlayer _a;
+  late final AudioPlayer _b;
+
+  /// The player you hear. [_other] is the one getting the next song ready.
+  late AudioPlayer _player;
+  AudioPlayer get _other => identical(_player, _a) ? _b : _a;
+
+  // Android-only effects, one set per player (an effect belongs to one
+  // player's audio session).
+  final _eqs = <AudioPlayer, AndroidEqualizer>{};
+  final _boosts = <AudioPlayer, AndroidLoudnessEnhancer>{};
+
+  AudioPlayer _makePlayer() {
+    if (!Platform.isAndroid) return AudioPlayer();
+    final eq = AndroidEqualizer();
+    final boost = AndroidLoudnessEnhancer();
+    final p = AudioPlayer(
+      audioPipeline: AudioPipeline(androidAudioEffects: [eq, boost]),
+    );
+    _eqs[p] = eq;
+    _boosts[p] = boost;
+    return p;
+  }
+
+  final _positions = StreamController<Duration>.broadcast();
+
+  // ------------------------------------------------------------ sound setup
+
+  /// Fade length between songs; zero is gapless with no overlap.
+  Duration crossfade = Duration.zero;
+  bool smartCrossfade = true;
+  bool normalize = true;
+  LoudnessTarget loudnessTarget = LoudnessTarget.normal;
+
+  /// Sleep-timer fade, multiplied into every volume (1 = untouched).
+  double _master = 1.0;
+
+  /// Loudness YouTube reported for each song we resolved.
+  final _loudness = <String, double?>{};
+
+  /// Pause when the current song ends instead of moving on (sleep timer).
+  bool pauseAfterCurrent = false;
+
+  /// Do not start a radio when the queue runs out (sleep timer).
+  bool stopAtQueueEnd = false;
+
+  /// Called when [pauseAfterCurrent] or [stopAtQueueEnd] did its job.
+  void Function()? onSleepDone;
+
+  double _gainOf(Song? song) => song == null || !normalize
+      ? 1.0
+      : normalizationGain(_loudness[song.id], loudnessTarget);
+
+  Future<void> _applyVolume() async {
+    if (_fading) return;
+    await _player.setVolume(_gainOf(currentSong) * _master);
+  }
+
+  double get masterVolume => _master;
+
+  /// For the sleep timer's fade-out.
+  Future<void> setMasterVolume(double v) async {
+    _master = v.clamp(0.0, 1.0);
+    await _applyVolume();
+  }
+
+  /// Applies an equaliser curve ([gains] in dB at [kEqFrequencies]) and a
+  /// loudness boost to both players. Android only; elsewhere a no-op.
+  Future<void> applyEq({
+    required bool enabled,
+    required List<double> gains,
+    required double boostDb,
+  }) async {
+    _eqEnabled = enabled;
+    _eqGains = gains;
+    _boostDb = boostDb;
+    for (final p in [_a, _b]) {
+      await _applyEqTo(p);
+    }
+  }
+
+  bool _eqEnabled = false;
+  List<double> _eqGains = kEqPresets['Flat']!;
+  double _boostDb = 0;
+
+  Future<void> _applyEqTo(AudioPlayer p) async {
+    final eq = _eqs[p];
+    final boost = _boosts[p];
+    if (eq == null || boost == null) return;
+    try {
+      await eq.setEnabled(_eqEnabled);
+      await boost.setEnabled(_boostDb > 0);
+      await boost.setTargetGain(_boostDb);
+      if (!_eqEnabled || p.audioSource == null) return;
+      // The bands only exist once the player has a session; a fresh player
+      // has none yet, and it is tried again after the next load.
+      final params = await eq.parameters.timeout(const Duration(seconds: 2));
+      for (final band in params.bands) {
+        final db = gainAt(_eqGains, band.centerFrequency);
+        await band.setGain(db.clamp(params.minDecibels, params.maxDecibels));
+      }
+    } catch (e) {
+      logEvent('equaliser not applied — $e');
+    }
+  }
+
+  /// What the user is actually listening to: wall-clock time while playing,
+  /// times speed. Seeking does not count, and neither does a pause.
+  final _listen = Stopwatch();
+  void _syncListenClock() {
+    if (_player.playing && !_listen.isRunning) {
+      _listen.start();
+    } else if (!_player.playing && _listen.isRunning) {
+      _listen.stop();
+    }
+  }
+
+  Duration get _listened => Duration(
+    milliseconds: (_listen.elapsedMilliseconds * _player.speed).round(),
+  );
 
   final _queue = <Song>[];
   final _reports = StreamController<ListenReport>.broadcast();
@@ -64,8 +206,11 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   /// Bumped on every load request. A load that finds a newer token has been
   /// superseded — the user tapped something else — and bows out quietly.
   int _loadToken = 0;
-  Duration _playedBefore = Duration.zero;
   int _consecutiveFailures = 0;
+
+  /// Song id that [_other] holds, ready to start.
+  String? _prefetchedId;
+  int _prefetchToken = 0;
 
   /// Points the player at another profile's database. The queue belongs to
   /// the profile that built it, so it is emptied.
@@ -89,10 +234,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   Stream<Song?> get songChanges => _currentSong.stream;
   Stream<String> get errors => _errors.stream;
   Stream<List<Song>> get queueChanges => _queueChanges.stream;
-  Stream<Duration> get positionStream => _player.positionStream;
-  Stream<bool> get loadingStream => _player.processingStateStream.map(
-    (s) => s == ProcessingState.loading || s == ProcessingState.buffering,
-  );
+  Stream<Duration> get positionStream => _positions.stream;
 
   // ------------------------------------------------------------------ queue
 
@@ -116,6 +258,8 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     if (_queue.isEmpty) return playSongs([song]);
     _queue.insert(next ? _index + 1 : _queue.length, song);
     queue.add([for (final s in _queue) _mediaItem(s)]);
+    _queueChanges.add(queueSongs);
+    _schedulePrefetch();
   }
 
   /// Moves a queued song, keeping the currently playing one under the cursor.
@@ -130,6 +274,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     }
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
+    _schedulePrefetch();
   }
 
   /// Drops a song from the queue (not the one playing).
@@ -139,6 +284,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     if (index < _index) _index--;
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
+    _schedulePrefetch();
   }
 
   /// Puts a song back where it was (undo for [removeAt]).
@@ -148,6 +294,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     if (at <= _index && _queue.length > 1) _index++;
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
+    _schedulePrefetch();
   }
 
   /// Swaps the queue for [songs] without touching what is playing, as long as
@@ -161,6 +308,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _index = i < 0 ? 0 : i;
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
+    _schedulePrefetch();
   }
 
   Future<void> jumpTo(int index) async {
@@ -170,31 +318,57 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     await _load(play: true);
   }
 
+  /// Points [p] at [song]: the file if it is on the device, otherwise the
+  /// loopback proxy. Remembers the loudness YouTube reported.
+  Future<void> _setSource(AudioPlayer p, Song song) async {
+    final path = song.filePath;
+    if (path != null && File(path).existsSync()) {
+      await p.setAudioSource(AudioSource.file(path));
+      return;
+    }
+    // Served by the local proxy, which handles ranges and URL expiry.
+    if (!_proxy.running) await _proxy.start();
+    final format = await _proxy
+        .resolve(song.id, maxKbps: streamQualityKbps)
+        .timeout(const Duration(seconds: 30));
+    _loudness[song.id] = format.loudnessDb;
+    await p.setAudioSource(AudioSource.uri(_proxy.urlFor(song.id), tag: song.id));
+  }
+
   Future<void> _load({required bool play}) async {
     final song = currentSong;
     if (song == null) return;
     // Spam-tapping used to leave the player on the first song: a second load
     // was dropped while the first was still in flight. Now the newest wins.
     final token = ++_loadToken;
-    _playedBefore = Duration.zero;
+    logEvent('load ${_index + 1}/${_queue.length}: ${song.title}');
+    _cancelFade();
+    _listen
+      ..stop()
+      ..reset();
     _currentSong.add(song);
     mediaItem.add(_mediaItem(song));
     try {
-      final path = song.filePath;
-      if (path != null && File(path).existsSync()) {
-        await _player.setAudioSource(AudioSource.file(path));
+      if (_prefetchedId == song.id && _other.audioSource != null) {
+        // Already loaded next door: swap and go, no gap.
+        logEvent('gapless switch to ${song.title}');
+        final old = _player;
+        _player = _other;
+        _prefetchedId = null;
+        unawaited(old.stop());
+        if (_player.position > const Duration(milliseconds: 300)) {
+          await _player.seek(Duration.zero);
+        }
+        _broadcastState(_player.playbackEvent);
       } else {
-        // Served by the local proxy, which handles ranges and URL expiry.
-        if (!_proxy.running) await _proxy.start();
-        await _proxy
-            .resolve(song.id, maxKbps: streamQualityKbps)
-            .timeout(const Duration(seconds: 30));
-        if (token != _loadToken) return;
-        await _player.setAudioSource(
-          AudioSource.uri(_proxy.urlFor(song.id), tag: song.id),
-        );
+        _prefetchToken++;
+        _prefetchedId = null;
+        unawaited(_other.stop());
+        await _setSource(_player, song);
       }
       if (token != _loadToken) return;
+      await _applyVolume();
+      unawaited(_applyEqTo(_player));
       // NOT awaited: just_audio's play() completes when the track *finishes*,
       // so awaiting it defers everything below until the song ends — which is
       // why the resume snapshot was never written.
@@ -207,6 +381,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       }
       _consecutiveFailures = 0;
       _snapshot();
+      _schedulePrefetch();
       // Search results sometimes arrive without a length; now we know it.
       final real = _player.duration;
       if (real != null && real.inMilliseconds > 0 &&
@@ -222,6 +397,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       // A load the user has already moved on from is not a failure.
       if (token != _loadToken) return;
       _consecutiveFailures++;
+      logEvent('load failed: ${song.title} — $e');
       // Three in a row means the source is down, not one bad track — stop
       // instead of burning through the whole queue.
       if (_consecutiveFailures >= 3 || _index + 1 >= _queue.length) {
@@ -237,11 +413,147 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 
+  /// The queue position that plays after the current one, or null.
+  int? get _nextIndex {
+    if (_queue.isEmpty || _repeatOne) return null;
+    if (_index + 1 < _queue.length) return _index + 1;
+    if (_repeatAll) return 0;
+    return null;
+  }
+
+  Timer? _prefetchTimer;
+
+  /// Loads the next song into the idle player a few seconds after the
+  /// current one settles, so the network is not split during the start.
+  void _schedulePrefetch() {
+    _prefetchTimer?.cancel();
+    _prefetchTimer = Timer(const Duration(seconds: 4), () {
+      unawaited(_prefetch());
+    });
+  }
+
+  Future<void> _prefetch() async {
+    final i = _nextIndex;
+    if (i == null || _fading) return;
+    final next = _queue[i];
+    if (_prefetchedId == next.id && _other.audioSource != null) return;
+    final token = ++_prefetchToken;
+    _prefetchedId = null;
+    try {
+      final target = _other;
+      await target.stop();
+      await _setSource(target, next);
+      if (token != _prefetchToken || identical(target, _player)) return;
+      await target.setVolume(0);
+      _prefetchedId = next.id;
+      logEvent('ready next: ${next.title}');
+      unawaited(_applyEqTo(target));
+    } catch (e) {
+      // Not fatal: the song loads the normal way when its turn comes.
+      logEvent('prefetch failed: ${next.title} — $e');
+    }
+  }
+
+  // -------------------------------------------------------------- crossfade
+
+  bool _fading = false;
+  Timer? _fadeTimer;
+  AudioPlayer? _fadingOut;
+
+  void _watchForFade(Duration position) {
+    if (_fading || !_player.playing || pauseAfterCurrent) return;
+    final i = _nextIndex;
+    if (i == null) return;
+    final next = _queue[i];
+    final current = currentSong;
+    if (current == null) return;
+    final length = fadeLength(
+      chosen: crossfade,
+      smart: smartCrossfade,
+      fromAlbum: current.album,
+      toAlbum: next.album,
+      fromDuration: _player.duration,
+    );
+    if (!shouldStartFade(
+      position: position,
+      duration: _player.duration,
+      crossfade: length,
+      hasNext: true,
+      nextReady: _prefetchedId == next.id && _other.audioSource != null,
+    )) {
+      return;
+    }
+    unawaited(_startFade(i, length));
+  }
+
+  Future<void> _startFade(int nextIndex, Duration length) async {
+    _fading = true;
+    logEvent('crossfade ${length.inSeconds}s into ${_queue[nextIndex].title}');
+    final from = _player;
+    final to = _other;
+    final fromGain = _gainOf(currentSong) * _master;
+    await _report(skipped: false);
+    _index = nextIndex;
+    final song = _queue[nextIndex];
+    final toGain = _gainOf(song) * _master;
+    _player = to;
+    _prefetchedId = null;
+    _fadingOut = from;
+    _listen
+      ..stop()
+      ..reset();
+    _currentSong.add(song);
+    mediaItem.add(_mediaItem(song));
+    await to.setVolume(0);
+    unawaited(to.play());
+    _broadcastState(to.playbackEvent);
+
+    final watch = Stopwatch()..start();
+    _fadeTimer = Timer.periodic(const Duration(milliseconds: 50), (t) {
+      final x = watch.elapsedMilliseconds / length.inMilliseconds;
+      final (out, into) = crossfadeCurve(x);
+      unawaited(from.setVolume(fromGain * out));
+      unawaited(to.setVolume(toGain * into));
+      if (x >= 1) _finishFade();
+    });
+    _snapshot();
+  }
+
+  /// Ends a crossfade at once: the old song stops, the new one is at full
+  /// volume. Safe to call when nothing is fading.
+  void _finishFade() {
+    _fadeTimer?.cancel();
+    _fadeTimer = null;
+    final out = _fadingOut;
+    _fadingOut = null;
+    if (!_fading) return;
+    _fading = false;
+    if (out != null) unawaited(out.stop());
+    unawaited(_applyVolume());
+    _schedulePrefetch();
+  }
+
+  /// A user action took over: drop the fading-out song immediately.
+  void _cancelFade() {
+    if (_fading) _finishFade();
+  }
+
   Future<void> _advance({required bool skipped}) async {
     await _report(skipped: skipped);
-    if (_repeatOne) {
+    if (!skipped && pauseAfterCurrent) {
+      // Sleep timer "end of song": stay on this song, stopped at its end.
+      pauseAfterCurrent = false;
+      await _player.pause();
       await _player.seek(Duration.zero);
-      await _player.play();
+      onSleepDone?.call();
+      return;
+    }
+    if (_repeatOne && !skipped) {
+      _listen
+        ..stop()
+        ..reset();
+      await _player.seek(Duration.zero);
+      unawaited(_player.play());
       return;
     }
     if (_index + 1 < _queue.length) {
@@ -251,6 +563,12 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     } else {
       final last = currentSong;
       final radio = onQueueExhausted;
+      if (stopAtQueueEnd) {
+        stopAtQueueEnd = false;
+        await _player.pause();
+        onSleepDone?.call();
+        return;
+      }
       if (last != null && radio != null) {
         await radio(last);
         return;
@@ -264,16 +582,19 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> _report({required bool skipped}) async {
     final song = currentSong;
     if (song == null) return;
-    final played = _player.position + _playedBefore;
-    if (played.inSeconds < 2) return;
     final duration = _player.duration ?? Duration(milliseconds: song.durationMs);
+    // Real listening time, capped at the song's length; a song you seeked
+    // through to the end was not "finished".
+    var played = _listened;
+    if (duration > Duration.zero && played > duration) played = duration;
+    if (played.inSeconds < 2) return;
     _reports.add(
       ListenReport(
         songId: song.id,
         playedMs: played.inMilliseconds,
         durationMs: duration.inMilliseconds,
-        skipped: skipped &&
-            played.inMilliseconds < duration.inMilliseconds * 0.7,
+        skipped:
+            skipped && played.inMilliseconds < duration.inMilliseconds * 0.7,
         origin: _origin,
       ),
     );
@@ -286,6 +607,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> pause() async {
+    _cancelFade();
     _snapshot();
     await _player.pause();
   }
@@ -327,6 +649,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> stop() async {
     await _report(skipped: true);
+    _cancelFade();
+    _prefetchTimer?.cancel();
+    _prefetchedId = null;
+    await _other.stop();
     await _player.stop();
     await super.stop();
   }
@@ -368,6 +694,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _repeatOne = repeatMode == AudioServiceRepeatMode.one;
     _repeatAll = repeatMode != AudioServiceRepeatMode.none;
     _broadcastState(_player.playbackEvent);
+    _schedulePrefetch();
   }
 
   @override
@@ -384,20 +711,36 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       _index = 0;
       queue.add([for (final s in _queue) _mediaItem(s)]);
       _queueChanges.add(queueSongs);
+      _schedulePrefetch();
     }
     _broadcastState(_player.playbackEvent);
   }
 
   Future<void> setSkipSilence(bool enabled) async {
-    try {
-      await _player.setSkipSilenceEnabled(enabled);
-    } catch (_) {
-      // desktop backends don't implement it
+    for (final p in [_a, _b]) {
+      try {
+        await p.setSkipSilenceEnabled(enabled);
+      } catch (_) {
+        // desktop backends don't implement it
+      }
     }
   }
 
   @override
-  Future<void> setSpeed(double speed) => _player.setSpeed(speed);
+  Future<void> setSpeed(double speed) async {
+    for (final p in [_a, _b]) {
+      await p.setSpeed(speed);
+    }
+  }
+
+  /// Android and Linux only; iOS keeps the original pitch.
+  Future<void> setPitch(double pitch) async {
+    for (final p in [_a, _b]) {
+      try {
+        await p.setPitch(pitch);
+      } catch (_) {}
+    }
+  }
 
   // ----------------------------------------------------------------- state
 
@@ -468,7 +811,11 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   Future<void> disposePlayer() async {
-    await _player.dispose();
+    _cancelFade();
+    _prefetchTimer?.cancel();
+    await _a.dispose();
+    await _b.dispose();
+    await _positions.close();
     await _reports.close();
     await _currentSong.close();
     await _errors.close();

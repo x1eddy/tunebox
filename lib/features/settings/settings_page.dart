@@ -63,6 +63,14 @@ class SettingsPage extends ConsumerWidget {
             },
           ),
           const Divider(height: 8),
+          ListTile(
+            leading: const Icon(Icons.graphic_eq_rounded),
+            title: Text(l.sndTitle),
+            subtitle: Text(l.sndSub),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => pushDetail(context, 'sound'),
+          ),
+          const Divider(height: 8),
           // ------------------------------------------------------ colour
           SectionHeader(
             title: l.setColour,

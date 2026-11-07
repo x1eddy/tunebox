@@ -1731,4 +1731,160 @@ class LDe extends L {
   String addedToPlaylist(String name) {
     return 'Zu „$name“ hinzugefügt';
   }
+
+  @override
+  String get sndTitle => 'Klang';
+
+  @override
+  String get sndSub => 'Überblenden, Equalizer, Lautstärke, Sleep-Timer';
+
+  @override
+  String get sndAll => 'Alle Klangeinstellungen';
+
+  @override
+  String get sndBetween => 'Zwischen den Songs';
+
+  @override
+  String get sndCrossfade => 'Überblenden';
+
+  @override
+  String get sndGapless => 'Lückenlos';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Intelligentes Überblenden';
+
+  @override
+  String get sndSmartSub =>
+      'Alben und Live-Sets laufen am Stück; kurze Songs blenden schneller über';
+
+  @override
+  String get sndLoudness => 'Lautheit';
+
+  @override
+  String get sndNormalize => 'Lautstärke angleichen';
+
+  @override
+  String get sndNormalizeSub =>
+      'Macht Songs leiser, die lauter abgemischt sind als der Rest';
+
+  @override
+  String get sndQuiet => 'Leise';
+
+  @override
+  String get sndNormal => 'Normal';
+
+  @override
+  String get sndLoud => 'Laut';
+
+  @override
+  String get sndEq => 'Equalizer';
+
+  @override
+  String get sndEqOn => 'Equalizer verwenden';
+
+  @override
+  String get sndEqOnlyAndroid => 'Der Equalizer ist unter Android verfügbar.';
+
+  @override
+  String get sndEqFor => 'Jeder Ausgang behält seinen eigenen Klang';
+
+  @override
+  String get sndInUse => 'aktiv';
+
+  @override
+  String get sndSpeaker => 'Lautsprecher';
+
+  @override
+  String get sndWired => 'Kabel';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Als Preset speichern';
+
+  @override
+  String get sndPresetName => 'Name des Presets';
+
+  @override
+  String get sndDeletePreset => 'Preset löschen';
+
+  @override
+  String get sndCustom => 'Eigenes';
+
+  @override
+  String get sndBoost => 'Extra Lautstärke';
+
+  @override
+  String get sndBoostSub =>
+      'Hilft bei leisen Handys und Kopfhörern. Zu viel kann verzerren.';
+
+  @override
+  String get sndSpeedPitch => 'Tempo und Tonhöhe';
+
+  @override
+  String get sndSpeed => 'Tempo';
+
+  @override
+  String get sndPitch => 'Tonhöhe';
+
+  @override
+  String get sndReset => 'Zurücksetzen';
+
+  @override
+  String get eqFlat => 'Neutral';
+
+  @override
+  String get eqBass => 'Bass';
+
+  @override
+  String get eqVocal => 'Stimme';
+
+  @override
+  String get eqNight => 'Nacht';
+
+  @override
+  String get eqHeadphones => 'Kopfhörer';
+
+  @override
+  String get eqCar => 'Auto';
+
+  @override
+  String get eqTreble => 'Höhen';
+
+  @override
+  String get sleepTitle => 'Sleep-Timer';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n Min.';
+  }
+
+  @override
+  String get sleepEndSong => 'Ende des Songs';
+
+  @override
+  String get sleepEndQueue => 'Ende der Warteschlange';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Stoppt in $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Stoppt nach diesem Song';
+
+  @override
+  String get sleepAfterQueue => 'Stoppt am Ende der Warteschlange';
+
+  @override
+  String get sleepShake => 'Handy schütteln für 10 Minuten mehr';
+
+  @override
+  String get sleepCancel => 'Ausschalten';
 }

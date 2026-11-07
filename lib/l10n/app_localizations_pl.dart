@@ -1734,4 +1734,159 @@ class LPl extends L {
   String addedToPlaylist(String name) {
     return 'Dodano do „$name”';
   }
+
+  @override
+  String get sndTitle => 'Dźwięk';
+
+  @override
+  String get sndSub => 'Przenikanie, korektor, głośność, wyłącznik czasowy';
+
+  @override
+  String get sndAll => 'Wszystkie ustawienia dźwięku';
+
+  @override
+  String get sndBetween => 'Między utworami';
+
+  @override
+  String get sndCrossfade => 'Przenikanie';
+
+  @override
+  String get sndGapless => 'Bez przerw';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Inteligentne przenikanie';
+
+  @override
+  String get sndSmartSub =>
+      'Albumy i koncerty lecą bez przerw; krótkie utwory przenikają szybciej';
+
+  @override
+  String get sndLoudness => 'Głośność';
+
+  @override
+  String get sndNormalize => 'Wyrównaj głośność';
+
+  @override
+  String get sndNormalizeSub => 'Ścisza utwory nagrane głośniej niż pozostałe';
+
+  @override
+  String get sndQuiet => 'Cicho';
+
+  @override
+  String get sndNormal => 'Normalnie';
+
+  @override
+  String get sndLoud => 'Głośno';
+
+  @override
+  String get sndEq => 'Korektor';
+
+  @override
+  String get sndEqOn => 'Używaj korektora';
+
+  @override
+  String get sndEqOnlyAndroid => 'Korektor jest dostępny na Androidzie.';
+
+  @override
+  String get sndEqFor => 'Każde wyjście ma własne brzmienie';
+
+  @override
+  String get sndInUse => 'aktywne';
+
+  @override
+  String get sndSpeaker => 'Głośnik';
+
+  @override
+  String get sndWired => 'Przewodowe';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Zapisz jako ustawienie';
+
+  @override
+  String get sndPresetName => 'Nazwa ustawienia';
+
+  @override
+  String get sndDeletePreset => 'Usuń ustawienie';
+
+  @override
+  String get sndCustom => 'Własne';
+
+  @override
+  String get sndBoost => 'Dodatkowa głośność';
+
+  @override
+  String get sndBoostSub =>
+      'Pomaga przy cichych telefonach i słuchawkach. Za dużo może zniekształcać.';
+
+  @override
+  String get sndSpeedPitch => 'Tempo i wysokość';
+
+  @override
+  String get sndSpeed => 'Tempo';
+
+  @override
+  String get sndPitch => 'Wysokość';
+
+  @override
+  String get sndReset => 'Resetuj';
+
+  @override
+  String get eqFlat => 'Płaski';
+
+  @override
+  String get eqBass => 'Bas';
+
+  @override
+  String get eqVocal => 'Wokal';
+
+  @override
+  String get eqNight => 'Noc';
+
+  @override
+  String get eqHeadphones => 'Słuchawki';
+
+  @override
+  String get eqCar => 'Samochód';
+
+  @override
+  String get eqTreble => 'Soprany';
+
+  @override
+  String get sleepTitle => 'Wyłącznik czasowy';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Koniec utworu';
+
+  @override
+  String get sleepEndQueue => 'Koniec kolejki';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Zatrzyma się za $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Zatrzyma się po tym utworze';
+
+  @override
+  String get sleepAfterQueue => 'Zatrzyma się po końcu kolejki';
+
+  @override
+  String get sleepShake => 'Potrząśnij telefonem, aby dodać 10 minut';
+
+  @override
+  String get sleepCancel => 'Wyłącz';
 }

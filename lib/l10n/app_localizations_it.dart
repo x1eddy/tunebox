@@ -1723,4 +1723,160 @@ class LIt extends L {
   String addedToPlaylist(String name) {
     return 'Aggiunta a «$name»';
   }
+
+  @override
+  String get sndTitle => 'Suono';
+
+  @override
+  String get sndSub => 'Dissolvenza, equalizzatore, volume, timer';
+
+  @override
+  String get sndAll => 'Tutte le impostazioni audio';
+
+  @override
+  String get sndBetween => 'Tra un brano e l\'altro';
+
+  @override
+  String get sndCrossfade => 'Dissolvenza incrociata';
+
+  @override
+  String get sndGapless => 'Senza pause';
+
+  @override
+  String sndSeconds(int n) {
+    return '$n s';
+  }
+
+  @override
+  String get sndSmart => 'Dissolvenza intelligente';
+
+  @override
+  String get sndSmartSub =>
+      'Album e live scorrono senza stacchi; i brani brevi sfumano prima';
+
+  @override
+  String get sndLoudness => 'Volume';
+
+  @override
+  String get sndNormalize => 'Uniforma il volume';
+
+  @override
+  String get sndNormalizeSub =>
+      'Abbassa i brani masterizzati più forte degli altri';
+
+  @override
+  String get sndQuiet => 'Basso';
+
+  @override
+  String get sndNormal => 'Normale';
+
+  @override
+  String get sndLoud => 'Alto';
+
+  @override
+  String get sndEq => 'Equalizzatore';
+
+  @override
+  String get sndEqOn => 'Usa l\'equalizzatore';
+
+  @override
+  String get sndEqOnlyAndroid => 'L\'equalizzatore è disponibile su Android.';
+
+  @override
+  String get sndEqFor => 'Ogni uscita ha il suo suono';
+
+  @override
+  String get sndInUse => 'in uso';
+
+  @override
+  String get sndSpeaker => 'Altoparlante';
+
+  @override
+  String get sndWired => 'Cablato';
+
+  @override
+  String get sndBluetooth => 'Bluetooth';
+
+  @override
+  String get sndSavePreset => 'Salva come preset';
+
+  @override
+  String get sndPresetName => 'Nome del preset';
+
+  @override
+  String get sndDeletePreset => 'Elimina preset';
+
+  @override
+  String get sndCustom => 'Personale';
+
+  @override
+  String get sndBoost => 'Volume extra';
+
+  @override
+  String get sndBoostSub =>
+      'Aiuta telefoni e auricolari deboli. Troppo può distorcere.';
+
+  @override
+  String get sndSpeedPitch => 'Velocità e tono';
+
+  @override
+  String get sndSpeed => 'Velocità';
+
+  @override
+  String get sndPitch => 'Tono';
+
+  @override
+  String get sndReset => 'Ripristina';
+
+  @override
+  String get eqFlat => 'Piatto';
+
+  @override
+  String get eqBass => 'Bassi';
+
+  @override
+  String get eqVocal => 'Voce';
+
+  @override
+  String get eqNight => 'Notte';
+
+  @override
+  String get eqHeadphones => 'Cuffie';
+
+  @override
+  String get eqCar => 'Auto';
+
+  @override
+  String get eqTreble => 'Alti';
+
+  @override
+  String get sleepTitle => 'Timer di spegnimento';
+
+  @override
+  String sleepMinutes(int n) {
+    return '$n min';
+  }
+
+  @override
+  String get sleepEndSong => 'Fine del brano';
+
+  @override
+  String get sleepEndQueue => 'Fine della coda';
+
+  @override
+  String sleepLeft(String time) {
+    return 'Si ferma tra $time';
+  }
+
+  @override
+  String get sleepAfterSong => 'Si ferma dopo questo brano';
+
+  @override
+  String get sleepAfterQueue => 'Si ferma a fine coda';
+
+  @override
+  String get sleepShake => 'Scuoti il telefono per altri 10 minuti';
+
+  @override
+  String get sleepCancel => 'Disattiva';
 }
