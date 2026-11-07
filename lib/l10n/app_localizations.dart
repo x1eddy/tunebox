@@ -360,7 +360,7 @@ abstract class L {
   /// No description provided for @homeBuilding.
   ///
   /// In en, this message translates to:
-  /// **'The AI is building your shelves…'**
+  /// **'Putting your shelves together…'**
   String get homeBuilding;
 
   /// No description provided for @homeOffline.
@@ -414,7 +414,7 @@ abstract class L {
   /// No description provided for @homeEmptyBody.
   ///
   /// In en, this message translates to:
-  /// **'Search for something, or add the music already on this device. The AI starts learning from your very first play.'**
+  /// **'Search for something, or bring in the music already on this device. TuneBox starts learning from the first song you play.'**
   String get homeEmptyBody;
 
   /// No description provided for @homeAddMyMusic.
@@ -504,7 +504,7 @@ abstract class L {
   /// No description provided for @shelfNewSub.
   ///
   /// In en, this message translates to:
-  /// **'Fresh tracks the AI thinks are for you'**
+  /// **'Fresh finds that fit your taste'**
   String get shelfNewSub;
 
   /// No description provided for @shelfBecause.
@@ -564,7 +564,7 @@ abstract class L {
   /// No description provided for @shelfStarterSub.
   ///
   /// In en, this message translates to:
-  /// **'Play a few and the AI starts learning immediately'**
+  /// **'Play a few. It learns from the very first one'**
   String get shelfStarterSub;
 
   /// No description provided for @reasonPlays.
@@ -948,7 +948,7 @@ abstract class L {
   /// No description provided for @tasteRetrained.
   ///
   /// In en, this message translates to:
-  /// **'The AI rebuilt its model.'**
+  /// **'Rebuilt from everything you have played.'**
   String get tasteRetrained;
 
   /// No description provided for @tasteConfidence.
@@ -984,7 +984,7 @@ abstract class L {
   /// No description provided for @tasteDownloadsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Downloads the AI handles'**
+  /// **'Automatic downloads'**
   String get tasteDownloadsTitle;
 
   /// No description provided for @tasteDownloadsSub.
@@ -1008,7 +1008,7 @@ abstract class L {
   /// No description provided for @tasteAiInstall.
   ///
   /// In en, this message translates to:
-  /// **'Let the AI install music it picks'**
+  /// **'Download songs it picks for me'**
   String get tasteAiInstall;
 
   /// No description provided for @tasteAiInstallSub.
@@ -1260,7 +1260,7 @@ abstract class L {
   /// No description provided for @trainNothingBody.
   ///
   /// In en, this message translates to:
-  /// **'Add some music or let the AI fetch candidates first, then come back.'**
+  /// **'Add some music first, or let TuneBox fetch a few songs to rate, then come back.'**
   String get trainNothingBody;
 
   /// No description provided for @trainLeaveTitle.
@@ -1272,7 +1272,7 @@ abstract class L {
   /// No description provided for @trainLeaveBody.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{If you leave now, the AI discards everything from this round — the 1 song you just rated.} other{If you leave now, the AI discards everything from this round — all {count} songs you just rated.}}'**
+  /// **'{count, plural, =1{Leave now and the 1 song you just rated is forgotten.} other{Leave now and the {count} songs you just rated are forgotten.}}'**
   String trainLeaveBody(int count);
 
   /// No description provided for @trainKeepGoing.
@@ -1530,7 +1530,7 @@ abstract class L {
   /// No description provided for @setDailyLimit.
   ///
   /// In en, this message translates to:
-  /// **'Daily limit for the AI'**
+  /// **'Songs per day'**
   String get setDailyLimit;
 
   /// No description provided for @setDailyLimitSub.
@@ -1542,7 +1542,7 @@ abstract class L {
   /// No description provided for @setBudget.
   ///
   /// In en, this message translates to:
-  /// **'Storage the AI may use'**
+  /// **'Space it may use'**
   String get setBudget;
 
   /// No description provided for @setUsed.
@@ -1596,7 +1596,7 @@ abstract class L {
   /// No description provided for @setExportSub.
   ///
   /// In en, this message translates to:
-  /// **'Saves a file with your likes, plays and everything the AI learned'**
+  /// **'One file with your likes, plays and everything TuneBox learned'**
   String get setExportSub;
 
   /// No description provided for @setImportTaste.
@@ -1620,7 +1620,7 @@ abstract class L {
   /// No description provided for @setAboutBody.
   ///
   /// In en, this message translates to:
-  /// **'Music from YouTube and your own files. The AI runs entirely on this device — nothing leaves it.'**
+  /// **'Music from YouTube and your own files. Everything it learns stays on this device.'**
   String get setAboutBody;
 
   /// No description provided for @setShare.
@@ -1830,7 +1830,7 @@ abstract class L {
   /// No description provided for @setAiInstall.
   ///
   /// In en, this message translates to:
-  /// **'Let the AI install music it picks'**
+  /// **'Download songs it picks for me'**
   String get setAiInstall;
 
   /// No description provided for @setSkipSilenceSub.
@@ -2520,7 +2520,7 @@ abstract class L {
   /// No description provided for @aLibAiPicked.
   ///
   /// In en, this message translates to:
-  /// **'{count} of them the AI picked for you'**
+  /// **'{count} of them picked for you'**
   String aLibAiPicked(String count);
 
   /// No description provided for @aPlaylistLabel.
@@ -2580,7 +2580,7 @@ abstract class L {
   /// No description provided for @aSearchLearnedFrom.
   ///
   /// In en, this message translates to:
-  /// **'From what the AI learned'**
+  /// **'Based on what you play'**
   String get aSearchLearnedFrom;
 
   /// No description provided for @aSearchAnything.
@@ -2706,7 +2706,7 @@ abstract class L {
   /// No description provided for @bTasteQueuedSongs.
   ///
   /// In en, this message translates to:
-  /// **'Queued {count} songs the AI picked.'**
+  /// **'Queued {count} songs picked for you.'**
   String bTasteQueuedSongs(String count);
 
   /// No description provided for @bTasteFetchNow.
@@ -2856,7 +2856,7 @@ abstract class L {
   /// No description provided for @bTasteResetDialogTitle.
   ///
   /// In en, this message translates to:
-  /// **'Reset the AI?'**
+  /// **'Start learning from scratch?'**
   String get bTasteResetDialogTitle;
 
   /// No description provided for @bTasteResetDialogBody.
@@ -2952,7 +2952,7 @@ abstract class L {
   /// No description provided for @cBlockedSnack.
   ///
   /// In en, this message translates to:
-  /// **'Blocked \"{title}\" — the AI will avoid it'**
+  /// **'\"{title}\" won\'t come up again'**
   String cBlockedSnack(String title);
 
   /// No description provided for @cLike.
@@ -2976,7 +2976,7 @@ abstract class L {
   /// No description provided for @cLikeSub.
   ///
   /// In en, this message translates to:
-  /// **'Teaches the AI straight away'**
+  /// **'Counts right away'**
   String get cLikeSub;
 
   /// No description provided for @cSave.
@@ -3126,7 +3126,7 @@ abstract class L {
   /// No description provided for @cAiDownloading.
   ///
   /// In en, this message translates to:
-  /// **'AI is downloading {title}'**
+  /// **'Fetching {title} for you'**
   String cAiDownloading(String title);
 
   /// No description provided for @cDownloading.

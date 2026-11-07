@@ -73,14 +73,12 @@ class AiShelf {
     required this.id,
     required this.title,
     required this.picks,
-    this.emoji,
     this.subtitle,
     this.style = ShelfStyle.cards,
   });
 
   final String id;
   final String title;
-  final String? emoji;
   final String? subtitle;
   final List<Pick> picks;
   final ShelfStyle style;
@@ -458,9 +456,8 @@ class AiEngine {
     addShelf(
       AiShelf(
         id: 'forgotten',
-        title: 'Old forgotten hits you liked',
-        emoji: '🕰️',
-        subtitle: 'Loved once, untouched for a while',
+        title: 'Lost favourites',
+        subtitle: 'Loved once, not played in a while',
         style: ShelfStyle.wideCards,
         picks: claim(forgotten, 10, reason: (s) => _forgottenReason(s, now)),
       ),
@@ -485,9 +482,8 @@ class AiEngine {
     addShelf(
       AiShelf(
         id: 'new',
-        title: 'New',
-        emoji: '⭐',
-        subtitle: 'Fresh tracks the AI thinks are for you',
+        title: 'Fresh finds',
+        subtitle: 'Fresh finds that fit your taste',
         picks: claim(fresh, 12, reason: (s) => _newReason(s, w, now)),
       ),
     );
@@ -569,8 +565,7 @@ class AiEngine {
           AiShelf(
             id: 'starter',
             title: 'Start here',
-            emoji: '⭐',
-            subtitle: 'Play a few and the AI starts learning immediately',
+                subtitle: 'Play a few. TuneBox learns from the very first song',
             picks: [
               for (final s in songs.take(16))
                 Pick(s, reason: const PickReason(ReasonKind.popular)),

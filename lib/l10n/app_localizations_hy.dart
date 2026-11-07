@@ -1342,7 +1342,7 @@ class LHy extends L {
 
   @override
   String aLibAiPicked(String count) {
-    return '$count of them the AI picked for you';
+    return '$count of them picked for you';
   }
 
   @override
@@ -1374,7 +1374,7 @@ class LHy extends L {
   String get aSearchTrySomething => 'Try something';
 
   @override
-  String get aSearchLearnedFrom => 'From what the AI learned';
+  String get aSearchLearnedFrom => 'Based on what you play';
 
   @override
   String get aSearchAnything => 'Search for anything on YouTube';
@@ -1447,7 +1447,7 @@ class LHy extends L {
 
   @override
   String bTasteQueuedSongs(String count) {
-    return 'Queued $count songs the AI picked.';
+    return 'Queued $count songs picked for you.';
   }
 
   @override
@@ -1529,7 +1529,7 @@ class LHy extends L {
       'Clears plays, skips and weights. Keeps library.';
 
   @override
-  String get bTasteResetDialogTitle => 'Reset the AI?';
+  String get bTasteResetDialogTitle => 'Start learning from scratch?';
 
   @override
   String get bTasteResetDialogBody =>
@@ -1587,7 +1587,7 @@ class LHy extends L {
 
   @override
   String cBlockedSnack(String title) {
-    return 'Blocked \"$title\" — the AI will avoid it';
+    return '\"$title\" won\'t come up again';
   }
 
   @override
@@ -1600,7 +1600,7 @@ class LHy extends L {
   String get cRemoveFromLiked => 'Remove from liked';
 
   @override
-  String get cLikeSub => 'Teaches the AI straight away';
+  String get cLikeSub => 'Counts right away';
 
   @override
   String get cSave => 'Save';
@@ -1680,7 +1680,7 @@ class LHy extends L {
 
   @override
   String cAiDownloading(String title) {
-    return 'AI is downloading $title';
+    return 'Fetching $title for you';
   }
 
   @override

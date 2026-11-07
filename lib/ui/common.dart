@@ -42,14 +42,16 @@ class SectionHeader extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
-    this.emoji,
+    this.icon,
     this.trailing,
     this.padding = const EdgeInsets.fromLTRB(16, 22, 8, 10),
   });
 
   final String title;
   final String? subtitle;
-  final String? emoji;
+
+  /// A small glyph in a tinted tile before the title.
+  final IconData? icon;
   final Widget? trailing;
   final EdgeInsets padding;
 
@@ -60,17 +62,22 @@ class SectionHeader extends StatelessWidget {
       padding: padding,
       child: Row(
         children: [
+          if (icon != null)
+            Container(
+              width: 34,
+              height: 34,
+              margin: const EdgeInsetsDirectional.only(end: 12),
+              decoration: BoxDecoration(
+                color: t.colorScheme.primary.withValues(alpha: 0.14),
+                borderRadius: R.tile,
+              ),
+              child: Icon(icon, size: 19, color: t.colorScheme.primary),
+            ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  emoji == null ? title : '$title $emoji',
-                  style: t.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
-                  ),
-                ),
+                Text(title, style: t.textTheme.titleLarge),
                 if (subtitle != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),

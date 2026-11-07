@@ -17,7 +17,7 @@
   "greetingMorning": "Good morning",
   "greetingAfternoon": "Good afternoon",
   "greetingEvening": "Good evening",
-  "homeBuilding": "The AI is building your shelves…",
+  "homeBuilding": "Putting your shelves together…",
   "homeOffline": "Offline — showing what is on the device",
   "homeNothingYet": "Nothing to show yet",
   "homeShelfCount": "{count, plural, =1{1 shelf, refreshed just now} other{{count} shelves, refreshed just now}}",
@@ -33,7 +33,7 @@
   "homeQuickPicks": "Quick picks",
   "homeQuickPicksSub": "Straight back into what you were on",
   "homeEmptyTitle": "Your library is empty",
-  "homeEmptyBody": "Search for something, or add the music already on this device. The AI starts learning from your very first play.",
+  "homeEmptyBody": "Search for something, or bring in the music already on this device. TuneBox starts learning from the first song you play.",
   "homeAddMyMusic": "Add my music",
   "homeCouldNotReach": "Could not reach YouTube: {error}",
   "@homeCouldNotReach": {
@@ -63,7 +63,7 @@
   "shelfForgotten": "Old forgotten hits you liked",
   "shelfForgottenSub": "Loved once, untouched for a while",
   "shelfNew": "New",
-  "shelfNewSub": "Fresh tracks the AI thinks are for you",
+  "shelfNewSub": "Fresh finds that fit your taste",
   "shelfBecause": "Because you played {artist}",
   "@shelfBecause": {
     "placeholders": {
@@ -78,7 +78,7 @@
   "shelfAdded": "Recently added",
   "shelfAddedSub": "Downloads and files you imported",
   "shelfStarter": "Start here",
-  "shelfStarterSub": "Play a few and the AI starts learning immediately",
+  "shelfStarterSub": "Play a few. It learns from the very first one",
   "reasonPlays": "{count} plays",
   "@reasonPlays": {
     "placeholders": {
@@ -250,7 +250,7 @@
   "tasteTitle": "Your taste",
   "tasteRetrain": "Retrain",
   "tasteRetraining": "Retraining on your history…",
-  "tasteRetrained": "The AI rebuilt its model.",
+  "tasteRetrained": "Rebuilt from everything you have played.",
   "tasteConfidence": "Confidence {percent}%",
   "@tasteConfidence": {
     "placeholders": {
@@ -276,11 +276,11 @@
   "tasteEmptySummary": "Play a few songs and this fills in.",
   "tasteKeepLearning": "Keep learning while I listen",
   "tasteKeepLearningSub": "Turn off to freeze the current profile",
-  "tasteDownloadsTitle": "Downloads the AI handles",
+  "tasteDownloadsTitle": "Automatic downloads",
   "tasteDownloadsSub": "Music lands on the device without you asking",
   "tasteDownloadLikes": "Download everything I like",
   "tasteDownloadLikesSub": "Hit the heart and the file is saved for offline",
-  "tasteAiInstall": "Let the AI install music it picks",
+  "tasteAiInstall": "Download songs it picks for me",
   "tasteAiInstallSub": "It will fetch tracks it is confident about",
   "tasteWhatItThinks": "What it thinks you like",
   "tasteWhatItThinksSub": "Learned from plays, skips, likes and repeats",
@@ -338,9 +338,9 @@
   },
   "trainBackToTaste": "Back to your taste",
   "trainNothingTitle": "Nothing to rate yet",
-  "trainNothingBody": "Add some music or let the AI fetch candidates first, then come back.",
+  "trainNothingBody": "Add some music first, or let TuneBox fetch a few songs to rate, then come back.",
   "trainLeaveTitle": "Leave the training round?",
-  "trainLeaveBody": "{count, plural, =1{If you leave now, the AI discards everything from this round — the 1 song you just rated.} other{If you leave now, the AI discards everything from this round — all {count} songs you just rated.}}",
+  "trainLeaveBody": "{count, plural, =1{Leave now and the 1 song you just rated is forgotten.} other{Leave now and the {count} songs you just rated are forgotten.}}",
   "@trainLeaveBody": {
     "placeholders": {
       "count": {
@@ -390,7 +390,7 @@
   "setQualityBest": "Best available",
   "setStorage": "Downloads and storage",
   "setWifiOnly": "Download on Wi-Fi only",
-  "setDailyLimit": "Daily limit for the AI",
+  "setDailyLimit": "Songs per day",
   "setDailyLimitSub": "{count} songs a day",
   "@setDailyLimitSub": {
     "placeholders": {
@@ -399,7 +399,7 @@
       }
     }
   },
-  "setBudget": "Storage the AI may use",
+  "setBudget": "Space it may use",
   "setUsed": "{size} used by downloads",
   "@setUsed": {
     "placeholders": {
@@ -420,11 +420,11 @@
     }
   },
   "setExport": "Send my taste to another device",
-  "setExportSub": "Saves a file with your likes, plays and everything the AI learned",
+  "setExportSub": "One file with your likes, plays and everything TuneBox learned",
   "setImportTaste": "Load taste from another device",
   "setImportTasteSub": "Pick a saved taste file and merge it in — safe to repeat",
   "setAbout": "About",
-  "setAboutBody": "Music from YouTube and your own files. The AI runs entirely on this device — nothing leaves it.",
+  "setAboutBody": "Music from YouTube and your own files. Everything it learns stays on this device.",
   "setShare": "Share TuneBox",
   "setShareBody": "Send the link to a friend",
   "setShareText": "TuneBox — a free music player that learns your taste, on your device. No account, no ads: https://tunebox.pages.dev",
@@ -492,7 +492,7 @@
   "setWifiOnlyTitle": "Download on Wi-Fi only",
   "setDownloadLikes": "Download everything I like",
   "setDownloadLikesSub": "The heart button also saves the file",
-  "setAiInstall": "Let the AI install music it picks",
+  "setAiInstall": "Download songs it picks for me",
   "setSkipSilenceSub": "Android only. Can cut quiet intros, fades and soft parts — leave off if music skips",
   "setStorageUsed": "Storage used by downloads",
   "setLibrary": "Library",
@@ -793,7 +793,7 @@
     }
   },
   "aLibOfflineNote": "These play with no connection at all",
-  "aLibAiPicked": "{count} of them the AI picked for you",
+  "aLibAiPicked": "{count} of them picked for you",
   "@aLibAiPicked": {
     "placeholders": {
       "count": {
@@ -810,7 +810,7 @@
   "aSearchHintDots": "Songs, artists, albums…",
   "aSearchEmptyBody": "Try a different spelling, or paste a YouTube link.",
   "aSearchTrySomething": "Try something",
-  "aSearchLearnedFrom": "From what the AI learned",
+  "aSearchLearnedFrom": "Based on what you play",
   "aSearchAnything": "Search for anything on YouTube",
   "aSearchSeedTap": "Tap a seed to dig around it",
   "aSearchArtistsYouPlay": "Artists you play",
@@ -862,7 +862,7 @@
     }
   },
   "bTasteNothingToDownload": "Nothing new worth downloading right now.",
-  "bTasteQueuedSongs": "Queued {count} songs the AI picked.",
+  "bTasteQueuedSongs": "Queued {count} songs picked for you.",
   "@bTasteQueuedSongs": {
     "placeholders": {
       "count": {
@@ -908,7 +908,7 @@
   "bTasteYoutubeRelated": "YouTube related tracks",
   "bTasteYoutubeRelatedSub": "Pull in songs you do not own yet",
   "bTasteResetSub": "Clears plays, skips and weights. Keeps library.",
-  "bTasteResetDialogTitle": "Reset the AI?",
+  "bTasteResetDialogTitle": "Start learning from scratch?",
   "bTasteResetDialogBody": "Your library, playlists and downloads stay. Everything it learned about you is deleted and Home goes back to defaults.",
   "bTasteResetAction": "Reset",
   "bTrainHearIt": "Hear it",
@@ -948,7 +948,7 @@
   "bImportFilesStayNote": "Files stay where they are — TuneBox only indexes them. Delete a file and it quietly leaves your library on the next scan.",
   "bImportRescan": "Rescan",
   "cMore": "More",
-  "cBlockedSnack": "Blocked \"{title}\" — the AI will avoid it",
+  "cBlockedSnack": "\"{title}\" won't come up again",
   "@cBlockedSnack": {
     "placeholders": {
       "title": {
@@ -959,7 +959,7 @@
   "cLike": "Like",
   "cUnlike": "Unlike",
   "cRemoveFromLiked": "Remove from liked",
-  "cLikeSub": "Teaches the AI straight away",
+  "cLikeSub": "Counts right away",
   "cSave": "Save",
   "cNothingPlaying": "Nothing playing",
   "cNothingPlayingBody": "Pick a song and it shows up here.",
@@ -1001,7 +1001,7 @@
       }
     }
   },
-  "cAiDownloading": "AI is downloading {title}",
+  "cAiDownloading": "Fetching {title} for you",
   "@cAiDownloading": {
     "placeholders": {
       "title": {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../app/theme.dart';
 import '../data/db/database.dart';
+import 'kit/generative_art.dart';
 import 'motion.dart';
 
 /// Resolves the best available artwork: the file we saved, else the thumbnail.
@@ -99,15 +100,16 @@ class CoverArt extends StatelessWidget {
     super.key,
     this.song,
     this.size,
-    this.radius = R.card,
+    BorderRadius? radius,
     this.circle = false,
     this.heroTag,
     this.seedText,
-  });
+  }) : _radius = radius;
 
   final Song? song;
   final double? size;
-  final BorderRadius radius;
+  final BorderRadius? _radius;
+  BorderRadius get radius => _radius ?? R.card;
   final bool circle;
   final String? heroTag;
 
@@ -193,51 +195,6 @@ class _Placeholder extends StatelessWidget {
   const _Placeholder({required this.seed});
   final String seed;
 
-  static const _pairs = [
-    [Color(0xFF3F5EFB), Color(0xFFFC466B)],
-    [Color(0xFFFF5E00), Color(0xFFFFD166)],
-    [Color(0xFF00C9A7), Color(0xFF023E8A)],
-    [Color(0xFF9B5DE5), Color(0xFFF15BB5)],
-    [Color(0xFF00B4D8), Color(0xFF90E0EF)],
-    [Color(0xFFD62828), Color(0xFFF77F00)],
-    [Color(0xFF70C1B3), Color(0xFFFAE385)],
-    [Color(0xFF818CF8), Color(0xFFEC4899)],
-  ];
-
   @override
-  Widget build(BuildContext context) {
-    var hash = 0;
-    for (final unit in seed.codeUnits) {
-      hash = (hash * 31 + unit) & 0x7FFFFFFF;
-    }
-    final pair = _pairs[hash % _pairs.length];
-    // Prefer a real letter — track numbers make for dull covers.
-    final match = RegExp(r'\p{L}', unicode: true).firstMatch(seed);
-    final letter = match?.group(0)?.toUpperCase() ?? '♪';
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: pair,
-        ),
-      ),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Text(
-            letter,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 56,
-              height: 1,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => GenerativeArt(seed: seed);
 }

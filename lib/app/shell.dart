@@ -9,8 +9,11 @@ import 'package:go_router/go_router.dart';
 
 import '../data/db/database.dart';
 import '../data/services/download_service.dart';
+import '../state/appearance.dart';
 import '../state/providers.dart';
-import '../ui/artwork.dart';
+import '../state/settings.dart';
+import '../ui/kit/nav_bar.dart';
+import '../ui/kit/spinning_cover.dart';
 import '../ui/equalizer.dart';
 import '../ui/play_glyph.dart';
 import 'theme.dart';
@@ -32,19 +35,38 @@ class AppShell extends ConsumerWidget {
         ..showTimed(SnackBar(content: Text(message)));
     });
 
-    final destinations = [
+    final look = ref.watch(appearanceProvider);
+    final reduceMotion = ref.watch(
+      settingsProvider.select((s) => s.reduceMotion),
+    );
+    // Every branch, in router order; the Appearance studio decides which
+    // appear and where.
+    final all = [
       (Icons.home_outlined, Icons.home_rounded, l.navHome),
       (Icons.search_rounded, Icons.travel_explore_rounded, l.navExplore),
       (Icons.library_music_outlined, Icons.library_music_rounded, l.navLibrary),
       (Icons.auto_awesome_outlined, Icons.auto_awesome_rounded, l.navTaste),
-      (Icons.settings_outlined, Icons.settings_rounded, l.setTitle),
+      (Icons.tune_outlined, Icons.tune_rounded, l.setTitle),
     ];
+    final order = look.tabs;
+    final destinations = [for (final b in order) all[b]];
+    // [i] is a position in the bar; the router wants the branch.
     void select(int i) {
-      final same = i == shell.currentIndex;
-      shell.goBranch(i, initialLocation: same);
+      final branch = order[i];
+      final same = branch == shell.currentIndex;
+      shell.goBranch(branch, initialLocation: same);
       // Arriving on a tab always starts at its top.
-      scrollTabToTop(i, animate: same);
+      scrollTabToTop(branch, animate: same);
     }
+    void selectBranch(int branch) {
+      final i = order.indexOf(branch);
+      if (i >= 0) {
+        select(i);
+      } else {
+        shell.goBranch(branch);
+      }
+    }
+    final selected = order.indexOf(shell.currentIndex);
 
     // A desktop window is not a tall phone: past ~900dp the tabs move to a
     // side rail and the content stops stretching across a 1600px monitor.
@@ -71,7 +93,7 @@ class AppShell extends ConsumerWidget {
                 MediaQuery.withClampedTextScaling(
                   maxScaleFactor: 1.3,
                   child: NavigationRail(
-                    selectedIndex: shell.currentIndex,
+                    selectedIndex: selected < 0 ? null : selected,
                     onDestinationSelected: select,
                     labelType: NavigationRailLabelType.all,
                     backgroundColor: Theme.of(
@@ -99,30 +121,34 @@ class AppShell extends ConsumerWidget {
               ],
             )
           : content,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const _DownloadBar(),
-          const MiniPlayer(),
-          if (!wide)
-            // Nav labels have a fixed slot; past ~1.3x "Your taste" is
-            // clipped, so the bar caps what the text scale does to it.
-            MediaQuery.withClampedTextScaling(
-              maxScaleFactor: 1.3,
-              child: NavigationBar(
-                selectedIndex: shell.currentIndex,
-                onDestinationSelected: select,
-                destinations: [
-                  for (final d in destinations)
-                    NavigationDestination(
-                      icon: Icon(d.$1),
-                      selectedIcon: Icon(d.$2),
-                      label: d.$3,
-                    ),
-                ],
-              ),
-            ),
-        ],
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const _DownloadBar(),
+              const MiniPlayer(),
+              if (!wide)
+                // Nav labels have a fixed slot; past ~1.3x "Your taste" is
+                // clipped, so the bar caps what the text scale does to it.
+                MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: 1.3,
+                  child: FloatingNavBar(
+                    items: [
+                      for (final d in destinations) NavItem(d.$1, d.$2, d.$3),
+                    ],
+                    selected: selected,
+                    onSelect: select,
+                    glass: look.glassNav,
+                    labels: look.navLabels,
+                    reduceMotion: reduceMotion,
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
 
@@ -141,12 +167,12 @@ class AppShell extends ConsumerWidget {
           const SingleActivator(LogicalKeyboardKey.keyP, control: true): () =>
               ref.read(musicProvider).previous(),
           const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
-              select(1),
+              selectBranch(1),
           const SingleActivator(LogicalKeyboardKey.slash): () {
             if (FocusManager.instance.primaryFocus?.context
                     ?.findAncestorWidgetOfExactType<EditableText>() ==
                 null) {
-              select(1);
+              selectBranch(1);
             }
           },
         },
@@ -170,10 +196,10 @@ class _DownloadBar extends ConsumerWidget {
     final first = active.first;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Material(
         color: t.colorScheme.secondaryContainer,
-        borderRadius: R.tile,
+        borderRadius: R.pill,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
@@ -210,30 +236,39 @@ class _DownloadBar extends ConsumerWidget {
   }
 }
 
-class _MiniProgress extends ConsumerWidget {
-  const _MiniProgress({required this.song});
+/// The record in the island: turns while playing, the ring is the song.
+class _MiniCover extends ConsumerWidget {
+  const _MiniCover({required this.song, required this.playing});
   final Song song;
+  final bool playing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = Theme.of(context);
     final position = ref.watch(positionProvider).value ?? Duration.zero;
     final total = song.durationMs;
-    return LinearProgressIndicator(
-      value: total == 0 ? 0 : (position.inMilliseconds / total).clamp(0.0, 1.0),
-      minHeight: 2,
-      backgroundColor: t.colorScheme.onSurface.withValues(alpha: 0.10),
+    final reduceMotion = ref.watch(
+      settingsProvider.select((s) => s.reduceMotion),
+    );
+    return SpinningCover(
+      song: song,
+      playing: playing,
+      progress: total == 0 ? 0 : position.inMilliseconds / total,
+      size: 50,
+      reduceMotion: reduceMotion,
+      heroTag: 'player-art',
     );
   }
 }
 
-/// Pinned above the navigation bar. Tap or swipe up for the full player.
+/// Floats above the navigation bar, tinted by the cover. Tap or swipe up for
+/// the full player; swipe sideways to change song, down to dismiss.
 class MiniPlayer extends ConsumerWidget {
   const MiniPlayer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context);
+    final cs = t.colorScheme;
     final l = L.of(context);
     final song = ref.watch(nowPlayingProvider);
     if (song == null) return const SizedBox.shrink();
@@ -244,116 +279,128 @@ class MiniPlayer extends ConsumerWidget {
         state?.processingState == AudioProcessingState.loading ||
         state?.processingState == AudioProcessingState.buffering;
     final music = ref.read(musicProvider);
+    final radius = BorderRadius.circular(32);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-      child: Material(
-        color: t.colorScheme.surfaceContainerHigh,
-        borderRadius: R.card,
-        clipBehavior: Clip.antiAlias,
-        child: GestureDetector(
-          onVerticalDragEnd: (d) {
-            final v = d.primaryVelocity ?? 0;
-            if (v < -120) {
-              context.push('/player');
-            } else if (v > 600) {
-              music.dismissPlayer();
-            }
-          },
-          // swipe the card like a page: left = next, right = previous
-          onHorizontalDragEnd: (d) {
-            final v = d.primaryVelocity ?? 0;
-            if (v < -400) {
-              music.next();
-            } else if (v > 400) {
-              music.previous();
-            }
-          },
-          child: InkWell(
-            onTap: () => context.push('/player'),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      CoverArt(
-                        song: song,
-                        size: 46,
-                        radius: R.tile,
-                        heroTag: 'player-art',
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 7),
-                                  child: PlayingBars(
-                                    playing: playing,
-                                    size: 12,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    song.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: t.textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              song.artist,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: t.textTheme.bodySmall?.copyWith(
-                                color: t.colorScheme.onSurfaceVariant,
+      padding: const EdgeInsets.only(bottom: 8),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          gradient: LinearGradient(
+            colors: [
+              Color.lerp(cs.primaryContainer, cs.surfaceContainerHigh, 0.35)!,
+              cs.surfaceContainerHigh,
+            ],
+          ),
+          border: Border.all(color: cs.onSurface.withValues(alpha: 0.07)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(
+                alpha: t.brightness == Brightness.dark ? 0.4 : 0.1,
+              ),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Material(
+          type: MaterialType.transparency,
+          borderRadius: radius,
+          clipBehavior: Clip.antiAlias,
+          child: GestureDetector(
+            onVerticalDragEnd: (d) {
+              final v = d.primaryVelocity ?? 0;
+              if (v < -120) {
+                context.push('/player');
+              } else if (v > 600) {
+                music.dismissPlayer();
+              }
+            },
+            // swipe the island like a page: left = next, right = previous
+            onHorizontalDragEnd: (d) {
+              final v = d.primaryVelocity ?? 0;
+              if (v < -400) {
+                music.next();
+              } else if (v > 400) {
+                music.previous();
+              }
+            },
+            child: InkWell(
+              onTap: () => context.push('/player'),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(6, 6, 6, 6),
+                child: Row(
+                  children: [
+                    RepaintBoundary(
+                      child: _MiniCover(song: song, playing: playing),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            song.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: t.textTheme.titleSmall,
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: PlayingBars(playing: playing, size: 10),
                               ),
-                            ),
-                          ],
-                        ),
+                              Expanded(
+                                child: Text(
+                                  song.artist,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: t.textTheme.bodySmall?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        tooltip: song.liked ? l.cUnlike : l.cLike,
-                        onPressed: () => music.like(song),
-                        icon: Icon(
-                          song.liked
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          size: 22,
-                        ),
-                        color: song.liked ? t.colorScheme.primary : null,
+                    ),
+                    IconButton(
+                      tooltip: song.liked ? l.cUnlike : l.cLike,
+                      onPressed: () => music.like(song),
+                      icon: Icon(
+                        song.liked
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        size: 22,
                       ),
-                      IconButton(
-                        tooltip: playing ? l.cPause : l.actionPlay,
-                        onPressed: music.toggle,
-                        icon: PlayPauseGlyph(
-                          playing: playing,
-                          buffering: buffering,
-                          size: 28,
-                        ),
+                      color: song.liked ? cs.primary : null,
+                    ),
+                    IconButton.filled(
+                      tooltip: playing ? l.cPause : l.actionPlay,
+                      onPressed: music.toggle,
+                      style: IconButton.styleFrom(
+                        backgroundColor: cs.primary,
+                        foregroundColor: cs.onPrimary,
+                        fixedSize: const Size.square(44),
                       ),
-                      IconButton(
-                        tooltip: l.cNext,
-                        onPressed: music.next,
-                        icon: const Icon(Icons.skip_next_rounded, size: 26),
+                      icon: PlayPauseGlyph(
+                        playing: playing,
+                        buffering: buffering,
+                        size: 24,
+                        color: cs.onPrimary,
                       ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      tooltip: l.cNext,
+                      onPressed: music.next,
+                      icon: const Icon(Icons.skip_next_rounded, size: 26),
+                    ),
+                  ],
                 ),
-                // Isolated so the position ticker repaints two pixels of bar
-                // instead of rebuilding the whole row several times a second.
-                RepaintBoundary(child: _MiniProgress(song: song)),
-              ],
+              ),
             ),
           ),
         ),

@@ -7,6 +7,8 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../ui/common.dart';
+import '../../ui/kit/aura_card.dart';
+import '../../ui/kit/grouped.dart';
 import 'rate_trainer.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -55,234 +57,244 @@ class TastePage extends ConsumerWidget {
               // The fastest way to teach the AI belongs next to the score it
               // moves, not at the bottom of a long page.
               const _TrainCard(),
-              SwitchListTile(
-                value: settings.learning,
-                onChanged: (v) => set.update((s) => s.copyWith(learning: v)),
-                title: Text(l.tasteKeepLearning),
-                subtitle: Text(l.tasteKeepLearningSub),
-                secondary: const Icon(Icons.school_outlined),
-              ),
+              ...groupSections(context, [
+                SwitchListTile(
+                  value: settings.learning,
+                  onChanged: (v) => set.update((s) => s.copyWith(learning: v)),
+                  title: Text(l.tasteKeepLearning),
+                  subtitle: Text(l.tasteKeepLearningSub),
+                  secondary: const Icon(Icons.school_outlined),
+                ),
 
-              // ---------------------------------------------- downloads
-              SectionHeader(
-                title: l.tasteDownloadsTitle,
-                subtitle: l.tasteDownloadsSub,
-              ),
-              SwitchListTile(
-                value: settings.downloadLikes,
-                onChanged: (v) =>
-                    set.update((s) => s.copyWith(downloadLikes: v)),
-                title: Text(l.tasteDownloadLikes),
-                subtitle: Text(l.tasteDownloadLikesSub),
-                secondary: const Icon(Icons.favorite_rounded),
-              ),
-              SwitchListTile(
-                value: settings.aiAutoDownload,
-                onChanged: (v) =>
-                    set.update((s) => s.copyWith(aiAutoDownload: v)),
-                title: Text(l.tasteAiInstall),
-                subtitle: Text(
-                  settings.aiAutoDownload
-                      ? l.bTasteAiBudgetSub(
-                          '${settings.aiDailyDownloads}',
-                          '${settings.aiStorageBudgetMb ~/ 1024}',
-                        )
-                      : l.tasteAiInstallSub,
+                // ---------------------------------------------- downloads
+                SectionHeader(
+                  title: l.tasteDownloadsTitle,
+                  subtitle: l.tasteDownloadsSub,
                 ),
-                secondary: const Icon(Icons.auto_awesome_rounded),
-              ),
-              if (settings.aiAutoDownload) ...[
-                _Stepper(
-                  icon: Icons.numbers_rounded,
-                  label: l.bTasteSongsPerDay,
-                  value: '${settings.aiDailyDownloads}',
-                  onMinus: settings.aiDailyDownloads <= 1
-                      ? null
-                      : () => set.update(
-                          (s) => s.copyWith(
-                            aiDailyDownloads: s.aiDailyDownloads - 1,
-                          ),
-                        ),
-                  onPlus: settings.aiDailyDownloads >= 30
-                      ? null
-                      : () => set.update(
-                          (s) => s.copyWith(
-                            aiDailyDownloads: s.aiDailyDownloads + 1,
-                          ),
-                        ),
+                SwitchListTile(
+                  value: settings.downloadLikes,
+                  onChanged: (v) =>
+                      set.update((s) => s.copyWith(downloadLikes: v)),
+                  title: Text(l.tasteDownloadLikes),
+                  subtitle: Text(l.tasteDownloadLikesSub),
+                  secondary: const Icon(Icons.favorite_rounded),
                 ),
-                _Stepper(
-                  icon: Icons.sd_storage_outlined,
-                  label: l.bTasteStorageMayUse,
-                  value: l.bTasteGb('${settings.aiStorageBudgetMb ~/ 1024}'),
-                  onMinus: settings.aiStorageBudgetMb <= 1024
-                      ? null
-                      : () => set.update(
-                          (s) => s.copyWith(
-                            aiStorageBudgetMb: s.aiStorageBudgetMb - 1024,
-                          ),
-                        ),
-                  onPlus: settings.aiStorageBudgetMb >= 16384
-                      ? null
-                      : () => set.update(
-                          (s) => s.copyWith(
-                            aiStorageBudgetMb: s.aiStorageBudgetMb + 1024,
-                          ),
-                        ),
+                SwitchListTile(
+                  value: settings.aiAutoDownload,
+                  onChanged: (v) =>
+                      set.update((s) => s.copyWith(aiAutoDownload: v)),
+                  title: Text(l.tasteAiInstall),
+                  subtitle: Text(
+                    settings.aiAutoDownload
+                        ? l.bTasteAiBudgetSub(
+                            '${settings.aiDailyDownloads}',
+                            '${settings.aiStorageBudgetMb ~/ 1024}',
+                          )
+                        : l.tasteAiInstallSub,
+                  ),
+                  secondary: const Icon(Icons.auto_awesome_rounded),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
-                  child: FilledButton.tonalIcon(
-                    onPressed: () async {
-                      final messenger = ScaffoldMessenger.of(context);
-                      final n = await music.runAutoDownloads();
-                      messenger.showTimed(
-                        SnackBar(
-                          content: Text(
-                            n == 0
-                                ? l.bTasteNothingToDownload
-                                : l.bTasteQueuedSongs('$n'),
+                if (settings.aiAutoDownload) ...[
+                  _Stepper(
+                    icon: Icons.numbers_rounded,
+                    label: l.bTasteSongsPerDay,
+                    value: '${settings.aiDailyDownloads}',
+                    onMinus: settings.aiDailyDownloads <= 1
+                        ? null
+                        : () => set.update(
+                            (s) => s.copyWith(
+                              aiDailyDownloads: s.aiDailyDownloads - 1,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.download_rounded),
-                    label: Text(l.bTasteFetchNow),
+                    onPlus: settings.aiDailyDownloads >= 30
+                        ? null
+                        : () => set.update(
+                            (s) => s.copyWith(
+                              aiDailyDownloads: s.aiDailyDownloads + 1,
+                            ),
+                          ),
+                  ),
+                  _Stepper(
+                    icon: Icons.sd_storage_outlined,
+                    label: l.bTasteStorageMayUse,
+                    value: l.bTasteGb('${settings.aiStorageBudgetMb ~/ 1024}'),
+                    onMinus: settings.aiStorageBudgetMb <= 1024
+                        ? null
+                        : () => set.update(
+                            (s) => s.copyWith(
+                              aiStorageBudgetMb: s.aiStorageBudgetMb - 1024,
+                            ),
+                          ),
+                    onPlus: settings.aiStorageBudgetMb >= 16384
+                        ? null
+                        : () => set.update(
+                            (s) => s.copyWith(
+                              aiStorageBudgetMb: s.aiStorageBudgetMb + 1024,
+                            ),
+                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+                    child: FilledButton.tonalIcon(
+                      onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final n = await music.runAutoDownloads();
+                        messenger.showTimed(
+                          SnackBar(
+                            content: Text(
+                              n == 0
+                                  ? l.bTasteNothingToDownload
+                                  : l.bTasteQueuedSongs('$n'),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.download_rounded),
+                      label: Text(l.bTasteFetchNow),
+                    ),
+                  ),
+                ],
+
+                // ------------------------------------------------- profile
+                SectionHeader(
+                  title: l.tasteWhatItThinks,
+                  subtitle: l.tasteWhatItThinksSub,
+                ),
+                if (profile == null || profile.tags.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(l.bTasteNotEnoughListening),
+                  )
+                else
+                  _TagBars(tags: profile.tags),
+                if (profile != null && profile.artists.isNotEmpty) ...[
+                  SectionHeader(
+                    title: l.tasteArtists,
+                    padding: EdgeInsets.fromLTRB(16, 18, 8, 10),
+                  ),
+                  _ArtistWrap(artists: profile.artists),
+                ],
+                if (profile != null && profile.plays > 0) ...[
+                  SectionHeader(
+                    title: l.tasteWhenYouListen,
+                    subtitle: l.tasteWhenYouListenSub,
+                    padding: EdgeInsets.fromLTRB(16, 22, 8, 6),
+                  ),
+                  _HourChart(byHour: profile.byHour),
+                ],
+                if (profile != null && profile.decades.isNotEmpty) ...[
+                  SectionHeader(
+                    title: l.tasteDecades,
+                    padding: EdgeInsets.fromLTRB(16, 18, 8, 6),
+                  ),
+                  _DecadeChart(decades: profile.decades),
+                ],
+
+                // --------------------------------------------------- dials
+                SectionHeader(title: l.tasteTune, subtitle: l.tasteTuneSub),
+                _Dial(
+                  icon: Icons.explore_rounded,
+                  left: l.bTasteFamiliar,
+                  right: l.tasteDiscovery,
+                  value: settings.discovery,
+                  caption: switch (settings.discovery) {
+                    < 0.25 => l.bTasteDiscoveryCap1,
+                    < 0.55 => l.bTasteDiscoveryCap2,
+                    < 0.8 => l.bTasteDiscoveryCap3,
+                    _ => l.bTasteDiscoveryCap4,
+                  },
+                  onChanged: (v) => set.update((s) => s.copyWith(discovery: v)),
+                ),
+                _Dial(
+                  icon: Icons.bolt_rounded,
+                  left: l.bTasteCalm,
+                  right: l.bTasteHighEnergy,
+                  value: settings.energy,
+                  caption: l.bTasteEnergyCaption,
+                  onChanged: (v) => set.update((s) => s.copyWith(energy: v)),
+                ),
+                _Dial(
+                  icon: Icons.new_releases_outlined,
+                  left: l.bTasteTimeless,
+                  right: l.bTasteFresh,
+                  value: settings.recency,
+                  caption: l.bTasteRecencyCaption,
+                  onChanged: (v) => set.update((s) => s.copyWith(recency: v)),
+                ),
+                _Dial(
+                  icon: Icons.history_toggle_off_rounded,
+                  left: l.bTasteRarely,
+                  right: l.bTasteOften,
+                  value: settings.nostalgia,
+                  caption: l.bTasteNostalgiaCaption,
+                  onChanged: (v) => set.update((s) => s.copyWith(nostalgia: v)),
+                ),
+
+                // ------------------------------------------------- signals
+                SectionHeader(
+                  title: l.tasteSignals,
+                  subtitle: l.tasteSignalsSub,
+                ),
+                SwitchListTile(
+                  value: settings.useHistory,
+                  onChanged: (v) =>
+                      set.update((s) => s.copyWith(useHistory: v)),
+                  title: Text(l.bTasteListeningHistory),
+                  subtitle: Text(
+                    l.bTastePlaysRecorded('${profile?.plays ?? 0}'),
                   ),
                 ),
-              ],
-
-              // ------------------------------------------------- profile
-              SectionHeader(
-                title: l.tasteWhatItThinks,
-                subtitle: l.tasteWhatItThinksSub,
-              ),
-              if (profile == null || profile.tags.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(l.bTasteNotEnoughListening),
-                )
-              else
-                _TagBars(tags: profile.tags),
-              if (profile != null && profile.artists.isNotEmpty) ...[
-                SectionHeader(
-                  title: l.tasteArtists,
-                  padding: EdgeInsets.fromLTRB(16, 18, 8, 10),
+                SwitchListTile(
+                  value: settings.useSkips,
+                  onChanged: (v) => set.update((s) => s.copyWith(useSkips: v)),
+                  title: Text(l.bTasteSkips),
+                  subtitle: Text(
+                    l.bTasteSkipsCounted('${profile?.skips ?? 0}'),
+                  ),
                 ),
-                _ArtistWrap(artists: profile.artists),
-              ],
-              if (profile != null && profile.plays > 0) ...[
-                SectionHeader(
-                  title: l.tasteWhenYouListen,
-                  subtitle: l.tasteWhenYouListenSub,
-                  padding: EdgeInsets.fromLTRB(16, 22, 8, 6),
+                SwitchListTile(
+                  value: settings.useTimeOfDay,
+                  onChanged: (v) =>
+                      set.update((s) => s.copyWith(useTimeOfDay: v)),
+                  title: Text(l.tasteUseTime),
+                  subtitle: Text(l.bTasteTimeOfDaySub),
                 ),
-                _HourChart(byHour: profile.byHour),
-              ],
-              if (profile != null && profile.decades.isNotEmpty) ...[
-                SectionHeader(
-                  title: l.tasteDecades,
-                  padding: EdgeInsets.fromLTRB(16, 18, 8, 6),
+                SwitchListTile(
+                  value: settings.useYouTubeSignals,
+                  onChanged: (v) =>
+                      set.update((s) => s.copyWith(useYouTubeSignals: v)),
+                  title: Text(l.bTasteYoutubeRelated),
+                  subtitle: Text(l.bTasteYoutubeRelatedSub),
                 ),
-                _DecadeChart(decades: profile.decades),
-              ],
 
-              // --------------------------------------------------- dials
-              SectionHeader(title: l.tasteTune, subtitle: l.tasteTuneSub),
-              _Dial(
-                icon: Icons.explore_rounded,
-                left: l.bTasteFamiliar,
-                right: l.tasteDiscovery,
-                value: settings.discovery,
-                caption: switch (settings.discovery) {
-                  < 0.25 => l.bTasteDiscoveryCap1,
-                  < 0.55 => l.bTasteDiscoveryCap2,
-                  < 0.8 => l.bTasteDiscoveryCap3,
-                  _ => l.bTasteDiscoveryCap4,
-                },
-                onChanged: (v) => set.update((s) => s.copyWith(discovery: v)),
-              ),
-              _Dial(
-                icon: Icons.bolt_rounded,
-                left: l.bTasteCalm,
-                right: l.bTasteHighEnergy,
-                value: settings.energy,
-                caption: l.bTasteEnergyCaption,
-                onChanged: (v) => set.update((s) => s.copyWith(energy: v)),
-              ),
-              _Dial(
-                icon: Icons.new_releases_outlined,
-                left: l.bTasteTimeless,
-                right: l.bTasteFresh,
-                value: settings.recency,
-                caption: l.bTasteRecencyCaption,
-                onChanged: (v) => set.update((s) => s.copyWith(recency: v)),
-              ),
-              _Dial(
-                icon: Icons.history_toggle_off_rounded,
-                left: l.bTasteRarely,
-                right: l.bTasteOften,
-                value: settings.nostalgia,
-                caption: l.bTasteNostalgiaCaption,
-                onChanged: (v) => set.update((s) => s.copyWith(nostalgia: v)),
-              ),
+                // ---------------------------------------------- overrides
+                SectionHeader(
+                  title: l.tasteAlwaysMore,
+                  padding: EdgeInsets.fromLTRB(16, 22, 8, 8),
+                ),
+                _RuleChips(
+                  rules: rules.where((r) => r.rule > 0).toList(),
+                  icon: Icons.arrow_upward_rounded,
+                  color: t.colorScheme.primary,
+                  onAdd: () => _addRule(context, ref, 1),
+                  onRemove: (a) => music.clearArtistRule(a),
+                ),
+                SectionHeader(
+                  title: l.tasteNeverAgain,
+                  padding: EdgeInsets.fromLTRB(16, 18, 8, 8),
+                ),
+                _RuleChips(
+                  rules: rules.where((r) => r.rule < 0).toList(),
+                  icon: Icons.block_rounded,
+                  color: t.colorScheme.error,
+                  onAdd: () => _addRule(context, ref, -1),
+                  onRemove: (a) => music.clearArtistRule(a),
+                ),
 
-              // ------------------------------------------------- signals
-              SectionHeader(title: l.tasteSignals, subtitle: l.tasteSignalsSub),
-              SwitchListTile(
-                value: settings.useHistory,
-                onChanged: (v) => set.update((s) => s.copyWith(useHistory: v)),
-                title: Text(l.bTasteListeningHistory),
-                subtitle: Text(l.bTastePlaysRecorded('${profile?.plays ?? 0}')),
-              ),
-              SwitchListTile(
-                value: settings.useSkips,
-                onChanged: (v) => set.update((s) => s.copyWith(useSkips: v)),
-                title: Text(l.bTasteSkips),
-                subtitle: Text(l.bTasteSkipsCounted('${profile?.skips ?? 0}')),
-              ),
-              SwitchListTile(
-                value: settings.useTimeOfDay,
-                onChanged: (v) =>
-                    set.update((s) => s.copyWith(useTimeOfDay: v)),
-                title: Text(l.tasteUseTime),
-                subtitle: Text(l.bTasteTimeOfDaySub),
-              ),
-              SwitchListTile(
-                value: settings.useYouTubeSignals,
-                onChanged: (v) =>
-                    set.update((s) => s.copyWith(useYouTubeSignals: v)),
-                title: Text(l.bTasteYoutubeRelated),
-                subtitle: Text(l.bTasteYoutubeRelatedSub),
-              ),
-
-              // ---------------------------------------------- overrides
-              SectionHeader(
-                title: l.tasteAlwaysMore,
-                padding: EdgeInsets.fromLTRB(16, 22, 8, 8),
-              ),
-              _RuleChips(
-                rules: rules.where((r) => r.rule > 0).toList(),
-                icon: Icons.arrow_upward_rounded,
-                color: t.colorScheme.primary,
-                onAdd: () => _addRule(context, ref, 1),
-                onRemove: (a) => music.clearArtistRule(a),
-              ),
-              SectionHeader(
-                title: l.tasteNeverAgain,
-                padding: EdgeInsets.fromLTRB(16, 18, 8, 8),
-              ),
-              _RuleChips(
-                rules: rules.where((r) => r.rule < 0).toList(),
-                icon: Icons.block_rounded,
-                color: t.colorScheme.error,
-                onAdd: () => _addRule(context, ref, -1),
-                onRemove: (a) => music.clearArtistRule(a),
-              ),
-
-              const SizedBox(height: 22),
-              _ResetTile(onReset: music.forgetEverything),
-              const SizedBox(height: 28),
+                const SizedBox(height: 22),
+                _ResetTile(onReset: music.forgetEverything),
+                const SizedBox(height: 28),
+              ]),
             ],
           ),
         ],
@@ -322,20 +334,8 @@ class _ProfileCard extends StatelessWidget {
     final l = L.of(context);
     final t = Theme.of(context);
     final confidence = profile?.confidence ?? 0;
-    return Container(
+    return AuraCard(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: R.hero,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            t.colorScheme.primaryContainer,
-            t.colorScheme.tertiaryContainer,
-          ],
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -343,14 +343,14 @@ class _ProfileCard extends StatelessWidget {
             children: [
               Icon(
                 Icons.auto_awesome_rounded,
-                color: t.colorScheme.onPrimaryContainer,
+                color: t.colorScheme.onSurface,
               ),
               const SizedBox(width: 8),
               Text(
                 l.tasteConfidence((confidence * 100).round()),
                 style: t.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: t.colorScheme.onPrimaryContainer,
+                  color: t.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -361,11 +361,11 @@ class _ProfileCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: confidence,
               minHeight: 8,
-              backgroundColor: t.colorScheme.onPrimaryContainer.withValues(
+              backgroundColor: t.colorScheme.onSurface.withValues(
                 alpha: 0.18,
               ),
               valueColor: AlwaysStoppedAnimation(
-                t.colorScheme.onPrimaryContainer,
+                t.colorScheme.onSurface,
               ),
             ),
           ),
@@ -375,14 +375,14 @@ class _ProfileCard extends StatelessWidget {
                 ? l.homeBuilding
                 : l.tasteCounts(profile!.plays, profile!.skips, profile!.likes),
             style: t.textTheme.bodySmall?.copyWith(
-              color: t.colorScheme.onPrimaryContainer,
+              color: t.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             _summary(l, profile),
             style: t.textTheme.bodyMedium?.copyWith(
-              color: t.colorScheme.onPrimaryContainer,
+              color: t.colorScheme.onSurface,
               height: 1.3,
             ),
           ),

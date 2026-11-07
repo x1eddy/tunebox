@@ -131,9 +131,13 @@ class Visualizer extends StatefulWidget {
     this.height = 34,
     this.color,
     this.reduceMotion = false,
+    this.wave = false,
   });
 
   final bool playing;
+
+  /// A flowing line instead of bars.
+  final bool wave;
   final int bars;
   final double height;
   final bool reduceMotion;
@@ -196,6 +200,7 @@ class _VisualizerState extends State<Visualizer> {
             seeds: _seeds,
             color: color,
             idle: !widget.playing,
+            wave: widget.wave,
           ),
         ),
       ),
@@ -209,15 +214,48 @@ class _VisualizerPainter extends CustomPainter {
     required this.seeds,
     required this.color,
     required this.idle,
+    this.wave = false,
   });
 
   final double t;
   final List<double> seeds;
   final Color color;
   final bool idle;
+  final bool wave;
+
+  void _paintWave(Canvas canvas, Size size) {
+    final phase = t * 2 * pi;
+    final amp = idle ? 0.12 : 1.0;
+    for (var layer = 0; layer < 3; layer++) {
+      final path = Path();
+      for (var x = 0.0; x <= size.width; x += 3) {
+        final u = x / size.width;
+        // fades out at both ends, strongest in the middle
+        final envelope = sin(u * pi);
+        final y =
+            size.height / 2 +
+            envelope *
+                amp *
+                size.height *
+                0.42 *
+                sin(u * (6 + layer * 2.5) * pi + phase * (1 + layer * 0.6)) *
+                (0.6 + 0.4 * sin(phase * 0.5 + layer));
+        x == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = layer == 0 ? 2.6 : 1.6
+          ..strokeCap = StrokeCap.round
+          ..color = color.withValues(alpha: layer == 0 ? 0.95 : 0.4),
+      );
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (wave) return _paintWave(canvas, size);
     final count = seeds.length;
     final slot = size.width / count;
     final width = slot * 0.55;
@@ -255,5 +293,5 @@ class _VisualizerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_VisualizerPainter old) =>
-      old.t != t || old.color != color || old.idle != idle;
+      old.t != t || old.color != color || old.idle != idle || old.wave != wave;
 }

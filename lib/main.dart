@@ -20,6 +20,7 @@ import 'playback/stream_proxy.dart';
 import 'state/profiles.dart';
 import 'ui/scroll_behavior.dart';
 import 'state/providers.dart';
+import 'state/appearance.dart';
 import 'state/settings.dart';
 
 Future<void> main() async {
@@ -169,27 +170,33 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     ref.listen(settingsProvider.select((s) => s.skipSilence), (_, on) {
       ref.read(audioHandlerProvider).setSkipSilence(on);
     });
-    final seed = ref.watch(seedColorProvider).value ?? settings.accentColor;
+    final look = ref.watch(appearanceProvider);
+    final preset = look.themePreset;
+    final seed = preset?.seed ??
+        ref.watch(seedColorProvider).value ??
+        settings.accentColor;
+    final themeMode = preset == null
+        ? settings.themeMode
+        : preset.brightness == Brightness.dark
+        ? ThemeMode.dark
+        : ThemeMode.light;
+    ThemeData themed(Brightness b) => buildTheme(
+      seed: seed,
+      brightness: b,
+      pureBlack: b == Brightness.dark && settings.pureBlack,
+      highContrast: settings.highContrast,
+      boldText: settings.boldText,
+      reduceMotion: settings.reduceMotion,
+      appearance: look,
+      background: preset?.brightness == b ? preset?.background : null,
+    );
 
     return MaterialApp.router(
       title: 'TuneBox',
       debugShowCheckedModeBanner: false,
-      themeMode: settings.themeMode,
-      theme: buildTheme(
-        seed: seed,
-        brightness: Brightness.light,
-        highContrast: settings.highContrast,
-        boldText: settings.boldText,
-        reduceMotion: settings.reduceMotion,
-      ),
-      darkTheme: buildTheme(
-        seed: seed,
-        brightness: Brightness.dark,
-        pureBlack: settings.pureBlack,
-        highContrast: settings.highContrast,
-        boldText: settings.boldText,
-        reduceMotion: settings.reduceMotion,
-      ),
+      themeMode: themeMode,
+      theme: themed(Brightness.light),
+      darkTheme: themed(Brightness.dark),
       locale: localeFromCode(settings.localeCode),
       supportedLocales: L.supportedLocales,
       localizationsDelegates: L.localizationsDelegates,

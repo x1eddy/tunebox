@@ -454,39 +454,58 @@ final musicProvider = Provider<MusicActions>(MusicActions.new);
 
 // -------------------------------------------------------------------- theme
 
-/// Dominant colours we have already worked out, keyed by song id.
-final _seedCache = <String, Color>{};
+/// Colours already pulled from covers, keyed by song id.
+final _paletteCache = <String, List<Color>>{};
 
-/// Accent colour: either pulled from the current artwork or set in settings.
-final seedColorProvider = FutureProvider<Color>((ref) async {
-  final settings = ref.watch(settingsProvider);
-  if (settings.accentMode != AccentMode.artwork) return settings.accentColor;
-
+/// Up to four colours from the current cover, strongest first: vibrant,
+/// dominant, muted, dark-vibrant. Empty when there is no cover. Feeds the
+/// accent (when it follows the artwork) and the living background (always).
+final artPaletteProvider = FutureProvider<List<Color>>((ref) async {
   final song = ref.watch(currentSongProvider).value;
-  if (song == null) return settings.accentColor;
-  final cached = _seedCache[song.id];
+  if (song == null) return const [];
+  final cached = _paletteCache[song.id];
   if (cached != null) return cached;
 
   final provider = artworkImageProvider(song, size: 96);
-  if (provider == null) return settings.accentColor;
+  if (provider == null) return const [];
   try {
     // Tiny target + few colours: this runs on the UI isolate on every track
     // change, so it has to be cheap.
     final palette = await PaletteGenerator.fromImageProvider(
       provider,
       size: const Size(48, 48),
-      maximumColorCount: 6,
+      maximumColorCount: 8,
       timeout: const Duration(seconds: 4),
     );
-    final seed = palette.vibrantColor?.color ??
-        palette.dominantColor?.color ??
-        settings.accentColor;
-    if (_seedCache.length > 200) _seedCache.clear();
-    _seedCache[song.id] = seed;
-    return seed;
+    final colors = <Color>[
+      for (final c in [
+        palette.vibrantColor,
+        palette.dominantColor,
+        palette.mutedColor,
+        palette.darkVibrantColor,
+        palette.lightVibrantColor,
+      ])
+        if (c != null) c.color,
+    ];
+    final unique = <Color>[];
+    for (final c in colors) {
+      if (!unique.contains(c)) unique.add(c);
+    }
+    final result = unique.take(4).toList();
+    if (_paletteCache.length > 200) _paletteCache.clear();
+    _paletteCache[song.id] = result;
+    return result;
   } catch (_) {
-    return settings.accentColor;
+    return const [];
   }
+});
+
+/// Accent colour: either pulled from the current artwork or set in settings.
+final seedColorProvider = FutureProvider<Color>((ref) async {
+  final settings = ref.watch(settingsProvider);
+  if (settings.accentMode != AccentMode.artwork) return settings.accentColor;
+  final palette = await ref.watch(artPaletteProvider.future);
+  return palette.isEmpty ? settings.accentColor : palette.first;
 });
 
 /// Connects the playback engine to the things only the app knows: the AI (for

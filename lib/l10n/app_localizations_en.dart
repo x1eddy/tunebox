@@ -60,7 +60,7 @@ class LEn extends L {
   String get greetingEvening => 'Good evening';
 
   @override
-  String get homeBuilding => 'The AI is building your shelves…';
+  String get homeBuilding => 'Putting your shelves together…';
 
   @override
   String get homeOffline => 'Offline — showing what is on the device';
@@ -96,7 +96,7 @@ class LEn extends L {
 
   @override
   String get homeEmptyBody =>
-      'Search for something, or add the music already on this device. The AI starts learning from your very first play.';
+      'Search for something, or bring in the music already on this device. TuneBox starts learning from the first song you play.';
 
   @override
   String get homeAddMyMusic => 'Add my music';
@@ -147,7 +147,7 @@ class LEn extends L {
   String get shelfNew => 'New';
 
   @override
-  String get shelfNewSub => 'Fresh tracks the AI thinks are for you';
+  String get shelfNewSub => 'Fresh finds that fit your taste';
 
   @override
   String shelfBecause(Object artist) {
@@ -179,8 +179,7 @@ class LEn extends L {
   String get shelfStarter => 'Start here';
 
   @override
-  String get shelfStarterSub =>
-      'Play a few and the AI starts learning immediately';
+  String get shelfStarterSub => 'Play a few. It learns from the very first one';
 
   @override
   String reasonPlays(int count) {
@@ -426,7 +425,7 @@ class LEn extends L {
   String get tasteRetraining => 'Retraining on your history…';
 
   @override
-  String get tasteRetrained => 'The AI rebuilt its model.';
+  String get tasteRetrained => 'Rebuilt from everything you have played.';
 
   @override
   String tasteConfidence(int percent) {
@@ -448,7 +447,7 @@ class LEn extends L {
   String get tasteKeepLearningSub => 'Turn off to freeze the current profile';
 
   @override
-  String get tasteDownloadsTitle => 'Downloads the AI handles';
+  String get tasteDownloadsTitle => 'Automatic downloads';
 
   @override
   String get tasteDownloadsSub =>
@@ -462,7 +461,7 @@ class LEn extends L {
       'Hit the heart and the file is saved for offline';
 
   @override
-  String get tasteAiInstall => 'Let the AI install music it picks';
+  String get tasteAiInstall => 'Download songs it picks for me';
 
   @override
   String get tasteAiInstallSub => 'It will fetch tracks it is confident about';
@@ -595,7 +594,7 @@ class LEn extends L {
 
   @override
   String get trainNothingBody =>
-      'Add some music or let the AI fetch candidates first, then come back.';
+      'Add some music first, or let TuneBox fetch a few songs to rate, then come back.';
 
   @override
   String get trainLeaveTitle => 'Leave the training round?';
@@ -605,10 +604,8 @@ class LEn extends L {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other:
-          'If you leave now, the AI discards everything from this round — all $count songs you just rated.',
-      one:
-          'If you leave now, the AI discards everything from this round — the 1 song you just rated.',
+      other: 'Leave now and the $count songs you just rated are forgotten.',
+      one: 'Leave now and the 1 song you just rated is forgotten.',
     );
     return '$_temp0';
   }
@@ -743,7 +740,7 @@ class LEn extends L {
   String get setWifiOnly => 'Download on Wi-Fi only';
 
   @override
-  String get setDailyLimit => 'Daily limit for the AI';
+  String get setDailyLimit => 'Songs per day';
 
   @override
   String setDailyLimitSub(int count) {
@@ -751,7 +748,7 @@ class LEn extends L {
   }
 
   @override
-  String get setBudget => 'Storage the AI may use';
+  String get setBudget => 'Space it may use';
 
   @override
   String setUsed(Object size) {
@@ -783,7 +780,7 @@ class LEn extends L {
 
   @override
   String get setExportSub =>
-      'Saves a file with your likes, plays and everything the AI learned';
+      'One file with your likes, plays and everything TuneBox learned';
 
   @override
   String get setImportTaste => 'Load taste from another device';
@@ -797,7 +794,7 @@ class LEn extends L {
 
   @override
   String get setAboutBody =>
-      'Music from YouTube and your own files. The AI runs entirely on this device — nothing leaves it.';
+      'Music from YouTube and your own files. Everything it learns stays on this device.';
 
   @override
   String get setShare => 'Share TuneBox';
@@ -916,7 +913,7 @@ class LEn extends L {
   String get setDownloadLikesSub => 'The heart button also saves the file';
 
   @override
-  String get setAiInstall => 'Let the AI install music it picks';
+  String get setAiInstall => 'Download songs it picks for me';
 
   @override
   String get setSkipSilenceSub =>
@@ -1329,7 +1326,7 @@ class LEn extends L {
 
   @override
   String aLibAiPicked(String count) {
-    return '$count of them the AI picked for you';
+    return '$count of them picked for you';
   }
 
   @override
@@ -1361,7 +1358,7 @@ class LEn extends L {
   String get aSearchTrySomething => 'Try something';
 
   @override
-  String get aSearchLearnedFrom => 'From what the AI learned';
+  String get aSearchLearnedFrom => 'Based on what you play';
 
   @override
   String get aSearchAnything => 'Search for anything on YouTube';
@@ -1434,7 +1431,7 @@ class LEn extends L {
 
   @override
   String bTasteQueuedSongs(String count) {
-    return 'Queued $count songs the AI picked.';
+    return 'Queued $count songs picked for you.';
   }
 
   @override
@@ -1516,7 +1513,7 @@ class LEn extends L {
       'Clears plays, skips and weights. Keeps library.';
 
   @override
-  String get bTasteResetDialogTitle => 'Reset the AI?';
+  String get bTasteResetDialogTitle => 'Start learning from scratch?';
 
   @override
   String get bTasteResetDialogBody =>
@@ -1574,7 +1571,7 @@ class LEn extends L {
 
   @override
   String cBlockedSnack(String title) {
-    return 'Blocked \"$title\" — the AI will avoid it';
+    return '\"$title\" won\'t come up again';
   }
 
   @override
@@ -1587,7 +1584,7 @@ class LEn extends L {
   String get cRemoveFromLiked => 'Remove from liked';
 
   @override
-  String get cLikeSub => 'Teaches the AI straight away';
+  String get cLikeSub => 'Counts right away';
 
   @override
   String get cSave => 'Save';
@@ -1667,7 +1664,7 @@ class LEn extends L {
 
   @override
   String cAiDownloading(String title) {
-    return 'AI is downloading $title';
+    return 'Fetching $title for you';
   }
 
   @override

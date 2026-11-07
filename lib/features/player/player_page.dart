@@ -4,8 +4,8 @@ import 'package:flutter/services.dart' show HapticFeedback;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../app/theme.dart';
 import '../../data/db/database.dart';
+import '../../state/appearance.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,8 +13,11 @@ import '../../ui/artwork.dart';
 import '../../ui/common.dart';
 import '../../ui/equalizer.dart';
 import '../../ui/motion.dart';
+import '../../ui/kit/living_background.dart';
+import '../../ui/kit/seek_bar.dart';
 import '../../ui/play_glyph.dart';
 import 'queue_page.dart';
+import 'stages.dart';
 
 class PlayerPage extends ConsumerWidget {
   const PlayerPage({super.key});
@@ -46,12 +49,21 @@ class PlayerPage extends ConsumerWidget {
     final position = ref.watch(positionProvider).value ?? Duration.zero;
     final total = Duration(milliseconds: song.durationMs);
     final music = ref.read(musicProvider);
+    final look = ref.watch(appearanceProvider);
+    final reduceMotion = ref.watch(
+      settingsProvider.select((s) => s.reduceMotion),
+    );
+    final palette = ref.watch(artPaletteProvider).value ?? const <Color>[];
+    final speed = ref.read(audioHandlerProvider).player.speed;
 
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          CoverBackdrop(song: song),
+          if (look.livingBackground)
+            LivingBackground(colors: palette, animate: !reduceMotion)
+          else
+            CoverBackdrop(song: song),
           SafeArea(
             child: Center(
               // a phone-shaped column; on a monitor it would be a wall of art
@@ -62,35 +74,18 @@ class PlayerPage extends ConsumerWidget {
                     children: [
                       _TopBar(song: song),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 26,
-                            vertical: 8,
-                          ),
-                          child: Center(
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: DecoratedBox(
-                                decoration: BoxDecoration(
-                                  borderRadius: R.hero,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.42,
-                                      ),
-                                      blurRadius: 18,
-                                      offset: const Offset(0, 10),
-                                    ),
-                                  ],
-                                ),
-                                child: CoverArt(
-                                  song: song,
-                                  radius: R.hero,
-                                  heroTag: 'player-art',
-                                ),
-                              ),
-                            ),
-                          ),
+                        child: PlayerStage(
+                          song: song,
+                          style: look.player,
+                          playing: playing,
+                          speed: speed,
+                          reduceMotion: reduceMotion,
+                          onDoubleTap: look.doubleTapLike && !song.liked
+                              ? () {
+                                  HapticFeedback.mediumImpact();
+                                  music.like(song);
+                                }
+                              : null,
                         ),
                       ),
                       Padding(
@@ -181,20 +176,22 @@ class PlayerPage extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(26, 12, 26, 0),
-                        child: Visualizer(
-                          playing: playing,
-                          height: 30,
-                          reduceMotion: ref
-                              .watch(settingsProvider)
-                              .reduceMotion,
+                      if (look.visualizer != VisualizerStyle.off)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(26, 12, 26, 0),
+                          child: Visualizer(
+                            playing: playing,
+                            height: 30,
+                            wave: look.visualizer == VisualizerStyle.wave,
+                            reduceMotion: reduceMotion,
+                          ),
                         ),
-                      ),
                       _Seek(
                         position: position,
                         total: total,
                         onSeek: music.seek,
+                        style: look.seek,
+                        seed: song.id,
                       ),
                       _Controls(
                         playing: playing,
@@ -340,11 +337,15 @@ class _Seek extends StatefulWidget {
     required this.position,
     required this.total,
     required this.onSeek,
+    this.style = SeekStyle.line,
+    this.seed = '',
   });
 
   final Duration position;
   final Duration total;
   final ValueChanged<Duration> onSeek;
+  final SeekStyle style;
+  final String seed;
 
   @override
   State<_Seek> createState() => _SeekState();
@@ -395,23 +396,26 @@ class _SeekState extends State<_Seek> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Column(
         children: [
-          SliderTheme(
-            data: SliderTheme.of(
-              context,
-            ).copyWith(showValueIndicator: ShowValueIndicator.onDrag),
-            child: Semantics(
-              label: L.of(context).cSeek,
-              value: L
-                  .of(context)
-                  .cTimeOf(formatDuration(shown), formatDuration(widget.total)),
-              child: Slider(
+          if (widget.style != SeekStyle.line)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: PaintedSeekBar(
                 value: value,
-                label: formatDuration(shown),
-                onChangeStart: (_) => HapticFeedback.selectionClick(),
+                style: widget.style,
+                seed: widget.seed,
+                semanticLabel: L.of(context).cSeek,
+                semanticValue: L
+                    .of(context)
+                    .cTimeOf(
+                      formatDuration(shown),
+                      formatDuration(widget.total),
+                    ),
+                onChangeStart: () {},
                 onChanged: totalMs == 0
                     ? null
                     : (v) => setState(() => _dragging = v),
                 onChangeEnd: (v) {
+                  if (totalMs == 0) return;
                   widget.onSeek(Duration(milliseconds: (totalMs * v).round()));
                   setState(() {
                     _landed = v;
@@ -420,8 +424,40 @@ class _SeekState extends State<_Seek> {
                   });
                 },
               ),
+            )
+          else
+            SliderTheme(
+              data: SliderTheme.of(
+                context,
+              ).copyWith(showValueIndicator: ShowValueIndicator.onDrag),
+              child: Semantics(
+                label: L.of(context).cSeek,
+                value: L
+                    .of(context)
+                    .cTimeOf(
+                      formatDuration(shown),
+                      formatDuration(widget.total),
+                    ),
+                child: Slider(
+                  value: value,
+                  label: formatDuration(shown),
+                  onChangeStart: (_) => HapticFeedback.selectionClick(),
+                  onChanged: totalMs == 0
+                      ? null
+                      : (v) => setState(() => _dragging = v),
+                  onChangeEnd: (v) {
+                    widget.onSeek(
+                      Duration(milliseconds: (totalMs * v).round()),
+                    );
+                    setState(() {
+                      _landed = v;
+                      _landedAt = DateTime.now();
+                      _dragging = null;
+                    });
+                  },
+                ),
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(

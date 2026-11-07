@@ -17,6 +17,7 @@ import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../profiles/profile_sheet.dart';
 import '../../ui/common.dart';
+import '../../ui/kit/grouped.dart';
 import '../../l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -35,7 +36,7 @@ class SettingsPage extends ConsumerWidget {
       appBar: AppBar(title: Text(l.setTitle)),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 28),
-        children: [
+        children: groupSections(context, [
           // ----------------------------------------------------- profile
           Consumer(
             builder: (context, ref, _) {
@@ -498,7 +499,7 @@ class SettingsPage extends ConsumerWidget {
               subtitle: const Text('Diagnostics, log and maintenance'),
               onTap: () => pushDetail(context, 'owner'),
             ),
-        ],
+        ]),
       ),
     );
   }

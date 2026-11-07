@@ -8,6 +8,7 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
+import '../../ui/kit/aura_card.dart';
 import '../profiles/profile_sheet.dart';
 import '../../ui/motion.dart';
 import '../../l10n/app_localizations.dart';
@@ -139,6 +140,19 @@ class HomePage extends ConsumerWidget {
   _ => (shelf.title, shelf.subtitle),
 };
 
+/// One glyph per kind of shelf, so the row headers read at a glance.
+IconData shelfIcon(String id) => switch (id) {
+  'repeat' => Icons.repeat_rounded,
+  'forgotten' => Icons.history_rounded,
+  'new' => Icons.auto_awesome_rounded,
+  'because' => Icons.hub_outlined,
+  'deep' => Icons.explore_outlined,
+  'mix' => Icons.shuffle_rounded,
+  'added' => Icons.download_done_rounded,
+  'starter' => Icons.flag_outlined,
+  _ => Icons.music_note_rounded,
+};
+
 class _MoodRow extends ConsumerWidget {
   const _MoodRow();
 
@@ -213,20 +227,8 @@ class _FirstRunCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L.of(context);
     final t = Theme.of(context);
-    return Container(
+    return AuraCard(
       margin: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: R.hero,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            t.colorScheme.primaryContainer,
-            t.colorScheme.tertiaryContainer,
-          ],
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -234,14 +236,14 @@ class _FirstRunCard extends ConsumerWidget {
             children: [
               Icon(
                 Icons.auto_awesome_rounded,
-                color: t.colorScheme.onPrimaryContainer,
+                color: t.colorScheme.onSurface,
               ),
               const SizedBox(width: 8),
               Text(
                 l.homeEmptyTitle,
                 style: t.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: t.colorScheme.onPrimaryContainer,
+                  color: t.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -250,7 +252,7 @@ class _FirstRunCard extends ConsumerWidget {
           Text(
             l.homeEmptyBody,
             style: t.textTheme.bodyMedium?.copyWith(
-              color: t.colorScheme.onPrimaryContainer,
+              color: t.colorScheme.onSurface,
               height: 1.3,
             ),
           ),
@@ -377,7 +379,7 @@ class _ShelfView extends ConsumerWidget {
         SectionHeader(
           title: title,
           subtitle: subtitle,
-          emoji: shelf.emoji,
+          icon: shelfIcon(shelf.id),
           trailing: IconButton(
             tooltip: l.actionPlayAll,
             onPressed: () => ref
