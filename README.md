@@ -29,8 +29,33 @@ Built with Flutter, so one codebase runs on all three.
   transparent scorer: per-artist, per-tag and per-decade weights, decayed over
   time. No black box — every recommendation can say *why* it is there
   ("One of your most played artists", "Liked, last played 8 months ago").
-- **Builds shelves from that**: *On repeat*, *New ⭐*, *Old forgotten hits you
-  liked*, *Because you played X*, *Barely touched*, *Your mix*. A song only ever
+- **Synced lyrics, karaoke style** — swipe the cover; the line being sung
+  lights up, tap any line to jump there. From LRCLIB (open, no account) or an
+  `.lrc` file next to your song, kept for offline.
+- **Studio sound** — gapless playback, crossfade (with a smart mode that
+  keeps albums seamless), loudness normalisation from YouTube's own
+  measurements, an Android equaliser that remembers a sound per output
+  (speaker, wired, Bluetooth), speed and pitch, and a sleep timer that fades
+  out (shake the phone for ten more minutes).
+- **Describe a mix** — type *"rainy sunday 2000s rock, no Linkin Park, getting
+  faster"* and get that playlist. The sentence is read on the phone; no cloud
+  model ever sees it.
+- **Rewind, any time** — your week, month, year or all time as story cards:
+  minutes, top songs and artists, your sound, your hour, streaks, what you
+  could not skip, and what kind of listener you are. Share any card.
+- **Taste Galaxy** — your artists as a star map, laid out by how alike they
+  sound and how often you play them together. Draw a loop around a cluster to
+  play that corner of your taste.
+- **Blend** — one fair queue from two tastes: another profile, or a friend's
+  taste code. Shows how well you match; never mixes their taste into yours.
+- **Make it yours** — an Appearance studio with theme presets, five font
+  pairs, corner and spacing styles, five player styles (classic, vinyl,
+  cassette, big art, minimal), seek-bar and visualiser styles, your own tab
+  order, your own Home layout, swipe actions and shake to skip. Share the
+  whole look as a theme code.
+- **Everywhere** — Android home-screen widget and app shortcuts; on Linux,
+  GNOME's media controls and media keys (MPRIS) and keyboard shortcuts.
+- **Builds shelves from that**: *On repeat*, *Fresh finds*, *A year ago*, *Lost favourites*, *Because you played X*, *Barely touched*, *Your mix*. A song only ever
   appears on one shelf, so the home screen never repeats itself.
 - **Train it directly** — a swipe-to-rate round, sliders for
   discovery / energy / recency / nostalgia, and per-artist "more of this" or
