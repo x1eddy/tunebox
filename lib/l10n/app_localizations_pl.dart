@@ -2423,4 +2423,148 @@ class LPl extends L {
 
   @override
   String get blendYours => 'twój';
+
+  @override
+  String get syncTitle => 'Zsynchronizowane urządzenia';
+
+  @override
+  String get syncHeadline => 'Jeden gust na wszystkich urządzeniach';
+
+  @override
+  String get syncIntro =>
+      'Sparuj telefon i komputer raz. Potem same wymieniają się tym, czego się nauczyły, mniej więcej co 45 minut i przy otwarciu aplikacji, gdy są w tej samej sieci Wi-Fi. Bez konta i serwera.';
+
+  @override
+  String get syncDevices => 'Sparowane urządzenia';
+
+  @override
+  String get syncNow => 'Synchronizuj teraz';
+
+  @override
+  String get syncNone => 'Nic jeszcze nie sparowano';
+
+  @override
+  String get syncNoneSub =>
+      'Pokaż kod na jednym urządzeniu i wpisz go na drugim.';
+
+  @override
+  String syncLast(String when) {
+    return 'Ostatnia synchronizacja: $when';
+  }
+
+  @override
+  String get syncNever => 'jeszcze nie';
+
+  @override
+  String get syncJustNow => 'przed chwilą';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return '$n min temu';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return '$n godz. temu';
+  }
+
+  @override
+  String get syncForget => 'Rozparuj';
+
+  @override
+  String syncForgetQ(String name) {
+    return 'Rozparować $name?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Nic nie zostanie usunięte. Urządzenia po prostu przestaną się wymieniać.';
+
+  @override
+  String get syncAdd => 'Dodaj urządzenie';
+
+  @override
+  String get syncShowCode => 'Pokaż kod parowania';
+
+  @override
+  String get syncShowCodeSub => 'Na tym urządzeniu';
+
+  @override
+  String get syncEnterCode => 'Wpisz kod parowania';
+
+  @override
+  String get syncEnterCodeSub => 'Ten z drugiego urządzenia';
+
+  @override
+  String get syncPrivate => 'Zostaje w twojej sieci';
+
+  @override
+  String get syncPrivateSub =>
+      'Urządzenia łączą się bezpośrednio, a wszystko jest szyfrowane kluczem znanym tylko im.';
+
+  @override
+  String get syncTypeThis => 'Wpisz ten kod na drugim urządzeniu';
+
+  @override
+  String get syncWaiting => 'Czekam… nie zamykaj.';
+
+  @override
+  String syncAddress(String address) {
+    return 'Jeśli nie zostanie znalezione, wpisz tam ten adres: $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'Kod wygasł.';
+
+  @override
+  String get syncNewCode => 'Nowy kod';
+
+  @override
+  String syncPaired(String name) {
+    return 'Sparowano z $name';
+  }
+
+  @override
+  String get syncPair => 'Sparuj';
+
+  @override
+  String get syncNotFound => 'Nie znaleziono? Wpisz adres';
+
+  @override
+  String get syncAddressLabel => 'Adres (np. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zsynchronizowano z $count urządzeniami',
+      one: 'Zsynchronizowano z 1 urządzeniem',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Nie udało się połączyć z innymi urządzeniami. Czy są włączone i w tej samej sieci?';
+
+  @override
+  String get syncNoDevice => 'Brak urządzenia z otwartym kodem w tej sieci';
+
+  @override
+  String get syncWrongCode => 'Ten kod jest nieprawidłowy';
+
+  @override
+  String get syncNotPaired => 'Drugie urządzenie już tego nie zna';
+
+  @override
+  String get syncUnreachable => 'Teraz nieosiągalne';
+
+  @override
+  String get syncSettingsOff => 'Ten sam gust na telefonie i komputerze';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'Synchronizacja z: $names';
+  }
 }

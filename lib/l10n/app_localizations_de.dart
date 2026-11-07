@@ -2419,4 +2419,150 @@ class LDe extends L {
 
   @override
   String get blendYours => 'deins';
+
+  @override
+  String get syncTitle => 'Synchronisierte Geräte';
+
+  @override
+  String get syncHeadline => 'Ein Geschmack auf all deinen Geräten';
+
+  @override
+  String get syncIntro =>
+      'Kopple Handy und Computer einmal. Danach tauschen sie selbst aus, was sie gelernt haben, etwa alle 45 Minuten und beim Öffnen der App, wenn beide im selben WLAN sind. Ohne Konto und ohne Server.';
+
+  @override
+  String get syncDevices => 'Gekoppelte Geräte';
+
+  @override
+  String get syncNow => 'Jetzt synchronisieren';
+
+  @override
+  String get syncNone => 'Noch nichts gekoppelt';
+
+  @override
+  String get syncNoneSub =>
+      'Zeig auf einem Gerät einen Code und tipp ihn auf dem anderen ein.';
+
+  @override
+  String syncLast(String when) {
+    return 'Zuletzt synchronisiert: $when';
+  }
+
+  @override
+  String get syncNever => 'noch nie';
+
+  @override
+  String get syncJustNow => 'gerade eben';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return 'vor $n Min.';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return 'vor $n Std.';
+  }
+
+  @override
+  String get syncForget => 'Entkoppeln';
+
+  @override
+  String syncForgetQ(String name) {
+    return '$name entkoppeln?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Es wird nichts gelöscht. Die Geräte tauschen nur keinen Geschmack mehr aus.';
+
+  @override
+  String get syncAdd => 'Gerät hinzufügen';
+
+  @override
+  String get syncShowCode => 'Kopplungscode zeigen';
+
+  @override
+  String get syncShowCodeSub => 'Auf diesem Gerät';
+
+  @override
+  String get syncEnterCode => 'Kopplungscode eingeben';
+
+  @override
+  String get syncEnterCodeSub => 'Den dein anderes Gerät zeigt';
+
+  @override
+  String get syncPrivate => 'Bleibt in deinem Netzwerk';
+
+  @override
+  String get syncPrivateSub =>
+      'Die Geräte reden direkt miteinander, jede Übertragung ist mit einem Schlüssel verschlüsselt, den nur sie kennen.';
+
+  @override
+  String get syncTypeThis => 'Gib diesen Code auf dem anderen Gerät ein';
+
+  @override
+  String get syncWaiting => 'Warte darauf… lass das hier offen.';
+
+  @override
+  String syncAddress(String address) {
+    return 'Falls es nicht gefunden wird, dort diese Adresse eingeben: $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'Der Code ist abgelaufen.';
+
+  @override
+  String get syncNewCode => 'Neuer Code';
+
+  @override
+  String syncPaired(String name) {
+    return 'Mit $name gekoppelt';
+  }
+
+  @override
+  String get syncPair => 'Koppeln';
+
+  @override
+  String get syncNotFound => 'Nicht gefunden? Adresse eingeben';
+
+  @override
+  String get syncAddressLabel => 'Adresse (z. B. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Mit $count Geräten synchronisiert',
+      one: 'Mit 1 Gerät synchronisiert',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Die anderen Geräte waren nicht erreichbar. Sind sie an und im selben WLAN?';
+
+  @override
+  String get syncNoDevice =>
+      'Kein Gerät mit offenem Code in diesem WLAN gefunden';
+
+  @override
+  String get syncWrongCode => 'Der Code stimmt nicht';
+
+  @override
+  String get syncNotPaired => 'Das andere Gerät kennt dieses nicht mehr';
+
+  @override
+  String get syncUnreachable => 'Gerade nicht erreichbar';
+
+  @override
+  String get syncSettingsOff =>
+      'Halte deinen Geschmack auf Handy und Computer gleich';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'Synchronisiert mit $names';
+  }
 }

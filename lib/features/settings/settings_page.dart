@@ -16,6 +16,7 @@ import '../../state/owner.dart';
 import '../../state/providers.dart';
 import '../../state/settings.dart';
 import '../profiles/profile_sheet.dart';
+import '../sync/sync_page.dart';
 import '../../ui/common.dart';
 import '../../ui/kit/grouped.dart';
 import '../../l10n/app_localizations.dart';
@@ -63,6 +64,7 @@ class SettingsPage extends ConsumerWidget {
             },
           ),
           const Divider(height: 8),
+          SyncSettingsTile(onTap: () => pushDetail(context, 'sync')),
           ListTile(
             leading: const Icon(Icons.brush_rounded),
             title: Text(l.stTitle),

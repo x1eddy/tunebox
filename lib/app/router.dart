@@ -20,6 +20,7 @@ import '../features/mix/mix_page.dart';
 import '../features/rewind/rewind_page.dart';
 import '../features/sound/sound_page.dart';
 import '../features/studio/studio_page.dart';
+import '../features/sync/sync_page.dart';
 import '../features/transfer/transfer_page.dart';
 import '../state/settings.dart';
 import 'shell.dart';
@@ -46,6 +47,7 @@ List<RouteBase> _details() => [
   GoRoute(path: 'studio', builder: (_, _) => const StudioPage()),
   GoRoute(path: 'galaxy', builder: (_, _) => const GalaxyPage()),
   GoRoute(path: 'blend', builder: (_, _) => const BlendPage()),
+  GoRoute(path: 'sync', builder: (_, _) => const SyncPage()),
   GoRoute(
     path: 'mix',
     builder: (_, s) => MixPage(initial: s.uri.queryParameters['q']),

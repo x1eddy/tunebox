@@ -4406,6 +4406,240 @@ abstract class L {
   /// In en, this message translates to:
   /// **'yours'**
   String get blendYours;
+
+  /// No description provided for @syncTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced devices'**
+  String get syncTitle;
+
+  /// No description provided for @syncHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'One taste, on all your devices'**
+  String get syncHeadline;
+
+  /// No description provided for @syncIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair your phone and computer once. After that they swap what they learned by themselves, about every 45 minutes and whenever you open the app, while both are on the same Wi-Fi. No account and no server.'**
+  String get syncIntro;
+
+  /// No description provided for @syncDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired devices'**
+  String get syncDevices;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
+
+  /// No description provided for @syncNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing paired yet'**
+  String get syncNone;
+
+  /// No description provided for @syncNoneSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a code on one device and type it on the other.'**
+  String get syncNoneSub;
+
+  /// No description provided for @syncLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {when}'**
+  String syncLast(String when);
+
+  /// No description provided for @syncNever.
+  ///
+  /// In en, this message translates to:
+  /// **'not yet'**
+  String get syncNever;
+
+  /// No description provided for @syncJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get syncJustNow;
+
+  /// No description provided for @syncMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min ago'**
+  String syncMinutesAgo(int n);
+
+  /// No description provided for @syncHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} h ago'**
+  String syncHoursAgo(int n);
+
+  /// No description provided for @syncForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair'**
+  String get syncForget;
+
+  /// No description provided for @syncForgetQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpair {name}?'**
+  String syncForgetQ(String name);
+
+  /// No description provided for @syncForgetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is deleted. The two devices just stop swapping taste.'**
+  String get syncForgetBody;
+
+  /// No description provided for @syncAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a device'**
+  String get syncAdd;
+
+  /// No description provided for @syncShowCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show a pairing code'**
+  String get syncShowCode;
+
+  /// No description provided for @syncShowCodeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'On this device'**
+  String get syncShowCodeSub;
+
+  /// No description provided for @syncEnterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a pairing code'**
+  String get syncEnterCode;
+
+  /// No description provided for @syncEnterCodeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on your other device'**
+  String get syncEnterCodeSub;
+
+  /// No description provided for @syncPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays on your network'**
+  String get syncPrivate;
+
+  /// No description provided for @syncPrivateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices talk directly and every transfer is encrypted with a key only they know.'**
+  String get syncPrivateSub;
+
+  /// No description provided for @syncTypeThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Type this code on your other device'**
+  String get syncTypeThis;
+
+  /// No description provided for @syncWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for it… keep this open.'**
+  String get syncWaiting;
+
+  /// No description provided for @syncAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'If it is not found, type this address there: {address}'**
+  String syncAddress(String address);
+
+  /// No description provided for @syncCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That code has expired.'**
+  String get syncCodeExpired;
+
+  /// No description provided for @syncNewCode.
+  ///
+  /// In en, this message translates to:
+  /// **'New code'**
+  String get syncNewCode;
+
+  /// No description provided for @syncPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired with {name}'**
+  String syncPaired(String name);
+
+  /// No description provided for @syncPair.
+  ///
+  /// In en, this message translates to:
+  /// **'Pair'**
+  String get syncPair;
+
+  /// No description provided for @syncNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found? Type its address'**
+  String get syncNotFound;
+
+  /// No description provided for @syncAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address (e.g. 192.168.1.20)'**
+  String get syncAddressLabel;
+
+  /// No description provided for @syncDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Synced with 1 device} other{Synced with {count} devices}}'**
+  String syncDone(int count);
+
+  /// No description provided for @syncNoneReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach your other devices. Are they on and on the same Wi-Fi?'**
+  String get syncNoneReached;
+
+  /// No description provided for @syncNoDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'No device with an open code was found on this Wi-Fi'**
+  String get syncNoDevice;
+
+  /// No description provided for @syncWrongCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is not right'**
+  String get syncWrongCode;
+
+  /// No description provided for @syncNotPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'The other device no longer knows this one'**
+  String get syncNotPaired;
+
+  /// No description provided for @syncUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not reachable right now'**
+  String get syncUnreachable;
+
+  /// No description provided for @syncSettingsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your taste the same on phone and computer'**
+  String get syncSettingsOff;
+
+  /// No description provided for @syncSettingsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing with {names}'**
+  String syncSettingsOn(String names);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

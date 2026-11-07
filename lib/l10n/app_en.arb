@@ -1377,5 +1377,100 @@
   "blendBothArtists": "Artists you both have",
   "blendQueue": "The queue",
   "blendBoth": "you both",
-  "blendYours": "yours"
+  "blendYours": "yours",
+  "syncTitle": "Synced devices",
+  "syncHeadline": "One taste, on all your devices",
+  "syncIntro": "Pair your phone and computer once. After that they swap what they learned by themselves, about every 45 minutes and whenever you open the app, while both are on the same Wi-Fi. No account and no server.",
+  "syncDevices": "Paired devices",
+  "syncNow": "Sync now",
+  "syncNone": "Nothing paired yet",
+  "syncNoneSub": "Show a code on one device and type it on the other.",
+  "syncLast": "Last synced {when}",
+  "@syncLast": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "syncNever": "not yet",
+  "syncJustNow": "just now",
+  "syncMinutesAgo": "{n} min ago",
+  "@syncMinutesAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "syncHoursAgo": "{n} h ago",
+  "@syncHoursAgo": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "syncForget": "Unpair",
+  "syncForgetQ": "Unpair {name}?",
+  "@syncForgetQ": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syncForgetBody": "Nothing is deleted. The two devices just stop swapping taste.",
+  "syncAdd": "Add a device",
+  "syncShowCode": "Show a pairing code",
+  "syncShowCodeSub": "On this device",
+  "syncEnterCode": "Type a pairing code",
+  "syncEnterCodeSub": "Shown on your other device",
+  "syncPrivate": "Stays on your network",
+  "syncPrivateSub": "Devices talk directly and every transfer is encrypted with a key only they know.",
+  "syncTypeThis": "Type this code on your other device",
+  "syncWaiting": "Waiting for it… keep this open.",
+  "syncAddress": "If it is not found, type this address there: {address}",
+  "@syncAddress": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      }
+    }
+  },
+  "syncCodeExpired": "That code has expired.",
+  "syncNewCode": "New code",
+  "syncPaired": "Paired with {name}",
+  "@syncPaired": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "syncPair": "Pair",
+  "syncNotFound": "Not found? Type its address",
+  "syncAddressLabel": "Address (e.g. 192.168.1.20)",
+  "syncDone": "{count, plural, =1{Synced with 1 device} other{Synced with {count} devices}}",
+  "@syncDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncNoneReached": "Could not reach your other devices. Are they on and on the same Wi-Fi?",
+  "syncNoDevice": "No device with an open code was found on this Wi-Fi",
+  "syncWrongCode": "That code is not right",
+  "syncNotPaired": "The other device no longer knows this one",
+  "syncUnreachable": "Not reachable right now",
+  "syncSettingsOff": "Keep your taste the same on phone and computer",
+  "syncSettingsOn": "Syncing with {names}",
+  "@syncSettingsOn": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  }
 }

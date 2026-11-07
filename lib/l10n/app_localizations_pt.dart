@@ -2405,4 +2405,149 @@ class LPt extends L {
 
   @override
   String get blendYours => 'teu';
+
+  @override
+  String get syncTitle => 'Dispositivos sincronizados';
+
+  @override
+  String get syncHeadline => 'Um só gosto em todos os teus dispositivos';
+
+  @override
+  String get syncIntro =>
+      'Emparelha o telemóvel e o computador uma vez. Depois trocam sozinhos o que aprenderam, mais ou menos a cada 45 minutos e quando abres a app, se estiverem na mesma Wi-Fi. Sem conta nem servidor.';
+
+  @override
+  String get syncDevices => 'Dispositivos emparelhados';
+
+  @override
+  String get syncNow => 'Sincronizar agora';
+
+  @override
+  String get syncNone => 'Ainda nada emparelhado';
+
+  @override
+  String get syncNoneSub =>
+      'Mostra um código num dispositivo e escreve-o no outro.';
+
+  @override
+  String syncLast(String when) {
+    return 'Última sincronização: $when';
+  }
+
+  @override
+  String get syncNever => 'ainda não';
+
+  @override
+  String get syncJustNow => 'agora mesmo';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return 'há $n min';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return 'há $n h';
+  }
+
+  @override
+  String get syncForget => 'Desemparelhar';
+
+  @override
+  String syncForgetQ(String name) {
+    return 'Desemparelhar $name?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Nada é apagado. Apenas deixam de trocar gostos.';
+
+  @override
+  String get syncAdd => 'Adicionar dispositivo';
+
+  @override
+  String get syncShowCode => 'Mostrar código';
+
+  @override
+  String get syncShowCodeSub => 'Neste dispositivo';
+
+  @override
+  String get syncEnterCode => 'Escrever um código';
+
+  @override
+  String get syncEnterCodeSub => 'O que o outro dispositivo mostra';
+
+  @override
+  String get syncPrivate => 'Fica na tua rede';
+
+  @override
+  String get syncPrivateSub =>
+      'Os dispositivos falam diretamente e tudo é cifrado com uma chave que só eles conhecem.';
+
+  @override
+  String get syncTypeThis => 'Escreve este código no outro dispositivo';
+
+  @override
+  String get syncWaiting => 'À espera… deixa isto aberto.';
+
+  @override
+  String syncAddress(String address) {
+    return 'Se não for encontrado, escreve lá este endereço: $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'Esse código expirou.';
+
+  @override
+  String get syncNewCode => 'Novo código';
+
+  @override
+  String syncPaired(String name) {
+    return 'Emparelhado com $name';
+  }
+
+  @override
+  String get syncPair => 'Emparelhar';
+
+  @override
+  String get syncNotFound => 'Não aparece? Escreve o endereço';
+
+  @override
+  String get syncAddressLabel => 'Endereço (ex. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Sincronizado com $count dispositivos',
+      one: 'Sincronizado com 1 dispositivo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Não foi possível chegar aos outros dispositivos. Estão ligados e na mesma Wi-Fi?';
+
+  @override
+  String get syncNoDevice => 'Nenhum dispositivo com código aberto nesta Wi-Fi';
+
+  @override
+  String get syncWrongCode => 'Esse código não está certo';
+
+  @override
+  String get syncNotPaired => 'O outro dispositivo já não reconhece este';
+
+  @override
+  String get syncUnreachable => 'Inacessível de momento';
+
+  @override
+  String get syncSettingsOff =>
+      'Mantém o mesmo gosto no telemóvel e no computador';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'A sincronizar com $names';
+  }
 }

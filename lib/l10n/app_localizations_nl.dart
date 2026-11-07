@@ -2413,4 +2413,148 @@ class LNl extends L {
 
   @override
   String get blendYours => 'van jou';
+
+  @override
+  String get syncTitle => 'Gesynchroniseerde apparaten';
+
+  @override
+  String get syncHeadline => 'Eén smaak op al je apparaten';
+
+  @override
+  String get syncIntro =>
+      'Koppel je telefoon en computer één keer. Daarna wisselen ze zelf uit wat ze geleerd hebben, ongeveer elke 45 minuten en als je de app opent, zolang ze op dezelfde wifi zitten. Geen account, geen server.';
+
+  @override
+  String get syncDevices => 'Gekoppelde apparaten';
+
+  @override
+  String get syncNow => 'Nu synchroniseren';
+
+  @override
+  String get syncNone => 'Nog niets gekoppeld';
+
+  @override
+  String get syncNoneSub =>
+      'Toon een code op het ene apparaat en typ hem op het andere.';
+
+  @override
+  String syncLast(String when) {
+    return 'Laatst gesynchroniseerd: $when';
+  }
+
+  @override
+  String get syncNever => 'nog niet';
+
+  @override
+  String get syncJustNow => 'zojuist';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return '$n min geleden';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return '$n u geleden';
+  }
+
+  @override
+  String get syncForget => 'Ontkoppelen';
+
+  @override
+  String syncForgetQ(String name) {
+    return '$name ontkoppelen?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Er wordt niets gewist. Ze wisselen alleen geen smaak meer uit.';
+
+  @override
+  String get syncAdd => 'Apparaat toevoegen';
+
+  @override
+  String get syncShowCode => 'Koppelcode tonen';
+
+  @override
+  String get syncShowCodeSub => 'Op dit apparaat';
+
+  @override
+  String get syncEnterCode => 'Koppelcode invoeren';
+
+  @override
+  String get syncEnterCodeSub => 'Die je andere apparaat toont';
+
+  @override
+  String get syncPrivate => 'Blijft in je netwerk';
+
+  @override
+  String get syncPrivateSub =>
+      'De apparaten praten rechtstreeks en alles is versleuteld met een sleutel die alleen zij kennen.';
+
+  @override
+  String get syncTypeThis => 'Typ deze code op je andere apparaat';
+
+  @override
+  String get syncWaiting => 'Wachten… laat dit open.';
+
+  @override
+  String syncAddress(String address) {
+    return 'Wordt het niet gevonden, typ daar dit adres: $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'Die code is verlopen.';
+
+  @override
+  String get syncNewCode => 'Nieuwe code';
+
+  @override
+  String syncPaired(String name) {
+    return 'Gekoppeld met $name';
+  }
+
+  @override
+  String get syncPair => 'Koppelen';
+
+  @override
+  String get syncNotFound => 'Niet gevonden? Typ het adres';
+
+  @override
+  String get syncAddressLabel => 'Adres (bijv. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Gesynchroniseerd met $count apparaten',
+      one: 'Gesynchroniseerd met 1 apparaat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Je andere apparaten waren onbereikbaar. Staan ze aan en op dezelfde wifi?';
+
+  @override
+  String get syncNoDevice => 'Geen apparaat met een open code op deze wifi';
+
+  @override
+  String get syncWrongCode => 'Die code klopt niet';
+
+  @override
+  String get syncNotPaired => 'Het andere apparaat kent dit niet meer';
+
+  @override
+  String get syncUnreachable => 'Nu niet bereikbaar';
+
+  @override
+  String get syncSettingsOff => 'Houd je smaak gelijk op telefoon en computer';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'Synchroniseert met $names';
+  }
 }

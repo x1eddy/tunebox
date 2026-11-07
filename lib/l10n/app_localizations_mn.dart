@@ -2402,4 +2402,150 @@ class LMn extends L {
 
   @override
   String get blendYours => 'yours';
+
+  @override
+  String get syncTitle => 'Synced devices';
+
+  @override
+  String get syncHeadline => 'One taste, on all your devices';
+
+  @override
+  String get syncIntro =>
+      'Pair your phone and computer once. After that they swap what they learned by themselves, about every 45 minutes and whenever you open the app, while both are on the same Wi-Fi. No account and no server.';
+
+  @override
+  String get syncDevices => 'Paired devices';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get syncNone => 'Nothing paired yet';
+
+  @override
+  String get syncNoneSub =>
+      'Show a code on one device and type it on the other.';
+
+  @override
+  String syncLast(String when) {
+    return 'Last synced $when';
+  }
+
+  @override
+  String get syncNever => 'not yet';
+
+  @override
+  String get syncJustNow => 'just now';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return '$n h ago';
+  }
+
+  @override
+  String get syncForget => 'Unpair';
+
+  @override
+  String syncForgetQ(String name) {
+    return 'Unpair $name?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Nothing is deleted. The two devices just stop swapping taste.';
+
+  @override
+  String get syncAdd => 'Add a device';
+
+  @override
+  String get syncShowCode => 'Show a pairing code';
+
+  @override
+  String get syncShowCodeSub => 'On this device';
+
+  @override
+  String get syncEnterCode => 'Type a pairing code';
+
+  @override
+  String get syncEnterCodeSub => 'Shown on your other device';
+
+  @override
+  String get syncPrivate => 'Stays on your network';
+
+  @override
+  String get syncPrivateSub =>
+      'Devices talk directly and every transfer is encrypted with a key only they know.';
+
+  @override
+  String get syncTypeThis => 'Type this code on your other device';
+
+  @override
+  String get syncWaiting => 'Waiting for it… keep this open.';
+
+  @override
+  String syncAddress(String address) {
+    return 'If it is not found, type this address there: $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'That code has expired.';
+
+  @override
+  String get syncNewCode => 'New code';
+
+  @override
+  String syncPaired(String name) {
+    return 'Paired with $name';
+  }
+
+  @override
+  String get syncPair => 'Pair';
+
+  @override
+  String get syncNotFound => 'Not found? Type its address';
+
+  @override
+  String get syncAddressLabel => 'Address (e.g. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Synced with $count devices',
+      one: 'Synced with 1 device',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Could not reach your other devices. Are they on and on the same Wi-Fi?';
+
+  @override
+  String get syncNoDevice =>
+      'No device with an open code was found on this Wi-Fi';
+
+  @override
+  String get syncWrongCode => 'That code is not right';
+
+  @override
+  String get syncNotPaired => 'The other device no longer knows this one';
+
+  @override
+  String get syncUnreachable => 'Not reachable right now';
+
+  @override
+  String get syncSettingsOff =>
+      'Keep your taste the same on phone and computer';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'Syncing with $names';
+  }
 }

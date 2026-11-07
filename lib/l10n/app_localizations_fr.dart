@@ -2422,4 +2422,149 @@ class LFr extends L {
 
   @override
   String get blendYours => 'à toi';
+
+  @override
+  String get syncTitle => 'Appareils synchronisés';
+
+  @override
+  String get syncHeadline => 'Un seul goût sur tous tes appareils';
+
+  @override
+  String get syncIntro =>
+      'Associe ton téléphone et ton ordinateur une fois. Ensuite, ils échangent seuls ce qu\'ils ont appris, environ toutes les 45 minutes et à l\'ouverture de l\'app, s\'ils sont sur le même Wi-Fi. Sans compte ni serveur.';
+
+  @override
+  String get syncDevices => 'Appareils associés';
+
+  @override
+  String get syncNow => 'Synchroniser';
+
+  @override
+  String get syncNone => 'Rien d\'associé pour l\'instant';
+
+  @override
+  String get syncNoneSub =>
+      'Affiche un code sur un appareil et tape-le sur l\'autre.';
+
+  @override
+  String syncLast(String when) {
+    return 'Dernière synchro : $when';
+  }
+
+  @override
+  String get syncNever => 'pas encore';
+
+  @override
+  String get syncJustNow => 'à l\'instant';
+
+  @override
+  String syncMinutesAgo(int n) {
+    return 'il y a $n min';
+  }
+
+  @override
+  String syncHoursAgo(int n) {
+    return 'il y a $n h';
+  }
+
+  @override
+  String get syncForget => 'Dissocier';
+
+  @override
+  String syncForgetQ(String name) {
+    return 'Dissocier $name ?';
+  }
+
+  @override
+  String get syncForgetBody =>
+      'Rien n\'est supprimé. Les deux appareils arrêtent juste d\'échanger.';
+
+  @override
+  String get syncAdd => 'Ajouter un appareil';
+
+  @override
+  String get syncShowCode => 'Afficher un code';
+
+  @override
+  String get syncShowCodeSub => 'Sur cet appareil';
+
+  @override
+  String get syncEnterCode => 'Taper un code';
+
+  @override
+  String get syncEnterCodeSub => 'Celui affiché sur ton autre appareil';
+
+  @override
+  String get syncPrivate => 'Reste sur ton réseau';
+
+  @override
+  String get syncPrivateSub =>
+      'Les appareils se parlent directement et tout est chiffré avec une clé qu\'eux seuls connaissent.';
+
+  @override
+  String get syncTypeThis => 'Tape ce code sur ton autre appareil';
+
+  @override
+  String get syncWaiting => 'En attente… laisse ceci ouvert.';
+
+  @override
+  String syncAddress(String address) {
+    return 'S\'il n\'est pas trouvé, tape cette adresse là-bas : $address';
+  }
+
+  @override
+  String get syncCodeExpired => 'Ce code a expiré.';
+
+  @override
+  String get syncNewCode => 'Nouveau code';
+
+  @override
+  String syncPaired(String name) {
+    return 'Associé à $name';
+  }
+
+  @override
+  String get syncPair => 'Associer';
+
+  @override
+  String get syncNotFound => 'Introuvable ? Tape son adresse';
+
+  @override
+  String get syncAddressLabel => 'Adresse (ex. 192.168.1.20)';
+
+  @override
+  String syncDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Synchronisé avec $count appareils',
+      one: 'Synchronisé avec 1 appareil',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncNoneReached =>
+      'Impossible de joindre tes autres appareils. Sont-ils allumés et sur le même Wi-Fi ?';
+
+  @override
+  String get syncNoDevice => 'Aucun appareil avec un code ouvert sur ce Wi-Fi';
+
+  @override
+  String get syncWrongCode => 'Ce code n\'est pas bon';
+
+  @override
+  String get syncNotPaired => 'L\'autre appareil ne connaît plus celui-ci';
+
+  @override
+  String get syncUnreachable => 'Injoignable pour l\'instant';
+
+  @override
+  String get syncSettingsOff =>
+      'Garde les mêmes goûts sur téléphone et ordinateur';
+
+  @override
+  String syncSettingsOn(String names) {
+    return 'Synchronisé avec $names';
+  }
 }

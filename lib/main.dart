@@ -26,6 +26,7 @@ import 'state/home_widget_sync.dart';
 import 'state/lyrics.dart';
 import 'state/settings.dart';
 import 'state/sound_wiring.dart';
+import 'state/sync.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -188,6 +189,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     ref.read(lyricsPrefetchProvider);
     ref.read(shakeToSkipProvider);
     ref.read(homeWidgetSyncProvider);
+    ref.read(syncTickerProvider);
     if (kTour) startFrameStats();
   }
 
