@@ -214,6 +214,7 @@ class _QueueRow extends StatelessWidget {
             ? color.primary.withValues(alpha: 0.10)
             : color.surface,
         child: SongTile(
+          swipe: false,
           song: song,
           dense: true,
           onTap: onTap,

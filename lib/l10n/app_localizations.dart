@@ -3884,6 +3884,312 @@ abstract class L {
   /// In en, this message translates to:
   /// **'A new find'**
   String get reasonNewFind;
+
+  /// No description provided for @stTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance studio'**
+  String get stTitle;
+
+  /// No description provided for @stSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes, fonts, player styles, tabs, gestures'**
+  String get stSub;
+
+  /// No description provided for @stThemes.
+  ///
+  /// In en, this message translates to:
+  /// **'Themes'**
+  String get stThemes;
+
+  /// No description provided for @stFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'My colour'**
+  String get stFollow;
+
+  /// No description provided for @stType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type and shape'**
+  String get stType;
+
+  /// No description provided for @stSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get stSystem;
+
+  /// No description provided for @stCorners.
+  ///
+  /// In en, this message translates to:
+  /// **'Corners'**
+  String get stCorners;
+
+  /// No description provided for @stSharp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp'**
+  String get stSharp;
+
+  /// No description provided for @stSoft.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft'**
+  String get stSoft;
+
+  /// No description provided for @stRound.
+  ///
+  /// In en, this message translates to:
+  /// **'Round'**
+  String get stRound;
+
+  /// No description provided for @stDensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Spacing'**
+  String get stDensity;
+
+  /// No description provided for @stCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact'**
+  String get stCompact;
+
+  /// No description provided for @stComfy.
+  ///
+  /// In en, this message translates to:
+  /// **'Comfy'**
+  String get stComfy;
+
+  /// No description provided for @stPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Player'**
+  String get stPlayer;
+
+  /// No description provided for @stClassic.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get stClassic;
+
+  /// No description provided for @stVinyl.
+  ///
+  /// In en, this message translates to:
+  /// **'Vinyl'**
+  String get stVinyl;
+
+  /// No description provided for @stFullBleed.
+  ///
+  /// In en, this message translates to:
+  /// **'Big art'**
+  String get stFullBleed;
+
+  /// No description provided for @stMinimal.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal'**
+  String get stMinimal;
+
+  /// No description provided for @stCassette.
+  ///
+  /// In en, this message translates to:
+  /// **'Cassette'**
+  String get stCassette;
+
+  /// No description provided for @stVisualizer.
+  ///
+  /// In en, this message translates to:
+  /// **'Visualiser'**
+  String get stVisualizer;
+
+  /// No description provided for @stSeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Seek bar'**
+  String get stSeek;
+
+  /// No description provided for @stBars.
+  ///
+  /// In en, this message translates to:
+  /// **'Bars'**
+  String get stBars;
+
+  /// No description provided for @stWave.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave'**
+  String get stWave;
+
+  /// No description provided for @stLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Line'**
+  String get stLine;
+
+  /// No description provided for @stThick.
+  ///
+  /// In en, this message translates to:
+  /// **'Thick'**
+  String get stThick;
+
+  /// No description provided for @stOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get stOff;
+
+  /// No description provided for @stLiving.
+  ///
+  /// In en, this message translates to:
+  /// **'Living background'**
+  String get stLiving;
+
+  /// No description provided for @stLivingSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Colours from the cover drift slowly behind the player'**
+  String get stLivingSub;
+
+  /// No description provided for @stDoubleTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Double-tap the cover to like'**
+  String get stDoubleTap;
+
+  /// No description provided for @stTabs.
+  ///
+  /// In en, this message translates to:
+  /// **'Tabs'**
+  String get stTabs;
+
+  /// No description provided for @stTabsSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to reorder, switch off what you never use'**
+  String get stTabsSub;
+
+  /// No description provided for @stLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'Show tab names'**
+  String get stLabels;
+
+  /// No description provided for @stGlass.
+  ///
+  /// In en, this message translates to:
+  /// **'Frosted navigation'**
+  String get stGlass;
+
+  /// No description provided for @stHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home layout'**
+  String get stHome;
+
+  /// No description provided for @stHomeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Which shelves, in which order'**
+  String get stHomeSub;
+
+  /// No description provided for @stGestures.
+  ///
+  /// In en, this message translates to:
+  /// **'Gestures'**
+  String get stGestures;
+
+  /// No description provided for @stSwipeRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a song right'**
+  String get stSwipeRight;
+
+  /// No description provided for @stSwipeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a song left'**
+  String get stSwipeLeft;
+
+  /// No description provided for @stNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing'**
+  String get stNothing;
+
+  /// No description provided for @stShake.
+  ///
+  /// In en, this message translates to:
+  /// **'Shake to skip'**
+  String get stShake;
+
+  /// No description provided for @stShakeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'A firm shake of the phone plays the next song'**
+  String get stShakeSub;
+
+  /// No description provided for @stShareLook.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your look'**
+  String get stShareLook;
+
+  /// No description provided for @stCopyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy theme code'**
+  String get stCopyCode;
+
+  /// No description provided for @stCodeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Send it to a friend; pasting it gives them exactly this look'**
+  String get stCodeSub;
+
+  /// No description provided for @stPasteCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a theme code'**
+  String get stPasteCode;
+
+  /// No description provided for @stCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme code copied'**
+  String get stCodeCopied;
+
+  /// No description provided for @stCodeApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'New look applied'**
+  String get stCodeApplied;
+
+  /// No description provided for @stCodeBad.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a TuneBox theme code'**
+  String get stCodeBad;
+
+  /// No description provided for @stReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the default look'**
+  String get stReset;
+
+  /// No description provided for @swLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'Liked \"{title}\"'**
+  String swLiked(String title);
+
+  /// No description provided for @swQueued.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" plays next'**
+  String swQueued(String title);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

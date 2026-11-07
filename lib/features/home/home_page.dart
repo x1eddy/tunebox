@@ -5,6 +5,7 @@ import '../../ai/ai_engine.dart';
 import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../data/db/database.dart';
+import '../../state/appearance.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
@@ -101,7 +102,10 @@ class HomePage extends ConsumerWidget {
             // skeletons and throwing the scroll position away.
             ...switch (shelves.value) {
               final value? => [
-                for (final shelf in value)
+                for (final shelf in arrangeShelves(
+                  value,
+                  ref.watch(appearanceProvider),
+                ))
                   SliverToBoxAdapter(child: _ShelfView(shelf: shelf)),
               ],
               _ when shelves.hasError => [
@@ -142,6 +146,48 @@ class HomePage extends ConsumerWidget {
   'monthago' => (l.shelfMonthAgo, l.shelfOnThisDaySub),
   _ => (shelf.title, shelf.subtitle),
 };
+
+/// Every kind of shelf Home can show, in the engine's own order.
+const kShelfKinds = [
+  'repeat',
+  'forgotten',
+  'yearago',
+  'monthago',
+  'new',
+  'because',
+  'deep',
+  'mix',
+  'added',
+];
+
+String shelfName(L l, String kind) => switch (kind) {
+  'repeat' => l.shelfRepeat,
+  'forgotten' => l.shelfForgotten,
+  'yearago' => l.shelfYearAgo,
+  'monthago' => l.shelfMonthAgo,
+  'new' => l.shelfNew,
+  'because' => l.shelfBecauseSub,
+  'deep' => l.shelfDeep,
+  'mix' => l.shelfMix,
+  'added' => l.shelfAdded,
+  _ => kind,
+};
+
+/// Applies the Home layout from the Appearance studio: hidden shelves go,
+/// the rest follow the chosen order (unknown ones keep their place at the
+/// end). The starter shelf for empty libraries is never hidden.
+List<AiShelf> arrangeShelves(List<AiShelf> shelves, Appearance look) {
+  final visible = [
+    for (final s in shelves)
+      if (s.id == 'starter' || !look.hiddenShelves.contains(s.id)) s,
+  ];
+  if (look.shelfOrder.isEmpty) return visible;
+  int rank(AiShelf s) {
+    final i = look.shelfOrder.indexOf(s.id);
+    return i < 0 ? look.shelfOrder.length + visible.indexOf(s) : i;
+  }
+  return visible..sort((a, b) => rank(a).compareTo(rank(b)));
+}
 
 /// One glyph per kind of shelf, so the row headers read at a glance.
 IconData shelfIcon(String id) => switch (id) {

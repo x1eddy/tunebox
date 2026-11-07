@@ -2133,4 +2133,163 @@ class LDe extends L {
 
   @override
   String get reasonNewFind => 'Neu entdeckt';
+
+  @override
+  String get stTitle => 'Design-Studio';
+
+  @override
+  String get stSub => 'Themes, Schriften, Player-Stile, Tabs, Gesten';
+
+  @override
+  String get stThemes => 'Themes';
+
+  @override
+  String get stFollow => 'Meine Farbe';
+
+  @override
+  String get stType => 'Schrift und Form';
+
+  @override
+  String get stSystem => 'System';
+
+  @override
+  String get stCorners => 'Ecken';
+
+  @override
+  String get stSharp => 'Kantig';
+
+  @override
+  String get stSoft => 'Weich';
+
+  @override
+  String get stRound => 'Rund';
+
+  @override
+  String get stDensity => 'Abstände';
+
+  @override
+  String get stCompact => 'Kompakt';
+
+  @override
+  String get stComfy => 'Luftig';
+
+  @override
+  String get stPlayer => 'Player';
+
+  @override
+  String get stClassic => 'Klassisch';
+
+  @override
+  String get stVinyl => 'Vinyl';
+
+  @override
+  String get stFullBleed => 'Großes Cover';
+
+  @override
+  String get stMinimal => 'Minimal';
+
+  @override
+  String get stCassette => 'Kassette';
+
+  @override
+  String get stVisualizer => 'Visualizer';
+
+  @override
+  String get stSeek => 'Suchleiste';
+
+  @override
+  String get stBars => 'Balken';
+
+  @override
+  String get stWave => 'Welle';
+
+  @override
+  String get stLine => 'Linie';
+
+  @override
+  String get stThick => 'Dick';
+
+  @override
+  String get stOff => 'Aus';
+
+  @override
+  String get stLiving => 'Lebendiger Hintergrund';
+
+  @override
+  String get stLivingSub =>
+      'Farben aus dem Cover ziehen langsam hinter dem Player vorbei';
+
+  @override
+  String get stDoubleTap => 'Doppeltippen aufs Cover = Gefällt mir';
+
+  @override
+  String get stTabs => 'Tabs';
+
+  @override
+  String get stTabsSub => 'Ziehen zum Sortieren, Ungenutztes ausschalten';
+
+  @override
+  String get stLabels => 'Tab-Namen zeigen';
+
+  @override
+  String get stGlass => 'Milchglas-Navigation';
+
+  @override
+  String get stHome => 'Startseite';
+
+  @override
+  String get stHomeSub => 'Welche Regale, in welcher Reihenfolge';
+
+  @override
+  String get stGestures => 'Gesten';
+
+  @override
+  String get stSwipeRight => 'Song nach rechts wischen';
+
+  @override
+  String get stSwipeLeft => 'Song nach links wischen';
+
+  @override
+  String get stNothing => 'Nichts';
+
+  @override
+  String get stShake => 'Schütteln zum Überspringen';
+
+  @override
+  String get stShakeSub => 'Kräftig schütteln spielt den nächsten Song';
+
+  @override
+  String get stShareLook => 'Dein Design teilen';
+
+  @override
+  String get stCopyCode => 'Theme-Code kopieren';
+
+  @override
+  String get stCodeSub =>
+      'Schick ihn jemandem; eingefügt ergibt er genau dieses Design';
+
+  @override
+  String get stPasteCode => 'Theme-Code einfügen';
+
+  @override
+  String get stCodeCopied => 'Theme-Code kopiert';
+
+  @override
+  String get stCodeApplied => 'Neues Design übernommen';
+
+  @override
+  String get stCodeBad => 'Das ist kein TuneBox-Theme-Code';
+
+  @override
+  String get stReset => 'Zurück zum Standard';
+
+  @override
+  String swLiked(String title) {
+    return '\"$title\" gefällt dir';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '\"$title\" kommt als Nächstes';
+  }
 }

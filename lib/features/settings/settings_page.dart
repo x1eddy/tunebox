@@ -64,6 +64,13 @@ class SettingsPage extends ConsumerWidget {
           ),
           const Divider(height: 8),
           ListTile(
+            leading: const Icon(Icons.brush_rounded),
+            title: Text(l.stTitle),
+            subtitle: Text(l.stSub),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => pushDetail(context, 'studio'),
+          ),
+          ListTile(
             leading: const Icon(Icons.graphic_eq_rounded),
             title: Text(l.sndTitle),
             subtitle: Text(l.sndSub),

@@ -92,7 +92,11 @@ class _Classic extends StatelessWidget {
 /// Turns at real record speed relative to playback (33⅓ rpm × speed), stops
 /// in place on pause, and the tonearm lifts off.
 class _Vinyl extends StatefulWidget {
-  const _Vinyl({required this.song, required this.playing, required this.speed});
+  const _Vinyl({
+    required this.song,
+    required this.playing,
+    required this.speed,
+  });
   final Song song;
   final bool playing;
   final double speed;
@@ -158,6 +162,25 @@ class _VinylState extends State<_Vinyl> with TickerProviderStateMixin {
               final disc = side * 0.9;
               return Stack(
                 children: [
+                  // the shadow stays put while the record turns above it
+                  Positioned(
+                    left: 0,
+                    top: (side - disc) / 2,
+                    width: disc,
+                    height: disc,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.45),
+                            blurRadius: 22,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Positioned(
                     left: 0,
                     top: (side - disc) / 2,
@@ -165,31 +188,33 @@ class _VinylState extends State<_Vinyl> with TickerProviderStateMixin {
                     height: disc,
                     child: RotationTransition(
                       turns: _spin,
-                      child: CustomPaint(
-                        painter: _GroovePainter(sheen: cs.primary),
-                        child: Center(
-                          child: SizedBox.square(
-                            dimension: disc * 0.38,
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                CoverArt(
-                                  song: widget.song,
-                                  circle: true,
-                                  size: disc * 0.38,
-                                  heroTag: 'player-art',
-                                ),
-                                Center(
-                                  child: Container(
-                                    width: disc * 0.035,
-                                    height: disc * 0.035,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0xFF111111),
-                                      shape: BoxShape.circle,
+                      child: ClipOval(
+                        child: CustomPaint(
+                          painter: _GroovePainter(sheen: cs.primary),
+                          child: Center(
+                            child: SizedBox.square(
+                              dimension: disc * 0.38,
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  CoverArt(
+                                    song: widget.song,
+                                    circle: true,
+                                    size: disc * 0.38,
+                                    heroTag: 'player-art',
+                                  ),
+                                  Center(
+                                    child: Container(
+                                      width: disc * 0.035,
+                                      height: disc * 0.035,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF111111),
+                                        shape: BoxShape.circle,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -229,13 +254,6 @@ class _GroovePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final c = size.center(Offset.zero);
     final r = size.width / 2;
-    canvas.drawCircle(
-      c.translate(0, r * 0.03),
-      r,
-      Paint()
-        ..color = Colors.black.withValues(alpha: 0.45)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14),
-    );
     canvas.drawCircle(c, r, Paint()..color = const Color(0xFF121212));
     final groove = Paint()
       ..style = PaintingStyle.stroke
@@ -365,7 +383,11 @@ class _CassetteState extends State<_Cassette>
               final reel = w * 0.2;
               return DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Color.lerp(cs.surfaceContainerHighest, cs.primary, 0.18),
+                  color: Color.lerp(
+                    cs.surfaceContainerHighest,
+                    cs.primary,
+                    0.18,
+                  ),
                   borderRadius: BorderRadius.circular(w * 0.05),
                   boxShadow: [
                     BoxShadow(
@@ -382,7 +404,7 @@ class _CassetteState extends State<_Cassette>
                       left: w * 0.06,
                       right: w * 0.06,
                       top: w * 0.05,
-                      height: w * 0.38,
+                      height: w * 0.26,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(w * 0.02),
                         child: Stack(
@@ -472,7 +494,11 @@ class _ReelPainter extends CustomPainter {
     final c = size.center(Offset.zero);
     final r = size.width / 2;
     canvas.drawCircle(c, r, Paint()..color = const Color(0xFF2A2420));
-    canvas.drawCircle(c, r * 0.45, Paint()..color = color.withValues(alpha: 0.9));
+    canvas.drawCircle(
+      c,
+      r * 0.45,
+      Paint()..color = color.withValues(alpha: 0.9),
+    );
     final spoke = Paint()..color = const Color(0xFF2A2420);
     for (var i = 0; i < 6; i++) {
       final a = i * math.pi / 3;

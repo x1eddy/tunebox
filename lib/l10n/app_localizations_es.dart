@@ -2131,4 +2131,163 @@ class LEs extends L {
 
   @override
   String get reasonNewFind => 'Un descubrimiento';
+
+  @override
+  String get stTitle => 'Estudio de apariencia';
+
+  @override
+  String get stSub => 'Temas, fuentes, reproductor, pestañas, gestos';
+
+  @override
+  String get stThemes => 'Temas';
+
+  @override
+  String get stFollow => 'Mi color';
+
+  @override
+  String get stType => 'Letra y forma';
+
+  @override
+  String get stSystem => 'Sistema';
+
+  @override
+  String get stCorners => 'Esquinas';
+
+  @override
+  String get stSharp => 'Rectas';
+
+  @override
+  String get stSoft => 'Suaves';
+
+  @override
+  String get stRound => 'Redondas';
+
+  @override
+  String get stDensity => 'Espaciado';
+
+  @override
+  String get stCompact => 'Compacto';
+
+  @override
+  String get stComfy => 'Amplio';
+
+  @override
+  String get stPlayer => 'Reproductor';
+
+  @override
+  String get stClassic => 'Clásico';
+
+  @override
+  String get stVinyl => 'Vinilo';
+
+  @override
+  String get stFullBleed => 'Portada grande';
+
+  @override
+  String get stMinimal => 'Mínimo';
+
+  @override
+  String get stCassette => 'Casete';
+
+  @override
+  String get stVisualizer => 'Visualizador';
+
+  @override
+  String get stSeek => 'Barra de progreso';
+
+  @override
+  String get stBars => 'Barras';
+
+  @override
+  String get stWave => 'Onda';
+
+  @override
+  String get stLine => 'Línea';
+
+  @override
+  String get stThick => 'Gruesa';
+
+  @override
+  String get stOff => 'No';
+
+  @override
+  String get stLiving => 'Fondo vivo';
+
+  @override
+  String get stLivingSub =>
+      'Los colores de la portada se mueven despacio tras el reproductor';
+
+  @override
+  String get stDoubleTap => 'Doble toque en la portada para dar me gusta';
+
+  @override
+  String get stTabs => 'Pestañas';
+
+  @override
+  String get stTabsSub => 'Arrastra para ordenar y apaga lo que no uses';
+
+  @override
+  String get stLabels => 'Mostrar nombres';
+
+  @override
+  String get stGlass => 'Navegación translúcida';
+
+  @override
+  String get stHome => 'Diseño de Inicio';
+
+  @override
+  String get stHomeSub => 'Qué estanterías y en qué orden';
+
+  @override
+  String get stGestures => 'Gestos';
+
+  @override
+  String get stSwipeRight => 'Deslizar a la derecha';
+
+  @override
+  String get stSwipeLeft => 'Deslizar a la izquierda';
+
+  @override
+  String get stNothing => 'Nada';
+
+  @override
+  String get stShake => 'Agitar para saltar';
+
+  @override
+  String get stShakeSub => 'Una sacudida firme pasa a la siguiente';
+
+  @override
+  String get stShareLook => 'Comparte tu estilo';
+
+  @override
+  String get stCopyCode => 'Copiar código de tema';
+
+  @override
+  String get stCodeSub =>
+      'Envíalo a alguien; al pegarlo tendrá exactamente este estilo';
+
+  @override
+  String get stPasteCode => 'Pegar un código de tema';
+
+  @override
+  String get stCodeCopied => 'Código copiado';
+
+  @override
+  String get stCodeApplied => 'Nuevo estilo aplicado';
+
+  @override
+  String get stCodeBad => 'Eso no es un código de tema de TuneBox';
+
+  @override
+  String get stReset => 'Volver al estilo por defecto';
+
+  @override
+  String swLiked(String title) {
+    return 'Te gusta \"$title\"';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '\"$title\" sonará a continuación';
+  }
 }

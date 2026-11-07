@@ -2128,4 +2128,163 @@ class LNl extends L {
 
   @override
   String get reasonNewFind => 'Nieuwe vondst';
+
+  @override
+  String get stTitle => 'Uiterlijk-studio';
+
+  @override
+  String get stSub => 'Thema\'s, lettertypes, spelers, tabbladen, gebaren';
+
+  @override
+  String get stThemes => 'Thema\'s';
+
+  @override
+  String get stFollow => 'Mijn kleur';
+
+  @override
+  String get stType => 'Letters en vormen';
+
+  @override
+  String get stSystem => 'Systeem';
+
+  @override
+  String get stCorners => 'Hoeken';
+
+  @override
+  String get stSharp => 'Scherp';
+
+  @override
+  String get stSoft => 'Zacht';
+
+  @override
+  String get stRound => 'Rond';
+
+  @override
+  String get stDensity => 'Ruimte';
+
+  @override
+  String get stCompact => 'Compact';
+
+  @override
+  String get stComfy => 'Ruim';
+
+  @override
+  String get stPlayer => 'Speler';
+
+  @override
+  String get stClassic => 'Klassiek';
+
+  @override
+  String get stVinyl => 'Vinyl';
+
+  @override
+  String get stFullBleed => 'Grote hoes';
+
+  @override
+  String get stMinimal => 'Minimaal';
+
+  @override
+  String get stCassette => 'Cassette';
+
+  @override
+  String get stVisualizer => 'Visualizer';
+
+  @override
+  String get stSeek => 'Voortgangsbalk';
+
+  @override
+  String get stBars => 'Balken';
+
+  @override
+  String get stWave => 'Golf';
+
+  @override
+  String get stLine => 'Lijn';
+
+  @override
+  String get stThick => 'Dik';
+
+  @override
+  String get stOff => 'Uit';
+
+  @override
+  String get stLiving => 'Levende achtergrond';
+
+  @override
+  String get stLivingSub =>
+      'Kleuren uit de hoes drijven langzaam achter de speler';
+
+  @override
+  String get stDoubleTap => 'Dubbeltik op de hoes om te liken';
+
+  @override
+  String get stTabs => 'Tabbladen';
+
+  @override
+  String get stTabsSub => 'Sleep om te ordenen, zet uit wat je niet gebruikt';
+
+  @override
+  String get stLabels => 'Namen tonen';
+
+  @override
+  String get stGlass => 'Matglas-navigatie';
+
+  @override
+  String get stHome => 'Indeling van Start';
+
+  @override
+  String get stHomeSub => 'Welke planken, in welke volgorde';
+
+  @override
+  String get stGestures => 'Gebaren';
+
+  @override
+  String get stSwipeRight => 'Nummer naar rechts vegen';
+
+  @override
+  String get stSwipeLeft => 'Nummer naar links vegen';
+
+  @override
+  String get stNothing => 'Niets';
+
+  @override
+  String get stShake => 'Schudden om over te slaan';
+
+  @override
+  String get stShakeSub => 'Stevig schudden speelt het volgende nummer';
+
+  @override
+  String get stShareLook => 'Deel je stijl';
+
+  @override
+  String get stCopyCode => 'Themacode kopiëren';
+
+  @override
+  String get stCodeSub =>
+      'Stuur hem naar iemand; plakken geeft precies deze stijl';
+
+  @override
+  String get stPasteCode => 'Themacode plakken';
+
+  @override
+  String get stCodeCopied => 'Themacode gekopieerd';
+
+  @override
+  String get stCodeApplied => 'Nieuwe stijl toegepast';
+
+  @override
+  String get stCodeBad => 'Dat is geen TuneBox-themacode';
+
+  @override
+  String get stReset => 'Terug naar standaard';
+
+  @override
+  String swLiked(String title) {
+    return '\"$title\" geliked';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '\"$title\" komt hierna';
+  }
 }

@@ -2137,4 +2137,163 @@ class LPl extends L {
 
   @override
   String get reasonNewFind => 'Nowe odkrycie';
+
+  @override
+  String get stTitle => 'Studio wyglądu';
+
+  @override
+  String get stSub => 'Motywy, czcionki, odtwarzacz, karty, gesty';
+
+  @override
+  String get stThemes => 'Motywy';
+
+  @override
+  String get stFollow => 'Mój kolor';
+
+  @override
+  String get stType => 'Czcionka i kształt';
+
+  @override
+  String get stSystem => 'Systemowa';
+
+  @override
+  String get stCorners => 'Narożniki';
+
+  @override
+  String get stSharp => 'Ostre';
+
+  @override
+  String get stSoft => 'Miękkie';
+
+  @override
+  String get stRound => 'Okrągłe';
+
+  @override
+  String get stDensity => 'Odstępy';
+
+  @override
+  String get stCompact => 'Ciasno';
+
+  @override
+  String get stComfy => 'Luźno';
+
+  @override
+  String get stPlayer => 'Odtwarzacz';
+
+  @override
+  String get stClassic => 'Klasyczny';
+
+  @override
+  String get stVinyl => 'Winyl';
+
+  @override
+  String get stFullBleed => 'Duża okładka';
+
+  @override
+  String get stMinimal => 'Minimalny';
+
+  @override
+  String get stCassette => 'Kaseta';
+
+  @override
+  String get stVisualizer => 'Wizualizacja';
+
+  @override
+  String get stSeek => 'Pasek postępu';
+
+  @override
+  String get stBars => 'Słupki';
+
+  @override
+  String get stWave => 'Fala';
+
+  @override
+  String get stLine => 'Linia';
+
+  @override
+  String get stThick => 'Gruba';
+
+  @override
+  String get stOff => 'Wył.';
+
+  @override
+  String get stLiving => 'Żywe tło';
+
+  @override
+  String get stLivingSub => 'Kolory okładki powoli płyną za odtwarzaczem';
+
+  @override
+  String get stDoubleTap => 'Dwukrotne stuknięcie okładki = polub';
+
+  @override
+  String get stTabs => 'Karty';
+
+  @override
+  String get stTabsSub =>
+      'Przeciągnij, by zmienić kolejność; wyłącz nieużywane';
+
+  @override
+  String get stLabels => 'Pokazuj nazwy kart';
+
+  @override
+  String get stGlass => 'Matowa nawigacja';
+
+  @override
+  String get stHome => 'Układ strony głównej';
+
+  @override
+  String get stHomeSub => 'Które półki i w jakiej kolejności';
+
+  @override
+  String get stGestures => 'Gesty';
+
+  @override
+  String get stSwipeRight => 'Przesuń utwór w prawo';
+
+  @override
+  String get stSwipeLeft => 'Przesuń utwór w lewo';
+
+  @override
+  String get stNothing => 'Nic';
+
+  @override
+  String get stShake => 'Potrząśnij, by pominąć';
+
+  @override
+  String get stShakeSub => 'Mocne potrząśnięcie włącza następny utwór';
+
+  @override
+  String get stShareLook => 'Udostępnij swój wygląd';
+
+  @override
+  String get stCopyCode => 'Kopiuj kod motywu';
+
+  @override
+  String get stCodeSub =>
+      'Wyślij komuś; po wklejeniu dostanie dokładnie ten wygląd';
+
+  @override
+  String get stPasteCode => 'Wklej kod motywu';
+
+  @override
+  String get stCodeCopied => 'Skopiowano kod';
+
+  @override
+  String get stCodeApplied => 'Zastosowano nowy wygląd';
+
+  @override
+  String get stCodeBad => 'To nie jest kod motywu TuneBox';
+
+  @override
+  String get stReset => 'Przywróć domyślny wygląd';
+
+  @override
+  String swLiked(String title) {
+    return 'Polubiono „$title”';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '„$title” zagra jako następny';
+  }
 }

@@ -217,6 +217,8 @@ class PlaylistPage extends ConsumerWidget {
                   queue: songs,
                   origin: 'playlist:$id',
                   leadingIndex: i + 1,
+                  // editable lists swipe to remove instead
+                  swipe: const {'liked', 'downloads', 'imported'}.contains(id),
                 );
                 // built-in lists are views over the library, not editable
                 if (const {'liked', 'downloads', 'imported'}.contains(id)) {

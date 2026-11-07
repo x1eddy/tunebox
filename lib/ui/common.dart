@@ -7,6 +7,7 @@ import '../ai/ai_engine.dart';
 import '../app/theme.dart';
 import '../data/db/database.dart';
 import '../data/services/download_service.dart';
+import '../state/appearance.dart';
 import '../state/providers.dart';
 import '../state/settings.dart';
 import 'artwork.dart';
@@ -134,7 +135,12 @@ class SongTile extends ConsumerWidget {
     this.dense = false,
     this.leadingIndex,
     this.onTap,
+    this.swipe = true,
   });
+
+  /// Swipe actions from the Appearance studio. Off where the list has a
+  /// swipe of its own (editable playlists, the queue).
+  final bool swipe;
 
   final Song song;
   final List<Song>? queue;
@@ -187,7 +193,23 @@ class SongTile extends ConsumerWidget {
             child: child,
           );
 
-    return row(
+    final look = ref.watch(appearanceProvider);
+    Widget swipeable(Widget child) {
+      if (!swipe ||
+          (look.swipeLeft == SwipeAction.none &&
+              look.swipeRight == SwipeAction.none)) {
+        return child;
+      }
+      return _SwipeRow(
+        key: ValueKey('swipe-${song.id}-$origin-$leadingIndex'),
+        song: song,
+        left: look.swipeLeft,
+        right: look.swipeRight,
+        child: child,
+      );
+    }
+
+    return swipeable(row(
       Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: dense ? 5 : 7),
         child: Row(
@@ -289,7 +311,7 @@ class SongTile extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -894,5 +916,98 @@ extension TimedSnackBars on ScaffoldMessengerState {
       } catch (_) {}
     });
     return controller;
+  }
+}
+
+IconData swipeIcon(SwipeAction a) => switch (a) {
+  SwipeAction.like => Icons.favorite_rounded,
+  SwipeAction.queue => Icons.queue_music_rounded,
+  SwipeAction.download => Icons.download_rounded,
+  SwipeAction.hide => Icons.visibility_off_rounded,
+  SwipeAction.none => Icons.block,
+};
+
+/// A song row you can swipe: the row slides, the action happens, and the row
+/// springs back (nothing disappears unless the action is "hide").
+class _SwipeRow extends ConsumerWidget {
+  const _SwipeRow({
+    super.key,
+    required this.song,
+    required this.left,
+    required this.right,
+    required this.child,
+  });
+
+  final Song song;
+
+  /// Swiping towards the left (end to start).
+  final SwipeAction left;
+  final SwipeAction right;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cs = Theme.of(context).colorScheme;
+    final l = L.of(context);
+
+    Widget bg(SwipeAction a, Alignment align) => Container(
+      color: a == SwipeAction.hide
+          ? cs.errorContainer
+          : cs.primaryContainer,
+      alignment: align,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Icon(
+        swipeIcon(a),
+        color: a == SwipeAction.hide
+            ? cs.onErrorContainer
+            : cs.onPrimaryContainer,
+      ),
+    );
+
+    Future<bool> run(SwipeAction a) async {
+      final music = ref.read(musicProvider);
+      final messenger = ScaffoldMessenger.of(context);
+      music.haptic();
+      String? said;
+      switch (a) {
+        case SwipeAction.like:
+          await music.like(song, value: true);
+          said = l.swLiked(song.title);
+        case SwipeAction.queue:
+          await ref.read(audioHandlerProvider).addToQueue(song, next: true);
+          said = l.swQueued(song.title);
+        case SwipeAction.download:
+          await music.download(song);
+          said = l.cDownloading(song.title);
+        case SwipeAction.hide:
+          if (context.mounted) dislikeWithUndo(context, ref, song);
+        case SwipeAction.none:
+          break;
+      }
+      if (said != null) {
+        messenger
+          ..hideCurrentSnackBar()
+          ..showTimed(SnackBar(content: Text(said)));
+      }
+      return false;
+    }
+
+    return Dismissible(
+      key: key!,
+      direction: left == SwipeAction.none
+          ? DismissDirection.startToEnd
+          : right == SwipeAction.none
+          ? DismissDirection.endToStart
+          : DismissDirection.horizontal,
+      dismissThresholds: const {
+        DismissDirection.startToEnd: 0.3,
+        DismissDirection.endToStart: 0.3,
+      },
+      background: bg(right, Alignment.centerLeft),
+      secondaryBackground: bg(left, Alignment.centerRight),
+      confirmDismiss: (dir) =>
+          run(dir == DismissDirection.startToEnd ? right : left),
+      child: child,
+    );
   }
 }

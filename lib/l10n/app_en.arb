@@ -1255,5 +1255,70 @@
       }
     }
   },
-  "reasonNewFind": "A new find"
+  "reasonNewFind": "A new find",
+  "stTitle": "Appearance studio",
+  "stSub": "Themes, fonts, player styles, tabs, gestures",
+  "stThemes": "Themes",
+  "stFollow": "My colour",
+  "stType": "Type and shape",
+  "stSystem": "System",
+  "stCorners": "Corners",
+  "stSharp": "Sharp",
+  "stSoft": "Soft",
+  "stRound": "Round",
+  "stDensity": "Spacing",
+  "stCompact": "Compact",
+  "stComfy": "Comfy",
+  "stPlayer": "Player",
+  "stClassic": "Classic",
+  "stVinyl": "Vinyl",
+  "stFullBleed": "Big art",
+  "stMinimal": "Minimal",
+  "stCassette": "Cassette",
+  "stVisualizer": "Visualiser",
+  "stSeek": "Seek bar",
+  "stBars": "Bars",
+  "stWave": "Wave",
+  "stLine": "Line",
+  "stThick": "Thick",
+  "stOff": "Off",
+  "stLiving": "Living background",
+  "stLivingSub": "Colours from the cover drift slowly behind the player",
+  "stDoubleTap": "Double-tap the cover to like",
+  "stTabs": "Tabs",
+  "stTabsSub": "Drag to reorder, switch off what you never use",
+  "stLabels": "Show tab names",
+  "stGlass": "Frosted navigation",
+  "stHome": "Home layout",
+  "stHomeSub": "Which shelves, in which order",
+  "stGestures": "Gestures",
+  "stSwipeRight": "Swipe a song right",
+  "stSwipeLeft": "Swipe a song left",
+  "stNothing": "Nothing",
+  "stShake": "Shake to skip",
+  "stShakeSub": "A firm shake of the phone plays the next song",
+  "stShareLook": "Share your look",
+  "stCopyCode": "Copy theme code",
+  "stCodeSub": "Send it to a friend; pasting it gives them exactly this look",
+  "stPasteCode": "Paste a theme code",
+  "stCodeCopied": "Theme code copied",
+  "stCodeApplied": "New look applied",
+  "stCodeBad": "That is not a TuneBox theme code",
+  "stReset": "Back to the default look",
+  "swLiked": "Liked \"{title}\"",
+  "@swLiked": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "swQueued": "\"{title}\" plays next",
+  "@swQueued": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -2121,4 +2121,163 @@ class LIt extends L {
 
   @override
   String get reasonNewFind => 'Una scoperta';
+
+  @override
+  String get stTitle => 'Studio aspetto';
+
+  @override
+  String get stSub => 'Temi, caratteri, player, schede, gesti';
+
+  @override
+  String get stThemes => 'Temi';
+
+  @override
+  String get stFollow => 'Il mio colore';
+
+  @override
+  String get stType => 'Caratteri e forme';
+
+  @override
+  String get stSystem => 'Sistema';
+
+  @override
+  String get stCorners => 'Angoli';
+
+  @override
+  String get stSharp => 'Netti';
+
+  @override
+  String get stSoft => 'Morbidi';
+
+  @override
+  String get stRound => 'Tondi';
+
+  @override
+  String get stDensity => 'Spaziatura';
+
+  @override
+  String get stCompact => 'Compatto';
+
+  @override
+  String get stComfy => 'Comodo';
+
+  @override
+  String get stPlayer => 'Player';
+
+  @override
+  String get stClassic => 'Classico';
+
+  @override
+  String get stVinyl => 'Vinile';
+
+  @override
+  String get stFullBleed => 'Copertina grande';
+
+  @override
+  String get stMinimal => 'Minimale';
+
+  @override
+  String get stCassette => 'Cassetta';
+
+  @override
+  String get stVisualizer => 'Visualizzatore';
+
+  @override
+  String get stSeek => 'Barra di avanzamento';
+
+  @override
+  String get stBars => 'Barre';
+
+  @override
+  String get stWave => 'Onda';
+
+  @override
+  String get stLine => 'Linea';
+
+  @override
+  String get stThick => 'Spessa';
+
+  @override
+  String get stOff => 'No';
+
+  @override
+  String get stLiving => 'Sfondo vivo';
+
+  @override
+  String get stLivingSub =>
+      'I colori della copertina scorrono lenti dietro il player';
+
+  @override
+  String get stDoubleTap => 'Doppio tocco sulla copertina per mettere mi piace';
+
+  @override
+  String get stTabs => 'Schede';
+
+  @override
+  String get stTabsSub => 'Trascina per riordinare, spegni ciò che non usi';
+
+  @override
+  String get stLabels => 'Mostra i nomi';
+
+  @override
+  String get stGlass => 'Navigazione traslucida';
+
+  @override
+  String get stHome => 'Layout della Home';
+
+  @override
+  String get stHomeSub => 'Quali scaffali, in quale ordine';
+
+  @override
+  String get stGestures => 'Gesti';
+
+  @override
+  String get stSwipeRight => 'Scorri a destra';
+
+  @override
+  String get stSwipeLeft => 'Scorri a sinistra';
+
+  @override
+  String get stNothing => 'Niente';
+
+  @override
+  String get stShake => 'Scuoti per saltare';
+
+  @override
+  String get stShakeSub => 'Una scossa decisa passa al brano successivo';
+
+  @override
+  String get stShareLook => 'Condividi il tuo stile';
+
+  @override
+  String get stCopyCode => 'Copia codice tema';
+
+  @override
+  String get stCodeSub =>
+      'Mandalo a qualcuno; incollandolo avrà esattamente questo stile';
+
+  @override
+  String get stPasteCode => 'Incolla un codice tema';
+
+  @override
+  String get stCodeCopied => 'Codice copiato';
+
+  @override
+  String get stCodeApplied => 'Nuovo stile applicato';
+
+  @override
+  String get stCodeBad => 'Questo non è un codice tema di TuneBox';
+
+  @override
+  String get stReset => 'Torna allo stile predefinito';
+
+  @override
+  String swLiked(String title) {
+    return 'Ti piace \"$title\"';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '\"$title\" sarà il prossimo';
+  }
 }

@@ -2118,4 +2118,163 @@ class LFi extends L {
 
   @override
   String get reasonNewFind => 'A new find';
+
+  @override
+  String get stTitle => 'Appearance studio';
+
+  @override
+  String get stSub => 'Themes, fonts, player styles, tabs, gestures';
+
+  @override
+  String get stThemes => 'Themes';
+
+  @override
+  String get stFollow => 'My colour';
+
+  @override
+  String get stType => 'Type and shape';
+
+  @override
+  String get stSystem => 'System';
+
+  @override
+  String get stCorners => 'Corners';
+
+  @override
+  String get stSharp => 'Sharp';
+
+  @override
+  String get stSoft => 'Soft';
+
+  @override
+  String get stRound => 'Round';
+
+  @override
+  String get stDensity => 'Spacing';
+
+  @override
+  String get stCompact => 'Compact';
+
+  @override
+  String get stComfy => 'Comfy';
+
+  @override
+  String get stPlayer => 'Player';
+
+  @override
+  String get stClassic => 'Classic';
+
+  @override
+  String get stVinyl => 'Vinyl';
+
+  @override
+  String get stFullBleed => 'Big art';
+
+  @override
+  String get stMinimal => 'Minimal';
+
+  @override
+  String get stCassette => 'Cassette';
+
+  @override
+  String get stVisualizer => 'Visualiser';
+
+  @override
+  String get stSeek => 'Seek bar';
+
+  @override
+  String get stBars => 'Bars';
+
+  @override
+  String get stWave => 'Wave';
+
+  @override
+  String get stLine => 'Line';
+
+  @override
+  String get stThick => 'Thick';
+
+  @override
+  String get stOff => 'Off';
+
+  @override
+  String get stLiving => 'Living background';
+
+  @override
+  String get stLivingSub =>
+      'Colours from the cover drift slowly behind the player';
+
+  @override
+  String get stDoubleTap => 'Double-tap the cover to like';
+
+  @override
+  String get stTabs => 'Tabs';
+
+  @override
+  String get stTabsSub => 'Drag to reorder, switch off what you never use';
+
+  @override
+  String get stLabels => 'Show tab names';
+
+  @override
+  String get stGlass => 'Frosted navigation';
+
+  @override
+  String get stHome => 'Home layout';
+
+  @override
+  String get stHomeSub => 'Which shelves, in which order';
+
+  @override
+  String get stGestures => 'Gestures';
+
+  @override
+  String get stSwipeRight => 'Swipe a song right';
+
+  @override
+  String get stSwipeLeft => 'Swipe a song left';
+
+  @override
+  String get stNothing => 'Nothing';
+
+  @override
+  String get stShake => 'Shake to skip';
+
+  @override
+  String get stShakeSub => 'A firm shake of the phone plays the next song';
+
+  @override
+  String get stShareLook => 'Share your look';
+
+  @override
+  String get stCopyCode => 'Copy theme code';
+
+  @override
+  String get stCodeSub =>
+      'Send it to a friend; pasting it gives them exactly this look';
+
+  @override
+  String get stPasteCode => 'Paste a theme code';
+
+  @override
+  String get stCodeCopied => 'Theme code copied';
+
+  @override
+  String get stCodeApplied => 'New look applied';
+
+  @override
+  String get stCodeBad => 'That is not a TuneBox theme code';
+
+  @override
+  String get stReset => 'Back to the default look';
+
+  @override
+  String swLiked(String title) {
+    return 'Liked \"$title\"';
+  }
+
+  @override
+  String swQueued(String title) {
+    return '\"$title\" plays next';
+  }
 }

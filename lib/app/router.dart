@@ -17,6 +17,7 @@ import '../features/owner/owner_page.dart';
 import '../features/mix/mix_page.dart';
 import '../features/rewind/rewind_page.dart';
 import '../features/sound/sound_page.dart';
+import '../features/studio/studio_page.dart';
 import '../features/transfer/transfer_page.dart';
 import '../state/settings.dart';
 import 'shell.dart';
@@ -40,6 +41,7 @@ List<RouteBase> _details() => [
   GoRoute(path: 'owner', builder: (_, _) => const OwnerPage()),
   GoRoute(path: 'sound', builder: (_, _) => const SoundPage()),
   GoRoute(path: 'rewind', builder: (_, _) => const RewindPage()),
+  GoRoute(path: 'studio', builder: (_, _) => const StudioPage()),
   GoRoute(
     path: 'mix',
     builder: (_, s) => MixPage(initial: s.uri.queryParameters['q']),
