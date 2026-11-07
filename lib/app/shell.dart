@@ -152,9 +152,38 @@ class AppShell extends ConsumerWidget {
       ),
     );
 
-    // Space plays and pauses, arrows skip — unless a text field has focus.
+    // Space plays and pauses, arrows seek, Shift+arrows skip, L likes — but
+    // never while you are typing.
+    bool typing() =>
+        FocusManager.instance.primaryFocus?.context
+            ?.findAncestorWidgetOfExactType<EditableText>() !=
+        null;
+    void unlessTyping(VoidCallback f) {
+      if (!typing()) f();
+    }
+
+    void seekBy(int seconds) {
+      final handler = ref.read(audioHandlerProvider);
+      final p = handler.player.position + Duration(seconds: seconds);
+      handler.seek(p.isNegative ? Duration.zero : p);
+    }
+
     return CallbackShortcuts(
       bindings: {
+        const SingleActivator(LogicalKeyboardKey.space): () =>
+            unlessTyping(ref.read(musicProvider).toggle),
+        const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+            unlessTyping(() => seekBy(10)),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+            unlessTyping(() => seekBy(-10)),
+        const SingleActivator(LogicalKeyboardKey.arrowRight, shift: true): () =>
+            unlessTyping(ref.read(musicProvider).next),
+        const SingleActivator(LogicalKeyboardKey.arrowLeft, shift: true): () =>
+            unlessTyping(ref.read(musicProvider).previous),
+        const SingleActivator(LogicalKeyboardKey.keyL): () => unlessTyping(() {
+          final song = ref.read(nowPlayingProvider);
+          if (song != null) ref.read(musicProvider).like(song);
+        }),
         const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () =>
             ref.read(musicProvider).toggle(),
         const SingleActivator(LogicalKeyboardKey.mediaTrackNext): () =>

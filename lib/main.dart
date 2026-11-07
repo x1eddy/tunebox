@@ -111,7 +111,23 @@ Future<TuneBoxAudioHandler> _buildHandler(
       ),
     );
   }
-  // Desktop: no media notification service, same handler drives the player.
+  if (Platform.isLinux) {
+    // MPRIS: GNOME's media controls, the lock screen and the keyboard's media
+    // keys all reach TuneBox. The plugin shows the "channel id" as the
+    // player's name, hence the plain one here.
+    try {
+      return await AudioService.init(
+        builder: () => TuneBoxAudioHandler(db, proxy),
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'TuneBox',
+          androidNotificationChannelName: 'TuneBox',
+        ),
+      ).timeout(const Duration(seconds: 5));
+    } catch (e) {
+      debugPrint('MPRIS unavailable: $e');
+    }
+  }
+  // No media service: the same handler drives the player directly.
   return TuneBoxAudioHandler(db, proxy);
 }
 
