@@ -215,6 +215,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
 
   int _index = 0;
   String _origin = 'library';
+
   /// Bumped on every load request. A load that finds a newer token has been
   /// superseded — the user tapped something else — and bows out quietly.
   int _loadToken = 0;
@@ -282,7 +283,9 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     final song = _queue.removeAt(oldIndex);
     _queue.insert(target, song);
     if (playing != null) {
-      _index = _queue.indexWhere((s) => s.id == playing).clamp(0, _queue.length - 1);
+      _index = _queue
+          .indexWhere((s) => s.id == playing)
+          .clamp(0, _queue.length - 1);
     }
     queue.add([for (final s in _queue) _mediaItem(s)]);
     _queueChanges.add(queueSongs);
@@ -338,13 +341,20 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       await p.setAudioSource(AudioSource.file(path));
       return;
     }
+    // A song imported from this device whose file was moved or deleted. It
+    // has no YouTube id, so asking YouTube only produced "video unavailable".
+    if (song.id.startsWith('local:')) {
+      throw FileSystemException('The file is no longer on this device', path);
+    }
     // Served by the local proxy, which handles ranges and URL expiry.
     if (!_proxy.running) await _proxy.start();
     final format = await _proxy
         .resolve(song.id, maxKbps: streamQualityKbps)
         .timeout(const Duration(seconds: 30));
     _loudness[song.id] = format.loudnessDb;
-    await p.setAudioSource(AudioSource.uri(_proxy.urlFor(song.id), tag: song.id));
+    await p.setAudioSource(
+      AudioSource.uri(_proxy.urlFor(song.id), tag: song.id),
+    );
   }
 
   Future<void> _load({required bool play}) async {
@@ -397,7 +407,8 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       _schedulePrefetch();
       // Search results sometimes arrive without a length; now we know it.
       final real = _player.duration;
-      if (real != null && real.inMilliseconds > 0 &&
+      if (real != null &&
+          real.inMilliseconds > 0 &&
           (song.durationMs - real.inMilliseconds).abs() > 1500) {
         unawaited(
           _db.patchSong(
@@ -413,15 +424,20 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       if (token != _loadToken || e is PlayerInterruptedException) return;
       _consecutiveFailures++;
       logEvent('load failed: ${song.title} — $e');
+      final why = e is FileSystemException
+          ? 'the file is no longer on this device'
+          : null;
       // Three in a row means the source is down, not one bad track — stop
       // instead of burning through the whole queue.
       if (_consecutiveFailures >= 3 || _index + 1 >= _queue.length) {
         _consecutiveFailures = 0;
         await _player.stop();
-        _errors.add('Could not play "${song.title}" — $e');
+        _errors.add('Could not play "${song.title}" — ${why ?? e}');
         return;
       }
-      _errors.add('Skipping "${song.title}" — the stream would not open.');
+      _errors.add(
+        'Skipping "${song.title}" — ${why ?? 'the stream would not open'}.',
+      );
       _index++;
       unawaited(_load(play: play));
       return;
@@ -612,9 +628,9 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         return;
       }
       if (last != null && radio != null) {
-        final pending = _radioPending ??= radio(last).whenComplete(
-          () => _radioPending = null,
-        );
+        final pending = _radioPending ??= radio(
+          last,
+        ).whenComplete(() => _radioPending = null);
         await pending;
         return;
       }
@@ -627,7 +643,8 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> _report({required bool skipped}) async {
     final song = currentSong;
     if (song == null) return;
-    final duration = _player.duration ?? Duration(milliseconds: song.durationMs);
+    final duration =
+        _player.duration ?? Duration(milliseconds: song.durationMs);
     // Real listening time, capped at the song's length; a song you seeked
     // through to the end was not "finished".
     var played = _listened;
@@ -651,9 +668,11 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   /// the user already moved on to another song, so it is not an error;
   /// anything else is logged rather than left unhandled.
   void _quiet(Future<void> f) {
-    unawaited(f.catchError((Object e) {
-      if (e is! PlayerInterruptedException) logEvent('player: $e');
-    }));
+    unawaited(
+      f.catchError((Object e) {
+        if (e is! PlayerInterruptedException) logEvent('player: $e');
+      }),
+    );
   }
 
   @override
@@ -748,6 +767,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   bool _repeatOne = false;
+
   /// Off by default so a queue actually ends — which is what lets "keep the
   /// music going" start a radio. Turning repeat on is the user saying they
   /// want the queue looped instead.
