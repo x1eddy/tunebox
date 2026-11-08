@@ -39,6 +39,10 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
   void initState() {
     super.initState();
     _build();
+    // A leftover "Undo" message would sit on the rating buttons for seconds.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) ScaffoldMessenger.maybeOf(context)?.hideCurrentSnackBar();
+    });
   }
 
   /// True while cards from YouTube are still on their way. The first cards
