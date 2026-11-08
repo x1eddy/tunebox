@@ -12,6 +12,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
+// ignore: implementation_imports, depend_on_referenced_packages, invalid_use_of_internal_member
+import 'package:riverpod/src/framework.dart' show RiverpodDevtool;
 
 import '../app/router.dart';
 
@@ -81,6 +83,7 @@ class TourDriver extends StatefulWidget {
 
 class _TourDriverState extends State<TourDriver> {
   Timer? _poll;
+  Timer? _trim;
   int _seen = -1;
   bool _mouseAdded = false;
   SemanticsHandle? _semantics;
@@ -99,10 +102,17 @@ class _TourDriverState extends State<TourDriver> {
     // the monkey needs to know where the buttons are
     _semantics = SemanticsBinding.instance.ensureSemantics();
     _poll = Timer.periodic(const Duration(milliseconds: 120), (_) => _tick());
+    // Debug builds record every provider change for the Riverpod devtool and
+    // never forget them; hours of monkey taps fill gigabytes. Not in release.
+    _trim = Timer.periodic(const Duration(seconds: 20), (_) {
+      // ignore: invalid_use_of_internal_member
+      RiverpodDevtool.instance.frames.clear();
+    });
   }
 
   @override
   void dispose() {
+    _trim?.cancel();
     _poll?.cancel();
     _semantics?.dispose();
     super.dispose();
