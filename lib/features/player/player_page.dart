@@ -89,7 +89,9 @@ class PlayerPage extends ConsumerWidget {
                             onDoubleTap: look.doubleTapLike && !song.liked
                                 ? () {
                                     HapticFeedback.mediumImpact();
-                                    music.like(song);
+                                    // value, not a toggle: a second quick
+                                    // double tap must not un-like it again
+                                    music.like(song, value: true);
                                   }
                                 : null,
                           ),

@@ -386,9 +386,10 @@ class MusicActions {
   }
 
   Future<void> like(Song song, {bool? value}) async {
-    final liked = value ?? !song.liked;
+    // A plain toggle is decided by the engine against the stored state, so
+    // a burst of taps on a button built with an old [song] still alternates.
     _tap();
-    await _ai.learnFromLike(song, liked, _settings);
+    await _ai.learnFromLike(song, value, _settings);
     _ref.invalidate(homeShelvesProvider);
   }
 

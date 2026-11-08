@@ -117,8 +117,20 @@ class ProfileController extends ChangeNotifier {
     await prefs.setString('activeProfile', active.id);
   }
 
+  /// A switch in progress; a second tap waits for nothing and is dropped.
+  bool _switching = false;
+
   Future<void> switchTo(String id) async {
-    if (id == active.id) return;
+    if (id == active.id || _switching) return;
+    _switching = true;
+    try {
+      await _switchTo(id);
+    } finally {
+      _switching = false;
+    }
+  }
+
+  Future<void> _switchTo(String id) async {
     final next = _profiles.firstWhere((p) => p.id == id);
     // Whatever was playing belongs to the profile being left.
     await handler?.stop();

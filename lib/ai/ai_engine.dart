@@ -193,7 +193,25 @@ class AiEngine {
     };
   }
 
-  Future<void> learnFromLike(Song song, bool liked, Settings settings) async {
+  /// One like change at a time per song, judged against the database: a
+  /// burst of taps used to count as many likes in a row (the screen still
+  /// showed the old state), each adding the full like weight.
+  final _likeLocks = <String, Future<void>>{};
+
+  /// [liked] null means "toggle", decided against the stored state once the
+  /// previous change to this song has landed.
+  Future<void> learnFromLike(Song song, bool? liked, Settings settings) {
+    final prev = _likeLocks[song.id] ?? Future<void>.value();
+    final next = prev.then((_) => _learnFromLike(song, liked, settings));
+    _likeLocks[song.id] = next.catchError((_) {});
+    return next;
+  }
+
+  Future<void> _learnFromLike(Song song, bool? want, Settings settings) async {
+    final current = await _db.songById(song.id);
+    final was = current?.liked ?? song.liked;
+    final liked = want ?? !was;
+    if (current != null && was == liked) return;
     await _db.setLiked(song.id, liked);
     if (settings.learning) {
       await _applySignal(song, liked ? _kLiked : -_kLiked * 0.5,

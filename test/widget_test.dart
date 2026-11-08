@@ -170,6 +170,23 @@ void main() {
       expect(w['artist:cold atlas'], greaterThan(0));
     });
 
+    test('a burst of heart taps alternates instead of liking over and over',
+        () async {
+      await db.upsertSong(_song('a'));
+      // the button keeps the song as it was drawn: not liked
+      final stale = (await db.songById('a'))!;
+      const plain = Settings(useTimeOfDay: false, downloadLikes: false);
+      await Future.wait([
+        for (var i = 0; i < 20; i++) ai.learnFromLike(stale, null, plain),
+      ]);
+      expect((await db.songById('a'))!.liked, isFalse, reason: '20 taps');
+      final w20 = (await ai.weights())['artist:cold atlas'] ?? 0;
+      await ai.learnFromLike(stale, null, plain);
+      expect((await db.songById('a'))!.liked, isTrue, reason: '21 taps');
+      // ten like/unlike pairs move the weight a little, never by 20 likes
+      expect(w20, lessThan(10 * 2.2 * 0.35));
+    });
+
     test('disliking blocks a song and keeps it out of the shelves', () async {
       await db.upsertSong(_song('a'));
       await db.upsertSong(_song('b', artist: 'Other', tags: 'polka'));

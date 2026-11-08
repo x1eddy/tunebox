@@ -46,7 +46,11 @@ class _SyncPageState extends ConsumerState<SyncPage> {
     }
   }
 
+  bool _codeOpen = false;
+
   Future<void> _showCode() async {
+    if (_codeOpen) return;
+    _codeOpen = true;
     final service = ref.read(syncServiceProvider);
     await showModalBottomSheet<void>(
       context: context,
@@ -55,6 +59,7 @@ class _SyncPageState extends ConsumerState<SyncPage> {
       builder: (_) => _ShowCodeSheet(service: service),
     );
     service.closePairing();
+    _codeOpen = false;
     if (mounted) setState(() {});
   }
 

@@ -73,7 +73,12 @@ class _GalaxyPageState extends ConsumerState<GalaxyPage>
     await ref.read(musicProvider).playAll(songs, origin: 'galaxy');
   }
 
+  bool _sheetOpen = false;
+
   void _openStar(Star s) {
+    // a burst of taps must not stack a pile of sheets
+    if (_sheetOpen) return;
+    _sheetOpen = true;
     final l = L.of(context);
     final music = ref.read(musicProvider);
     showModalBottomSheet<void>(
@@ -128,7 +133,7 @@ class _GalaxyPageState extends ConsumerState<GalaxyPage>
           ],
         ),
       ),
-    );
+    ).whenComplete(() => _sheetOpen = false);
   }
 
   void _finishLasso(Galaxy g) {

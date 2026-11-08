@@ -501,11 +501,20 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
 
   Future<void> _startFade(int nextIndex, Duration length) async {
     _fading = true;
+    // Anything the user does meanwhile (next, a new song, pause) bumps the
+    // load token or ends the fade; then this fade must not carry on, or it
+    // overrode their choice and left two songs playing at once.
+    final token = _loadToken;
+    bool superseded() => !_fading || token != _loadToken;
     logEvent('crossfade ${length.inSeconds}s into ${_queue[nextIndex].title}');
     final from = _player;
     final to = _other;
     final fromGain = _gainOf(currentSong) * _master;
     await _report(skipped: false);
+    if (superseded() || nextIndex >= _queue.length) {
+      _fading = false;
+      return;
+    }
     _index = nextIndex;
     final song = _queue[nextIndex];
     final toGain = _gainOf(song) * _master;
@@ -519,6 +528,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _currentSong.add(song);
     mediaItem.add(_mediaItem(song));
     await to.setVolume(0);
+    if (superseded()) {
+      _finishFade();
+      return;
+    }
     unawaited(to.play());
     _broadcastState(to.playbackEvent);
 
