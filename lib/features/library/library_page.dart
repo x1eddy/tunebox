@@ -80,100 +80,90 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
     final downloaded = ref.watch(downloadedProvider).value ?? const <Song>[];
     final imported = ref.watch(importedProvider).value ?? const <Song>[];
 
-    // Its own messenger: "plays next" / "won't come up again" messages from
-    // this page then show inside this Scaffold, which lifts the + button
-    // above them instead of hiding it.
     return DefaultTabController(
       length: 6,
-      child: ScaffoldMessenger(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(l.navLibrary),
-            actions: [
-              IconButton(
-                tooltip: l.homeAddMusic,
-                onPressed: () => pushDetail(context, 'import'),
-                icon: const Icon(Icons.library_add_outlined),
-              ),
-              IconButton(
-                tooltip: _grid ? l.aLibListView : l.aLibGridView,
-                onPressed: () => setState(() => _grid = !_grid),
-                icon: Icon(
-                  _grid ? Icons.view_list_rounded : Icons.grid_view_rounded,
-                ),
-              ),
-              const SizedBox(width: 4),
-            ],
-            bottom: TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              dividerHeight: 0,
-              tabs: [
-                Tab(text: l.libPlaylists),
-                Tab(text: l.libSongs),
-                Tab(text: l.libArtists),
-                Tab(text: l.libLiked),
-                Tab(text: l.libDownloads),
-                Tab(text: l.libImported),
-              ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l.navLibrary),
+          actions: [
+            IconButton(
+              tooltip: l.homeAddMusic,
+              onPressed: () => pushDetail(context, 'import'),
+              icon: const Icon(Icons.library_add_outlined),
             ),
-          ),
-          body: Column(
-            children: [
-              // Sorting means nothing for playlists (tab 0) and artists (tab 2).
-              Builder(
-                builder: (context) {
-                  final tabs = DefaultTabController.of(context);
-                  return AnimatedBuilder(
-                    animation: tabs.animation!,
-                    builder: (context, _) {
-                      final index = tabs.animation!.value.round();
-                      return AnimatedSize(
-                        duration: Motion.fast,
-                        curve: Motion.emphasized,
-                        alignment: Alignment.topCenter,
-                        child: index == 0 || index == 2
-                            ? const SizedBox(width: double.infinity)
-                            : _SortRow(sort: _sort, onSort: _setSort),
-                      );
-                    },
-                  );
-                },
+            IconButton(
+              tooltip: _grid ? l.aLibListView : l.aLibGridView,
+              onPressed: () => setState(() => _grid = !_grid),
+              icon: Icon(
+                _grid ? Icons.view_list_rounded : Icons.grid_view_rounded,
               ),
-              Expanded(
-                child: loading
-                    ? const SingleChildScrollView(child: SongListSkeleton())
-                    : TabBarView(
-                        children: [
-                          _PlaylistsTab(grid: _grid),
-                          _SongsTab(
-                            songs: _sorted(library, 'library'),
-                            origin: 'library',
-                          ),
-                          _ArtistsTab(library: library),
-                          _SongsTab(
-                            songs: _sorted(liked, 'liked'),
-                            origin: 'liked',
-                          ),
-                          _SongsTab(
-                            songs: _sorted(downloaded, 'downloaded'),
-                            origin: 'downloads',
-                            banner: _DownloadBanner(songs: downloaded),
-                          ),
-                          _SongsTab(
-                            songs: _sorted(imported, 'imported'),
-                            origin: 'imported',
-                          ),
-                        ],
-                      ),
-              ),
+            ),
+            const SizedBox(width: 4),
+          ],
+          bottom: TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            dividerHeight: 0,
+            tabs: [
+              Tab(text: l.libPlaylists),
+              Tab(text: l.libSongs),
+              Tab(text: l.libArtists),
+              Tab(text: l.libLiked),
+              Tab(text: l.libDownloads),
+              Tab(text: l.libImported),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => pushDetail(context, 'import'),
-            tooltip: l.importTitle,
-            child: const Icon(Icons.add_rounded),
-          ),
+        ),
+        body: Column(
+          children: [
+            // Sorting means nothing for playlists (tab 0) and artists (tab 2).
+            Builder(
+              builder: (context) {
+                final tabs = DefaultTabController.of(context);
+                return AnimatedBuilder(
+                  animation: tabs.animation!,
+                  builder: (context, _) {
+                    final index = tabs.animation!.value.round();
+                    return AnimatedSize(
+                      duration: Motion.fast,
+                      curve: Motion.emphasized,
+                      alignment: Alignment.topCenter,
+                      child: index == 0 || index == 2
+                          ? const SizedBox(width: double.infinity)
+                          : _SortRow(sort: _sort, onSort: _setSort),
+                    );
+                  },
+                );
+              },
+            ),
+            Expanded(
+              child: loading
+                  ? const SingleChildScrollView(child: SongListSkeleton())
+                  : TabBarView(
+                      children: [
+                        _PlaylistsTab(grid: _grid),
+                        _SongsTab(
+                          songs: _sorted(library, 'library'),
+                          origin: 'library',
+                        ),
+                        _ArtistsTab(library: library),
+                        _SongsTab(
+                          songs: _sorted(liked, 'liked'),
+                          origin: 'liked',
+                        ),
+                        _SongsTab(
+                          songs: _sorted(downloaded, 'downloaded'),
+                          origin: 'downloads',
+                          banner: _DownloadBanner(songs: downloaded),
+                        ),
+                        _SongsTab(
+                          songs: _sorted(imported, 'imported'),
+                          origin: 'imported',
+                        ),
+                      ],
+                    ),
+            ),
+          ],
         ),
       ),
     );

@@ -179,11 +179,13 @@ extension on _TourDriverState {
             ..color = const Color(0xFFFF0000),
         );
       }
-      final out = await rec.endRecording().toImage(
+      final picture = rec.endRecording();
+      final out = await picture.toImage(
         size.width.round(),
         size.height.round(),
       );
       final png = await out.toByteData(format: ImageByteFormat.png);
+      picture.dispose();
       img.dispose();
       out.dispose();
       if (png == null) return;
@@ -487,6 +489,13 @@ extension on _TourDriverState {
       if (left > 0) await Future<void>.delayed(Duration(milliseconds: left));
     }
     final ex = _explorer;
+    final cache = PaintingBinding.instance.imageCache;
+    // ignore: avoid_print
+    print(
+      '[mem] imageCache=${cache.currentSizeBytes >> 20}MB '
+      'n=${cache.currentSize} live=${cache.liveImageCount} '
+      'pending=${cache.pendingImageCount}',
+    );
     // ignore: avoid_print
     print(
       '[coverage] pages=${ex.pages.length} buttons=${ex.labels.length} '
