@@ -252,7 +252,7 @@
         <h1 id="headline">A music player that <em>learns your taste</em> — on your device.</h1>
         <p class="lead" data-reveal style="--i:6">Stream from YouTube, play your own files, download for offline. Lyrics that follow along, a mix from one sentence, and an AI that learns what you like without ever leaving your phone. No account, no ads, no tracking.</p>
         <div class="cta" data-reveal style="--i:8">
-          <a class="btn primary" href="#download">Download TuneBox</a>
+          <a class="btn primary smart-dl" href="#download">Download TuneBox</a>
           <a class="btn" href="https://github.com/x1eddy/tunebox">★ Star on GitHub</a>
         </div>
         <div class="platforms" data-reveal style="--i:10"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span><span class="pill" id="count-pill" hidden></span></div>
@@ -377,16 +377,16 @@
   <section id="download">
     <span class="eyebrow" data-reveal>Download</span>
     <h2 data-reveal>Get TuneBox</h2>
-    <p class="sub" data-reveal>Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
+    <p class="sub" data-reveal>Latest version: <b id="ver">v1.0.1</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
     <div class="dl">
       <div class="card" data-reveal style="--i:0"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
-        <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/latest">Download APK</a>
+        <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/android-TuneBox-1.0.1.apk">Download APK</a>
         <small>Open it on the phone and allow installing from that app once. Signed with a real release key; after that the app updates itself.</small></div>
       <div class="card" data-reveal style="--i:1"><h3>🐧 Linux</h3><p>x86_64. Installs into your home folder, no root.</p>
-        <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/latest">Download .tar.gz</a>
+        <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/linux-TuneBox-1.0.1.tar.gz">Download .tar.gz</a>
         <small>Extract, run <code>./install.sh</code>. Needs <code>libmpv</code> (<code>sudo apt install libmpv2</code>).</small></div>
       <div class="card" data-reveal style="--i:2"><h3> iPhone</h3><p>iOS 15+. Unsigned build you sign with your own Apple ID.</p>
-        <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/latest">Download .ipa</a>
+        <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/iphone-TuneBox-1.0.1.ipa">Download .ipa</a>
         <small>Install with <a href="https://sidestore.io">SideStore</a> or <a href="https://altstore.io">AltStore</a>; a free Apple ID needs a refresh every 7 days (they do it for you).</small></div>
     </div>
 
@@ -403,7 +403,7 @@
     <div class="final" data-reveal="scale">
       <h2>Your music. Your taste.<br>Your device.</h2>
       <p class="sub" style="margin:0 auto">Free and open source, on Android, Linux and iPhone.</p>
-      <div class="cta"><a class="btn primary" href="#download">Download TuneBox</a><a class="btn" href="https://github.com/x1eddy/tunebox">View the source</a></div>
+      <div class="cta"><a class="btn primary smart-dl" href="#download">Download TuneBox</a><a class="btn" href="https://github.com/x1eddy/tunebox">View the source</a></div>
     </div>
   </section>
 </div>
@@ -566,7 +566,27 @@
   onSteps();
 })();
 
-// Always point the buttons at the newest release; the links above keep working without JS.
+// The main "Download" buttons fetch the right file for this device straight
+// away; elsewhere (Windows, Mac) they lead to the download section.
+function pointSmartButtons() {
+  var ua = navigator.userAgent || '';
+  var android = /Android/i.test(ua);
+  var ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var linux = !android && /Linux/i.test(ua) && !/CrOS/i.test(ua);
+  var pick = android ? ['dl-android', 'Download for Android']
+    : ios ? ['dl-ios', 'Download for iPhone']
+    : linux ? ['dl-linux', 'Download for Linux'] : null;
+  document.querySelectorAll('.smart-dl').forEach(function (b) {
+    if (!pick) return;
+    b.href = document.getElementById(pick[0]).href;
+    b.textContent = pick[1];
+  });
+}
+pointSmartButtons();
+
+// The links above are written in when the site is published, so they work
+// even if GitHub's API is unreachable or rate limited; this only moves them
+// on if a newer release came out since.
 var API = 'https://api.github.com/repos/x1eddy/tunebox/releases';
 fetch(API + '/latest')
   .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
@@ -577,8 +597,9 @@ fetch(API + '/latest')
       var a = (rel.assets || []).filter(function (x) { return map[id].test(x.name); })[0];
       if (a) document.getElementById(id).href = a.browser_download_url;
     });
+    pointSmartButtons();
   })
-  .catch(function () { document.getElementById('ver').textContent = 'see Releases'; });
+  .catch(function () {});
 
 // Total downloads: GitHub already counts every release file, so nothing here tracks anyone.
 // Stays as "3 platforms" if the request fails or is rate limited.
