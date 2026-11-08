@@ -1472,5 +1472,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "stMirror": "Mirror",
+  "stLine2": "Curve",
+  "stDots": "Dots",
+  "stLive": "Live visualiser",
+  "stLiveSub": "Moves with the real music. Android asks for the microphone permission for this, but only TuneBox's own sound is read, never the microphone.",
+  "stLiveDenied": "Without the permission the visualiser keeps its own animation."
 }

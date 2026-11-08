@@ -2550,4 +2550,24 @@ class LPt extends L {
   String syncSettingsOn(String names) {
     return 'A sincronizar com $names';
   }
+
+  @override
+  String get stMirror => 'Espelho';
+
+  @override
+  String get stLine2 => 'Curva';
+
+  @override
+  String get stDots => 'Pontos';
+
+  @override
+  String get stLive => 'Visualizador ao vivo';
+
+  @override
+  String get stLiveSub =>
+      'Mexe-se com a música real. O Android pede a permissão do microfone para isto, mas só é lido o som do TuneBox, nunca o microfone.';
+
+  @override
+  String get stLiveDenied =>
+      'Sem a permissão, o visualizador mantém a sua própria animação.';
 }

@@ -2565,4 +2565,24 @@ class LDe extends L {
   String syncSettingsOn(String names) {
     return 'Synchronisiert mit $names';
   }
+
+  @override
+  String get stMirror => 'Spiegel';
+
+  @override
+  String get stLine2 => 'Kurve';
+
+  @override
+  String get stDots => 'Punkte';
+
+  @override
+  String get stLive => 'Live-Visualizer';
+
+  @override
+  String get stLiveSub =>
+      'Bewegt sich mit der echten Musik. Android fragt dafür nach der Mikrofon-Berechtigung, gelesen wird aber nur der Ton von TuneBox, nie das Mikrofon.';
+
+  @override
+  String get stLiveDenied =>
+      'Ohne die Berechtigung bleibt der Visualizer bei seiner eigenen Animation.';
 }

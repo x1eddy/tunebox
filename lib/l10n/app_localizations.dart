@@ -4640,6 +4640,42 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Syncing with {names}'**
   String syncSettingsOn(String names);
+
+  /// No description provided for @stMirror.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirror'**
+  String get stMirror;
+
+  /// No description provided for @stLine2.
+  ///
+  /// In en, this message translates to:
+  /// **'Curve'**
+  String get stLine2;
+
+  /// No description provided for @stDots.
+  ///
+  /// In en, this message translates to:
+  /// **'Dots'**
+  String get stDots;
+
+  /// No description provided for @stLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Live visualiser'**
+  String get stLive;
+
+  /// No description provided for @stLiveSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Moves with the real music. Android asks for the microphone permission for this, but only TuneBox\'s own sound is read, never the microphone.'**
+  String get stLiveSub;
+
+  /// No description provided for @stLiveDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the permission the visualiser keeps its own animation.'**
+  String get stLiveDenied;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

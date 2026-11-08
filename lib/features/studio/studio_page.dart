@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../app/theme.dart';
 import '../../l10n/app_localizations.dart';
+import '../../playback/live_audio.dart';
 import '../../state/appearance.dart';
 import '../../ui/common.dart';
 import '../../ui/kit/grouped.dart';
@@ -116,7 +118,7 @@ class StudioPage extends ConsumerWidget {
           // --------------------------------------------------------- type
           SectionHeader(title: l.stType, icon: Icons.text_fields_rounded),
           SizedBox(
-            height: 96,
+            height: 108,
             child: ListView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.all(10),
@@ -200,16 +202,51 @@ class StudioPage extends ConsumerWidget {
               ],
             ),
           ),
-          _Segments<VisualizerStyle>(
-            label: l.stVisualizer,
-            value: look.visualizer,
-            options: {
-              VisualizerStyle.bars: l.stBars,
-              VisualizerStyle.wave: l.stWave,
-              VisualizerStyle.off: l.stOff,
-            },
-            onChanged: (v) => up((a) => a.copyWith(visualizer: v)),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+            child: Text(l.stVisualizer),
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 6),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final v in VisualizerStyle.values)
+                  ChoiceChip(
+                    selected: look.visualizer == v,
+                    onSelected: (_) => up((a) => a.copyWith(visualizer: v)),
+                    label: Text(switch (v) {
+                      VisualizerStyle.bars => l.stBars,
+                      VisualizerStyle.wave => l.stWave,
+                      VisualizerStyle.mirror => l.stMirror,
+                      VisualizerStyle.line => l.stLine2,
+                      VisualizerStyle.dots => l.stDots,
+                      VisualizerStyle.off => l.stOff,
+                    }),
+                  ),
+              ],
+            ),
+          ),
+          if (LiveAudio.supported)
+            SwitchListTile(
+              value: look.liveVisualizer,
+              title: Text(l.stLive),
+              subtitle: Text(l.stLiveSub),
+              onChanged: (on) async {
+                if (!on) {
+                  up((a) => a.copyWith(liveVisualizer: false));
+                  return;
+                }
+                final messenger = ScaffoldMessenger.of(context);
+                final granted = await Permission.microphone.request();
+                if (granted.isGranted) {
+                  up((a) => a.copyWith(liveVisualizer: true));
+                } else {
+                  messenger.showTimed(SnackBar(content: Text(l.stLiveDenied)));
+                }
+              },
+            ),
           _Segments<SeekStyle>(
             label: l.stSeek,
             value: look.seek,
@@ -274,9 +311,11 @@ class StudioPage extends ConsumerWidget {
                                 (look.tabs.contains(b) && look.tabs.length <= 2)
                             ? null
                             : (on) => up((a) => a.copyWith(
+                                  // brackets matter: a bare `..remove` would
+                                  // apply to both branches of the ?:
                                   tabs: on
                                       ? [...a.tabs, b]
-                                      : [...a.tabs]..remove(b),
+                                      : ([...a.tabs]..remove(b)),
                                 )),
                       ),
                       ReorderableDragStartListener(

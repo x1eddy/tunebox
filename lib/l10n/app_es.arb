@@ -729,5 +729,11 @@
   "syncNotPaired": "El otro dispositivo ya no reconoce este",
   "syncUnreachable": "Ahora mismo no está disponible",
   "syncSettingsOff": "Mantén tu gusto igual en el móvil y el ordenador",
-  "syncSettingsOn": "Sincronizando con {names}"
+  "syncSettingsOn": "Sincronizando con {names}",
+  "stMirror": "Espejo",
+  "stLine2": "Curva",
+  "stDots": "Puntos",
+  "stLive": "Visualizador en vivo",
+  "stLiveSub": "Se mueve con la música real. Android pide el permiso del micrófono para esto, pero solo se lee el sonido de TuneBox, nunca el micrófono.",
+  "stLiveDenied": "Sin el permiso, el visualizador mantiene su propia animación."
 }

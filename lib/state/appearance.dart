@@ -43,7 +43,7 @@ enum PlayerStyle {
   final String label;
 }
 
-enum VisualizerStyle { bars, wave, off }
+enum VisualizerStyle { bars, wave, mirror, line, dots, off }
 
 enum SeekStyle { line, wave, thick }
 
@@ -112,6 +112,7 @@ class Appearance {
     this.swipeRight = SwipeAction.like,
     this.doubleTapLike = true,
     this.shakeToSkip = false,
+    this.liveVisualizer = false,
   });
 
   final FontPair fonts;
@@ -144,6 +145,10 @@ class Appearance {
   final bool doubleTapLike;
   final bool shakeToSkip;
 
+  /// Android: drive the visualiser from the real playback instead of an
+  /// animation. Needs the record-audio permission (the app's own audio only).
+  final bool liveVisualizer;
+
   static const kDefaultTabs = [0, 1, 2, 3, 4];
 
   ThemePreset? get themePreset => preset.isEmpty ? null : presetById(preset);
@@ -166,6 +171,7 @@ class Appearance {
     SwipeAction? swipeRight,
     bool? doubleTapLike,
     bool? shakeToSkip,
+    bool? liveVisualizer,
   }) => Appearance(
     fonts: fonts ?? this.fonts,
     corners: corners ?? this.corners,
@@ -184,6 +190,7 @@ class Appearance {
     swipeRight: swipeRight ?? this.swipeRight,
     doubleTapLike: doubleTapLike ?? this.doubleTapLike,
     shakeToSkip: shakeToSkip ?? this.shakeToSkip,
+    liveVisualizer: liveVisualizer ?? this.liveVisualizer,
   );
 
   Map<String, Object?> toJson() => {
@@ -204,6 +211,7 @@ class Appearance {
     'swipeR': swipeRight.name,
     'dtl': doubleTapLike,
     'shake': shakeToSkip,
+    'live': liveVisualizer,
   };
 
   static T _enum<T extends Enum>(List<T> values, Object? name, T fallback) {
@@ -250,6 +258,7 @@ class Appearance {
       swipeRight: _enum(SwipeAction.values, j['swipeR'], d.swipeRight),
       doubleTapLike: j['dtl'] as bool? ?? d.doubleTapLike,
       shakeToSkip: j['shake'] as bool? ?? d.shakeToSkip,
+      liveVisualizer: j['live'] as bool? ?? d.liveVisualizer,
     );
   }
 

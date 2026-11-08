@@ -2558,4 +2558,24 @@ class LHy extends L {
   String syncSettingsOn(String names) {
     return 'Syncing with $names';
   }
+
+  @override
+  String get stMirror => 'Mirror';
+
+  @override
+  String get stLine2 => 'Curve';
+
+  @override
+  String get stDots => 'Dots';
+
+  @override
+  String get stLive => 'Live visualiser';
+
+  @override
+  String get stLiveSub =>
+      'Moves with the real music. Android asks for the microphone permission for this, but only TuneBox\'s own sound is read, never the microphone.';
+
+  @override
+  String get stLiveDenied =>
+      'Without the permission the visualiser keeps its own animation.';
 }

@@ -729,5 +729,11 @@
   "syncNotPaired": "Het andere apparaat kent dit niet meer",
   "syncUnreachable": "Nu niet bereikbaar",
   "syncSettingsOff": "Houd je smaak gelijk op telefoon en computer",
-  "syncSettingsOn": "Synchroniseert met {names}"
+  "syncSettingsOn": "Synchroniseert met {names}",
+  "stMirror": "Spiegel",
+  "stLine2": "Curve",
+  "stDots": "Stippen",
+  "stLive": "Live visualizer",
+  "stLiveSub": "Beweegt mee met de echte muziek. Android vraagt hiervoor microfoontoestemming, maar alleen het geluid van TuneBox wordt gelezen, nooit de microfoon.",
+  "stLiveDenied": "Zonder de toestemming houdt de visualizer zijn eigen animatie."
 }

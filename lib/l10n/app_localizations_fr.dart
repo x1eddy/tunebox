@@ -2567,4 +2567,24 @@ class LFr extends L {
   String syncSettingsOn(String names) {
     return 'Synchronisé avec $names';
   }
+
+  @override
+  String get stMirror => 'Miroir';
+
+  @override
+  String get stLine2 => 'Courbe';
+
+  @override
+  String get stDots => 'Points';
+
+  @override
+  String get stLive => 'Visualiseur en direct';
+
+  @override
+  String get stLiveSub =>
+      'Bouge avec la vraie musique. Android demande l\'autorisation du micro pour cela, mais seul le son de TuneBox est lu, jamais le micro.';
+
+  @override
+  String get stLiveDenied =>
+      'Sans l\'autorisation, le visualiseur garde sa propre animation.';
 }

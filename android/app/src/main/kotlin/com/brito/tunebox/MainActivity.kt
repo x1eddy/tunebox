@@ -5,14 +5,25 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
 class MainActivity : AudioServiceActivity() {
     private val channel = "com.brito.tunebox/install"
 
+    private val live = LiveVisualizer()
+
+    override fun onDestroy() {
+        live.stop()
+        super.onDestroy()
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val messenger = flutterEngine.dartExecutor.binaryMessenger
+        MethodChannel(messenger, "com.brito.tunebox/visualizer").setMethodCallHandler(live)
+        EventChannel(messenger, "com.brito.tunebox/visualizer/frames").setStreamHandler(live)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
             .setMethodCallHandler { call, result ->
                 when (call.method) {

@@ -133,6 +133,49 @@ Future<TuneBoxAudioHandler> _buildHandler(
   return TuneBoxAudioHandler(db, proxy);
 }
 
+/// Building a theme means a full Material colour scheme and type scale;
+/// flipping an unrelated switch (Wi-Fi only, smart shuffle…) used to rebuild
+/// both themes from scratch. The last ones are kept and reused while their
+/// inputs stay the same.
+final _themeCache = <String, ThemeData>{};
+
+ThemeData _themeFor({
+  required Color seed,
+  required Brightness brightness,
+  required bool pureBlack,
+  required bool highContrast,
+  required bool boldText,
+  required bool reduceMotion,
+  required Appearance appearance,
+  Color? background,
+}) {
+  final key = [
+    seed.toARGB32(),
+    brightness.name,
+    pureBlack,
+    highContrast,
+    boldText,
+    reduceMotion,
+    appearance.fonts.name,
+    appearance.corners.name,
+    appearance.density.name,
+    background?.toARGB32(),
+  ].join('|');
+  final hit = _themeCache[key];
+  if (hit != null) return hit;
+  if (_themeCache.length > 8) _themeCache.clear();
+  return _themeCache[key] = buildTheme(
+    seed: seed,
+    brightness: brightness,
+    pureBlack: pureBlack,
+    highContrast: highContrast,
+    boldText: boldText,
+    reduceMotion: reduceMotion,
+    appearance: appearance,
+    background: background,
+  );
+}
+
 class TuneBoxApp extends ConsumerStatefulWidget {
   const TuneBoxApp({super.key});
 
@@ -211,7 +254,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
         : preset.brightness == Brightness.dark
         ? ThemeMode.dark
         : ThemeMode.light;
-    ThemeData themed(Brightness b) => buildTheme(
+    ThemeData themed(Brightness b) => _themeFor(
       seed: seed,
       brightness: b,
       pureBlack: b == Brightness.dark && settings.pureBlack,
@@ -225,6 +268,9 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     return MaterialApp.router(
       title: 'TuneBox',
       debugShowCheckedModeBanner: false,
+      themeAnimationDuration: settings.reduceMotion
+          ? Duration.zero
+          : const Duration(milliseconds: 250),
       themeMode: themeMode,
       theme: themed(Brightness.light),
       darkTheme: themed(Brightness.dark),
@@ -258,15 +304,10 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
             child: child,
           );
         }
-        final animated = settings.reduceMotion
-            ? Theme(data: Theme.of(context), child: themed)
-            : AnimatedTheme(
-                data: Theme.of(context),
-                duration: const Duration(milliseconds: 450),
-                curve: Curves.easeOut,
-                child: themed,
-              );
-        return kTour ? TourDriver(child: animated) : animated;
+        // MaterialApp already animates theme changes; a second AnimatedTheme
+        // here blended the whole theme twice per frame, which is what made
+        // flipping a setting stutter.
+        return kTour ? TourDriver(child: themed) : themed;
       },
     );
   }

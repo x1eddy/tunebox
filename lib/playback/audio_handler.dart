@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:drift/drift.dart' show Value;
+import 'package:flutter/foundation.dart' show ValueNotifier;
 import 'package:just_audio/just_audio.dart';
 
 import '../data/db/database.dart';
@@ -54,6 +55,9 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       p.playingStream.listen((_) {
         if (identical(p, _player)) _syncListenClock();
       });
+      p.androidAudioSessionIdStream.listen((id) {
+        if (identical(p, _player) && id != null) audioSession.value = id;
+      });
     }
   }
 
@@ -84,6 +88,14 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   final _positions = StreamController<Duration>.broadcast();
+
+  /// The Android audio session of the player you hear (the live visualiser
+  /// listens to it). Changes when the two players swap roles.
+  final audioSession = ValueNotifier<int?>(null);
+  void _announceSession() {
+    final id = _player.androidAudioSessionId;
+    if (id != null) audioSession.value = id;
+  }
 
   // ------------------------------------------------------------ sound setup
 
@@ -356,6 +368,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         _player = _other;
         _prefetchedId = null;
         unawaited(old.stop());
+        _announceSession();
         if (_player.position > const Duration(milliseconds: 300)) {
           await _player.seek(Duration.zero);
         }
@@ -499,6 +512,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _player = to;
     _prefetchedId = null;
     _fadingOut = from;
+    _announceSession();
     _listen
       ..stop()
       ..reset();

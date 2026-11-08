@@ -2552,4 +2552,24 @@ class LIt extends L {
   String syncSettingsOn(String names) {
     return 'Sincronizzato con $names';
   }
+
+  @override
+  String get stMirror => 'Specchio';
+
+  @override
+  String get stLine2 => 'Curva';
+
+  @override
+  String get stDots => 'Punti';
+
+  @override
+  String get stLive => 'Visualizzatore dal vivo';
+
+  @override
+  String get stLiveSub =>
+      'Si muove con la musica vera. Android chiede il permesso del microfono, ma viene letto solo l\'audio di TuneBox, mai il microfono.';
+
+  @override
+  String get stLiveDenied =>
+      'Senza il permesso il visualizzatore mantiene la sua animazione.';
 }

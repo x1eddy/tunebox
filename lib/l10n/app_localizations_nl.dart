@@ -2557,4 +2557,24 @@ class LNl extends L {
   String syncSettingsOn(String names) {
     return 'Synchroniseert met $names';
   }
+
+  @override
+  String get stMirror => 'Spiegel';
+
+  @override
+  String get stLine2 => 'Curve';
+
+  @override
+  String get stDots => 'Stippen';
+
+  @override
+  String get stLive => 'Live visualizer';
+
+  @override
+  String get stLiveSub =>
+      'Beweegt mee met de echte muziek. Android vraagt hiervoor microfoontoestemming, maar alleen het geluid van TuneBox wordt gelezen, nooit de microfoon.';
+
+  @override
+  String get stLiveDenied =>
+      'Zonder de toestemming houdt de visualizer zijn eigen animatie.';
 }

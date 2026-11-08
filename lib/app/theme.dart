@@ -282,10 +282,20 @@ ThemeData buildTheme({
         ),
       ),
     ),
-    listTileTheme: const ListTileThemeData(
-      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-      visualDensity: VisualDensity(vertical: -1),
-    ),
+    // Spacing from the Appearance studio. This used to be a fixed density,
+    // which silently overrode the Compact/Comfy choice for every list.
+    listTileTheme: appearance.density == Density.compact
+        ? const ListTileThemeData(
+            contentPadding: EdgeInsets.symmetric(horizontal: 14),
+            visualDensity: VisualDensity(vertical: -3),
+            minVerticalPadding: 2,
+            dense: true,
+          )
+        : const ListTileThemeData(
+            contentPadding: EdgeInsets.symmetric(horizontal: 18),
+            visualDensity: VisualDensity(vertical: 0),
+            minVerticalPadding: 8,
+          ),
     chipTheme: base.chipTheme.copyWith(
       side: BorderSide.none,
       shape: const RoundedRectangleBorder(borderRadius: R.pill),

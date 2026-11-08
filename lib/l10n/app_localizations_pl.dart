@@ -2567,4 +2567,24 @@ class LPl extends L {
   String syncSettingsOn(String names) {
     return 'Synchronizacja z: $names';
   }
+
+  @override
+  String get stMirror => 'Lustro';
+
+  @override
+  String get stLine2 => 'Krzywa';
+
+  @override
+  String get stDots => 'Kropki';
+
+  @override
+  String get stLive => 'Wizualizacja na żywo';
+
+  @override
+  String get stLiveSub =>
+      'Porusza się z prawdziwą muzyką. Android prosi o uprawnienie do mikrofonu, ale odczytywany jest tylko dźwięk TuneBox, nigdy mikrofon.';
+
+  @override
+  String get stLiveDenied =>
+      'Bez uprawnienia wizualizacja zostaje przy własnej animacji.';
 }

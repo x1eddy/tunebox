@@ -15,7 +15,6 @@ import '../sound/sound_page.dart';
 import '../../l10n/app_localizations.dart';
 import '../../ui/artwork.dart';
 import '../../ui/common.dart';
-import '../../ui/equalizer.dart';
 import '../../ui/motion.dart';
 import '../../ui/kit/living_background.dart';
 import '../../ui/kit/seek_bar.dart';
@@ -23,6 +22,7 @@ import '../../ui/play_glyph.dart';
 import 'queue_page.dart';
 import 'lyrics_view.dart';
 import 'stages.dart';
+import 'visualizer_host.dart';
 
 class PlayerPage extends ConsumerWidget {
   const PlayerPage({super.key});
@@ -187,10 +187,10 @@ class PlayerPage extends ConsumerWidget {
                       if (look.visualizer != VisualizerStyle.off)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(26, 12, 26, 0),
-                          child: Visualizer(
+                          child: LiveVisualizerHost(
                             playing: playing,
-                            height: 30,
-                            wave: look.visualizer == VisualizerStyle.wave,
+                            style: look.visualizer,
+                            live: look.liveVisualizer,
                             reduceMotion: reduceMotion,
                           ),
                         ),

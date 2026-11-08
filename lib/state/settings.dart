@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -367,6 +370,69 @@ class Settings {
     autoUpdate: p.getBool('autoUpdate') ?? true,
   );
 
+  /// Writes only what differs from [before]. Every preference write
+  /// rewrites the whole file on desktop; saving all thirty-odd settings for
+  /// one switch was a visible hitch.
+  Future<void> saveChanges(SharedPreferences p, Settings before) async {
+    final now = <String, Object?>{}, was = <String, Object?>{};
+    _collect(now);
+    before._collect(was);
+    for (final e in now.entries) {
+      if (_same(e.value, was[e.key])) continue;
+      final v = e.value;
+      if (v is bool) {
+        await p.setBool(e.key, v);
+      } else if (v is int) {
+        await p.setInt(e.key, v);
+      } else if (v is double) {
+        await p.setDouble(e.key, v);
+      } else if (v is String) {
+        await p.setString(e.key, v);
+      } else if (v is List<String>) {
+        await p.setStringList(e.key, v);
+      }
+    }
+  }
+
+  static bool _same(Object? a, Object? b) =>
+      a is List && b is List ? listEquals(a, b) : a == b;
+
+  void _collect(Map<String, Object?> m) {
+    m['themeMode'] = themeMode.index;
+    m['pureBlack'] = pureBlack;
+    m['accentMode'] = accentMode.index;
+    m['accentColor'] = accentColor.toARGB32();
+    m['skipSilence'] = skipSilence;
+    m['audioQualityKbps'] = audioQualityKbps;
+    m['wifiOnlyDownloads'] = wifiOnlyDownloads;
+    m['downloadLikes'] = downloadLikes;
+    m['aiAutoDownload'] = aiAutoDownload;
+    m['aiDailyDownloads'] = aiDailyDownloads;
+    m['aiStorageBudgetMb'] = aiStorageBudgetMb;
+    m['watchedFolders'] = watchedFolders;
+    m['learning'] = learning;
+    m['discovery'] = discovery;
+    m['energy'] = energy;
+    m['recency'] = recency;
+    m['nostalgia'] = nostalgia;
+    m['useHistory'] = useHistory;
+    m['useSkips'] = useSkips;
+    m['useTimeOfDay'] = useTimeOfDay;
+    m['useYouTubeSignals'] = useYouTubeSignals;
+    m['localeCode'] = localeCode;
+    m['textScale'] = textScale;
+    m['reduceMotion'] = reduceMotion;
+    m['highContrast'] = highContrast;
+    m['boldText'] = boldText;
+    m['autoRadio'] = autoRadio;
+    m['smartShuffle'] = smartShuffle;
+    m['resumePlayback'] = resumePlayback;
+    m['dataSaverOffWifi'] = dataSaverOffWifi;
+    m['haptics'] = haptics;
+    m['showReasons'] = showReasons;
+    m['autoUpdate'] = autoUpdate;
+  }
+
   Future<void> save(SharedPreferences p) async {
     await p.setInt('themeMode', themeMode.index);
     await p.setBool('pureBlack', pureBlack);
@@ -409,8 +475,9 @@ class SettingsController extends Notifier<Settings> {
   Settings build() => Settings.load(ref.read(prefsProvider));
 
   void update(Settings Function(Settings) change) {
+    final before = state;
     state = change(state);
-    state.save(ref.read(prefsProvider));
+    unawaited(state.saveChanges(ref.read(prefsProvider), before));
   }
 
   void addWatchedFolder(String path) {

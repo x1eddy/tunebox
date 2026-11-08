@@ -2562,4 +2562,24 @@ class LEs extends L {
   String syncSettingsOn(String names) {
     return 'Sincronizando con $names';
   }
+
+  @override
+  String get stMirror => 'Espejo';
+
+  @override
+  String get stLine2 => 'Curva';
+
+  @override
+  String get stDots => 'Puntos';
+
+  @override
+  String get stLive => 'Visualizador en vivo';
+
+  @override
+  String get stLiveSub =>
+      'Se mueve con la música real. Android pide el permiso del micrófono para esto, pero solo se lee el sonido de TuneBox, nunca el micrófono.';
+
+  @override
+  String get stLiveDenied =>
+      'Sin el permiso, el visualizador mantiene su propia animación.';
 }

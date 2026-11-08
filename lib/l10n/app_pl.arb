@@ -729,5 +729,11 @@
   "syncNotPaired": "Drugie urządzenie już tego nie zna",
   "syncUnreachable": "Teraz nieosiągalne",
   "syncSettingsOff": "Ten sam gust na telefonie i komputerze",
-  "syncSettingsOn": "Synchronizacja z: {names}"
+  "syncSettingsOn": "Synchronizacja z: {names}",
+  "stMirror": "Lustro",
+  "stLine2": "Krzywa",
+  "stDots": "Kropki",
+  "stLive": "Wizualizacja na żywo",
+  "stLiveSub": "Porusza się z prawdziwą muzyką. Android prosi o uprawnienie do mikrofonu, ale odczytywany jest tylko dźwięk TuneBox, nigdy mikrofon.",
+  "stLiveDenied": "Bez uprawnienia wizualizacja zostaje przy własnej animacji."
 }
