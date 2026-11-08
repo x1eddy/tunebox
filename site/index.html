@@ -4,175 +4,327 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TuneBox — a music player that learns your taste</title>
-<meta name="description" content="TuneBox is a free, open-source music player for Android, Linux and iPhone. Stream from YouTube, play your own files, download for offline — and an AI that runs entirely on your device learns what you like. No account, no ads, no tracking.">
-<meta name="theme-color" content="#12101a">
+<meta name="description" content="TuneBox is a free, open-source music player for Android, Linux and iPhone. Synced lyrics, crossfade, a mix from one sentence, and an AI that learns what you like entirely on your device. No account, no ads, no tracking.">
+<meta name="theme-color" content="#0b0a12">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="canonical" href="https://tunebox.pages.dev/">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="TuneBox — a music player that learns your taste">
-<meta property="og:description" content="Free and open source. Android, Linux, iPhone. The AI runs on your device — no account, no ads, no tracking.">
+<meta property="og:description" content="Free and open source. Android, Linux, iPhone. Synced lyrics, studio sound, and an AI that runs on your device — no account, no ads, no tracking.">
 <meta property="og:image" content="https://tunebox.pages.dev/img/og.png">
 <meta property="og:url" content="https://tunebox.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
 
 <style>
   :root{
-    --bg:#fbf8ff; --surface:#ffffff; --surface2:#f1ebfa; --text:#1b1626; --muted:#625b73;
-    --accent:#b4489f; --accent2:#5b5fe0; --on-accent:#fff; --line:#e4dcf0;
-    --shadow:0 18px 50px rgba(60,30,100,.14);
+    --bg:#0b0a12; --surface:#15131f; --surface2:#1e1b2c; --text:#f3eefb; --muted:#a9a1bd;
+    --line:rgba(255,255,255,.08); --accent:#c14fa8; --accent2:#6366f1; --accent3:#22d3ee;
+    --on-accent:#fff; --shadow:0 30px 80px rgba(0,0,0,.55); --glass:rgba(17,15,26,.72);
   }
-  @media (prefers-color-scheme: dark){
+  @media (prefers-color-scheme: light){
     :root{
-      --bg:#12101a; --surface:#1b1826; --surface2:#242035; --text:#f3eefb; --muted:#aaa2bd;
-      --line:#2f2a42; --shadow:0 18px 50px rgba(0,0,0,.45);
+      --bg:#fbf8ff; --surface:#ffffff; --surface2:#f1ebfa; --text:#17121f; --muted:#5f5872;
+      --line:rgba(30,10,60,.09); --shadow:0 24px 60px rgba(60,30,100,.16); --glass:rgba(251,248,255,.78);
     }
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--text);
-    font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;
+    font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
   a{color:inherit}
-  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-  header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;text-decoration:none}
+  img{max-width:100%}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  /* ---------- top bar: turns to frosted glass once you scroll ---------- */
+  .progress{position:fixed;inset:0 0 auto 0;height:3px;z-index:60;transform-origin:0 50%;transform:scaleX(0);
+    background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3))}
+  header.top{position:sticky;top:0;z-index:50;transition:background .35s,box-shadow .35s,backdrop-filter .35s}
+  header.top.glass{background:var(--glass);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+    box-shadow:0 1px 0 var(--line)}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;text-decoration:none;letter-spacing:-.01em}
   .brand img{width:34px;height:34px;border-radius:9px}
-  nav a{margin-left:20px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.95rem}
-  nav a:hover{color:var(--text)}
-  @media(max-width:560px){nav a.hide-s{display:none}}
+  nav a{margin-left:22px;text-decoration:none;color:var(--muted);font-weight:600;font-size:.94rem;position:relative;transition:color .2s}
+  nav a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transition:transform .3s}
+  nav a:hover,nav a.on{color:var(--text)}
+  nav a.on::after{transform:scaleX(1)}
+  @media(max-width:620px){nav a.hide-s{display:none}}
 
-  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:36px 0 70px}
-  @media(max-width:860px){.hero{grid-template-columns:1fr;text-align:center;padding-top:10px}.cta,.platforms{justify-content:center}}
-  h1{font-size:clamp(2.1rem,5.4vw,3.6rem);line-height:1.08;letter-spacing:-.03em;margin:0 0 16px;font-weight:850}
-  h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .lead{font-size:1.15rem;color:var(--muted);max-width:34em;margin:0 0 26px}
-  @media(max-width:860px){.lead{margin-inline:auto}}
-  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;
-    text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:transform .15s,box-shadow .15s}
-  .btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--on-accent);border:0}
+  /* ---------- hero with a living background ---------- */
+  .hero-wrap{position:relative;isolation:isolate;overflow:hidden;margin-top:-68px;padding-top:68px}
+  .aurora{position:absolute;inset:-20% -10% 0 -10%;z-index:-1;filter:blur(70px);opacity:.75;pointer-events:none}
+  .aurora i{position:absolute;border-radius:50%;mix-blend-mode:screen}
+  .aurora i:nth-child(1){width:46vw;height:46vw;left:5%;top:5%;background:radial-gradient(circle,var(--accent),transparent 65%);animation:drift1 22s ease-in-out infinite alternate}
+  .aurora i:nth-child(2){width:40vw;height:40vw;right:0;top:0;background:radial-gradient(circle,var(--accent2),transparent 65%);animation:drift2 26s ease-in-out infinite alternate}
+  .aurora i:nth-child(3){width:34vw;height:34vw;left:35%;top:35%;background:radial-gradient(circle,var(--accent3),transparent 65%);opacity:.6;animation:drift3 30s ease-in-out infinite alternate}
+  @media (prefers-color-scheme: light){.aurora{opacity:.35}.aurora i{mix-blend-mode:multiply}}
+  @keyframes drift1{to{transform:translate(18vw,10vh) scale(1.15)}}
+  @keyframes drift2{to{transform:translate(-20vw,14vh) scale(.9)}}
+  @keyframes drift3{to{transform:translate(-12vw,-12vh) scale(1.2)}}
+  .grain{position:absolute;inset:0;z-index:-1;opacity:.05;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;min-height:min(820px,calc(100vh - 68px));padding:40px 0 80px}
+  @media(max-width:880px){.hero{grid-template-columns:1fr;text-align:center;min-height:0;padding-top:24px}.cta,.platforms{justify-content:center}}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;font-size:.88rem;font-weight:600;
+    background:var(--surface2);border:1px solid var(--line);text-decoration:none;margin-bottom:22px}
+  .badge b{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;border-radius:999px;padding:2px 10px;font-size:.8rem}
+  h1{font-size:clamp(2.4rem,5.4vw,4rem);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px;font-weight:850}
+  h1 .w{display:inline-block}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3),var(--accent));background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 8s linear infinite}
+  @keyframes shimmer{to{background-position:300% 0}}
+  .lead{font-size:1.18rem;color:var(--muted);max-width:33em;margin:0 0 30px}
+  @media(max-width:880px){.lead{margin-inline:auto}}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+  .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:999px;font-weight:700;
+    text-decoration:none;border:1px solid var(--line);background:var(--surface);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+  .btn:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--on-accent);border:0;
+    box-shadow:0 10px 40px -10px var(--accent2);animation:glow 3.5s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 14px 50px -6px var(--accent)}}
+  .btn::after{content:"";position:absolute;inset:0;transform:translateX(-120%) skewX(-20deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transition:transform .7s}
+  .btn:hover::after{transform:translateX(120%) skewX(-20deg)}
   .platforms{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
-  .pill{padding:4px 12px;border-radius:999px;background:var(--surface2);font-weight:600}
-  .shots{position:relative;height:560px;width:100%}
-  .shots img{position:absolute;height:auto;border-radius:26px;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--surface)}
-  .shots .a{width:54%;left:0;top:50px;transform:rotate(-4deg)}
-  .shots .b{width:54%;right:0;top:0;transform:rotate(3deg)}
-  @media(max-width:860px){.shots{height:470px;max-width:440px;margin:0 auto}}
+  .pill{padding:5px 13px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-weight:600}
 
-  section{padding:64px 0}
-  section h2{font-size:clamp(1.6rem,3.6vw,2.3rem);letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}
-  section .sub{color:var(--muted);margin:0 0 34px;max-width:40em}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px}
-  .card .ico{font-size:1.7rem;margin-bottom:8px}
-  .card h3{margin:0 0 6px;font-size:1.1rem}
+  /* phones that float and tilt toward the pointer */
+  .stage{perspective:1400px;height:620px;position:relative}
+  .phones{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .phone{position:absolute;width:56%;border-radius:34px;padding:9px;background:linear-gradient(160deg,#2a2638,#0d0c14);
+    box-shadow:0 40px 90px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.08)}
+  .phone img{display:block;width:100%;height:auto;border-radius:26px}
+  .phone.a{left:0;top:70px;transform:rotate(-6deg) translateZ(-40px);animation:bob 7s ease-in-out infinite}
+  .phone.b{right:0;top:0;transform:rotate(5deg) translateZ(40px);animation:bob 7s ease-in-out -3.5s infinite}
+  @keyframes bob{50%{translate:0 -14px}}
+  @media(max-width:880px){.stage{height:520px;width:100%;max-width:460px;margin:0 auto}}
+  @media(max-width:480px){.stage{height:430px}}
+
+  /* endless strip of what is new */
+  .marquee{overflow:hidden;border-block:1px solid var(--line);padding:16px 0;background:var(--surface);
+    mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+  .track{display:flex;gap:44px;width:max-content;animation:slide 38s linear infinite;font-weight:700;color:var(--muted);white-space:nowrap}
+  .track span::before{content:"✦";margin-right:14px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .marquee:hover .track{animation-play-state:paused}
+  @keyframes slide{to{transform:translateX(-50%)}}
+
+  section{padding:96px 0}
+  .eyebrow{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+  section h2{font-size:clamp(1.9rem,4.4vw,3rem);letter-spacing:-.03em;margin:0 0 12px;line-height:1.08}
+  section .sub{color:var(--muted);margin:0 0 42px;max-width:42em;font-size:1.06rem}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:24px;border-radius:24px;background:var(--surface);border:1px solid var(--line);text-align:center}
+  .stat b{display:block;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-.03em;line-height:1.1;
+    background:linear-gradient(90deg,var(--text),var(--muted));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{color:var(--muted);font-weight:600;font-size:.92rem}
+
+  /* feature cards with a spotlight under the pointer */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+  .card{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:26px;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s}
+  .card::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .35s;pointer-events:none;
+    background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--accent2) 22%,transparent),transparent 60%)}
+  .card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent2) 40%,var(--line))}
+  .card:hover::before{opacity:1}
+  .card .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;margin-bottom:14px;
+    background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 30%,transparent),color-mix(in srgb,var(--accent2) 30%,transparent))}
+  .card h3{margin:0 0 6px;font-size:1.12rem;letter-spacing:-.01em}
   .card p{margin:0;color:var(--muted)}
 
-  .gallery{display:flex;gap:18px;overflow-x:auto;padding:6px 4px 22px;scroll-snap-type:x mandatory}
-  .gallery figure{margin:0;flex:0 0 auto;scroll-snap-align:center;text-align:center}
-  .gallery img{height:480px;width:auto;max-width:none;border-radius:22px;box-shadow:var(--shadow);border:1px solid var(--line)}
-  .gallery figcaption{margin-top:10px;color:var(--muted);font-size:.92rem}
+  /* gallery: the card in the middle is the star */
+  .gallery{display:flex;gap:22px;overflow-x:auto;padding:20px max(20px,calc(50vw - 160px)) 34px;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .gallery::-webkit-scrollbar{display:none}
+  .gallery figure{margin:0;flex:0 0 auto;width:300px;scroll-snap-align:center;text-align:center;
+    transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s,filter .45s;transform:scale(.88);opacity:.55;filter:saturate(.7)}
+  .gallery figure.center{transform:scale(1);opacity:1;filter:none}
+  .gallery .phone{position:relative;width:100%;transform:none;animation:none}
+  .gallery figcaption{margin-top:14px;font-weight:700}
+  .gallery figcaption small{display:block;color:var(--muted);font-weight:500}
+  .gnav{display:flex;justify-content:center;gap:10px}
+  .gnav button{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:1.2rem;cursor:pointer;transition:transform .2s}
+  .gnav button:hover{transform:scale(1.08)}
 
+  /* news */
   .news{display:grid;gap:14px}
-  .item{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 24px;display:grid;grid-template-columns:130px 1fr;gap:6px 24px}
+  .item{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:24px 26px;display:grid;grid-template-columns:140px 1fr;gap:6px 26px}
   @media(max-width:620px){.item{grid-template-columns:1fr}}
   .item .when{color:var(--muted);font-size:.9rem;font-weight:600}
   .item .when b{display:inline-block;margin-bottom:4px;padding:2px 11px;border-radius:999px;background:var(--surface2);color:var(--text)}
   .item .when .new{background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--on-accent)}
-  .item h3{margin:0 0 6px;font-size:1.12rem}
+  .item h3{margin:0 0 6px;font-size:1.14rem}
   .item p,.item ul{margin:0;color:var(--muted)}
   .item ul{padding-left:1.1em}
   .item li{margin:.2em 0}
-  .more{margin-top:18px}
+  .more{margin-top:20px}
 
-  .how{background:var(--surface2);border-radius:28px;padding:34px}
-  .how ol{margin:0;padding-left:1.2em}
-  .how li{margin:.5em 0}
-  .how b{color:var(--text)}
+  /* timeline */
+  .how{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:32px;padding:44px}
+  @media(max-width:620px){.how{padding:28px 22px}}
+  .steps{position:relative;list-style:none;margin:30px 0 0;padding:0 0 0 42px}
+  .steps::before{content:"";position:absolute;left:13px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .steps .line{position:absolute;left:13px;top:6px;width:2px;height:calc(100% - 12px);transform-origin:top;transform:scaleY(var(--p,0));
+    background:linear-gradient(var(--accent),var(--accent2),var(--accent3))}
+  .steps li{position:relative;margin:0 0 26px;color:var(--muted)}
+  .steps li:last-child{margin-bottom:0}
+  .steps li::before{content:attr(data-n);position:absolute;left:-42px;top:-2px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+    font-size:.8rem;font-weight:800;background:var(--surface2);border:1px solid var(--line);color:var(--text);transition:background .4s,color .4s}
+  .steps li.in::before{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+  .steps b{color:var(--text)}
 
-  .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  /* download */
+  .dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}
   .dl .card h3{display:flex;align-items:center;gap:8px}
-  .dl .card .btn{margin-top:14px}
-  .dl small{display:block;color:var(--muted);margin-top:10px}
+  .dl .card .btn{margin-top:16px}
+  .dl small{display:block;color:var(--muted);margin-top:12px}
   code{background:var(--surface2);padding:2px 7px;border-radius:7px;font-size:.9em}
-  details{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin:10px 0}
+  details{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 20px;margin:10px 0;transition:border-color .3s}
+  details[open]{border-color:color-mix(in srgb,var(--accent2) 40%,var(--line))}
   summary{cursor:pointer;font-weight:700}
   details p{color:var(--muted);margin:.6em 0 0}
 
-  footer{padding:40px 0 60px;color:var(--muted);font-size:.92rem;border-top:1px solid var(--line)}
+  /* final call */
+  .final{position:relative;overflow:hidden;text-align:center;border-radius:36px;padding:72px 24px;border:1px solid var(--line);
+    background:radial-gradient(600px circle at 20% 0%,color-mix(in srgb,var(--accent) 35%,transparent),transparent 60%),
+               radial-gradient(600px circle at 80% 100%,color-mix(in srgb,var(--accent2) 35%,transparent),transparent 60%),var(--surface)}
+  .final h2{margin-bottom:14px}
+  .final .cta{justify-content:center;margin:26px 0 0}
+
+  footer{padding:44px 0 64px;color:var(--muted);font-size:.92rem;border-top:1px solid var(--line);margin-top:40px}
   footer .row{display:flex;flex-wrap:wrap;gap:18px 30px;justify-content:space-between}
   footer a{color:var(--muted)}
-  .skip{position:absolute;left:-999px}.skip:focus{left:10px;top:10px;background:var(--surface);padding:8px 12px;border-radius:8px;z-index:9}
-  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}.btn{transition:none}}
+  .skip{position:absolute;left:-999px}.skip:focus{left:10px;top:10px;background:var(--surface);padding:8px 12px;border-radius:8px;z-index:99}
+
+  /* ---------- scroll reveals (only once JS is running, so no-JS shows everything) ---------- */
+  .js [data-reveal]{opacity:0;transform:translateY(34px);filter:blur(8px);
+    transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1),filter .9s;transition-delay:calc(var(--i,0) * 80ms)}
+  .js [data-reveal="left"]{transform:translateX(-40px)}
+  .js [data-reveal="scale"]{transform:scale(.92)}
+  .js [data-reveal].in{opacity:1;transform:none;filter:none}
+  .js h1 .w{opacity:0;transform:translateY(.6em);filter:blur(6px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1),filter .8s;transition-delay:calc(var(--i) * 70ms + 120ms)}
+  .js.ready h1 .w{opacity:1;transform:none;filter:none}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none !important;transition:none !important}
+    .js [data-reveal],.js h1 .w{opacity:1 !important;transform:none !important;filter:none !important}
+    .phone.a{transform:rotate(-6deg)}.phone.b{transform:rotate(5deg)}
+  }
 </style>
+<script>
+  // Effects only switch on once JS runs; if the effects script below never
+  // finishes, the page falls back to showing everything.
+  document.documentElement.classList.add('js');
+  setTimeout(function () { if (!window.__tbFx) document.documentElement.classList.remove('js'); }, 3500);
+</script>
+<noscript><style>[data-reveal],h1 .w{opacity:1!important;transform:none!important;filter:none!important}</style></noscript>
 </head>
 <body>
+<div class="progress" id="progress"></div>
 <a class="skip" href="#download">Skip to downloads</a>
-<div class="wrap">
-  <header class="top">
+
+<header class="top" id="top">
+  <div class="wrap bar">
     <a class="brand" href="#"><img src="img/icon-256.png" alt="" width="34" height="34">TuneBox</a>
     <nav>
       <a class="hide-s" href="#features">Features</a>
+      <a class="hide-s" href="#screens">Screens</a>
       <a class="hide-s" href="#news">News</a>
-      <a class="hide-s" href="#how">How it works</a>
       <a href="#download">Download</a>
       <a href="https://github.com/x1eddy/tunebox">GitHub</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-  <div class="hero">
-    <div>
-      <h1>A music player that <em>learns your taste</em> — on your device.</h1>
-      <p class="lead">Stream from YouTube, play your own files, download for offline. Swipe through songs to teach it what you like — all the learning happens on your phone. No account, no ads, no tracking.</p>
-      <div class="cta">
-        <a class="btn primary" id="cta-main" href="#download">Download TuneBox</a>
-        <a class="btn" href="https://github.com/x1eddy/tunebox">★ Star on GitHub</a>
+<div class="hero-wrap">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <a class="badge" href="#news" data-reveal><b>1.0</b> Synced lyrics, studio sound &amp; more →</a>
+        <h1 id="headline">A music player that <em>learns your taste</em> — on your device.</h1>
+        <p class="lead" data-reveal style="--i:6">Stream from YouTube, play your own files, download for offline. Lyrics that follow along, a mix from one sentence, and an AI that learns what you like without ever leaving your phone. No account, no ads, no tracking.</p>
+        <div class="cta" data-reveal style="--i:8">
+          <a class="btn primary" href="#download">Download TuneBox</a>
+          <a class="btn" href="https://github.com/x1eddy/tunebox">★ Star on GitHub</a>
+        </div>
+        <div class="platforms" data-reveal style="--i:10"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span><span class="pill" id="count-pill" hidden></span></div>
       </div>
-      <div class="platforms"><span class="pill">Android 7+</span><span class="pill">Linux</span><span class="pill">iPhone</span><span class="pill">Free &amp; open source</span><span class="pill" id="count-pill" hidden></span></div>
-    </div>
-    <div class="shots" aria-hidden="true">
-      <img class="a" src="img/taste.png" alt="" width="420" height="840" loading="eager">
-      <img class="b" src="img/home.png" alt="" width="420" height="840" loading="eager">
+      <div class="stage" id="stage" aria-hidden="true" data-reveal="scale" style="--i:4">
+        <div class="phones" id="phones">
+          <div class="phone a" id="phoneA"><img src="img/home.webp" alt="" width="560" height="920" fetchpriority="high"></div>
+          <div class="phone b" id="phoneB"><img src="img/vinyl.webp" alt="" width="560" height="920" fetchpriority="high"></div>
+        </div>
+      </div>
     </div>
   </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="track">
+    <span>Synced lyrics</span><span>Crossfade &amp; gapless</span><span>Describe a mix</span><span>Rewind any time</span><span>Taste Galaxy</span><span>Blend two tastes</span><span>Vinyl &amp; cassette players</span><span>Synced devices</span><span>85 languages</span><span>Offline downloads</span><span>No account</span>
+    <span>Synced lyrics</span><span>Crossfade &amp; gapless</span><span>Describe a mix</span><span>Rewind any time</span><span>Taste Galaxy</span><span>Blend two tastes</span><span>Vinyl &amp; cassette players</span><span>Synced devices</span><span>85 languages</span><span>Offline downloads</span><span>No account</span>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="stats" aria-label="TuneBox in numbers">
+    <div class="stats">
+      <div class="stat" data-reveal style="--i:0"><b data-count="85">85</b><span>languages</span></div>
+      <div class="stat" data-reveal style="--i:1"><b data-count="5">5</b><span>player styles</span></div>
+      <div class="stat" data-reveal style="--i:2"><b data-count="0">0</b><span>accounts, ads or trackers</span></div>
+      <div class="stat" data-reveal style="--i:3"><b id="stat-dl">3</b><span id="stat-dl-label">platforms</span></div>
+    </div>
+  </section>
 
   <section id="features">
-    <h2>Built to feel like the music apps you know</h2>
-    <p class="sub">Without the account, the subscription or the company reading over your shoulder.</p>
+    <span class="eyebrow" data-reveal>Features</span>
+    <h2 data-reveal>Everything the big apps do.<br>None of what they take.</h2>
+    <p class="sub" data-reveal>Without the account, the subscription or the company reading over your shoulder.</p>
     <div class="grid">
-      <div class="card"><div class="ico">🧠</div><h3>It learns what you like</h3><p>Plays, skips, likes and a swipe-to-rate training round teach an on-device model. See exactly what it thinks of you — and change its mind.</p></div>
-      <div class="card"><div class="ico">▶️</div><h3>YouTube and your own music</h3><p>Search and stream YouTube Music, or point TuneBox at a folder. Background playback, queue, shuffle by taste, radio when the queue ends.</p></div>
-      <div class="card"><div class="ico">⬇️</div><h3>Offline when you want it</h3><p>Hit the heart and the song is saved. Wi-Fi-only, a storage budget and a data saver keep it from eating your plan.</p></div>
-      <div class="card"><div class="ico">👥</div><h3>Profiles for everyone</h3><p>Each listener gets their own library, likes and taste. Switch with one tap — no accounts involved.</p></div>
-      <div class="card"><div class="ico">🌍</div><h3>85 languages</h3><p>Including right-to-left ones, with a searchable language picker. Text size, high contrast and Reduce motion are built in.</p></div>
-      <div class="card"><div class="ico">🎤</div><h3>Lyrics that follow along</h3><p>Synced, karaoke-style lyrics. Tap a line to jump there. Saved for offline.</p></div>
-      <div class="card"><div class="ico">💬</div><h3>Describe a mix</h3><p>"Rainy Sunday 2000s rock, no Linkin Park, getting faster" becomes a playlist. Read on your phone, never in a cloud.</p></div>
-      <div class="card"><div class="ico">🎛️</div><h3>Studio sound</h3><p>Crossfade, gapless, loudness levelling, an equaliser that remembers each pair of headphones, and a sleep timer that fades out.</p></div>
-      <div class="card"><div class="ico">🌌</div><h3>Rewind, Galaxy, Blend</h3><p>Your listening as stories any time, your artists as a star map, and one fair queue from two tastes.</p></div>
-      <div class="card"><div class="ico">🎨</div><h3>Make it yours</h3><p>Vinyl and cassette players, themes, fonts, your own tabs and Home layout. Share your look as a code.</p></div>
-      <div class="card"><div class="ico">🔁</div><h3>Move your taste anywhere</h3><p>Send it to another device over Wi-Fi with a code, or via a file or plain text. Merging twice never doubles anything.</p></div>
+      <div class="card" data-reveal style="--i:0"><div class="ico">🎤</div><h3>Lyrics that follow along</h3><p>Synced, karaoke-style lyrics. The line being sung lights up; tap any line to jump there. Saved for offline.</p></div>
+      <div class="card" data-reveal style="--i:1"><div class="ico">💬</div><h3>Describe a mix</h3><p>"Rainy Sunday 2000s rock, no Linkin Park, getting faster" becomes a playlist. Read on your phone, never in a cloud.</p></div>
+      <div class="card" data-reveal style="--i:2"><div class="ico">🎛️</div><h3>Studio sound</h3><p>Crossfade, gapless, loudness levelling, an equaliser that remembers each pair of headphones, and a sleep timer that fades out.</p></div>
+      <div class="card" data-reveal style="--i:0"><div class="ico">🧠</div><h3>It learns what you like</h3><p>Plays, skips, likes and a swipe-to-rate round teach an on-device model. See exactly what it thinks of you, and change its mind.</p></div>
+      <div class="card" data-reveal style="--i:1"><div class="ico">🌌</div><h3>Rewind, Galaxy, Blend</h3><p>Your listening as stories any time, your artists as a star map, and one fair queue from two tastes.</p></div>
+      <div class="card" data-reveal style="--i:2"><div class="ico">🎨</div><h3>Make it yours</h3><p>Vinyl and cassette players, themes, fonts, your own tabs and Home layout. Share your look as a code.</p></div>
+      <div class="card" data-reveal style="--i:0"><div class="ico">🔁</div><h3>Synced devices</h3><p>Pair your phone and computer once; every profile stays in step by itself on your Wi-Fi. Encrypted, no server.</p></div>
+      <div class="card" data-reveal style="--i:1"><div class="ico">▶️</div><h3>YouTube and your own music</h3><p>Stream YouTube Music or point TuneBox at a folder. Downloads for offline, Wi-Fi only if you want.</p></div>
+      <div class="card" data-reveal style="--i:2"><div class="ico">👥</div><h3>Profiles for everyone</h3><p>Each listener gets their own library, likes and taste. 85 languages, text size, high contrast and Reduce motion built in.</p></div>
     </div>
   </section>
 
   <section id="screens">
-    <h2>See it</h2>
-    <p class="sub">Home shelves built from your listening, search that answers as you type, and a page that shows what the AI learned.</p>
-    <div class="gallery">
-      <figure><img src="img/home.png" alt="TuneBox home screen with quick picks and shelves" width="420" height="840" loading="lazy"><figcaption>Home</figcaption></figure>
-      <figure><img src="img/search.png" alt="TuneBox search with results" width="420" height="840" loading="lazy"><figcaption>Search</figcaption></figure>
-      <figure><img src="img/taste.png" alt="TuneBox taste page showing confidence and controls" width="420" height="840" loading="lazy"><figcaption>Your taste</figcaption></figure>
-      <figure><img src="img/desktop.png" alt="TuneBox on Linux desktop" width="520" height="866" loading="lazy"><figcaption>Linux desktop</figcaption></figure>
-    </div>
+    <span class="eyebrow" data-reveal>Screens</span>
+    <h2 data-reveal>See it in action</h2>
+    <p class="sub" data-reveal>Swipe through. Every screen is from the real app.</p>
   </section>
+</main>
+<div class="gallery" id="gallery" data-reveal>
+  <figure><div class="phone"><img src="img/home.webp" alt="Home with quick picks and shelves" width="560" height="920" loading="lazy"></div><figcaption>Home<small>Shelves built from your listening</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/lyrics.webp" alt="Synced lyrics with the current line highlighted" width="560" height="920" loading="lazy"></div><figcaption>Synced lyrics<small>Karaoke style, tap to jump</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/vinyl.webp" alt="The vinyl player style" width="560" height="920" loading="lazy"></div><figcaption>Vinyl player<small>One of five player styles</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/mix.webp" alt="Describe a mix: a playlist from one sentence" width="560" height="920" loading="lazy"></div><figcaption>Describe a mix<small>One sentence, one playlist</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/rewind.webp" alt="Rewind: minutes listened this month" width="560" height="920" loading="lazy"></div><figcaption>Rewind<small>Your listening as stories</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/galaxy.webp" alt="Taste Galaxy: artists as a star map" width="560" height="920" loading="lazy"></div><figcaption>Taste Galaxy<small>Your artists as stars</small></figcaption></figure>
+  <figure><div class="phone"><img src="img/studio.webp" alt="Appearance studio with themes, fonts and player styles" width="560" height="920" loading="lazy"></div><figcaption>Appearance studio<small>Make it look like yours</small></figcaption></figure>
+</div>
+<div class="gnav" data-reveal><button type="button" id="gprev" aria-label="Previous screen">←</button><button type="button" id="gnext" aria-label="Next screen">→</button></div>
 
+<div class="wrap">
   <section id="news">
-    <h2>News</h2>
-    <p class="sub">What changed lately. Every update installs over the old one and keeps your library and taste.</p>
+    <span class="eyebrow" data-reveal>News</span>
+    <h2 data-reveal>What's new</h2>
+    <p class="sub" data-reveal>Every update installs over the old one and keeps your library and taste.</p>
     <div class="news">
-      <article class="item">
+      <article class="item" data-reveal style="--i:0">
         <div class="when"><b class="new">New</b><br>1.0.1 · 8 Nov 2026</div>
         <div><h3>Sync fix</h3>
           <ul>
@@ -180,7 +332,7 @@
             <li>Existing pairings keep working; no need to pair again.</li>
           </ul></div>
       </article>
-      <article class="item">
+      <article class="item" data-reveal style="--i:1">
         <div class="when"><b>1.0</b><br>8 Nov 2026</div>
         <div><h3>TuneBox 1.0: the big one</h3>
           <ul>
@@ -194,124 +346,270 @@
             <li>A home-screen widget, app shortcuts, and media controls on Linux.</li>
           </ul></div>
       </article>
-      <article class="item">
-        <div class="when"><b>0.9.1</b><br>24 Oct 2026</div>
-        <div><h3>Small fixes</h3>
-          <ul>
-            <li>Adding a song to a playlist now says so, instead of closing without a word.</li>
-            <li>A video YouTube refuses for good (age-restricted, private, removed) is no longer retried on every launch.</li>
-          </ul></div>
-      </article>
-      <article class="item">
-        <div class="when"><b>0.9.0</b><br>24 Oct 2026</div>
+      <article class="item" data-reveal style="--i:2">
+        <div class="when"><b>0.9</b><br>24 Oct 2026</div>
         <div><h3>The polish pass</h3>
-          <ul>
-            <li>Play/pause morphs and shows a loading ring while a song starts.</li>
-            <li>Seek bar with a time bubble; mini-player swipes for next and previous.</li>
-            <li>Queue and playlists: undo for remove and clear, rename, delete, swipe to remove.</li>
-            <li>Loading placeholders instead of empty screens, and recent searches that stick.</li>
-            <li>On big screens: a side navigation rail and keyboard shortcuts.</li>
-          </ul></div>
+          <p>Morphing play button, seek bubble, undo everywhere, loading placeholders and keyboard shortcuts on big screens.</p></div>
       </article>
-      <article class="item">
-        <div class="when"><b>0.7.0</b><br>3 Oct 2026</div>
+      <article class="item" data-reveal style="--i:3">
+        <div class="when"><b>0.7</b><br>3 Oct 2026</div>
         <div><h3>85 languages, smoother and faster</h3>
           <p>A searchable language picker, an iOS-style feel (turn it off with Reduce motion), instant search, and a lighter footprint on phones with little memory.</p></div>
       </article>
-      <article class="item">
-        <div class="when"><b>0.6.0</b><br>1 Oct 2026</div>
-        <div><h3>Profiles and a taste transfer that works</h3>
-          <p>Every listener gets their own library and taste. The training round opens faster, songs stream without skipping, and moving your taste to another device is safe to repeat.</p></div>
-      </article>
     </div>
-    <p class="more"><a href="https://github.com/x1eddy/tunebox/releases">Read every release note on GitHub →</a></p>
+    <p class="more" data-reveal><a href="https://github.com/x1eddy/tunebox/releases">Read every release note on GitHub →</a></p>
   </section>
 
   <section id="how">
-    <div class="how">
+    <div class="how" data-reveal="scale">
+      <span class="eyebrow">Privacy</span>
       <h2>How it works — and what stays private</h2>
-      <ol>
-        <li><b>You listen.</b> Every finished play, skip and like becomes a small signal about artists, genres and decades.</li>
-        <li><b>It scores songs locally.</b> A transparent weighting model on your device ranks what to show you — no cloud, no account.</li>
-        <li><b>You steer.</b> Rate songs in a training round, boost or block artists, freeze learning, or reset everything.</li>
-        <li><b>Nothing leaves the device.</b> The only network traffic is talking to YouTube for songs. No analytics, no ads, no sign-in.</li>
+      <ol class="steps" id="steps">
+        <span class="line" aria-hidden="true"></span>
+        <li data-n="1"><b>You listen.</b> Every finished play, skip and like becomes a small signal about artists, genres and decades.</li>
+        <li data-n="2"><b>It scores songs locally.</b> A transparent weighting model on your device ranks what to show you. No cloud, no account.</li>
+        <li data-n="3"><b>You steer.</b> Rate songs in a training round, boost or block artists, freeze learning, or reset everything.</li>
+        <li data-n="4"><b>Nothing leaves the device.</b> The only network traffic is talking to YouTube for songs, LRCLIB for lyrics, and your own paired devices. No analytics, no ads, no sign-in.</li>
       </ol>
     </div>
   </section>
 
   <section id="download">
-    <h2>Download</h2>
-    <p class="sub">Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
+    <span class="eyebrow" data-reveal>Download</span>
+    <h2 data-reveal>Get TuneBox</h2>
+    <p class="sub" data-reveal>Latest version: <b id="ver">…</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
     <div class="dl">
-      <div class="card"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
+      <div class="card" data-reveal style="--i:0"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
         <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/latest">Download APK</a>
         <small>Open it on the phone and allow installing from that app once. Signed with a real release key; after that the app updates itself.</small></div>
-      <div class="card"><h3>🐧 Linux</h3><p>x86_64. Installs into your home folder, no root.</p>
+      <div class="card" data-reveal style="--i:1"><h3>🐧 Linux</h3><p>x86_64. Installs into your home folder, no root.</p>
         <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/latest">Download .tar.gz</a>
         <small>Extract, run <code>./install.sh</code>. Needs <code>libmpv</code> (<code>sudo apt install libmpv2</code>).</small></div>
-      <div class="card"><h3> iPhone</h3><p>iOS 15+. Unsigned build you sign with your own Apple ID.</p>
+      <div class="card" data-reveal style="--i:2"><h3> iPhone</h3><p>iOS 15+. Unsigned build you sign with your own Apple ID.</p>
         <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/latest">Download .ipa</a>
         <small>Install with <a href="https://sidestore.io">SideStore</a> or <a href="https://altstore.io">AltStore</a>; a free Apple ID needs a refresh every 7 days (they do it for you).</small></div>
     </div>
 
-    <h2 style="margin-top:48px">Questions</h2>
+    <h2 style="margin-top:64px" data-reveal>Questions</h2>
+    <div data-reveal>
     <details><summary>Is it safe? My phone shows a warning.</summary><p>Android's Play Protect warns about any app it hasn't seen before — that is "unknown", not "malicious". The app asks for very little: internet, notifications, playback service and (only if you import music) audio files. No contacts, location, camera or SMS. The code is public on GitHub.</p></details>
     <details><summary>Is this official? Is it legal?</summary><p>TuneBox is an independent, unofficial project and is not affiliated with or endorsed by YouTube or Google. It is a personal-use player; please respect the terms of the services you use.</p></details>
     <details><summary>Does it cost anything or show ads?</summary><p>No. It is free and open source under the MIT licence, with no ads, no accounts and no analytics.</p></details>
     <details><summary>Something broke — where do I report it?</summary><p>Open an issue on <a href="https://github.com/x1eddy/tunebox/issues">GitHub</a>. Say which device and version (Settings → About) and what you tapped.</p></details>
-  </section>
-  </main>
-
-  <footer>
-    <div class="row">
-      <div>© TuneBox · MIT licence · unofficial, not affiliated with YouTube or Google</div>
-      <div><a href="https://github.com/x1eddy/tunebox">Source</a> · <a href="https://github.com/x1eddy/tunebox/releases">All releases</a> · <a href="https://github.com/x1eddy/tunebox/issues">Report a bug</a></div>
     </div>
-  </footer>
+  </section>
+
+  <section>
+    <div class="final" data-reveal="scale">
+      <h2>Your music. Your taste.<br>Your device.</h2>
+      <p class="sub" style="margin:0 auto">Free and open source, on Android, Linux and iPhone.</p>
+      <div class="cta"><a class="btn primary" href="#download">Download TuneBox</a><a class="btn" href="https://github.com/x1eddy/tunebox">View the source</a></div>
+    </div>
+  </section>
 </div>
 
-<script>
-  // Always point the buttons at the newest release; the fallback links above keep working without JS.
-  var API = 'https://api.github.com/repos/x1eddy/tunebox/releases';
-  fetch(API + '/latest')
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-    .then(function (rel) {
-      document.getElementById('ver').textContent = rel.tag_name;
-      var map = { 'dl-android': /\.apk$/i, 'dl-linux': /\.tar\.gz$/i, 'dl-ios': /\.ipa$/i };
-      Object.keys(map).forEach(function (id) {
-        var a = (rel.assets || []).filter(function (x) { return map[id].test(x.name); })[0];
-        if (a) document.getElementById(id).href = a.browser_download_url;
-      });
-    })
-    .catch(function () { document.getElementById('ver').textContent = 'see Releases'; });
+<footer>
+  <div class="wrap row">
+    <div>© TuneBox · MIT licence · unofficial, not affiliated with YouTube or Google</div>
+    <div><a href="https://github.com/x1eddy/tunebox">Source</a> · <a href="https://github.com/x1eddy/tunebox/releases">All releases</a> · <a href="https://github.com/x1eddy/tunebox/issues">Report a bug</a></div>
+  </div>
+</footer>
 
-  // Total downloads: GitHub already counts every release file, so nothing here tracks anyone.
-  // Stays hidden if the request fails or is rate limited.
-  (function () {
-    function show(n) {
-      var txt = n.toLocaleString();
-      var pill = document.getElementById('count-pill');
-      pill.textContent = txt + ' downloads'; pill.hidden = false;
-      document.getElementById('count-n').textContent = txt;
-      document.getElementById('count-line').hidden = false;
-    }
-    var cached = null;
-    try { cached = parseInt(sessionStorage.getItem('tb-downloads'), 10); } catch (e) {}
-    if (cached > 0) { show(cached); return; }
-    fetch(API + '?per_page=100')
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-      .then(function (list) {
-        var n = 0;
-        list.forEach(function (rel) {
-          (rel.assets || []).forEach(function (a) { n += a.download_count || 0; });
+<script>
+(function () {
+  var root = document.documentElement;
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = window.matchMedia('(pointer: fine)').matches;
+
+  // Headline: one word at a time.
+  var h1 = document.getElementById('headline');
+  var i = 0;
+  (function wrap(node) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+      if (n.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function (part) {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+          var s = document.createElement('span');
+          s.className = 'w'; s.style.setProperty('--i', i++); s.textContent = part;
+          frag.appendChild(s);
         });
-        if (n > 0) {
-          show(n);
-          try { sessionStorage.setItem('tb-downloads', String(n)); } catch (e) {}
-        }
-      })
-      .catch(function () {});
-  })();
+        n.parentNode.replaceChild(frag, n);
+      } else if (n.nodeType === 1 && n.tagName === 'EM') {
+        n.classList.add('w'); n.style.setProperty('--i', i++);
+      }
+    });
+  })(h1);
+  requestAnimationFrame(function () { requestAnimationFrame(function () { root.classList.add('ready'); }); });
+
+  // Reveal on scroll.
+  var revealIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealIo.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('[data-reveal]').forEach(function (el) { revealIo.observe(el); });
+
+  // Header glass, progress bar, parallax: one rAF per frame, only while scrolling.
+  var header = document.getElementById('top');
+  var bar = document.getElementById('progress');
+  var phoneA = document.getElementById('phoneA'), phoneB = document.getElementById('phoneB');
+  var ticking = false;
+  function onScroll() {
+    var y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    header.classList.toggle('glass', y > 12);
+    bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+    if (!calm && y < innerHeight * 1.2) {
+      phoneA.style.translate = '0 ' + (y * 0.12) + 'px';
+      phoneB.style.translate = '0 ' + (y * -0.06) + 'px';
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  onScroll();
+
+  // The phones lean toward the pointer (desktop only).
+  var stage = document.getElementById('stage'), phones = document.getElementById('phones');
+  if (fine && !calm) {
+    stage.addEventListener('pointermove', function (e) {
+      var r = stage.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      phones.style.transform = 'rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 10) + 'deg)';
+    });
+    stage.addEventListener('pointerleave', function () { phones.style.transform = ''; });
+  }
+
+  // Spotlight that follows the pointer inside cards.
+  if (fine) {
+    document.querySelectorAll('.card').forEach(function (c) {
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect();
+        c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+  }
+
+  // Nav highlights the section you are reading.
+  var links = {};
+  document.querySelectorAll('nav a[href^="#"]').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+  var navIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var a = links[e.target.id];
+      if (a) a.classList.toggle('on', e.isIntersecting);
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  Object.keys(links).forEach(function (id) { var s = document.getElementById(id); if (s) navIo.observe(s); });
+
+  // Numbers count up when they come into view.
+  function countUp(el, to) {
+    if (calm || to < 2) { el.textContent = to.toLocaleString(); return; }
+    var start = null, dur = 1300;
+    function step(t) {
+      if (!start) start = t;
+      var p = Math.min(1, (t - start) / dur), eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(to * eased).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var countIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      countUp(e.target, parseInt(e.target.getAttribute('data-count'), 10) || 0);
+      countIo.unobserve(e.target);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('[data-count]').forEach(function (el) { el.textContent = '0'; countIo.observe(el); });
+
+  // Gallery: the screen in the middle is the star; arrows step through.
+  var gallery = document.getElementById('gallery');
+  var figs = gallery.querySelectorAll('figure');
+  function centre() {
+    var mid = gallery.scrollLeft + gallery.clientWidth / 2, best = null, bestD = 1e9;
+    figs.forEach(function (f) {
+      var d = Math.abs(f.offsetLeft + f.offsetWidth / 2 - mid);
+      if (d < bestD) { bestD = d; best = f; }
+    });
+    figs.forEach(function (f) { f.classList.toggle('center', f === best); });
+    return best;
+  }
+  var gTick = false;
+  gallery.addEventListener('scroll', function () {
+    if (!gTick) { gTick = true; requestAnimationFrame(function () { centre(); gTick = false; }); }
+  }, { passive: true });
+  function go(dir) {
+    var c = centre(), list = Array.prototype.slice.call(figs), n = list[list.indexOf(c) + dir];
+    if (n) gallery.scrollTo({ left: n.offsetLeft - (gallery.clientWidth - n.offsetWidth) / 2, behavior: calm ? 'auto' : 'smooth' });
+  }
+  document.getElementById('gprev').addEventListener('click', function () { go(-1); });
+  document.getElementById('gnext').addEventListener('click', function () { go(1); });
+  window.addEventListener('load', function () { figs[2] && gallery.scrollTo({ left: figs[2].offsetLeft - (gallery.clientWidth - figs[2].offsetWidth) / 2 }); centre(); });
+  centre();
+  window.__tbFx = true;
+
+  // Timeline line grows with your scroll; dots light up as you pass them.
+  var steps = document.getElementById('steps');
+  var stepItems = steps.querySelectorAll('li');
+  function onSteps() {
+    var r = steps.getBoundingClientRect();
+    var p = Math.max(0, Math.min(1, (innerHeight * 0.75 - r.top) / r.height));
+    steps.style.setProperty('--p', calm ? 1 : p);
+    stepItems.forEach(function (li) {
+      li.classList.toggle('in', calm || li.getBoundingClientRect().top < innerHeight * 0.75);
+    });
+  }
+  window.addEventListener('scroll', function () { requestAnimationFrame(onSteps); }, { passive: true });
+  onSteps();
+})();
+
+// Always point the buttons at the newest release; the links above keep working without JS.
+var API = 'https://api.github.com/repos/x1eddy/tunebox/releases';
+fetch(API + '/latest')
+  .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+  .then(function (rel) {
+    document.getElementById('ver').textContent = rel.tag_name;
+    var map = { 'dl-android': /\.apk$/i, 'dl-linux': /\.tar\.gz$/i, 'dl-ios': /\.ipa$/i };
+    Object.keys(map).forEach(function (id) {
+      var a = (rel.assets || []).filter(function (x) { return map[id].test(x.name); })[0];
+      if (a) document.getElementById(id).href = a.browser_download_url;
+    });
+  })
+  .catch(function () { document.getElementById('ver').textContent = 'see Releases'; });
+
+// Total downloads: GitHub already counts every release file, so nothing here tracks anyone.
+// Stays as "3 platforms" if the request fails or is rate limited.
+(function () {
+  function show(n) {
+    var txt = n.toLocaleString();
+    var pill = document.getElementById('count-pill');
+    pill.textContent = txt + ' downloads'; pill.hidden = false;
+    document.getElementById('count-n').textContent = txt;
+    document.getElementById('count-line').hidden = false;
+    var s = document.getElementById('stat-dl');
+    s.setAttribute('data-count', n); s.textContent = txt;
+    document.getElementById('stat-dl-label').textContent = 'downloads';
+  }
+  var cached = null;
+  try { cached = parseInt(sessionStorage.getItem('tb-downloads'), 10); } catch (e) {}
+  if (cached > 0) { show(cached); return; }
+  fetch(API + '?per_page=100')
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (list) {
+      var n = 0;
+      list.forEach(function (rel) {
+        (rel.assets || []).forEach(function (a) { n += a.download_count || 0; });
+      });
+      if (n > 0) {
+        show(n);
+        try { sessionStorage.setItem('tb-downloads', String(n)); } catch (e) {}
+      }
+    })
+    .catch(function () {});
+})();
 </script>
 </body>
 </html>
