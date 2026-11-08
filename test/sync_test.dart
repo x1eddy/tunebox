@@ -15,8 +15,9 @@ class FakeDevice {
       hooks: SyncHooks(
         loadPeers: () => peers,
         savePeers: (p) async => peers = p,
-        exportTaste: () async => taste,
-        importTaste: (t) async {
+        profiles: () => const [RemoteProfile('default', 'Me', 0)],
+        exportTaste: (_) async => taste,
+        importTaste: (_, t) async {
           received.add(t);
           // merge songs by id, like the real backup merge
           final mine = {

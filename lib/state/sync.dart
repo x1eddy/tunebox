@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/db/database.dart';
 import '../data/services/backup_service.dart';
 import '../data/services/sync_crypto.dart';
 import '../data/services/sync_service.dart';
@@ -32,11 +33,39 @@ String deviceLabel() {
   return Platform.operatingSystem;
 }
 
-/// The taste-sync service for the active profile. Pairings belong to a
-/// profile: your phone pairs with your laptop profile, not your brother's.
+/// The taste-sync service. Pairings belong to the device; every profile on
+/// it travels, each into the profile with the same id on the other side.
 final syncServiceProvider = Provider<SyncService>((ref) {
   final prefs = ref.read(prefsProvider);
-  final key = profileKey('syncPeers');
+  final profiles = ref.read(profilesProvider);
+  const key = 'syncPeers';
+
+  // 1.0 stored pairings per profile; the first one found becomes the
+  // device's.
+  if (prefs.getString(key) == null) {
+    for (final k in prefs.getKeys()) {
+      if (k.startsWith('$key:')) {
+        prefs.setString(key, prefs.getString(k)!);
+        break;
+      }
+    }
+  }
+
+  /// Runs [body] on a profile's database: the open one if it is active,
+  /// otherwise a short-lived second connection.
+  Future<T> withProfileDb<T>(
+    String id,
+    Future<T> Function(AppDatabase db) body,
+  ) async {
+    if (id == profiles.active.id) return body(ref.read(dbProvider));
+    final db = AppDatabase.named(ProfileController.dbName(id));
+    try {
+      return await body(db);
+    } finally {
+      await db.close();
+    }
+  }
+
   final service = SyncService(
     deviceId: _deviceId(prefs),
     deviceName: deviceLabel(),
@@ -55,9 +84,20 @@ final syncServiceProvider = Provider<SyncService>((ref) {
       },
       savePeers: (peers) =>
           prefs.setString(key, jsonEncode([for (final p in peers) p.toJson()])),
-      exportTaste: () => BackupService(ref.read(dbProvider)).buildBackup(),
-      importTaste: (t) async {
-        await BackupService(ref.read(dbProvider)).importBackup(t);
+      profiles: () => [
+        for (final p in profiles.profiles)
+          RemoteProfile(p.id, p.name, p.renamedAt),
+      ],
+      exportTaste: (id) => withProfileDb(
+        id ?? profiles.active.id,
+        (db) => BackupService(db).buildBackup(),
+      ),
+      importTaste: (remote, taste) async {
+        await profiles.adoptRemote(remote.id, remote.name, remote.renamedAt);
+        await withProfileDb(
+          remote.id,
+          (db) => BackupService(db).importBackup(taste),
+        );
       },
     ),
   );

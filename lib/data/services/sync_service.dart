@@ -75,22 +75,40 @@ class SyncPeer {
 
 /// Where the app keeps peers and hands over its taste. Kept as callbacks so
 /// the service runs (and is tested) without Flutter or a real database.
+/// A profile as the other device describes it.
+@immutable
+class RemoteProfile {
+  const RemoteProfile(this.id, this.name, this.renamedAt);
+  final String id;
+  final String name;
+  final int renamedAt;
+
+  Map<String, Object?> toJson() => {'id': id, 'name': name, 'renamedAt': renamedAt};
+}
+
 class SyncHooks {
   const SyncHooks({
     required this.loadPeers,
     required this.savePeers,
+    required this.profiles,
     required this.exportTaste,
     required this.importTaste,
   });
 
+  /// Pairings belong to the device, not to one profile.
   final List<SyncPeer> Function() loadPeers;
   final Future<void> Function(List<SyncPeer>) savePeers;
 
-  /// This profile's taste, as the backup map.
-  final Future<Map<String, Object?>> Function() exportTaste;
+  /// Every profile on this device.
+  final List<RemoteProfile> Function() profiles;
 
-  /// Merges a peer's taste. Must be safe to repeat.
-  final Future<void> Function(Map<String, dynamic>) importTaste;
+  /// A profile's taste as the backup map; null asks for the active one.
+  final Future<Map<String, Object?>> Function(String? profileId) exportTaste;
+
+  /// Merges a peer's taste into the profile with the same id, creating it
+  /// here if needed. Must be safe to repeat.
+  final Future<void> Function(RemoteProfile profile, Map<String, dynamic> taste)
+  importTaste;
 }
 
 /// Keeps paired devices' tastes in step on the home network.
@@ -134,12 +152,19 @@ class SyncService {
 
   Future<void> start() async {
     if (_server != null) return;
-    try {
-      _server = await HttpServer.bind(InternetAddress.anyIPv4, port);
-    } on SocketException {
-      // something else holds the port (another profile window, a test)
-      _server = await HttpServer.bind(InternetAddress.anyIPv4, 0);
+    // A profile switch restarts the service while the old server is still
+    // letting go of the port; paired devices only know this port, so wait
+    // for it rather than taking a random one straight away.
+    for (var i = 0; i < 15 && _server == null; i++) {
+      try {
+        _server = await HttpServer.bind(InternetAddress.anyIPv4, port);
+      } on SocketException {
+        if (port == 0) rethrow;
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+      }
     }
+    // something else holds it for good (a test, a second window)
+    _server ??= await HttpServer.bind(InternetAddress.anyIPv4, 0);
     _server!.listen(_handle, onError: (_) {});
   }
 
@@ -186,6 +211,9 @@ class SyncService {
         case '/sync/taste':
           await _taste(req);
           return;
+        case '/sync/profiles':
+          await _profiles(req);
+          return;
         default:
           res.statusCode = HttpStatus.notFound;
       }
@@ -231,8 +259,8 @@ class SyncService {
     done?.call(peer);
   }
 
-  Future<void> _taste(HttpRequest req) async {
-    final res = req.response;
+  /// The paired peer behind a signed request, or null.
+  SyncPeer? _authorised(HttpRequest req, String what) {
     final q = req.uri.queryParameters;
     final from = q['from'] ?? '';
     final ts = int.tryParse(q['ts'] ?? '') ?? 0;
@@ -240,7 +268,36 @@ class SyncService {
     final age = (DateTime.now().millisecondsSinceEpoch - ts).abs();
     if (peer == null ||
         age > const Duration(minutes: 5).inMilliseconds ||
-        !peer.crypto.verify('taste|$from|$deviceId|$ts', q['sig'] ?? '')) {
+        !peer.crypto.verify('$what|$from|$deviceId|$ts', q['sig'] ?? '')) {
+      return null;
+    }
+    return peer;
+  }
+
+  Future<void> _profiles(HttpRequest req) async {
+    final res = req.response;
+    final peer = _authorised(req, 'profiles');
+    if (peer == null) {
+      res.statusCode = HttpStatus.forbidden;
+      await res.close();
+      return;
+    }
+    res.headers.contentType = ContentType.binary;
+    res.add(peer.crypto.seal(utf8.encode(jsonEncode([
+      for (final p in hooks.profiles()) p.toJson(),
+    ]))));
+    await res.close();
+  }
+
+  Future<void> _taste(HttpRequest req) async {
+    final res = req.response;
+    final profile = req.uri.queryParameters['profile'];
+    // 1.0 asked without a profile; its signature does not mention one
+    final peer = _authorised(
+      req,
+      profile == null ? 'taste' : 'taste:$profile',
+    );
+    if (peer == null) {
       res.statusCode = HttpStatus.forbidden;
       await res.close();
       return;
@@ -252,7 +309,7 @@ class SyncService {
         for (final p in hooks.loadPeers()) p.id == peer.id ? p.copyWith(host: host) : p,
       ]);
     }
-    final taste = await hooks.exportTaste();
+    final taste = await hooks.exportTaste(profile);
     res.headers.contentType = ContentType.binary;
     res.add(peer.crypto.seal(TasteCodec.gzipJson(taste)));
     await res.close();
@@ -384,8 +441,7 @@ class SyncService {
         for (var round = 0; round < 2 && !ok; round++) {
           for (final (h, p) in tries) {
             try {
-              final taste = await _fetch(peer, h, p);
-              await hooks.importTaste(taste);
+              await _pullAll(peer, h, p);
               peers = [
                 for (final x in hooks.loadPeers())
                   x.id == peer.id
@@ -429,13 +485,57 @@ class SyncService {
     return reached;
   }
 
-  Future<Map<String, dynamic>> _fetch(SyncPeer peer, String host, int port) async {
+  /// Every profile the peer has, each merged into its twin here.
+  Future<void> _pullAll(SyncPeer peer, String host, int port) async {
+    List<RemoteProfile> remote;
+    try {
+      final list = jsonDecode(
+        utf8.decode(await _get(peer, host, port, '/sync/profiles', 'profiles', const {})),
+      ) as List;
+      remote = [
+        for (final j in list.cast<Map<String, dynamic>>())
+          RemoteProfile(
+            j['id'] as String,
+            j['name'] as String? ?? 'Me',
+            j['renamedAt'] as int? ?? 0,
+          ),
+      ];
+    } on SyncException catch (e) {
+      // A device still on 1.0 has no profile list: it serves its active
+      // profile, which is merged into this device's main one.
+      if (e.code != 'http-404') rethrow;
+      final taste = TasteCodec.decode(
+        await _get(peer, host, port, '/sync/taste', 'taste', const {}),
+      );
+      await hooks.importTaste(const RemoteProfile('default', 'Me', 0), taste);
+      return;
+    }
+    for (final profile in remote) {
+      final taste = TasteCodec.decode(
+        await _get(peer, host, port, '/sync/taste', 'taste:${profile.id}', {
+          'profile': profile.id,
+        }),
+      );
+      await hooks.importTaste(profile, taste);
+    }
+  }
+
+  /// A signed request whose answer is sealed; returns the opened bytes.
+  Future<List<int>> _get(
+    SyncPeer peer,
+    String host,
+    int port,
+    String path,
+    String what,
+    Map<String, String> extra,
+  ) async {
     final ts = DateTime.now().millisecondsSinceEpoch;
-    final sig = peer.crypto.sign('taste|$deviceId|${peer.id}|$ts');
+    final sig = peer.crypto.sign('$what|$deviceId|${peer.id}|$ts');
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 5);
     try {
       final req = await client.getUrl(
-        Uri.http('$host:$port', '/sync/taste', {
+        Uri.http('$host:$port', path, {
+          ...extra,
           'from': deviceId,
           'ts': '$ts',
           'sig': sig,
@@ -447,7 +547,7 @@ class SyncService {
       }
       if (res.statusCode != 200) throw SyncException('http-${res.statusCode}');
       final bytes = await res.fold<List<int>>([], (a, b) => a..addAll(b));
-      return TasteCodec.decode(peer.crypto.open(bytes));
+      return peer.crypto.open(bytes);
     } finally {
       client.close(force: true);
     }

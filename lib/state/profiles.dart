@@ -12,10 +12,13 @@ import '../playback/stream_proxy.dart';
 
 /// One listener's separate library, likes, playlists and taste.
 class Profile {
-  const Profile(this.id, this.name);
+  const Profile(this.id, this.name, [this.renamedAt = 0]);
 
   final String id;
   final String name;
+
+  /// When the name was last set (ms), so synced devices agree on the newest.
+  final int renamedAt;
 
   /// The profile every install starts with; it owns the pre-profiles
   /// database, so nobody loses anything when this ships.
@@ -31,10 +34,17 @@ class Profile {
     return HSLColor.fromAHSL(1, hue, 0.55, 0.45).toColor();
   }
 
-  Map<String, Object?> toJson() => {'id': id, 'name': name};
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'name': name,
+    if (renamedAt > 0) 'renamedAt': renamedAt,
+  };
 
-  static Profile fromJson(Map<String, dynamic> j) =>
-      Profile(j['id'] as String, j['name'] as String? ?? 'Me');
+  static Profile fromJson(Map<String, dynamic> j) => Profile(
+    j['id'] as String,
+    j['name'] as String? ?? 'Me',
+    j['renamedAt'] as int? ?? 0,
+  );
 }
 
 /// Appended to preference keys that belong to the active profile (the queue to
@@ -139,12 +149,36 @@ class ProfileController extends ChangeNotifier {
   Future<void> rename(String id, String name) async {
     final clean = name.trim();
     if (clean.isEmpty) return;
+    final at = DateTime.now().millisecondsSinceEpoch;
     _profiles = [
-      for (final p in _profiles) p.id == id ? Profile(p.id, clean) : p,
+      for (final p in _profiles) p.id == id ? Profile(p.id, clean, at) : p,
     ];
-    if (active.id == id) active = Profile(id, clean);
+    if (active.id == id) active = Profile(id, clean, at);
     await _save();
     notifyListeners();
+  }
+
+  /// A profile seen on a synced device. Creates it here if it is new;
+  /// otherwise takes its name when that name is newer (or when ours is
+  /// still the untouched default "Me"). Returns true if anything changed.
+  Future<bool> adoptRemote(String id, String name, int renamedAt) async {
+    final clean = name.trim();
+    if (clean.isEmpty) return false;
+    final mine = _profiles.where((p) => p.id == id).firstOrNull;
+    if (mine == null) {
+      _profiles = [..._profiles, Profile(id, clean, renamedAt)];
+    } else {
+      final newer = renamedAt > mine.renamedAt;
+      final tieButReal =
+          renamedAt == mine.renamedAt && mine.name == 'Me' && clean != 'Me';
+      if (mine.name == clean || !(newer || tieButReal)) return false;
+      final next = Profile(id, clean, renamedAt);
+      _profiles = [for (final p in _profiles) p.id == id ? next : p];
+      if (active.id == id) active = next;
+    }
+    await _save();
+    notifyListeners();
+    return true;
   }
 
   Future<void> delete(String id) async {

@@ -5,19 +5,48 @@ import 'package:tunebox/data/db/database.dart';
 import 'package:tunebox/data/services/backup_service.dart';
 import 'package:tunebox/data/services/sync_service.dart';
 
-SyncService device(String id, AppDatabase db, List<SyncPeer> Function() load,
-        void Function(List<SyncPeer>) save) =>
-    SyncService(
+/// A device with several profiles, each its own in-memory database.
+class Device {
+  Device(this.id) {
+    service = SyncService(
       deviceId: id,
       deviceName: id,
       port: 0,
       hooks: SyncHooks(
-        loadPeers: load,
-        savePeers: (p) async => save(p),
-        exportTaste: () => BackupService(db).buildBackup(),
-        importTaste: (t) async => BackupService(db).importBackup(t),
+        loadPeers: () => peers,
+        savePeers: (p) async => peers = p,
+        profiles: () => [
+          for (final e in names.entries) RemoteProfile(e.key, e.value.$1, e.value.$2),
+        ],
+        exportTaste: (pid) => BackupService(db(pid ?? 'default')).buildBackup(),
+        importTaste: (remote, taste) async {
+          final mine = names[remote.id];
+          if (mine == null ||
+              remote.renamedAt > mine.$2 ||
+              (remote.renamedAt == mine.$2 && mine.$1 == 'Me' && remote.name != 'Me')) {
+            names[remote.id] = (remote.name, remote.renamedAt);
+          }
+          await BackupService(db(remote.id)).importBackup(taste);
+        },
       ),
     );
+  }
+
+  final String id;
+  late final SyncService service;
+  List<SyncPeer> peers = [];
+  final names = <String, (String, int)>{'default': ('Me', 0)};
+  final dbs = <String, AppDatabase>{};
+  AppDatabase db(String pid) =>
+      dbs.putIfAbsent(pid, () => AppDatabase(NativeDatabase.memory()));
+
+  Future<void> close() async {
+    await service.stop();
+    for (final d in dbs.values) {
+      await d.close();
+    }
+  }
+}
 
 Future<void> addSong(AppDatabase db, String id, {bool liked = false, int plays = 0}) =>
     db.upsertSong(SongsCompanion.insert(
@@ -31,48 +60,45 @@ Future<void> addSong(AppDatabase db, String id, {bool liked = false, int plays =
     ));
 
 void main() {
-  test('real databases converge and stay stable over repeated syncs', () async {
-    final dbA = AppDatabase(NativeDatabase.memory());
-    final dbB = AppDatabase(NativeDatabase.memory());
-    var peersA = <SyncPeer>[], peersB = <SyncPeer>[];
-    final a = device('a', dbA, () => peersA, (p) => peersA = p);
-    final b = device('b', dbB, () => peersB, (p) => peersB = p);
-    await a.start();
-    await b.start();
+  test('every profile syncs into its twin, and new ones appear', () async {
+    final phone = Device('phone'), laptop = Device('laptop');
+    await phone.service.start();
+    await laptop.service.start();
 
-    await addSong(dbA, 'one', liked: true, plays: 4);
-    await dbA.setAffinity('tag:house', 2.5);
-    await dbA.logEvent(PlayEventsCompanion.insert(
+    // the phone's main profile is called E; it also has a second one
+    phone.names['default'] = ('E', 0);
+    phone.names['kid'] = ('Kid', 5);
+    await addSong(phone.db('default'), 'one', liked: true, plays: 4);
+    await phone.db('default').setAffinity('tag:house', 2.5);
+    await phone.db('default').logEvent(PlayEventsCompanion.insert(
       songId: 'one', playedMs: 200000, durationMs: 210000, hour: 21, weekday: 3,
       at: Value(DateTime(2026, 11, 1, 21)),
     ));
-    await addSong(dbB, 'two', plays: 1);
-    await dbB.setAffinity('tag:metal', 1.5);
+    await addSong(phone.db('kid'), 'cartoon');
+    await addSong(laptop.db('default'), 'two', plays: 1);
 
-    final code = b.openPairing();
-    await a.pairWith(code, host: '127.0.0.1', port: b.listeningPort);
-    peersB = [peersB.single.copyWith(host: '127.0.0.1', port: a.listeningPort)];
+    final code = laptop.service.openPairing();
+    await phone.service.pairWith(code, host: '127.0.0.1', port: laptop.service.listeningPort);
+    laptop.peers = [laptop.peers.single.copyWith(host: '127.0.0.1', port: phone.service.listeningPort)];
 
     for (var round = 0; round < 3; round++) {
-      expect(await a.syncNow(), 1);
-      expect(await b.syncNow(), 1);
+      expect(await laptop.service.syncNow(), 1);
+      expect(await phone.service.syncNow(), 1);
     }
 
-    for (final db in [dbA, dbB]) {
-      final ids = (await db.library()).map((s) => s.id).toSet();
-      expect(ids, {'one', 'two'});
-      final w = {for (final x in await db.allAffinities()) x.key: x.weight};
-      // repeated syncs never inflate the learned weights
-      expect(w['tag:house'], 2.5);
-      expect(w['tag:metal'], 1.5);
-      expect((await db.songById('one'))!.liked, isTrue);
-      // the play happened once, however often it travelled
-      expect((await db.recentEvents(limit: 100)).length, 1);
+    // same accounts on both, with the real name winning over "Me"
+    expect(laptop.names, {'default': ('E', 0), 'kid': ('Kid', 5)});
+    for (final d in [phone, laptop]) {
+      final main = (await d.db('default').library()).map((s) => s.id).toSet();
+      expect(main, {'one', 'two'});
+      // the kid's songs stay in the kid's profile
+      expect((await d.db('kid').library()).map((s) => s.id).toSet(), {'cartoon'});
+      final w = {for (final x in await d.db('default').allAffinities()) x.key: x.weight};
+      expect(w['tag:house'], 2.5, reason: 'repeated syncs never inflate weights');
+      expect((await d.db('default').recentEvents(limit: 100)).length, 1);
     }
 
-    await a.stop();
-    await b.stop();
-    await dbA.close();
-    await dbB.close();
+    await phone.close();
+    await laptop.close();
   });
 }
