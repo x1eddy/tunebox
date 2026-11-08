@@ -246,7 +246,7 @@ class _DescribeBar extends StatelessWidget {
   }
 }
 
-class _MoodRow extends ConsumerWidget {
+class _MoodRow extends ConsumerStatefulWidget {
   const _MoodRow();
 
   static const moods = [
@@ -266,7 +266,18 @@ class _MoodRow extends ConsumerWidget {
   };
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_MoodRow> createState() => _MoodRowState();
+}
+
+class _MoodRowState extends ConsumerState<_MoodRow> {
+  static const moods = _MoodRow.moods;
+
+  /// The mood being built. Further taps wait for it: hammering a chip
+  /// started a new search and replaced the queue on every tap.
+  String? _building;
+
+  @override
+  Widget build(BuildContext context) {
     final t = Theme.of(context);
     return SizedBox(
       height: 44,
@@ -276,28 +287,36 @@ class _MoodRow extends ConsumerWidget {
         itemCount: moods.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (_, i) => ActionChip(
-          avatar: Icon(moods[i].$2, size: 17, color: t.colorScheme.primary),
-          label: Text(moodName(L.of(context), moods[i].$1)),
-          onPressed: () => _playMood(
-            context,
-            ref,
-            moods[i].$3,
-            moodName(L.of(context), moods[i].$1),
-          ),
+          avatar: _building == moods[i].$1
+              ? SizedBox.square(
+                  dimension: 15,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: t.colorScheme.primary,
+                  ),
+                )
+              : Icon(moods[i].$2, size: 17, color: t.colorScheme.primary),
+          label: Text(_MoodRow.moodName(L.of(context), moods[i].$1)),
+          onPressed: _building != null
+              ? null
+              : () => _playMood(
+                  moods[i].$1,
+                  moods[i].$3,
+                  _MoodRow.moodName(L.of(context), moods[i].$1),
+                ),
         ),
       ),
     );
   }
 
-  Future<void> _playMood(
-    BuildContext context,
-    WidgetRef ref,
-    String query,
-    String label,
-  ) async {
+  Future<void> _playMood(String key, String query, String label) async {
+    if (_building != null) return;
+    setState(() => _building = key);
     final l = L.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    messenger.showTimed(SnackBar(content: Text(l.moodBuilding(label))));
+    messenger
+      ..hideCurrentSnackBar()
+      ..showTimed(SnackBar(content: Text(l.moodBuilding(label))));
     try {
       final db = ref.read(dbProvider);
       final found = await ref.read(ytProvider).search(query, max: 25);
@@ -309,6 +328,9 @@ class _MoodRow extends ConsumerWidget {
       await ref.read(musicProvider).playAll(songs, origin: 'mood');
     } catch (e) {
       messenger.showTimed(SnackBar(content: Text(l.moodFailed('$e'))));
+    } finally {
+      messenger.hideCurrentSnackBar();
+      if (mounted) setState(() => _building = null);
     }
   }
 }
@@ -394,58 +416,55 @@ class _QuickPicks extends ConsumerWidget {
               ? l.aHomeInYourLibrarySub
               : l.homeQuickPicksSub,
         ),
-        SizedBox(
-          // One row per song, up to four — a fixed four left a hole in the
-          // page when the library was nearly empty.
-          height: (songs.length < 4 ? songs.length : 4) * 62,
-          child: GridView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            physics: const PageScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: songs.length < 4 ? songs.length : 4,
-              childAspectRatio: 1 / 4.6,
-              mainAxisSpacing: 12,
-            ),
-            itemCount: songs.length,
-            itemBuilder: (_, i) {
-              final s = songs[i];
-              return InkWell(
-                borderRadius: R.tile,
-                onTap: () => ref
-                    .read(musicProvider)
-                    .playSong(s, queue: songs, origin: 'quick_picks'),
-                onLongPress: () => showSongSheet(context, s),
-                child: Row(
-                  children: [
-                    CoverArt(song: s, size: 50, radius: R.tile),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            s.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: t.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+        // Two columns that fit the screen. The sideways-paging strip it
+        // replaced cut every title off at the edge and looked stretched.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final cols = c.maxWidth >= 640 ? 3 : 2;
+              final width = (c.maxWidth - (cols - 1) * 8) / cols;
+              return Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final s in songs.take(cols * 3))
+                    SizedBox(
+                      width: width,
+                      child: Material(
+                        color: t.colorScheme.surfaceContainerHigh,
+                        borderRadius: R.tile,
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: () => ref
+                              .read(musicProvider)
+                              .playSong(s, queue: songs, origin: 'quick_picks'),
+                          onLongPress: () => showSongSheet(context, s),
+                          child: Row(
+                            children: [
+                              CoverArt(
+                                song: s,
+                                size: 52,
+                                radius: BorderRadius.zero,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  s.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: t.textTheme.labelLarge?.copyWith(
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
                           ),
-                          Text(
-                            s.artist,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: t.textTheme.bodySmall?.copyWith(
-                              color: t.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                ],
               );
             },
           ),

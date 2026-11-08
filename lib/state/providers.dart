@@ -97,14 +97,18 @@ final importServiceProvider = Provider<ImportService>(
   (ref) => ImportService(ref.watch(dbProvider), ref.watch(artworkProvider)),
 );
 
-final aiProvider = Provider<AiEngine>(
-  (ref) => AiEngine(
+final aiProvider = Provider<AiEngine>((ref) {
+  final engine = AiEngine(
     db: ref.watch(dbProvider),
     yt: ref.watch(ytProvider),
     downloads: ref.watch(downloadServiceProvider),
     prefs: ref.watch(prefsProvider),
-  ),
-);
+  );
+  // A profile switch closes this database; background work bound to it
+  // has to stop instead of writing into a closed connection.
+  ref.onDispose(engine.dispose);
+  return engine;
+});
 
 final downloadTasksProvider = StreamProvider<List<DownloadTask>>(
   (ref) => ref.watch(downloadServiceProvider).tasks,
@@ -597,6 +601,9 @@ final startupProvider = FutureProvider<void>((ref) async {
     try {
       await body();
     } catch (e) {
+      // Switching profile closes the old database mid-step; that is not a
+      // failure worth reporting.
+      if ('$e'.contains('connection was closed')) return;
       logEvent('startup: $what failed — $e');
     }
   }

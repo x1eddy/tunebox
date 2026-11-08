@@ -8,10 +8,18 @@ class TuneBoxScrollBehavior extends MaterialScrollBehavior {
 
   final bool bouncy;
 
+  /// Bottom sheets and dialogs never bounce. A rubber band inside a sheet
+  /// let the list be pulled down inside it, leaving an empty gap above the
+  /// song, instead of the drag going to the sheet itself.
+  static bool _inPopup(BuildContext context) => ModalRoute.of(context) is PopupRoute;
+
   @override
-  ScrollPhysics getScrollPhysics(BuildContext context) => bouncy
-      ? const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics())
-      : const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    if (_inPopup(context)) return const ClampingScrollPhysics();
+    return bouncy
+        ? const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics())
+        : const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+  }
 
   // The stretch/glow indicator would fight the rubber band.
   @override
@@ -19,7 +27,9 @@ class TuneBoxScrollBehavior extends MaterialScrollBehavior {
     BuildContext context,
     Widget child,
     ScrollableDetails details,
-  ) => bouncy ? child : super.buildOverscrollIndicator(context, child, details);
+  ) => bouncy && !_inPopup(context)
+      ? child
+      : super.buildOverscrollIndicator(context, child, details);
 
   @override
   Set<PointerDeviceKind> get dragDevices => {

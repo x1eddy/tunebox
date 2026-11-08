@@ -129,6 +129,10 @@ class AiEngine {
 
   final AppDatabase _db;
   final YtService _yt;
+
+  /// Set when the profile this engine belongs to is switched away.
+  bool _disposed = false;
+  void dispose() => _disposed = true;
   final DownloadService _downloads;
   final SharedPreferences _prefs;
   final _random = Random();
@@ -169,10 +173,24 @@ class AiEngine {
         : (report.playedMs / report.durationMs).clamp(0.0, 1.0);
     final signal = report.skipped
         ? _kSkipped * (settings.useSkips ? 1 : 0)
-        : _kFinished * completion;
+        : _kFinished *
+              completion *
+              familiarity(song.playCount, liked: song.liked);
     if (signal == 0) return;
 
     await _applySignal(song, signal, withTime: settings.useTimeOfDay);
+  }
+
+  /// One listen is a hint, not a taste: the first full play of a song counts
+  /// a third, the second two thirds, from the third on fully. A liked song
+  /// is not damped (the like already said it).
+  static double familiarity(int playsBefore, {required bool liked}) {
+    if (liked) return 1.0;
+    return switch (playsBefore) {
+      0 => 0.35,
+      1 => 0.65,
+      _ => 1.0,
+    };
   }
 
   Future<void> learnFromLike(Song song, bool liked, Settings settings) async {
@@ -244,13 +262,20 @@ class AiEngine {
       }
     }
 
+    // oldest first, counting plays as they happened, so a first listen is
+    // damped here exactly as it was when it was learned live
+    final heard = <String, int>{};
     for (final e in events.reversed) {
       final song = byId[e.songId];
       if (song == null) continue;
       final completion = e.durationMs == 0
           ? 0.0
           : (e.playedMs / e.durationMs).clamp(0.0, 1.0);
-      final signal = e.skipped ? _kSkipped : _kFinished * completion;
+      final before = heard[song.id] ?? 0;
+      if (!e.skipped) heard[song.id] = before + 1;
+      final signal = e.skipped
+          ? _kSkipped
+          : _kFinished * completion * familiarity(before, liked: song.liked);
       apply(song, signal, withTime: settings.useTimeOfDay);
     }
     for (final song in library) {
@@ -660,13 +685,25 @@ class AiEngine {
 
   String? _topArtist(List<Song> library, Map<String, double> w) {
     final counts = <String, double>{};
+    final plays = <String, int>{};
+    final songs = <String, int>{};
+    final liked = <String>{};
     for (final s in library) {
       final who = creditedArtist(s);
       if (who.isEmpty) continue;
       counts[who] = (counts[who] ?? 0) +
           s.playCount +
           (w['artist:${artistKey(s)}'] ?? 0);
+      plays[who] = (plays[who] ?? 0) + s.playCount;
+      if (s.playCount > 0) songs[who] = (songs[who] ?? 0) + 1;
+      if (s.liked) liked.add(who);
     }
+    // A whole shelf "because you played X" needs a habit, not one listen:
+    // a like, or three plays spread over at least two of their songs.
+    counts.removeWhere(
+      (who, _) =>
+          !liked.contains(who) && ((plays[who] ?? 0) < 3 || (songs[who] ?? 0) < 2),
+    );
     if (counts.isEmpty) return null;
     final best = counts.entries.reduce((a, b) => a.value >= b.value ? a : b);
     return best.value <= 0 ? null : best.key;
@@ -985,6 +1022,7 @@ class AiEngine {
       ..sort((a, b) => a.durationMs.compareTo(b.durationMs));
     final skip = {...?_prefs.getStringList(profileKey('dlSkip'))};
     for (final song in all) {
+      if (_disposed) break;
       if (song.source == SongSource.imported || song.blocked) continue;
       if (skip.contains(song.id)) continue;
       final path = song.filePath;
@@ -1103,7 +1141,7 @@ class AiEngine {
     // whatever the shelves are currently showing.
     final rows = [...await _db.library(), ...await _db.cachedSongs()];
     for (final song in rows) {
-      if (done >= limit) break;
+      if (done >= limit || _disposed) break;
       if (song.year != null || song.id.startsWith('local:')) continue;
       final info = await _yt.albumInfo(
         song.id,
@@ -1111,6 +1149,8 @@ class AiEngine {
         artist: song.artist,
       );
       if (info == null) continue;
+      // the network call took a while; the profile may be gone by now
+      if (_disposed) break;
       await _db.patchSong(song.id, info);
       done++;
       await Future<void>.delayed(const Duration(milliseconds: 250));

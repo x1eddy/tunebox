@@ -9,6 +9,7 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../state/profiles.dart';
 import '../../state/settings.dart';
+import '../../data/services/versions.dart';
 import '../../ui/common.dart';
 import '../../ui/motion.dart';
 import '../../l10n/app_localizations.dart';
@@ -167,7 +168,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           .where((s) => !s.blocked && _matches(s, tokens))
           .where((s) => !songs.any((y) => y.id == s.id));
       setState(() {
-        _results = [...local, ...songs];
+        // "Ice Ice Baby", "(Re-Recorded)", "(Re-Recorded / Remastered)"…
+        // are one song; show it once.
+        _results = collapseVersions([...local, ...songs]);
         _lastResults = _results;
         _loading = false;
         _rememberRecent(query);
