@@ -367,7 +367,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         final old = _player;
         _player = _other;
         _prefetchedId = null;
-        unawaited(old.stop());
+        _quiet(old.stop());
         _announceSession();
         if (_player.position > const Duration(milliseconds: 300)) {
           await _player.seek(Duration.zero);
@@ -376,7 +376,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       } else {
         _prefetchToken++;
         _prefetchedId = null;
-        unawaited(_other.stop());
+        _quiet(_other.stop());
         await _setSource(_player, song);
       }
       if (token != _loadToken) return;
@@ -532,15 +532,15 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       _finishFade();
       return;
     }
-    unawaited(to.play());
+    _quiet(to.play());
     _broadcastState(to.playbackEvent);
 
     final watch = Stopwatch()..start();
     _fadeTimer = Timer.periodic(const Duration(milliseconds: 50), (t) {
       final x = watch.elapsedMilliseconds / length.inMilliseconds;
       final (out, into) = crossfadeCurve(x);
-      unawaited(from.setVolume(fromGain * out));
-      unawaited(to.setVolume(toGain * into));
+      _quiet(from.setVolume(fromGain * out));
+      _quiet(to.setVolume(toGain * into));
       if (x >= 1) _finishFade();
     });
     _snapshot();
@@ -555,7 +555,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _fadingOut = null;
     if (!_fading) return;
     _fading = false;
-    if (out != null) unawaited(out.stop());
+    if (out != null) _quiet(out.stop());
     unawaited(_applyVolume());
     _schedulePrefetch();
   }
@@ -571,7 +571,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       // Sleep timer "end of song": stay on this song, stopped at its end.
       pauseAfterCurrent = false;
       await _player.pause();
-      await _player.seek(Duration.zero);
+      await seek(Duration.zero);
       onSleepDone?.call();
       return;
     }
@@ -579,8 +579,8 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
       _listen
         ..stop()
         ..reset();
-      await _player.seek(Duration.zero);
-      unawaited(_player.play());
+      await seek(Duration.zero);
+      _quiet(_player.play());
       return;
     }
     if (_index + 1 < _queue.length) {
@@ -629,8 +629,23 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
 
   // --------------------------------------------------------------- controls
 
+  /// Runs a player call in the background. "Loading interrupted" only means
+  /// the user already moved on to another song, so it is not an error;
+  /// anything else is logged rather than left unhandled.
+  void _quiet(Future<void> f) {
+    unawaited(f.catchError((Object e) {
+      if (e is! PlayerInterruptedException) logEvent('player: $e');
+    }));
+  }
+
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() async {
+    try {
+      await _player.play();
+    } on PlayerInterruptedException {
+      // a newer song took over
+    }
+  }
 
   @override
   Future<void> pause() async {
@@ -685,7 +700,13 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> seek(Duration position) => _player.seek(position);
+  Future<void> seek(Duration position) async {
+    try {
+      await _player.seek(position);
+    } on PlayerInterruptedException {
+      // the song changed under the seek
+    }
+  }
 
   @override
   Future<void> skipToNext() => _advance(skipped: true);
@@ -693,7 +714,7 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> skipToPrevious() async {
     if (_player.position.inSeconds > 5) {
-      await _player.seek(Duration.zero);
+      await seek(Duration.zero);
       return;
     }
     await _report(skipped: true);

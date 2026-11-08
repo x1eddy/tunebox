@@ -6,9 +6,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../app/router.dart';
@@ -81,6 +83,10 @@ class _TourDriverState extends State<TourDriver> {
   Timer? _poll;
   int _seen = -1;
   bool _mouseAdded = false;
+  SemanticsHandle? _semantics;
+  final _rnd = Random(DateTime.now().millisecondsSinceEpoch);
+  int monkeyTaps = 0;
+  List<Offset> _cachedTargets = const [];
 
   @override
   void initState() {
@@ -90,12 +96,15 @@ class _TourDriverState extends State<TourDriver> {
         getApplicationDocumentsDirectory().then((d) => _boxDir = d),
       );
     }
+    // the monkey needs to know where the buttons are
+    _semantics = SemanticsBinding.instance.ensureSemantics();
     _poll = Timer.periodic(const Duration(milliseconds: 120), (_) => _tick());
   }
 
   @override
   void dispose() {
     _poll?.cancel();
+    _semantics?.dispose();
     super.dispose();
   }
 
@@ -111,9 +120,9 @@ class _TourDriverState extends State<TourDriver> {
     for (final cmd in parts.skip(1)) {
       try {
         await _run(cmd.trim());
-      } catch (e) {
+      } catch (e, st) {
         // ignore: avoid_print
-        print('[tour] $cmd failed: $e');
+        print('[tour] $cmd failed: $e\n$st');
       }
     }
     await Future<void>.delayed(const Duration(milliseconds: 700));
@@ -152,6 +161,23 @@ class _TourDriverState extends State<TourDriver> {
       case 'swipe': // x1,y1,x2,y2,ms
         final p = arg.split(',').map(double.parse).toList();
         await _swipe(Offset(p[0], p[1]), Offset(p[2], p[3]), p[4].round());
+      case 'monkey': // count,intervalMs: random real buttons, fast
+        final p = arg.split(',');
+        final n = int.parse(p[0]), gap = int.parse(p[1]);
+        final clock = Stopwatch()..start();
+        for (var k = 0; k < n; k++) {
+          // keep the pace: wait only for what is left of this tap's slot
+          final due = gap * (k + 1);
+          unawaited(_monkeyStep().catchError((Object e, StackTrace st) {
+            // ignore: avoid_print
+            print('[monkey] step failed: $e\n$st');
+          }));
+          final left = due - clock.elapsedMilliseconds;
+          if (left > 0) await Future<void>.delayed(Duration(milliseconds: left));
+        }
+        // ignore: avoid_print
+        print('[monkey] $n actions in ${clock.elapsedMilliseconds} ms '
+            '(${(n * 1000 / clock.elapsedMilliseconds).toStringAsFixed(1)}/s)');
       case 'back': // like a back press, but never leaves the app
         await WidgetsBinding.instance.endOfFrame;
         final root = router.routerDelegate.navigatorKey.currentState;
@@ -160,6 +186,67 @@ class _TourDriverState extends State<TourDriver> {
         await Future<void>.delayed(Duration(milliseconds: int.parse(arg)));
     }
     await Future<void>.delayed(const Duration(milliseconds: 450));
+  }
+
+  /// Centres of everything on screen that answers to a tap right now.
+  List<Offset> _tappables() {
+    final out = <Offset>[];
+    final view = PlatformDispatcher.instance.views.first;
+    final dpr = view.devicePixelRatio;
+    final screen = Offset.zero & (view.physicalSize / dpr);
+    for (final rv in RendererBinding.instance.renderViews) {
+      final root = rv.owner?.semanticsOwner?.rootSemanticsNode;
+      if (root == null) continue;
+      void visit(SemanticsNode n, Matrix4 parent) {
+        final m = n.transform == null ? parent : parent.multiplied(n.transform!);
+        final d = n.getSemanticsData();
+        if (d.hasAction(SemanticsAction.tap) && !d.flagsCollection.isHidden) {
+          final r = MatrixUtils.transformRect(m, n.rect);
+          final c = r.center / dpr;
+          if (screen.contains(c)) out.add(c);
+        }
+        n.visitChildren((child) {
+          visit(child, m);
+          return true;
+        });
+      }
+      visit(root, Matrix4.identity());
+    }
+    return out;
+  }
+
+  Future<void> _monkeyStep() async {
+    monkeyTaps++;
+    final view = PlatformDispatcher.instance.views.first;
+    final size = view.physicalSize / view.devicePixelRatio;
+    final roll = _rnd.nextDouble();
+    if (roll < 0.06) {
+      // a back press, on a settled frame (a real one never lands mid-push)
+      await WidgetsBinding.instance.endOfFrame;
+      final root = router.routerDelegate.navigatorKey.currentState;
+      if (root != null && root.canPop()) await root.maybePop();
+      return;
+    }
+    if (roll < 0.16) {
+      // a swipe or a flick, any direction
+      final a = Offset(_rnd.nextDouble() * size.width, 80 + _rnd.nextDouble() * (size.height - 160));
+      final b = a + Offset((_rnd.nextDouble() - .5) * size.width, (_rnd.nextDouble() - .5) * size.height * .7);
+      await _swipe(a, b, 60 + _rnd.nextInt(200));
+      return;
+    }
+    // the button list is rebuilt every few taps; walking the tree every
+    // 50 ms kept the monkey at half speed
+    if (monkeyTaps % 3 == 0 || _cachedTargets.isEmpty) _cachedTargets = _tappables();
+    final targets = _cachedTargets;
+    final at = targets.isEmpty || roll < 0.22
+        ? Offset(_rnd.nextDouble() * size.width, _rnd.nextDouble() * size.height)
+        : targets[_rnd.nextInt(targets.length)];
+    _tap(at);
+    if (roll > 0.92) {
+      // and sometimes a double tap
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+      _tap(at);
+    }
   }
 
   int _pointer = 1000;
