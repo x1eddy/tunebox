@@ -38,6 +38,14 @@ Future<void> main() async {
   final previousOnError = PlatformDispatcher.instance.onError;
   PlatformDispatcher.instance.onError = (error, stack) {
     if (error is PlayerInterruptedException) return true;
+    // go_router: a page closed twice in a row (back pressed twice fast while
+    // it is already closing) completes its result twice. Nothing else goes
+    // wrong; the page is closed once.
+    if (error is StateError &&
+        error.message == 'Future already completed' &&
+        stack.toString().contains('package:go_router/')) {
+      return true;
+    }
     return previousOnError?.call(error, stack) ?? false;
   };
 

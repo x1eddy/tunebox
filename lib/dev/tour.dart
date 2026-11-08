@@ -17,6 +17,8 @@ import 'package:riverpod/src/framework.dart' show RiverpodDevtool;
 
 import '../app/router.dart';
 
+part 'explorer.dart';
+
 const kTour = bool.fromEnvironment('TOUR');
 const _cmdFile = '/tmp/tunebox_cmd';
 const _ackFile = '/tmp/tunebox_ack';
@@ -188,6 +190,12 @@ class _TourDriverState extends State<TourDriver> {
         // ignore: avoid_print
         print('[monkey] $n actions in ${clock.elapsedMilliseconds} ms '
             '(${(n * 1000 / clock.elapsedMilliseconds).toStringAsFixed(1)}/s)');
+      case 'explore': // count,intervalMs: the checking monkey, see explorer.dart
+        final p = arg.split(',');
+        await _explore(int.parse(p[0]), int.parse(p[1]));
+      case 'audit': // one look at the current screen
+        await _settle();
+        _audit();
       case 'back': // like a back press, but never leaves the app
         await WidgetsBinding.instance.endOfFrame;
         final root = router.routerDelegate.navigatorKey.currentState;
