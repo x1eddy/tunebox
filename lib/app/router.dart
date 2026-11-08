@@ -22,6 +22,7 @@ import '../features/sound/sound_page.dart';
 import '../features/studio/studio_page.dart';
 import '../features/sync/sync_page.dart';
 import '../features/transfer/transfer_page.dart';
+import '../state/owner.dart' show kOwnerBuild;
 import '../state/settings.dart';
 import 'shell.dart';
 
@@ -41,7 +42,8 @@ List<RouteBase> _details() => [
   ),
   GoRoute(path: 'import', builder: (_, _) => const ImportPage()),
   GoRoute(path: 'transfer', builder: (_, _) => const TransferPage()),
-  GoRoute(path: 'owner', builder: (_, _) => const OwnerPage()),
+  // Only in builds made for the owner; public builds have no such page.
+  if (kOwnerBuild) GoRoute(path: 'owner', builder: (_, _) => const OwnerPage()),
   GoRoute(path: 'sound', builder: (_, _) => const SoundPage()),
   GoRoute(path: 'rewind', builder: (_, _) => const RewindPage()),
   GoRoute(path: 'studio', builder: (_, _) => const StudioPage()),
