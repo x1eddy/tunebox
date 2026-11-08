@@ -154,6 +154,10 @@ class ProfileController extends ChangeNotifier {
     if (clean.isEmpty) return;
     final id = DateTime.now().millisecondsSinceEpoch.toRadixString(36);
     _profiles = [..._profiles, Profile(id, clean)];
+    // a switch already under way would make switchTo drop this one
+    while (_switching) {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
     await switchTo(id);
     await _save();
   }

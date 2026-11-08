@@ -57,7 +57,9 @@ final syncServiceProvider = Provider<SyncService>((ref) {
     String id,
     Future<T> Function(AppDatabase db) body,
   ) async {
-    if (id == profiles.active.id) return body(ref.read(dbProvider));
+    // the controller's own handle: still right after a profile switch,
+    // when this provider's dbProvider may already be closed
+    if (id == profiles.active.id) return body(profiles.db);
     final db = AppDatabase.named(ProfileController.dbName(id));
     try {
       return await body(db);
@@ -121,17 +123,19 @@ final syncTickerProvider = Provider<void>((ref) {
   final service = ref.read(syncServiceProvider);
   unawaited(service.start());
   var lastRun = DateTime.fromMillisecondsSinceEpoch(0);
+  var disposed = false;
+  ref.onDispose(() => disposed = true);
 
   Future<void> run({bool force = false}) async {
-    if (service.hooks.loadPeers().isEmpty) return;
+    if (disposed || service.hooks.loadPeers().isEmpty) return;
     if (!force &&
         DateTime.now().difference(lastRun) < const Duration(minutes: 10)) {
       return;
     }
-    if (!await ref.read(downloadServiceProvider).onWifi()) return;
+    if (!await ref.read(downloadServiceProvider).onWifi() || disposed) return;
     lastRun = DateTime.now();
     final reached = await service.syncNow();
-    if (reached > 0) {
+    if (reached > 0 && !disposed) {
       dropTasteProfileCache();
       ref.invalidate(tasteProfileProvider);
       ref.read(musicProvider).refreshHome();

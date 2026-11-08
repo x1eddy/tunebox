@@ -11,9 +11,22 @@ final lyricsServiceProvider = Provider<LyricsService>(
 );
 
 /// Lyrics for one song; errors mean "could not look right now".
-final lyricsProvider = FutureProvider.family<Lyrics, Song>(
-  (ref, song) => ref.watch(lyricsServiceProvider).forSong(song),
+final lyricsProvider = FutureProvider.family<Lyrics, LyricsKey>(
+  (ref, key) => ref.watch(lyricsServiceProvider).forSong(key.song),
 );
+
+/// The same song stays the same key when its row changes (a new play
+/// count, a fixed duration), so the lyrics are not fetched again mid-song.
+class LyricsKey {
+  const LyricsKey(this.song);
+  final Song song;
+
+  @override
+  bool operator ==(Object other) => other is LyricsKey && other.song.id == song.id;
+
+  @override
+  int get hashCode => song.id.hashCode;
+}
 
 /// Looks up lyrics for every song as it starts, in the background, so they
 /// are already cached the next time you are offline.

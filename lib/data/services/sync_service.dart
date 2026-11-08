@@ -139,6 +139,11 @@ class SyncService {
   /// Fires after a merge or a new pairing, so screens can refresh.
   Stream<void> get changes => _changes.stream;
 
+  /// A sync can finish after a profile switch disposed this service.
+  void _notify() {
+    if (!_changes.isClosed) _changes.add(null);
+  }
+
   // pairing window
   String? _pairCode;
   DateTime? _pairUntil;
@@ -255,7 +260,7 @@ class SyncService {
     await res.close();
     final done = _onPaired;
     closePairing();
-    _changes.add(null);
+    _notify();
     done?.call(peer);
   }
 
@@ -359,7 +364,7 @@ class SyncService {
           ...hooks.loadPeers().where((x) => x.id != peer.id),
           peer,
         ]);
-        _changes.add(null);
+        _notify();
         return peer;
       } catch (e) {
         last = e;
@@ -478,7 +483,7 @@ class SyncService {
           await hooks.savePeers(peers);
         }
       }
-      if (peers.isNotEmpty) _changes.add(null);
+      if (peers.isNotEmpty) _notify();
     } finally {
       _running = false;
     }
@@ -555,7 +560,7 @@ class SyncService {
 
   Future<void> forget(String peerId) async {
     await hooks.savePeers(hooks.loadPeers().where((p) => p.id != peerId).toList());
-    _changes.add(null);
+    _notify();
   }
 
   void dispose() {

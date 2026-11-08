@@ -226,6 +226,7 @@ class _BlendPageState extends ConsumerState<BlendPage> {
                             ? null
                             : () async {
                                 final songs = await _songs(result);
+                                if (!mounted) return;
                                 await ref
                                     .read(musicProvider)
                                     .playAll(songs, origin: 'blend');
@@ -245,7 +246,7 @@ class _BlendPageState extends ConsumerState<BlendPage> {
                   value: prefs.getBool('blendLearns') ?? false,
                   onChanged: (v) async {
                     await prefs.setBool('blendLearns', v);
-                    setState(() {});
+                    if (mounted) setState(() {});
                   },
                   title: Text(l.blendLearn),
                   subtitle: Text(l.blendLearnSub),

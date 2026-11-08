@@ -969,15 +969,17 @@ class _SwipeRow extends ConsumerWidget {
       final messenger = ScaffoldMessenger.of(context);
       music.haptic();
       String? said;
+      // Not awaited: the row springs back at once. With an empty queue
+      // "play next" loads a whole stream, and the row stayed pulled out.
       switch (a) {
         case SwipeAction.like:
-          await music.like(song, value: true);
+          unawaited(music.like(song, value: true));
           said = l.swLiked(song.title);
         case SwipeAction.queue:
-          await ref.read(audioHandlerProvider).addToQueue(song, next: true);
+          unawaited(ref.read(audioHandlerProvider).addToQueue(song, next: true));
           said = l.swQueued(song.title);
         case SwipeAction.download:
-          await music.download(song);
+          unawaited(music.download(song));
           said = l.cDownloading(song.title);
         case SwipeAction.hide:
           if (context.mounted) dislikeWithUndo(context, ref, song);

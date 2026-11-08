@@ -107,7 +107,7 @@ class SoundSettings {
       });
     }
     return SoundSettings(
-      crossfadeSec: (j['xf'] as int? ?? d.crossfadeSec).clamp(0, 12),
+      crossfadeSec: ((j['xf'] as num?)?.round() ?? d.crossfadeSec).clamp(0, 12),
       smartCrossfade: j['smart'] as bool? ?? d.smartCrossfade,
       normalize: j['norm'] as bool? ?? d.normalize,
       target: LoudnessTarget.values.firstWhere(

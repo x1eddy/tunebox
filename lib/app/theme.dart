@@ -82,7 +82,17 @@ TextTheme _typeScale(TextTheme base, FontPair pair, Color color) {
 /// only `TextStyle.apply` can, so every style is walked.
 TextTheme _weighted(TextTheme t, int delta) {
   if (delta == 0) return t;
-  TextStyle? w(TextStyle? s) => s?.apply(fontWeightDelta: delta);
+  // apply(fontWeightDelta:) refuses styles without a weight (the system font
+  // pair has none), which broke every build with Bold text on; the weight
+  // is stepped here from an explicit starting point instead.
+  TextStyle? w(TextStyle? s) {
+    if (s == null) return null;
+    final want = ((s.fontWeight ?? FontWeight.w400).value + delta * 100)
+        .clamp(100, 900);
+    return s.copyWith(
+      fontWeight: FontWeight.values.firstWhere((f) => f.value == want),
+    );
+  }
   return TextTheme(
     displayLarge: w(t.displayLarge),
     displayMedium: w(t.displayMedium),

@@ -92,7 +92,7 @@ class ImportService {
     yield const ScanProgress(scanned: 0, total: 0, added: 0);
     // Walking a big music folder took seconds on the UI thread; only the
     // paths (short strings) come back.
-    final paths = await Isolate.run(() => listAudioPaths(folders));
+    final paths = await _listInBackground(folders);
     yield* _importFiles(paths);
   }
 
@@ -124,7 +124,7 @@ class ImportService {
       try {
         tags = fresh.isEmpty
             ? const []
-            : await Isolate.run(() => readTagsBatch(fresh));
+            : await _readInBackground(fresh);
       } catch (_) {
         // the batch crashed its isolate; fall back to file names
         tags = [for (final p in fresh) LocalTags.fromName(p)];
@@ -154,6 +154,14 @@ class ImportService {
   }
 
   static const _batch = 8;
+
+  // Static, so the closures sent to the isolate carry nothing but the paths
+  // (never this service or its database).
+  static Future<List<String>> _listInBackground(List<String> folders) =>
+      Isolate.run(() => listAudioPaths(folders));
+
+  static Future<List<LocalTags>> _readInBackground(List<String> paths) =>
+      Isolate.run(() => readTagsBatch(paths));
 
   Future<SongsCompanion> _toRow(LocalTags t) async {
     final id = localId(t.path);

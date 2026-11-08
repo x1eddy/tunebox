@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../playback/output_watch.dart';
 import '../playback/sound_math.dart';
+import 'owner.dart' show logEvent;
 import 'providers.dart';
 import 'sound.dart';
 
@@ -45,7 +46,31 @@ final soundWiringProvider = Provider<void>((ref) {
     await handler.setMasterVolume(handler.masterVolume);
   }
 
-  ref.listen(soundProvider, (_, _) => unawaited(apply()));
-  ref.listen(currentOutputProvider, (_, _) => unawaited(apply()));
-  unawaited(apply());
+  // Applies run one after another; while one runs, further changes just
+  // ask for one more pass with the newest values (no overlapping, out of
+  // order applies when a slider is dragged).
+  var running = false, again = false;
+  Future<void> applySafely() async {
+    if (running) {
+      again = true;
+      return;
+    }
+    running = true;
+    try {
+      do {
+        again = false;
+        try {
+          await apply();
+        } catch (e) {
+          logEvent('sound settings not applied — $e');
+        }
+      } while (again);
+    } finally {
+      running = false;
+    }
+  }
+
+  ref.listen(soundProvider, (_, _) => unawaited(applySafely()));
+  ref.listen(currentOutputProvider, (_, _) => unawaited(applySafely()));
+  unawaited(applySafely());
 });

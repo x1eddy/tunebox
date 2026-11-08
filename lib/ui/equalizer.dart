@@ -56,7 +56,11 @@ class _PlayingBarsState extends State<PlayingBars> {
   @override
   void didUpdateWidget(PlayingBars old) {
     super.didUpdateWidget(old);
-    if (widget.playing && _timer == null) {
+    // Reduce motion switched on while playing: stop now, not at the pause
+    if (widget.reduceMotion && _timer != null) {
+      _timer?.cancel();
+      _timer = null;
+    } else if (widget.playing && _timer == null) {
       _start();
     } else if (!widget.playing) {
       _timer?.cancel();

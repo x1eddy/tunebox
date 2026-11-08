@@ -295,7 +295,9 @@ class MusicActions {
   /// A queue built around one song: YouTube Music's radio for it, reordered
   /// by what the AI knows. Also what "keep the music going" uses when a queue
   /// runs out.
-  Future<void> startRadio(Song seed) async {
+  /// [afterEnd]: the seed just finished playing, so the radio starts with
+  /// the first new song instead of playing it again.
+  Future<void> startRadio(Song seed, {bool afterEnd = false}) async {
     final yt = _ref.read(ytProvider);
     final companions = seed.id.startsWith('local:')
         // YouTube Music answers a song query with songs; asking for "radio"
@@ -317,7 +319,7 @@ class MusicActions {
       for (final s in songs) s.id: _ai.scoreSong(s, w, _settings, rules),
     };
     songs.sort((a, b) => scores[b.id]!.compareTo(scores[a.id]!));
-    await playAll([seed, ...songs], origin: 'radio');
+    await playAll([seed, ...songs], index: afterEnd ? 1 : 0, origin: 'radio');
   }
 
   Future<void> toggle() {
@@ -538,7 +540,7 @@ final playbackWiringProvider = Provider<void>((ref) {
       return;
     }
     try {
-      await ref.read(musicProvider).startRadio(last);
+      await ref.read(musicProvider).startRadio(last, afterEnd: true);
     } catch (_) {
       await handler.stop();
     }
@@ -569,6 +571,10 @@ final playbackWiringProvider = Provider<void>((ref) {
 
 /// Kicks off background work once the app is up: auto-downloads and a scan.
 final startupProvider = FutureProvider<void>((ref) async {
+  // A profile switch disposes this mid-way; everything after an await checks
+  // this instead of touching a dead ref.
+  var disposed = false;
+  ref.onDispose(() => disposed = true);
   ref.read(playbackWiringProvider);
   // Have the connection to YouTube Music open before the first search.
   unawaited(ref.read(ytProvider).warmUp());
@@ -599,6 +605,7 @@ final startupProvider = FutureProvider<void>((ref) async {
   // Each step is independent: a folder that cannot be read must not cost you
   // the auto-downloads, and neither must cost you the release years.
   Future<void> step(String what, Future<void> Function() body) async {
+    if (disposed) return;
     try {
       await body();
     } catch (e) {
@@ -629,8 +636,9 @@ final startupProvider = FutureProvider<void>((ref) async {
   await step('missing downloads', () => ref.read(musicProvider).syncDownloads());
   await step('auto-downloads', () => ref.read(musicProvider).runAutoDownloads());
   // A like made off Wi-Fi is caught up the moment Wi-Fi comes back.
+  if (disposed) return;
   final link = Connectivity().onConnectivityChanged.listen((_) {
-    ref.read(musicProvider).syncDownloads().ignore();
+    if (!disposed) ref.read(musicProvider).syncDownloads().ignore();
   });
   ref.onDispose(link.cancel);
   // Release years are only worth a background trickle — they are cosmetic

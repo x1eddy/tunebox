@@ -565,8 +565,21 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     if (_fading) _finishFade();
   }
 
+  /// A queue-end radio being fetched; more taps on "next" wait for it
+  /// instead of each starting its own.
+  Future<void>? _radioPending;
+
   Future<void> _advance({required bool skipped}) async {
+    final token = _loadToken;
     await _report(skipped: skipped);
+    // A skip landing on the "completed" event (or two quick skips) must
+    // move one song, not two: whoever loaded meanwhile already moved on.
+    if (token != _loadToken) return;
+    // the listen was reported; it must not be reported again by whatever
+    // plays next
+    _listen
+      ..stop()
+      ..reset();
     if (!skipped && pauseAfterCurrent) {
       // Sleep timer "end of song": stay on this song, stopped at its end.
       pauseAfterCurrent = false;
@@ -597,7 +610,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         return;
       }
       if (last != null && radio != null) {
-        await radio(last);
+        final pending = _radioPending ??= radio(last).whenComplete(
+          () => _radioPending = null,
+        );
+        await pending;
         return;
       }
       await _player.stop();
@@ -669,7 +685,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
     _queueChanges.add(queueSongs);
     _index = index.clamp(0, songs.length - 1);
     await _load(play: false);
-    if (position > Duration.zero) {
+    final token = _loadToken;
+    // the user may have picked another song while the stream resolved; the
+    // saved position belongs to the old one
+    if (position > Duration.zero && token == _loadToken) {
       try {
         await _player.seek(position);
       } catch (_) {

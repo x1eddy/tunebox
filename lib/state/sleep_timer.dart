@@ -41,7 +41,17 @@ class SleepTimerController extends Notifier<SleepState> {
 
   @override
   SleepState build() {
-    ref.onDispose(_stopAll);
+    final handler = ref.read(audioHandlerProvider);
+    ref.onDispose(() {
+      // A profile switch disposes this; the player outlives it and must not
+      // keep a dead callback, armed flags or a half-faded volume.
+      _stopAll();
+      handler
+        ..pauseAfterCurrent = false
+        ..stopAtQueueEnd = false
+        ..onSleepDone = null;
+      unawaited(handler.setMasterVolume(1));
+    });
     return const SleepState();
   }
 

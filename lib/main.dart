@@ -117,9 +117,13 @@ Future<TuneBoxAudioHandler> _buildHandler(
     // MPRIS: GNOME's media controls, the lock screen and the keyboard's media
     // keys all reach TuneBox. The plugin shows the "channel id" as the
     // player's name, hence the plain one here.
+    // One handler, made here: if the media bus answers late, the service
+    // still attaches to this one instead of building a second, orphaned
+    // player after the timeout.
+    final handler = TuneBoxAudioHandler(db, proxy);
     try {
-      return await AudioService.init(
-        builder: () => TuneBoxAudioHandler(db, proxy),
+      await AudioService.init(
+        builder: () => handler,
         config: const AudioServiceConfig(
           androidNotificationChannelId: 'TuneBox',
           androidNotificationChannelName: 'TuneBox',
@@ -128,6 +132,7 @@ Future<TuneBoxAudioHandler> _buildHandler(
     } catch (e) {
       debugPrint('MPRIS unavailable: $e');
     }
+    return handler;
   }
   // No media service: the same handler drives the player directly.
   return TuneBoxAudioHandler(db, proxy);

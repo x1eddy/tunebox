@@ -203,7 +203,12 @@ class AiEngine {
   Future<void> learnFromLike(Song song, bool? liked, Settings settings) {
     final prev = _likeLocks[song.id] ?? Future<void>.value();
     final next = prev.then((_) => _learnFromLike(song, liked, settings));
-    _likeLocks[song.id] = next.catchError((_) {});
+    final tail = next.catchError((_) {});
+    _likeLocks[song.id] = tail;
+    // forget the entry once nothing newer queued behind it
+    unawaited(tail.whenComplete(() {
+      if (identical(_likeLocks[song.id], tail)) _likeLocks.remove(song.id);
+    }));
     return next;
   }
 

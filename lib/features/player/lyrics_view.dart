@@ -21,7 +21,7 @@ class LyricsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = L.of(context);
     final t = Theme.of(context);
-    final async = ref.watch(lyricsProvider(song));
+    final async = ref.watch(lyricsProvider(LyricsKey(song)));
 
     Widget message(IconData icon, String text, {bool retry = false}) => Center(
       child: Padding(
@@ -40,7 +40,7 @@ class LyricsView extends ConsumerWidget {
             ),
             if (retry)
               TextButton(
-                onPressed: () => ref.invalidate(lyricsProvider(song)),
+                onPressed: () => ref.invalidate(lyricsProvider(LyricsKey(song))),
                 child: Text(l.lyrRetry),
               ),
           ],
