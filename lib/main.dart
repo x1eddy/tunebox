@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show PlatformDispatcher;
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart' show PlayerInterruptedException;
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +32,14 @@ import 'state/sync.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // just_audio leaves an internal future erroring with "Loading interrupted"
+  // when a newer song replaces one still loading. It is expected (skip
+  // spamming) and already handled where we await it, so don't report it.
+  final previousOnError = PlatformDispatcher.instance.onError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (error is PlayerInterruptedException) return true;
+    return previousOnError?.call(error, stack) ?? false;
+  };
 
   // Desktop playback rides on libmpv; on a machine without it the rest of the
   // app still works, so never let this kill startup.
