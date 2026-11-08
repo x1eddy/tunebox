@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -99,9 +100,16 @@ class ProfileController extends ChangeNotifier {
     _open(active);
   }
 
+  /// Databases of profiles just left, kept open briefly so work still in
+  /// flight can finish. Switching straight back reuses the same connection;
+  /// opening a second one on the same file is what locked the database.
+  final _closing = <String, (AppDatabase, Timer)>{};
+
   void _open(Profile p) {
     profileSuffix = p.id == Profile.defaultId ? '' : ':${p.id}';
-    db = AppDatabase.named(dbName(p.id));
+    final kept = _closing.remove(p.id);
+    if (kept != null) kept.$2.cancel();
+    db = kept?.$1 ?? AppDatabase.named(dbName(p.id));
     handler?.useDatabase(db);
     proxy.onDuration = (videoId, durationMs) => db.patchSong(
       videoId,
@@ -136,17 +144,22 @@ class ProfileController extends ChangeNotifier {
     await handler?.stop();
     onSwitching?.call();
     final old = db;
+    final oldId = active.id;
     active = next;
     _open(next);
     await _save();
     generation++;
     notifyListeners();
     // Let in-flight work on the old database finish failing quietly first.
-    Future<void>.delayed(const Duration(seconds: 2), () {
-      try {
-        old.close();
-      } catch (_) {}
-    });
+    _closing[oldId] = (
+      old,
+      Timer(const Duration(seconds: 2), () {
+        _closing.remove(oldId);
+        try {
+          old.close();
+        } catch (_) {}
+      }),
+    );
   }
 
   Future<void> create(String name) async {
@@ -197,10 +210,33 @@ class ProfileController extends ChangeNotifier {
     return true;
   }
 
+  /// Runs [body] on a profile's database, sharing a connection that is
+  /// already open (the active one, or one just left) instead of opening a
+  /// second one on the same file.
+  Future<T> withDb<T>(String id, Future<T> Function(AppDatabase db) body) async {
+    if (id == active.id) return body(db);
+    final kept = _closing[id];
+    if (kept != null) return body(kept.$1);
+    final temp = AppDatabase.named(dbName(id));
+    try {
+      return await body(temp);
+    } finally {
+      await temp.close();
+    }
+  }
+
   Future<void> delete(String id) async {
     if (id == active.id || _profiles.length < 2) return;
     _profiles = _profiles.where((p) => p.id != id).toList();
     await _save();
+    // a profile left a moment ago may still have its database open
+    final kept = _closing.remove(id);
+    if (kept != null) {
+      kept.$2.cancel();
+      try {
+        await kept.$1.close();
+      } catch (_) {}
+    }
     try {
       final dir = await getApplicationDocumentsDirectory();
       for (final ext in ['sqlite', 'sqlite-wal', 'sqlite-shm']) {

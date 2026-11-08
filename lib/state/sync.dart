@@ -11,7 +11,6 @@ import '../data/db/database.dart';
 import '../data/services/backup_service.dart';
 import '../data/services/sync_crypto.dart';
 import '../data/services/sync_service.dart';
-import 'profiles.dart';
 import 'providers.dart';
 import 'settings.dart';
 
@@ -51,22 +50,10 @@ final syncServiceProvider = Provider<SyncService>((ref) {
     }
   }
 
-  /// Runs [body] on a profile's database: the open one if it is active,
-  /// otherwise a short-lived second connection.
   Future<T> withProfileDb<T>(
     String id,
     Future<T> Function(AppDatabase db) body,
-  ) async {
-    // the controller's own handle: still right after a profile switch,
-    // when this provider's dbProvider may already be closed
-    if (id == profiles.active.id) return body(profiles.db);
-    final db = AppDatabase.named(ProfileController.dbName(id));
-    try {
-      return await body(db);
-    } finally {
-      await db.close();
-    }
-  }
+  ) => profiles.withDb(id, body);
 
   final service = SyncService(
     deviceId: _deviceId(prefs),

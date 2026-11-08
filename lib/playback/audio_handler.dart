@@ -407,8 +407,10 @@ class TuneBoxAudioHandler extends BaseAudioHandler with SeekHandler {
         );
       }
     } catch (e) {
-      // A load the user has already moved on from is not a failure.
-      if (token != _loadToken) return;
+      // A load the user has already moved on from is not a failure, and
+      // neither is one the player abandoned because something else took
+      // over: counting it skipped a song and said it would not open.
+      if (token != _loadToken || e is PlayerInterruptedException) return;
       _consecutiveFailures++;
       logEvent('load failed: ${song.title} — $e');
       // Three in a row means the source is down, not one bad track — stop
