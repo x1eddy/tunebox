@@ -1139,9 +1139,12 @@ class AiEngine {
   /// Fills in keywords, album and release year for a YouTube song the first
   /// time it really matters. The year also feeds the decade affinities.
   Future<void> enrich(Song song) async {
-    if (song.id.startsWith('local:')) return;
+    if (song.id.startsWith('local:') || _disposed) return;
+    // Each lookup takes a network round trip; the profile (and with it this
+    // engine's database) may have been switched away meanwhile.
     if (song.tags.isEmpty) {
       final details = await _yt.details(song.id);
+      if (_disposed) return;
       if (details != null) {
         await _db.patchSong(song.id, SongsCompanion(tags: details.tags));
       }
@@ -1152,6 +1155,7 @@ class AiEngine {
         title: song.title,
         artist: song.artist,
       );
+      if (_disposed) return;
       if (info != null) await _db.patchSong(song.id, info);
     }
   }
