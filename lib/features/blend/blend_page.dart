@@ -34,6 +34,8 @@ class _BlendPageState extends ConsumerState<BlendPage> {
   bool _busy = false;
 
   Future<void> _blendWith(String name, Map<String, dynamic> backup) async {
+    // the page may have been closed while the other profile was being read
+    if (!mounted) return;
     setState(() => _busy = true);
     try {
       final mine = await BackupService(ref.read(dbProvider)).buildBackup();
@@ -49,9 +51,9 @@ class _BlendPageState extends ConsumerState<BlendPage> {
       });
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showTimed(
-          SnackBar(content: Text(L.of(context).blendBad)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showTimed(SnackBar(content: Text(L.of(context).blendBad)));
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -59,13 +61,12 @@ class _BlendPageState extends ConsumerState<BlendPage> {
   }
 
   Future<void> _fromProfile(Profile p) async {
-    final db = AppDatabase.named(ProfileController.dbName(p.id));
-    try {
-      final backup = await BackupService(db).buildBackup();
-      await _blendWith(p.name, backup);
-    } finally {
-      await db.close();
-    }
+    // Shares the connection if that profile's database is already open; a
+    // second one on the same file can lock it.
+    final backup = await ref
+        .read(profilesProvider)
+        .withDb(p.id, (db) => BackupService(db).buildBackup());
+    await _blendWith(p.name, backup);
   }
 
   Future<void> _fromClipboard() async {
@@ -73,15 +74,12 @@ class _BlendPageState extends ConsumerState<BlendPage> {
     final data = await Clipboard.getData('text/plain');
     try {
       final backup = TasteCodec.decodeText(data?.text ?? '');
-      await _blendWith(
-        (backup['device'] as String?) ?? friend,
-        backup,
-      );
+      await _blendWith((backup['device'] as String?) ?? friend, backup);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showTimed(
-          SnackBar(content: Text(L.of(context).blendBad)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showTimed(SnackBar(content: Text(L.of(context).blendBad)));
       }
     }
   }
@@ -99,9 +97,9 @@ class _BlendPageState extends ConsumerState<BlendPage> {
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showTimed(
-          SnackBar(content: Text(L.of(context).blendBad)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showTimed(SnackBar(content: Text(L.of(context).blendBad)));
       }
     }
   }
@@ -157,7 +155,10 @@ class _BlendPageState extends ConsumerState<BlendPage> {
                     ],
                   ),
                 ),
-                SectionHeader(title: l.blendWith, icon: Icons.people_alt_outlined),
+                SectionHeader(
+                  title: l.blendWith,
+                  icon: Icons.people_alt_outlined,
+                ),
                 for (final p in others)
                   ListTile(
                     leading: CircleAvatar(
@@ -252,14 +253,18 @@ class _BlendPageState extends ConsumerState<BlendPage> {
                   subtitle: Text(l.blendLearnSub),
                 ),
                 if (result.sharedArtists.isNotEmpty) ...[
-                  SectionHeader(title: l.blendBothArtists, icon: Icons.favorite_border),
+                  SectionHeader(
+                    title: l.blendBothArtists,
+                    icon: Icons.favorite_border,
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Wrap(
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        for (final a in result.sharedArtists) Chip(label: Text(a)),
+                        for (final a in result.sharedArtists)
+                          Chip(label: Text(a)),
                       ],
                     ),
                   ),
@@ -317,7 +322,11 @@ class _MatchRing extends StatelessWidget {
         duration: const Duration(milliseconds: 1100),
         curve: Curves.easeOutCubic,
         builder: (context, v, _) => CustomPaint(
-          painter: _RingPainter(v, cs.primary, cs.onSurface.withValues(alpha: 0.12)),
+          painter: _RingPainter(
+            v,
+            cs.primary,
+            cs.onSurface.withValues(alpha: 0.12),
+          ),
           child: Center(
             child: Text('${(v * 100).round()}%', style: t.headlineSmall),
           ),
