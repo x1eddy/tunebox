@@ -569,6 +569,11 @@ class WideCard extends ConsumerWidget {
 /// Blocks a song and says so, with a way back.
 void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
   final music = ref.read(musicProvider);
+  // The Undo button can be pressed seconds later, after a profile switch has
+  // replaced `music` (and `ref` may belong to a page that is gone). Reach the
+  // app-wide container then, and only undo in the profile it was done in.
+  final container = ProviderScope.containerOf(context, listen: false);
+  final profile = ref.read(profilesProvider).active.id;
   final messenger = ScaffoldMessenger.of(context);
   final wasLiked = song.liked;
   music.dislike(song);
@@ -583,7 +588,14 @@ void dislikeWithUndo(BuildContext context, WidgetRef ref, Song song) {
         ),
         action: SnackBarAction(
           label: L.of(context).undo,
-          onPressed: () => music.unblock(song, restoreLike: wasLiked),
+          onPressed: () {
+            if (container.read(profilesProvider).active.id != profile) return;
+            unawaited(
+              container
+                  .read(musicProvider)
+                  .unblock(song, restoreLike: wasLiked),
+            );
+          },
         ),
       ),
     );

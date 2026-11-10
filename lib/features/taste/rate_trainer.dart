@@ -49,6 +49,7 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
   /// come from the library at once; waiting for the network used to hold the
   /// whole screen on a spinner.
   bool _loadingMore = false;
+  bool _leaving = false;
 
   Future<void> _build() async {
     try {
@@ -204,9 +205,19 @@ class _RateTrainerPageState extends ConsumerState<RateTrainerPage> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
-        if (await _confirmLeave() && mounted) {
-          if (context.mounted) Navigator.of(context).pop();
+        // Back pressed twice: the second press must not ask again, and above
+        // all must not pop the page underneath (or the last one: blank app).
+        if (didPop || _leaving) return;
+        _leaving = true;
+        try {
+          if (await _confirmLeave() &&
+              mounted &&
+              context.mounted &&
+              (ModalRoute.of(context)?.isCurrent ?? false)) {
+            Navigator.of(context).pop();
+          }
+        } finally {
+          _leaving = false;
         }
       },
       child: _scaffold(t, done, waiting),
