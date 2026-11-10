@@ -146,7 +146,7 @@ class DownloadService {
         final next = _queue.values
             .where((t) => t.stage == DownloadStage.queued)
             .firstOrNull;
-        if (next == null) break;
+        if (next == null || _disposed) break;
         await _run(next, maxBitrateKbps);
       }
     } finally {
@@ -261,6 +261,7 @@ class DownloadService {
           }
         }
       } catch (_) {}
+      if (_disposed) return; // stopped by a profile switch, not a failure
       logEvent('download failed: ${task.title} — $e');
       if (_isPermanent(e)) onPermanentFailure?.call(task.songId);
       _queue[task.songId] = (_queue[task.songId] ?? task).copyWith(
@@ -299,5 +300,12 @@ class DownloadService {
     }
   }
 
-  void dispose() => _controller.close();
+  /// The profile was switched: its database is closing, so queued downloads
+  /// for it stop quietly instead of each failing with a database error.
+  bool _disposed = false;
+  void dispose() {
+    _disposed = true;
+    _queue.clear();
+    _controller.close();
+  }
 }
