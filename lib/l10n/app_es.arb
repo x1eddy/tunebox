@@ -735,5 +735,9 @@
   "stDots": "Puntos",
   "stLive": "Visualizador en vivo",
   "stLiveSub": "Se mueve con la música real. Android pide el permiso del micrófono para esto, pero solo se lee el sonido de TuneBox, nunca el micrófono.",
-  "stLiveDenied": "Sin el permiso, el visualizador mantiene su propia animación."
+  "stLiveDenied": "Sin el permiso, el visualizador mantiene su propia animación.",
+  "stPeaks": "Picos",
+  "stGlow": "Brillo",
+  "stSparks": "Chispas",
+  "stPulse": "Pulso"
 }

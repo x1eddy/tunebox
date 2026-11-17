@@ -2582,4 +2582,16 @@ class LEs extends L {
   @override
   String get stLiveDenied =>
       'Sin el permiso, el visualizador mantiene su propia animación.';
+
+  @override
+  String get stPeaks => 'Picos';
+
+  @override
+  String get stGlow => 'Brillo';
+
+  @override
+  String get stSparks => 'Chispas';
+
+  @override
+  String get stPulse => 'Pulso';
 }

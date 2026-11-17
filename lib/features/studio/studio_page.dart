@@ -222,13 +222,17 @@ class StudioPage extends ConsumerWidget {
                       VisualizerStyle.mirror => l.stMirror,
                       VisualizerStyle.line => l.stLine2,
                       VisualizerStyle.dots => l.stDots,
+                      VisualizerStyle.peaks => l.stPeaks,
+                      VisualizerStyle.glow => l.stGlow,
+                      VisualizerStyle.sparks => l.stSparks,
+                      VisualizerStyle.pulse => l.stPulse,
                       VisualizerStyle.off => l.stOff,
                     }),
                   ),
               ],
             ),
           ),
-          if (LiveAudio.supported)
+          if (LiveAudio.needsPermission)
             SwitchListTile(
               value: look.liveVisualizer,
               title: Text(l.stLive),

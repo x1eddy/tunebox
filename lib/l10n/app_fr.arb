@@ -735,5 +735,9 @@
   "stDots": "Points",
   "stLive": "Visualiseur en direct",
   "stLiveSub": "Bouge avec la vraie musique. Android demande l'autorisation du micro pour cela, mais seul le son de TuneBox est lu, jamais le micro.",
-  "stLiveDenied": "Sans l'autorisation, le visualiseur garde sa propre animation."
+  "stLiveDenied": "Sans l'autorisation, le visualiseur garde sa propre animation.",
+  "stPeaks": "Crêtes",
+  "stGlow": "Halo",
+  "stSparks": "Étincelles",
+  "stPulse": "Pulsation"
 }

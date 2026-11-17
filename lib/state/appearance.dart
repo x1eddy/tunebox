@@ -43,7 +43,7 @@ enum PlayerStyle {
   final String label;
 }
 
-enum VisualizerStyle { bars, wave, mirror, line, dots, off }
+enum VisualizerStyle { bars, wave, mirror, line, dots, peaks, glow, sparks, pulse, off }
 
 enum SeekStyle { line, wave, thick }
 
@@ -112,7 +112,7 @@ class Appearance {
     this.swipeRight = SwipeAction.like,
     this.doubleTapLike = true,
     this.shakeToSkip = false,
-    this.liveVisualizer = false,
+    this.liveVisualizer = true,
   });
 
   final FontPair fonts;
@@ -211,7 +211,9 @@ class Appearance {
     'swipeR': swipeRight.name,
     'dtl': doubleTapLike,
     'shake': shakeToSkip,
-    'live': liveVisualizer,
+    // new key: under the old one every install had saved "off", the default
+    // back then; the live visualiser is on by default now
+    'liveV': liveVisualizer,
   };
 
   static T _enum<T extends Enum>(List<T> values, Object? name, T fallback) {
@@ -258,7 +260,7 @@ class Appearance {
       swipeRight: _enum(SwipeAction.values, j['swipeR'], d.swipeRight),
       doubleTapLike: j['dtl'] as bool? ?? d.doubleTapLike,
       shakeToSkip: j['shake'] as bool? ?? d.shakeToSkip,
-      liveVisualizer: j['live'] as bool? ?? d.liveVisualizer,
+      liveVisualizer: j['liveV'] as bool? ?? d.liveVisualizer,
     );
   }
 

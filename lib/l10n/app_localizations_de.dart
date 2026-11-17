@@ -2585,4 +2585,16 @@ class LDe extends L {
   @override
   String get stLiveDenied =>
       'Ohne die Berechtigung bleibt der Visualizer bei seiner eigenen Animation.';
+
+  @override
+  String get stPeaks => 'Spitzen';
+
+  @override
+  String get stGlow => 'Glühen';
+
+  @override
+  String get stSparks => 'Funken';
+
+  @override
+  String get stPulse => 'Puls';
 }

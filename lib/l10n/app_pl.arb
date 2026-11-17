@@ -735,5 +735,9 @@
   "stDots": "Kropki",
   "stLive": "Wizualizacja na żywo",
   "stLiveSub": "Porusza się z prawdziwą muzyką. Android prosi o uprawnienie do mikrofonu, ale odczytywany jest tylko dźwięk TuneBox, nigdy mikrofon.",
-  "stLiveDenied": "Bez uprawnienia wizualizacja zostaje przy własnej animacji."
+  "stLiveDenied": "Bez uprawnienia wizualizacja zostaje przy własnej animacji.",
+  "stPeaks": "Szczyty",
+  "stGlow": "Poświata",
+  "stSparks": "Iskry",
+  "stPulse": "Puls"
 }

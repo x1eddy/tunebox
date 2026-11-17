@@ -2573,4 +2573,16 @@ class LKn extends L {
   @override
   String get stLiveDenied =>
       'Without the permission the visualiser keeps its own animation.';
+
+  @override
+  String get stPeaks => 'Peaks';
+
+  @override
+  String get stGlow => 'Glow';
+
+  @override
+  String get stSparks => 'Sparks';
+
+  @override
+  String get stPulse => 'Pulse';
 }

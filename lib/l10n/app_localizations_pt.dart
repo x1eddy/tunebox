@@ -2570,4 +2570,16 @@ class LPt extends L {
   @override
   String get stLiveDenied =>
       'Sem a permissão, o visualizador mantém a sua própria animação.';
+
+  @override
+  String get stPeaks => 'Picos';
+
+  @override
+  String get stGlow => 'Brilho';
+
+  @override
+  String get stSparks => 'Faíscas';
+
+  @override
+  String get stPulse => 'Pulso';
 }

@@ -2577,4 +2577,16 @@ class LNl extends L {
   @override
   String get stLiveDenied =>
       'Zonder de toestemming houdt de visualizer zijn eigen animatie.';
+
+  @override
+  String get stPeaks => 'Pieken';
+
+  @override
+  String get stGlow => 'Gloed';
+
+  @override
+  String get stSparks => 'Vonken';
+
+  @override
+  String get stPulse => 'Puls';
 }

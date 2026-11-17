@@ -2572,4 +2572,16 @@ class LIt extends L {
   @override
   String get stLiveDenied =>
       'Senza il permesso il visualizzatore mantiene la sua animazione.';
+
+  @override
+  String get stPeaks => 'Picchi';
+
+  @override
+  String get stGlow => 'Bagliore';
+
+  @override
+  String get stSparks => 'Scintille';
+
+  @override
+  String get stPulse => 'Impulso';
 }

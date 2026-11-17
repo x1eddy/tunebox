@@ -2587,4 +2587,16 @@ class LFr extends L {
   @override
   String get stLiveDenied =>
       'Sans l\'autorisation, le visualiseur garde sa propre animation.';
+
+  @override
+  String get stPeaks => 'Crêtes';
+
+  @override
+  String get stGlow => 'Halo';
+
+  @override
+  String get stSparks => 'Étincelles';
+
+  @override
+  String get stPulse => 'Pulsation';
 }

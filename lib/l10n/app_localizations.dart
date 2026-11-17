@@ -4676,6 +4676,30 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Without the permission the visualiser keeps its own animation.'**
   String get stLiveDenied;
+
+  /// No description provided for @stPeaks.
+  ///
+  /// In en, this message translates to:
+  /// **'Peaks'**
+  String get stPeaks;
+
+  /// No description provided for @stGlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Glow'**
+  String get stGlow;
+
+  /// No description provided for @stSparks.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparks'**
+  String get stSparks;
+
+  /// No description provided for @stPulse.
+  ///
+  /// In en, this message translates to:
+  /// **'Pulse'**
+  String get stPulse;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

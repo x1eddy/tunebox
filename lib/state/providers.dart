@@ -31,13 +31,16 @@ import 'settings.dart';
 // ------------------------------------------------------------- foundations
 
 final dbProvider = Provider<AppDatabase>((ref) => throw UnimplementedError());
-final profilesProvider =
-    Provider<ProfileController>((ref) => throw UnimplementedError());
+final profilesProvider = Provider<ProfileController>(
+  (ref) => throw UnimplementedError(),
+);
 final ytProvider = Provider<YtService>((ref) => throw UnimplementedError());
-final audioHandlerProvider =
-    Provider<TuneBoxAudioHandler>((ref) => throw UnimplementedError());
-final streamProxyProvider =
-    Provider<StreamProxy>((ref) => throw UnimplementedError());
+final audioHandlerProvider = Provider<TuneBoxAudioHandler>(
+  (ref) => throw UnimplementedError(),
+);
+final streamProxyProvider = Provider<StreamProxy>(
+  (ref) => throw UnimplementedError(),
+);
 
 final artworkProvider = Provider<ArtworkService>((ref) => ArtworkService());
 
@@ -136,10 +139,9 @@ final playlistsProvider = StreamProvider<List<Playlist>>(
   (ref) => ref.watch(dbProvider).watchPlaylists(),
 );
 
-final playlistSongsProvider =
-    StreamProvider.family<List<Song>, String>(
-      (ref, id) => ref.watch(dbProvider).watchPlaylistSongs(id),
-    );
+final playlistSongsProvider = StreamProvider.family<List<Song>, String>(
+  (ref, id) => ref.watch(dbProvider).watchPlaylistSongs(id),
+);
 
 final artistRulesProvider = StreamProvider<List<ArtistRule>>(
   (ref) => ref.watch(dbProvider).watchArtistRules(),
@@ -255,15 +257,21 @@ class MusicActions {
   AppDatabase get _db => _ref.read(dbProvider);
   Settings get _settings => _ref.read(settingsProvider);
 
+  /// False once a profile switch replaced these actions: work that was
+  /// waiting on the network or the database then stops instead of touching
+  /// the old profile (Riverpod throws on a disposed ref).
+  bool get _alive => _ref.mounted;
+
   Future<void> playAll(
     List<Song> songs, {
     int index = 0,
     String origin = 'library',
   }) async {
     unawaited(_askForNotifications());
-    await _handler.playSongs(songs, startIndex: index, origin: origin);
-    final song = _handler.currentSong;
-    if (song != null) unawaited(_ai.enrich(song));
+    final handler = _handler;
+    await handler.playSongs(songs, startIndex: index, origin: origin);
+    final song = handler.currentSong;
+    if (song != null && _alive) unawaited(_ai.enrich(song));
   }
 
   Future<void> playSong(
@@ -304,19 +312,20 @@ class MusicActions {
         // only drags in hour-long mixes.
         ? await yt.search('${seed.artist} ${seed.title}', max: 20)
         : await yt.related(seed.id, max: 20);
+    if (!_alive) return;
+    final db = _db, ai = _ai, settings = _settings;
     for (final c in companions) {
-      await _db.cacheSong(c);
+      await db.cacheSong(c);
     }
-    final songs = await _db.songsByIds([
-      for (final c in companions) c.id.value,
-    ]);
+    final songs = await db.songsByIds([for (final c in companions) c.id.value]);
     if (songs.isEmpty) throw StateError('no radio for "${seed.title}"');
-    final w = await _ai.weights();
+    final w = await ai.weights();
     final rules = {
-      for (final r in await _db.artistRuleList()) r.artist.toLowerCase(): r.rule,
+      for (final r in await db.artistRuleList()) r.artist.toLowerCase(): r.rule,
     };
+    if (!_alive) return;
     final scores = {
-      for (final s in songs) s.id: _ai.scoreSong(s, w, _settings, rules),
+      for (final s in songs) s.id: ai.scoreSong(s, w, settings, rules),
     };
     songs.sort((a, b) => scores[b.id]!.compareTo(scores[a.id]!));
     await playAll([seed, ...songs], index: afterEnd ? 1 : 0, origin: 'radio');
@@ -343,6 +352,7 @@ class MusicActions {
     _tap();
     return _handler.skipToPrevious();
   }
+
   Future<void> seek(Duration position) => _handler.seek(position);
   Future<void> jumpTo(int index) => _handler.jumpTo(index);
   void reorderQueue(int oldIndex, int newIndex) =>
@@ -375,8 +385,8 @@ class MusicActions {
   }
 
   Future<void> toggleShuffle() {
-    final on = _handler.playbackState.value.shuffleMode ==
-        AudioServiceShuffleMode.all;
+    final on =
+        _handler.playbackState.value.shuffleMode == AudioServiceShuffleMode.all;
     return _handler.setShuffleMode(
       on ? AudioServiceShuffleMode.none : AudioServiceShuffleMode.all,
     );
@@ -392,7 +402,7 @@ class MusicActions {
     // a burst of taps on a button built with an old [song] still alternates.
     _tap();
     await _ai.learnFromLike(song, value, _settings);
-    _ref.invalidate(homeShelvesProvider);
+    if (_alive) _ref.invalidate(homeShelvesProvider);
   }
 
   /// Blocks a song: never recommended again, and if it is the one playing,
@@ -400,24 +410,27 @@ class MusicActions {
   /// that was the only thing queued.
   Future<void> dislike(Song song) async {
     _tap();
+    final handler = _handler;
     await _ai.learnFromDislike(song, _settings);
-    if (_handler.currentSong?.id == song.id) {
-      final hasOther = _handler.queueSongs.any((s) => s.id != song.id);
+    if (!_alive) return;
+    if (handler.currentSong?.id == song.id) {
+      final hasOther = handler.queueSongs.any((s) => s.id != song.id);
       if (hasOther) {
-        await _handler.skipToNext();
+        await handler.skipToNext();
       } else {
-        await _handler.stop();
+        await handler.stop();
       }
     }
-    _ref.invalidate(homeShelvesProvider);
+    if (_alive) _ref.invalidate(homeShelvesProvider);
   }
 
   /// Undo for the above.
   Future<void> unblock(Song song, {bool restoreLike = false}) async {
-    await _db.setBlocked(song.id, false);
+    final db = _db;
+    await db.setBlocked(song.id, false);
     // Blocking un-hearts a song; an undo has to put the heart back too.
-    if (restoreLike) await _db.setLiked(song.id, true);
-    _ref.invalidate(homeShelvesProvider);
+    if (restoreLike) await db.setLiked(song.id, true);
+    if (_alive) _ref.invalidate(homeShelvesProvider);
   }
 
   Future<void> download(Song song) => _ai.downloadForUser(song, _settings);
@@ -436,6 +449,7 @@ class MusicActions {
   Future<void> retrain() async {
     _profileCache = null;
     await _ai.retrain(_settings);
+    if (!_alive) return;
     _ref.invalidate(homeShelvesProvider);
     _ref.invalidate(tasteProfileProvider);
   }
@@ -443,6 +457,7 @@ class MusicActions {
   Future<void> forgetEverything() async {
     _profileCache = null;
     await _ai.forget();
+    if (!_alive) return;
     _ref.invalidate(homeShelvesProvider);
     _ref.invalidate(tasteProfileProvider);
   }
@@ -528,8 +543,7 @@ final playbackWiringProvider = Provider<void>((ref) {
     final ai = ref.read(aiProvider);
     final random = Random();
     final scored = [
-      for (final s in songs)
-        (s, ai.quickScore(s) + random.nextDouble() * 2.5),
+      for (final s in songs) (s, ai.quickScore(s) + random.nextDouble() * 2.5),
     ]..sort((a, b) => b.$2.compareTo(a.$2));
     return [for (final e in scored) e.$1];
   };
@@ -588,11 +602,15 @@ final startupProvider = FutureProvider<void>((ref) async {
       if (ids.isNotEmpty) {
         final songs = await ref.read(dbProvider).songsByIds(ids);
         if (songs.isNotEmpty) {
-          await ref.read(audioHandlerProvider).restore(
-            songs,
-            prefs.getInt(profileKey('lastIndex')) ?? 0,
-            Duration(milliseconds: prefs.getInt(profileKey('lastPositionMs')) ?? 0),
-          );
+          await ref
+              .read(audioHandlerProvider)
+              .restore(
+                songs,
+                prefs.getInt(profileKey('lastIndex')) ?? 0,
+                Duration(
+                  milliseconds: prefs.getInt(profileKey('lastPositionMs')) ?? 0,
+                ),
+              );
         }
       }
     } catch (e) {
@@ -633,8 +651,14 @@ final startupProvider = FutureProvider<void>((ref) async {
     await ref.read(musicProvider).retrain();
     await prefs.setBool('creditRetrain1', true);
   });
-  await step('missing downloads', () => ref.read(musicProvider).syncDownloads());
-  await step('auto-downloads', () => ref.read(musicProvider).runAutoDownloads());
+  await step(
+    'missing downloads',
+    () => ref.read(musicProvider).syncDownloads(),
+  );
+  await step(
+    'auto-downloads',
+    () => ref.read(musicProvider).runAutoDownloads(),
+  );
   // A like made off Wi-Fi is caught up the moment Wi-Fi comes back.
   if (disposed) return;
   final link = Connectivity().onConnectivityChanged.listen((_) {

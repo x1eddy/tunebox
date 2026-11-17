@@ -193,6 +193,9 @@ class _TourDriverState extends State<TourDriver> {
       case 'explore': // count,intervalMs: the checking monkey, see explorer.dart
         final p = arg.split(',');
         await _explore(int.parse(p[0]), int.parse(p[1]));
+      case 'snap': // name: an in-app screenshot into $TB_SHOTS
+        await WidgetsBinding.instance.endOfFrame;
+        await _snap('$arg.png');
       case 'audit': // one look at the current screen
         await _settle();
         _audit();

@@ -2587,4 +2587,16 @@ class LPl extends L {
   @override
   String get stLiveDenied =>
       'Bez uprawnienia wizualizacja zostaje przy własnej animacji.';
+
+  @override
+  String get stPeaks => 'Szczyty';
+
+  @override
+  String get stGlow => 'Poświata';
+
+  @override
+  String get stSparks => 'Iskry';
+
+  @override
+  String get stPulse => 'Puls';
 }

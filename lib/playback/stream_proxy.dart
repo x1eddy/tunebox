@@ -19,6 +19,7 @@ class StreamProxy {
 
   final InnerTube _innerTube;
   final _cache = <String, _Resolved>{};
+
   /// Resolutions already in flight, so the player asking twice (and the user
   /// tapping five times) costs one call to YouTube, not five.
   final _inFlight = <String, Future<AudioFormat>>{};
@@ -40,7 +41,11 @@ class StreamProxy {
     // stop() closes the client; a restart needs a fresh one or every stream
     // fails with "Client is already closed".
     _client = http.Client();
-    _server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0, shared: true);
+    _server = await HttpServer.bind(
+      InternetAddress.loopbackIPv4,
+      0,
+      shared: true,
+    );
     _server!.listen(_handle, onError: (_) {});
   }
 
@@ -119,7 +124,9 @@ class StreamProxy {
         // One response per connection: simpler than juggling keep-alive while
         // stitching upstream chunks, and players do not care.
         ..persistentConnection = false
-        ..statusCode = header == null ? HttpStatus.ok : HttpStatus.partialContent
+        ..statusCode = header == null
+            ? HttpStatus.ok
+            : HttpStatus.partialContent
         ..headers.set(HttpHeaders.acceptRangesHeader, 'bytes')
         ..headers.set(HttpHeaders.contentTypeHeader, format.mimeType)
         ..headers.set(HttpHeaders.contentLengthHeader, '${end - start + 1}');
@@ -143,15 +150,23 @@ class StreamProxy {
       var position = start;
       var failures = 0;
       var clientGone = false;
-      unawaited(request.response.done.then((_) {}, onError: (_) {
-        clientGone = true;
-      }));
+      unawaited(
+        request.response.done.then(
+          (_) {},
+          onError: (_) {
+            clientGone = true;
+          },
+        ),
+      );
       while (position <= end && !clientGone) {
         final stop = min(position + _chunkSize - 1, end);
         var received = 0;
         try {
-          final response = await _range(format, position, stop)
-              .timeout(_stallLimit);
+          final response = await _range(
+            format,
+            position,
+            stop,
+          ).timeout(_stallLimit);
           if (response.statusCode == 403 || response.statusCode == 410) {
             throw const _Expired();
           }
@@ -169,7 +184,9 @@ class StreamProxy {
         } catch (e) {
           position += received;
           if (clientGone) break;
-          logEvent('stream $id dropped at byte $position (try ${failures + 1}) — $e');
+          logEvent(
+            'stream $id dropped at byte $position (try ${failures + 1}) — $e',
+          );
           if (++failures > 4) rethrow;
           if (e is _Expired || failures > 1) {
             format = await resolve(id, force: true);
@@ -203,11 +220,7 @@ class StreamProxy {
   /// An upstream that sends nothing for this long is treated as dropped.
   static const _stallLimit = Duration(seconds: 12);
 
-  Future<http.StreamedResponse> _range(
-    AudioFormat format,
-    int start,
-    int end,
-  ) {
+  Future<http.StreamedResponse> _range(AudioFormat format, int start, int end) {
     final request = http.Request('GET', Uri.parse(format.url))
       ..headers['user-agent'] = InnerTube.visionUserAgent
       ..headers['range'] = 'bytes=$start-$end'

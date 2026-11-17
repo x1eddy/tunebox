@@ -169,7 +169,15 @@ class _VisualizerState extends State<Visualizer>
   StreamSubscription<AudioFrame>? _sub;
   double _t = 0;
   Duration _prev = Duration.zero;
-  final _seeds = [for (var i = 0; i < _bands; i++) Random(i * 7919).nextDouble()];
+  final _seeds = [
+    for (var i = 0; i < _bands; i++) Random(i * 7919).nextDouble(),
+  ];
+  // Peaks: a cap per band that is pushed up and falls back slowly.
+  final _caps = Float32List(_bands);
+  // Sparks: fly up from a band when it is hit (an onset), then fall.
+  final _sparks = <_Spark>[];
+  final _lastTarget = Float32List(_bands);
+  final _sparkRnd = Random(7);
 
   @override
   void initState() {
@@ -195,7 +203,8 @@ class _VisualizerState extends State<Visualizer>
   }
 
   void _sync() {
-    final run = widget.playing &&
+    final run =
+        widget.playing &&
         !widget.reduceMotion &&
         widget.style != VisualizerStyle.off;
     if (run && !_ticker.isActive) {
@@ -220,20 +229,50 @@ class _VisualizerState extends State<Visualizer>
     final dt = ((now - _prev).inMicroseconds / 1e6).clamp(0.0, 0.1);
     _prev = now;
     _t += dt;
-    final live = _liveBands != null &&
-        DateTime.now().difference(_lastLive) < const Duration(milliseconds: 600);
+    final live =
+        _liveBands != null &&
+        DateTime.now().difference(_lastLive) <
+            const Duration(milliseconds: 600);
     for (var i = 0; i < _bands; i++) {
-      final target = live
-          ? _liveBands![i]
-          : _synthetic(i);
+      final target = live ? _liveBands![i] : _synthetic(i);
       // fast attack, slow release: hits snap up, tails fall smoothly
       final k = target > _shownBands[i] ? 0.55 : 0.12;
       _shownBands[i] += (target - _shownBands[i]) * k;
+      _caps[i] = max(_shownBands[i], _caps[i] - dt * 0.5);
+      if (widget.style == VisualizerStyle.sparks) {
+        final rise = target - _lastTarget[i];
+        if (rise > 0.16 && _sparks.length < 160) {
+          for (var n = 0; n < 1 + (rise * 6).floor().clamp(0, 3); n++) {
+            _sparks.add(
+              _Spark(
+                x: (i + 0.5) / _bands + (_sparkRnd.nextDouble() - .5) * 0.02,
+                y: 1 - _shownBands[i] * 0.8,
+                vx: (_sparkRnd.nextDouble() - .5) * 0.12,
+                vy: -(0.7 + rise * 2.2 + _sparkRnd.nextDouble() * 0.5),
+                hue: i / _bands,
+              ),
+            );
+          }
+        }
+      }
+      _lastTarget[i] = target;
     }
+    for (final sp in _sparks) {
+      sp
+        ..x += sp.vx * dt
+        ..y += sp.vy * dt
+        ..vy +=
+            2.2 *
+            dt // gravity
+        ..life -= dt * 1.3;
+    }
+    _sparks.removeWhere((sp) => sp.life <= 0 || sp.y > 1.1);
     for (var i = 0; i < _samples; i++) {
       final target = live && _liveWave != null
           ? _liveWave![i]
-          : sin(_t * 5 + i * 0.35) * 0.35 * (0.6 + 0.4 * sin(_t * 1.3 + i * 0.07));
+          : sin(_t * 5 + i * 0.35) *
+                0.35 *
+                (0.6 + 0.4 * sin(_t * 1.3 + i * 0.07));
       _shownWave[i] += (target - _shownWave[i]) * 0.35;
     }
     setState(() {});
@@ -245,7 +284,8 @@ class _VisualizerState extends State<Visualizer>
     final centre = 1 - (i / (_bands - 1) - 0.25).abs() * 1.2;
     final beat = pow(max(0.0, sin(_t * 2 * pi * 1.9)), 6).toDouble();
     final wobble = (sin(_t * (3 + seed * 4) + i * 0.7) * 0.5 + 0.5);
-    return ((0.2 + 0.5 * wobble) * centre.clamp(0.2, 1.0) + beat * 0.35 * (1 - i / _bands))
+    return ((0.2 + 0.5 * wobble) * centre.clamp(0.2, 1.0) +
+            beat * 0.35 * (1 - i / _bands))
         .clamp(0.05, 1.0);
   }
 
@@ -269,6 +309,8 @@ class _VisualizerState extends State<Visualizer>
             style: widget.style,
             bands: _shownBands,
             wave: _shownWave,
+            caps: _caps,
+            sparks: _sparks,
             color: widget.color ?? cs.primary,
             accent: cs.tertiary,
           ),
@@ -278,11 +320,28 @@ class _VisualizerState extends State<Visualizer>
   }
 }
 
+class _Spark {
+  _Spark({
+    required this.x,
+    required this.y,
+    required this.vx,
+    required this.vy,
+    required this.hue,
+  });
+
+  /// position as a fraction of the strip (0..1), velocity in strips/second
+  double x, y, vx, vy;
+  final double hue;
+  double life = 1;
+}
+
 class _ScopePainter extends CustomPainter {
   _ScopePainter({
     required this.style,
     required this.bands,
     required this.wave,
+    required this.caps,
+    required this.sparks,
     required this.color,
     required this.accent,
   });
@@ -290,6 +349,8 @@ class _ScopePainter extends CustomPainter {
   final VisualizerStyle style;
   final Float32List bands;
   final Float32List wave;
+  final Float32List caps;
+  final List<_Spark> sparks;
   final Color color;
   final Color accent;
 
@@ -306,6 +367,15 @@ class _ScopePainter extends CustomPainter {
         _line(canvas, size);
       case VisualizerStyle.dots:
         _dots(canvas, size);
+      case VisualizerStyle.peaks:
+        _bars(canvas, size, mirror: false);
+        _peaks(canvas, size);
+      case VisualizerStyle.glow:
+        _glow(canvas, size);
+      case VisualizerStyle.sparks:
+        _sparks(canvas, size);
+      case VisualizerStyle.pulse:
+        _pulse(canvas, size);
       case VisualizerStyle.off:
         break;
     }
@@ -325,7 +395,12 @@ class _ScopePainter extends CustomPainter {
           : Rect.fromLTWH(x, size.height - h, w, h);
       canvas.drawRRect(
         RRect.fromRectAndRadius(rect, Radius.circular(w / 2)),
-        Paint()..color = Color.lerp(color, accent, i / n)!.withValues(alpha: 0.55 + 0.45 * v),
+        Paint()
+          ..color = Color.lerp(
+            color,
+            accent,
+            i / n,
+          )!.withValues(alpha: 0.55 + 0.45 * v),
       );
     }
   }
@@ -354,8 +429,9 @@ class _ScopePainter extends CustomPainter {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.4
         ..strokeCap = StrokeCap.round
-        ..shader = LinearGradient(colors: [color, accent, color])
-            .createShader(Offset.zero & size),
+        ..shader = LinearGradient(
+          colors: [color, accent, color],
+        ).createShader(Offset.zero & size),
     );
   }
 
@@ -363,11 +439,17 @@ class _ScopePainter extends CustomPainter {
     final n = bands.length;
     final pts = [
       for (var i = 0; i < n; i++)
-        Offset(size.width * i / (n - 1), size.height * (1 - bands[i].clamp(0.03, 1.0))),
+        Offset(
+          size.width * i / (n - 1),
+          size.height * (1 - bands[i].clamp(0.03, 1.0)),
+        ),
     ];
     final path = Path()..moveTo(pts.first.dx, pts.first.dy);
     for (var i = 1; i < n; i++) {
-      final c = Offset((pts[i - 1].dx + pts[i].dx) / 2, (pts[i - 1].dy + pts[i].dy) / 2);
+      final c = Offset(
+        (pts[i - 1].dx + pts[i].dx) / 2,
+        (pts[i - 1].dy + pts[i].dy) / 2,
+      );
       path.quadraticBezierTo(pts[i - 1].dx, pts[i - 1].dy, c.dx, c.dy);
     }
     path.lineTo(pts.last.dx, pts.last.dy);
@@ -403,7 +485,10 @@ class _ScopePainter extends CustomPainter {
       for (var row = 0; row < rows; row++) {
         final on = row < lit;
         canvas.drawCircle(
-          Offset(i * slot + slot / 2, size.height - (row + 0.5) * size.height / rows),
+          Offset(
+            i * slot + slot / 2,
+            size.height - (row + 0.5) * size.height / rows,
+          ),
           r,
           Paint()
             ..color = on
@@ -412,6 +497,138 @@ class _ScopePainter extends CustomPainter {
         );
       }
     }
+  }
+
+  void _peaks(Canvas canvas, Size size) {
+    final n = caps.length;
+    final slot = size.width / n;
+    final w = slot * 0.58;
+    for (var i = 0; i < n; i++) {
+      final y = size.height - caps[i].clamp(0.04, 1.0) * size.height;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(i * slot + (slot - w) / 2, max(0.0, y - 4), w, 2.5),
+          const Radius.circular(2),
+        ),
+        Paint()..color = Color.lerp(accent, color, i / n)!,
+      );
+    }
+  }
+
+  /// The whole spectrum as one soft, mirrored, glowing shape.
+  void _glow(Canvas canvas, Size size) {
+    final n = bands.length;
+    final mid = size.height / 2;
+    Path half(double sign) {
+      final p = Path()..moveTo(0, mid);
+      for (var i = 0; i < n; i++) {
+        final x = size.width * (i + 0.5) / n;
+        final y = mid + sign * bands[i].clamp(0.02, 1.0) * mid * 0.95;
+        final px = size.width * (i - 0.5) / n;
+        final py = i == 0
+            ? mid
+            : mid + sign * bands[i - 1].clamp(0.02, 1.0) * mid * 0.95;
+        p.quadraticBezierTo(px, py, (px + x) / 2, (py + y) / 2);
+      }
+      p.lineTo(size.width, mid);
+      return p;
+    }
+
+    final shape = Path()
+      ..addPath(half(-1), Offset.zero)
+      ..addPath(half(1), Offset.zero);
+    final shader = LinearGradient(
+      colors: [color, accent, color],
+    ).createShader(Offset.zero & size);
+    canvas.drawPath(
+      shape,
+      Paint()
+        ..shader = shader
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 7),
+    );
+    canvas.drawPath(
+      shape,
+      Paint()
+        ..shader = shader
+        ..color = Colors.white.withValues(alpha: 0.85),
+    );
+  }
+
+  void _sparks(Canvas canvas, Size size) {
+    // a faint spectrum floor the sparks fly off
+    final n = bands.length;
+    final slot = size.width / n;
+    for (var i = 0; i < n; i++) {
+      final h = max(2.0, bands[i] * size.height * 0.8);
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(i * slot + slot * 0.2, size.height - h, slot * 0.6, h),
+          const Radius.circular(2),
+        ),
+        Paint()..color = color.withValues(alpha: 0.22),
+      );
+    }
+    for (final sp in sparks) {
+      final c = Color.lerp(color, accent, sp.hue)!;
+      final o = Offset(sp.x * size.width, sp.y * size.height);
+      canvas.drawCircle(
+        o,
+        3.2 * sp.life,
+        Paint()
+          ..color = c.withValues(alpha: 0.35 * sp.life)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
+      );
+      canvas.drawCircle(o, 1.6, Paint()..color = c.withValues(alpha: sp.life));
+    }
+  }
+
+  /// A glowing line that swells with the bass, the waveform running in it.
+  void _pulse(Canvas canvas, Size size) {
+    var bass = 0.0, mids = 0.0;
+    for (var i = 0; i < 5; i++) {
+      bass += bands[i];
+    }
+    for (var i = 8; i < 20; i++) {
+      mids += bands[i];
+    }
+    bass /= 5;
+    mids /= 12;
+    final mid = size.height / 2;
+    final thick = 3 + bass * size.height * 0.75;
+    final rect = Rect.fromCenter(
+      center: Offset(size.width / 2, mid),
+      width: size.width * (0.55 + 0.45 * bass),
+      height: thick,
+    );
+    final shader = LinearGradient(
+      colors: [
+        color.withValues(alpha: 0),
+        color,
+        accent,
+        color,
+        color.withValues(alpha: 0),
+      ],
+    ).createShader(rect);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, Radius.circular(thick / 2)),
+      Paint()
+        ..shader = shader
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 4 + bass * 8),
+    );
+    final path = Path();
+    for (var i = 0; i < wave.length; i++) {
+      final x = size.width * i / (wave.length - 1);
+      final env = sin(pi * i / (wave.length - 1));
+      final y = mid + wave[i] * env * size.height * (0.15 + 0.35 * mids);
+      i == 0 ? path.moveTo(x, y) : path.lineTo(x, y);
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.6
+        ..color = Colors.white.withValues(alpha: 0.75),
+    );
   }
 
   @override
