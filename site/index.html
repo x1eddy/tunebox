@@ -248,7 +248,7 @@
   <div class="wrap">
     <div class="hero">
       <div>
-        <a class="badge" href="#news" data-reveal><b>1.0</b> Synced lyrics, studio sound &amp; more →</a>
+        <a class="badge" href="#news" data-reveal><b>1.0.2</b> A visualiser that follows the music →</a>
         <h1 id="headline">A music player that <em>learns your taste</em> — on your device.</h1>
         <p class="lead" data-reveal style="--i:6">Stream from YouTube, play your own files, download for offline. Lyrics that follow along, a mix from one sentence, and an AI that learns what you like without ever leaving your phone. No account, no ads, no tracking.</p>
         <div class="cta" data-reveal style="--i:8">
@@ -325,14 +325,26 @@
     <p class="sub" data-reveal>Every update installs over the old one and keeps your library and taste.</p>
     <div class="news">
       <article class="item" data-reveal style="--i:0">
-        <div class="when"><b class="new">New</b><br>1.0.1 · 8 Nov 2026</div>
+        <div class="when"><b class="new">New</b><br>1.0.2 · 17 Nov 2026</div>
+        <div><h3>The visualiser follows the music</h3>
+          <ul>
+            <li>The bars, the wave and every other style now move with what is actually playing, bass to treble. On Linux it is always on; on Android it is on by default after one permission prompt. Only TuneBox's own sound is read, never the microphone.</li>
+            <li>Four new styles: Peaks, Glow, Sparks and Pulse.</li>
+            <li>Fixed: a tab switched off in the Customization Studio could not be switched back on.</li>
+            <li>Fixed: settings lagged and the Spacing setting did nothing; importing a big folder could freeze the app; quick taps during a crossfade could play two songs at once.</li>
+            <li>Plus many smaller fixes for likes, profiles, sync and playback. <a href="https://github.com/x1eddy/tunebox/releases/tag/v1.0.2">Full list</a>.</li>
+          </ul>
+          <img src="img/visualiser-102.webp" alt="The six visualiser styles, each captured live while a song plays" loading="lazy" width="1300" height="728" style="width:100%;height:auto;border-radius:14px;margin-top:12px"></div>
+      </article>
+      <article class="item" data-reveal style="--i:1">
+        <div class="when"><b>1.0.1</b><br>8 Nov 2026</div>
         <div><h3>Sync fix</h3>
           <ul>
             <li>Fixed: Synced devices only synced one profile. Now every profile syncs into the same profile on your other device, and names match.</li>
             <li>Existing pairings keep working; no need to pair again.</li>
           </ul></div>
       </article>
-      <article class="item" data-reveal style="--i:1">
+      <article class="item" data-reveal style="--i:2">
         <div class="when"><b>1.0</b><br>8 Nov 2026</div>
         <div><h3>TuneBox 1.0: the big one</h3>
           <ul>
@@ -377,16 +389,16 @@
   <section id="download">
     <span class="eyebrow" data-reveal>Download</span>
     <h2 data-reveal>Get TuneBox</h2>
-    <p class="sub" data-reveal>Latest version: <b id="ver">v1.0.1</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
+    <p class="sub" data-reveal>Latest version: <b id="ver">v1.0.2</b>. Free, forever, MIT licensed.<span id="count-line" hidden> <b id="count-n"></b> downloads so far, counted by GitHub — no tracking.</span></p>
     <div class="dl">
       <div class="card" data-reveal style="--i:0"><h3>🤖 Android</h3><p>Android 7 or newer. One universal APK.</p>
-        <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/android-TuneBox-1.0.1.apk">Download APK</a>
+        <a class="btn primary" id="dl-android" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.2/android-TuneBox-1.0.2.apk">Download APK</a>
         <small>Open it on the phone and allow installing from that app once. Signed with a real release key; after that the app updates itself.</small></div>
       <div class="card" data-reveal style="--i:1"><h3>🐧 Linux</h3><p>x86_64. Installs into your home folder, no root.</p>
-        <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/linux-TuneBox-1.0.1.tar.gz">Download .tar.gz</a>
+        <a class="btn primary" id="dl-linux" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.2/linux-TuneBox-1.0.2.tar.gz">Download .tar.gz</a>
         <small>Extract, run <code>./install.sh</code>. Needs <code>libmpv</code> (<code>sudo apt install libmpv2</code>).</small></div>
       <div class="card" data-reveal style="--i:2"><h3> iPhone</h3><p>iOS 15+. Unsigned build you sign with your own Apple ID.</p>
-        <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.1/iphone-TuneBox-1.0.1.ipa">Download .ipa</a>
+        <a class="btn" id="dl-ios" href="https://github.com/x1eddy/tunebox/releases/download/v1.0.2/iphone-TuneBox-1.0.2.ipa">Download .ipa</a>
         <small>Install with <a href="https://sidestore.io">SideStore</a> or <a href="https://altstore.io">AltStore</a>; a free Apple ID needs a refresh every 7 days (they do it for you).</small></div>
     </div>
 
