@@ -95,6 +95,34 @@ class YtService {
         }),
   ];
 
+  /// Albums, singles and EPs on YouTube Music.
+  Future<List<AlbumItem>> searchAlbums(String query, {int max = 12}) =>
+      innerTube.musicSearchAlbums(query, max: max);
+
+  /// An album and its tracks as songs, in album order. Unlike search, no
+  /// "is this a song" filter: everything on an album page is one.
+  Future<(AlbumDetail, List<SongsCompanion>)> album(String browseId) async {
+    final d = await innerTube.musicAlbum(browseId);
+    return (
+      d,
+      [
+        // The album page names the artist itself, so no "Artist - Title"
+        // guessing: "Billie Jean - Remastered" is a title.
+        for (final t in d.tracks)
+          SongsCompanion.insert(
+            id: t.id,
+            title: t.title,
+            source: SongSource.youtube,
+            artist: Value(t.author),
+            album: Value(t.album),
+            artworkUrl: Value(t.thumbnailUrl),
+            durationMs: Value(t.durationMs),
+            year: Value(t.year),
+          ),
+      ],
+    );
+  }
+
   /// Songs that go with one song.
   ///
   /// YouTube Music's radio queue is music by construction; YouTube's "related
@@ -159,7 +187,10 @@ class YtService {
   }
 
   /// Best audio format for a video, straight from InnerTube.
-  Future<AudioFormat> bestAudio(String videoId, {int maxBitrateKbps = 0}) async {
+  Future<AudioFormat> bestAudio(
+    String videoId, {
+    int maxBitrateKbps = 0,
+  }) async {
     final result = await innerTube.player(videoId);
     final format = result.best(maxKbps: maxBitrateKbps);
     if (format == null) {
@@ -193,7 +224,9 @@ class YtService {
     var start = 0;
 
     while (total == 0 || start < total) {
-      final end = total == 0 ? start + chunk - 1 : min(start + chunk - 1, total - 1);
+      final end = total == 0
+          ? start + chunk - 1
+          : min(start + chunk - 1, total - 1);
       final request = http.Request('GET', Uri.parse(format.url))
         ..headers['user-agent'] = InnerTube.visionUserAgent
         ..headers['range'] = 'bytes=$start-$end';
@@ -229,7 +262,10 @@ class YtService {
       var year = direct?.year;
 
       if (year == null && title.isNotEmpty) {
-        final hits = await innerTube.musicSearch('$artist $title'.trim(), max: 3);
+        final hits = await innerTube.musicSearch(
+          '$artist $title'.trim(),
+          max: 3,
+        );
         for (final hit in hits.take(2)) {
           if (!_sameSong(hit.title, title)) continue;
           final info = await innerTube.songInfo(hit.id);

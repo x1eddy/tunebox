@@ -39,7 +39,13 @@ class StudioPage extends ConsumerWidget {
     final set = ref.read(appearanceProvider.notifier);
     void up(Appearance Function(Appearance) f) => set.update(f);
 
-    final tabNames = [l.navHome, l.navExplore, l.navLibrary, l.navTaste, l.setTitle];
+    final tabNames = [
+      l.navHome,
+      l.navExplore,
+      l.navLibrary,
+      l.navTaste,
+      l.setTitle,
+    ];
     final tabIcons = [
       Icons.home_rounded,
       Icons.travel_explore_rounded,
@@ -66,7 +72,9 @@ class StudioPage extends ConsumerWidget {
                     messenger.showTimed(SnackBar(content: Text(l.stCodeBad)));
                   } else {
                     set.replace(next);
-                    messenger.showTimed(SnackBar(content: Text(l.stCodeApplied)));
+                    messenger.showTimed(
+                      SnackBar(content: Text(l.stCodeApplied)),
+                    );
                   }
                 case 'reset':
                   set.replace(const Appearance());
@@ -104,7 +112,7 @@ class StudioPage extends ConsumerWidget {
                     colors: [
                       p.seed,
                       HSLColor.fromColor(p.seed)
-                          .withHue((HSLColor.fromColor(p.seed).hue + 40) % 360)
+                          .withHue((HSLColor.fromColor(p.seed).hue + 28) % 360)
                           .toColor(),
                     ],
                     background: p.background ?? Colors.black,
@@ -181,16 +189,13 @@ class StudioPage extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          switch (p) {
-                            PlayerStyle.classic => Icons.crop_square_rounded,
-                            PlayerStyle.vinyl => Icons.album_rounded,
-                            PlayerStyle.fullBleed => Icons.fullscreen_rounded,
-                            PlayerStyle.minimal => Icons.title_rounded,
-                            PlayerStyle.cassette => Icons.radio_rounded,
-                          },
-                          size: 30,
-                        ),
+                        Icon(switch (p) {
+                          PlayerStyle.classic => Icons.crop_square_rounded,
+                          PlayerStyle.vinyl => Icons.album_rounded,
+                          PlayerStyle.fullBleed => Icons.fullscreen_rounded,
+                          PlayerStyle.minimal => Icons.title_rounded,
+                          PlayerStyle.cassette => Icons.radio_rounded,
+                        }, size: 30),
                         const SizedBox(height: 6),
                         Text(
                           playerStyleName(l, p),
@@ -291,9 +296,14 @@ class StudioPage extends ConsumerWidget {
               ];
               final item = all.removeAt(from);
               all.insert(to, item);
-              up((a) => a.copyWith(
-                    tabs: [for (final b in all) if (look.tabs.contains(b)) b],
-                  ));
+              up(
+                (a) => a.copyWith(
+                  tabs: [
+                    for (final b in all)
+                      if (look.tabs.contains(b)) b,
+                  ],
+                ),
+              );
             },
             children: [
               for (final (i, b) in [
@@ -311,16 +321,19 @@ class StudioPage extends ConsumerWidget {
                       Switch(
                         value: look.tabs.contains(b),
                         // Settings stays reachable, and two tabs at least
-                        onChanged: b == 4 ||
+                        onChanged:
+                            b == 4 ||
                                 (look.tabs.contains(b) && look.tabs.length <= 2)
                             ? null
-                            : (on) => up((a) => a.copyWith(
+                            : (on) => up(
+                                (a) => a.copyWith(
                                   // brackets matter: a bare `..remove` would
                                   // apply to both branches of the ?:
                                   tabs: on
                                       ? [...a.tabs, b]
                                       : ([...a.tabs]..remove(b)),
-                                )),
+                                ),
+                              ),
                       ),
                       ReorderableDragStartListener(
                         index: i,
@@ -383,9 +396,9 @@ class StudioPage extends ConsumerWidget {
             onTap: () async {
               await Clipboard.setData(ClipboardData(text: look.toCode()));
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showTimed(
-                  SnackBar(content: Text(l.stCodeCopied)),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showTimed(SnackBar(content: Text(l.stCodeCopied)));
               }
             },
           ),

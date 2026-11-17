@@ -31,15 +31,13 @@ class SyncCrypto {
     final h = Hmac(sha256, _enc);
     var i = 0, counter = 0;
     while (i < length) {
-      final block = h
-          .convert([
-            ...nonce,
-            (counter >> 24) & 255,
-            (counter >> 16) & 255,
-            (counter >> 8) & 255,
-            counter & 255,
-          ])
-          .bytes;
+      final block = h.convert([
+        ...nonce,
+        (counter >> 24) & 255,
+        (counter >> 16) & 255,
+        (counter >> 8) & 255,
+        counter & 255,
+      ]).bytes;
       for (var j = 0; j < block.length && i < length; j++) {
         out[i++] = block[j];
       }

@@ -30,8 +30,9 @@ class EqCurve extends StatefulWidget {
 class _EqCurveState extends State<EqCurve> {
   int? _dragging;
 
-  static String _hz(double f) =>
-      f >= 1000 ? '${(f / 1000).toStringAsFixed(f >= 10000 ? 0 : 1)}k' : '${f.round()}';
+  static String _hz(double f) => f >= 1000
+      ? '${(f / 1000).toStringAsFixed(f >= 10000 ? 0 : 1)}k'
+      : '${f.round()}';
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +47,10 @@ class _EqCurveState extends State<EqCurve> {
         double yOf(double db) =>
             height / 2 - (db / widget.range) * (height / 2 - 16);
         double dbOf(double y) =>
-            ((height / 2 - y) / (height / 2 - 16) * widget.range)
-                .clamp(-widget.range, widget.range);
+            ((height / 2 - y) / (height / 2 - 16) * widget.range).clamp(
+              -widget.range,
+              widget.range,
+            );
 
         void move(int i, double y) {
           final next = [...widget.gains];
@@ -182,10 +185,7 @@ class _CurvePainter extends CustomPainter {
     fill
       ..lineTo(maxX, yOf(0))
       ..close();
-    canvas.drawPath(
-      fill,
-      Paint()..color = line.withValues(alpha: 0.14),
-    );
+    canvas.drawPath(fill, Paint()..color = line.withValues(alpha: 0.14));
     canvas.drawPath(
       path,
       Paint()

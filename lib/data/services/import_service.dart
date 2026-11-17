@@ -12,7 +12,15 @@ import '../db/database.dart';
 import 'artwork_service.dart';
 
 const kAudioExtensions = {
-  '.mp3', '.m4a', '.aac', '.flac', '.ogg', '.opus', '.wav', '.wma', '.mp4',
+  '.mp3',
+  '.m4a',
+  '.aac',
+  '.flac',
+  '.ogg',
+  '.opus',
+  '.wav',
+  '.wma',
+  '.mp4',
 };
 
 @immutable
@@ -87,7 +95,6 @@ class ImportService {
     return out;
   }
 
-
   Stream<ScanProgress> scanFolders(List<String> folders) async* {
     yield const ScanProgress(scanned: 0, total: 0, added: 0);
     // Walking a big music folder took seconds on the UI thread; only the
@@ -96,8 +103,10 @@ class ImportService {
     yield* _importFiles(paths);
   }
 
-  Stream<ScanProgress> importPaths(List<String> paths) =>
-      _importFiles([for (final p in paths) if (File(p).existsSync()) p]);
+  Stream<ScanProgress> importPaths(List<String> paths) => _importFiles([
+    for (final p in paths)
+      if (File(p).existsSync()) p,
+  ]);
 
   /// Files are read in small batches on a background isolate. Before, every
   /// file was parsed on the UI thread with its cover in memory, and one
@@ -122,9 +131,7 @@ class ImportService {
       }
       List<LocalTags> tags;
       try {
-        tags = fresh.isEmpty
-            ? const []
-            : await _readInBackground(fresh);
+        tags = fresh.isEmpty ? const [] : await _readInBackground(fresh);
       } catch (_) {
         // the batch crashed its isolate; fall back to file names
         tags = [for (final p in fresh) LocalTags.fromName(p)];
@@ -220,10 +227,8 @@ String localId(String path) {
 }
 
 /// Tag titles often carry the track number: "04 Sodium Lights".
-String stripTrackNumber(String title) => title
-    .trim()
-    .replaceFirst(RegExp(r'^\d{1,3}\s*[-._)]?\s+'), '')
-    .trim();
+String stripTrackNumber(String title) =>
+    title.trim().replaceFirst(RegExp(r'^\d{1,3}\s*[-._)]?\s+'), '').trim();
 
 /// "04 - Cold Atlas - Sodium Lights" -> (Cold Atlas, Sodium Lights)
 (String, String) splitFileName(String stem) {
@@ -235,7 +240,6 @@ String stripTrackNumber(String title) => title
   }
   return ('Unknown artist', name);
 }
-
 
 // ------------------------------------------------------------ background
 
@@ -260,7 +264,9 @@ List<String> listAudioPaths(List<String> folders) {
       } else if (e is File) {
         final lower = e.path.toLowerCase();
         final dot = lower.lastIndexOf('.');
-        if (dot >= 0 && kAudioExtensions.contains(lower.substring(dot)) && seen.add(e.path)) {
+        if (dot >= 0 &&
+            kAudioExtensions.contains(lower.substring(dot)) &&
+            seen.add(e.path)) {
           out.add(e.path);
         }
       }
@@ -302,7 +308,9 @@ class LocalTags {
   /// Title and artist from "04 - Artist - Title.mp3" when tags are not read.
   factory LocalTags.fromName(String path, {int size = 0}) {
     final name = path.split(Platform.pathSeparator).last;
-    final stem = name.contains('.') ? name.substring(0, name.lastIndexOf('.')) : name;
+    final stem = name.contains('.')
+        ? name.substring(0, name.lastIndexOf('.'))
+        : name;
     final guess = splitFileName(stem);
     return LocalTags(
       path: path,
@@ -341,7 +349,8 @@ LocalTags readTagsSafely(String path) {
     return LocalTags.fromName(path);
   }
   final lower = path.toLowerCase();
-  if (size > _maxParseBytes || (lower.endsWith('.mp4') && size > _maxMp4Bytes)) {
+  if (size > _maxParseBytes ||
+      (lower.endsWith('.mp4') && size > _maxMp4Bytes)) {
     return LocalTags.fromName(path, size: size);
   }
   AudioMetadata tag;

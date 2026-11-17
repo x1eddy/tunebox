@@ -120,7 +120,10 @@ class _SyncPageState extends ConsumerState<SyncPage> {
                     const Icon(Icons.sync_rounded),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(l.syncHeadline, style: t.textTheme.titleLarge),
+                      child: Text(
+                        l.syncHeadline,
+                        style: t.textTheme.titleLarge,
+                      ),
                     ),
                   ],
                 ),
@@ -250,7 +253,9 @@ class _ShowCodeSheetState extends State<_ShowCodeSheet> {
   Future<void> _loadAddresses() async {
     final out = <String>[];
     try {
-      for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
+      for (final i in await NetworkInterface.list(
+        type: InternetAddressType.IPv4,
+      )) {
         for (final a in i.addresses) {
           if (!a.isLoopback) out.add(a.address);
         }
@@ -277,9 +282,17 @@ class _ShowCodeSheetState extends State<_ShowCodeSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (_paired != null) ...[
-              Icon(Icons.check_circle_rounded, size: 56, color: t.colorScheme.primary),
+              Icon(
+                Icons.check_circle_rounded,
+                size: 56,
+                color: t.colorScheme.primary,
+              ),
               const SizedBox(height: 12),
-              Text(l.syncPaired(_paired!), style: t.textTheme.titleLarge, textAlign: TextAlign.center),
+              Text(
+                l.syncPaired(_paired!),
+                style: t.textTheme.titleLarge,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () => Navigator.pop(context),
@@ -299,10 +312,15 @@ class _ShowCodeSheetState extends State<_ShowCodeSheet> {
                 child: Text(l.syncNewCode),
               ),
             ] else ...[
-              Text(l.syncTypeThis, style: t.textTheme.titleMedium, textAlign: TextAlign.center),
+              Text(
+                l.syncTypeThis,
+                style: t.textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 14),
               GestureDetector(
-                onLongPress: () => Clipboard.setData(ClipboardData(text: _code)),
+                onLongPress: () =>
+                    Clipboard.setData(ClipboardData(text: _code)),
                 child: Text(
                   '${_code.substring(0, 3)} ${_code.substring(3)}',
                   style: t.textTheme.displayMedium?.copyWith(
@@ -379,16 +397,23 @@ class _EnterCodeDialogState extends State<_EnterCodeDialog> {
               fontSize: 28,
               letterSpacing: 6,
             ),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]'))],
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]')),
+            ],
             onSubmitted: (_) => _submit(),
-            decoration: const InputDecoration(counterText: '', hintText: '000 000'),
+            decoration: const InputDecoration(
+              counterText: '',
+              hintText: '000 000',
+            ),
           ),
           if (_manual)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: TextField(
                 controller: _host,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: InputDecoration(labelText: l.syncAddressLabel),
               ),
             )
@@ -428,7 +453,10 @@ class SyncSettingsTile extends ConsumerWidget {
             ? l.syncSettingsOff
             : l.syncSettingsOn(peers.map((p) => p.name).join(', ')),
       ),
-      trailing: Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.onSurfaceVariant),
+      trailing: Icon(
+        Icons.chevron_right_rounded,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       shape: RoundedRectangleBorder(borderRadius: R.card),
       onTap: onTap,
     );

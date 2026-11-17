@@ -18,12 +18,15 @@ class Songs extends Table {
   IntColumn get year => integer().nullable()();
   TextColumn get source => textEnum<SongSource>()();
   TextColumn get filePath => text().nullable()();
+
   /// Comma separated descriptors: genres, keywords, moods.
   TextColumn get tags => text().withDefault(const Constant(''))();
   BoolColumn get liked => boolean().withDefault(const Constant(false))();
   BoolColumn get blocked => boolean().withDefault(const Constant(false))();
+
   /// False for search results the user has never engaged with.
   BoolColumn get inLibrary => boolean().withDefault(const Constant(false))();
+
   /// True when the AI pulled it in by itself, so it can be cleaned up again.
   BoolColumn get autoAdded => boolean().withDefault(const Constant(false))();
   IntColumn get playCount => integer().withDefault(const Constant(0))();
@@ -63,6 +66,7 @@ class PlayEvents extends Table {
   IntColumn get playedMs => integer()();
   IntColumn get durationMs => integer()();
   BoolColumn get skipped => boolean().withDefault(const Constant(false))();
+
   /// home_shelf | search | library | radio | auto
   TextColumn get origin => text().withDefault(const Constant('library'))();
   IntColumn get hour => integer()();
@@ -83,6 +87,7 @@ class Affinities extends Table {
 /// Hard overrides the user set on the "Your taste" screen.
 class ArtistRules extends Table {
   TextColumn get artist => text()();
+
   /// 1 = always more of, -1 = never again.
   IntColumn get rule => integer()();
 
@@ -138,9 +143,9 @@ class AppDatabase extends _$AppDatabase {
 
   // ----------------------------------------------------------------- lyrics
 
-  Future<LyricsCacheData?> cachedLyrics(String songId) =>
-      (select(lyricsCache)..where((l) => l.songId.equals(songId)))
-          .getSingleOrNull();
+  Future<LyricsCacheData?> cachedLyrics(String songId) => (select(
+    lyricsCache,
+  )..where((l) => l.songId.equals(songId))).getSingleOrNull();
 
   Future<void> saveLyrics(LyricsCacheCompanion row) =>
       into(lyricsCache).insertOnConflictUpdate(row);
@@ -193,12 +198,11 @@ class AppDatabase extends _$AppDatabase {
 
   /// [cacheSong] for a whole result page in one transaction — thirty
   /// separate commits were a noticeable part of the wait after a search.
-  Future<void> cacheSongs(List<SongsCompanion> list) =>
-      transaction(() async {
-        for (final song in list) {
-          await cacheSong(song);
-        }
-      });
+  Future<void> cacheSongs(List<SongsCompanion> list) => transaction(() async {
+    for (final song in list) {
+      await cacheSong(song);
+    }
+  });
 
   Future<Song?> songById(String id) =>
       (select(songs)..where((s) => s.id.equals(id))).getSingleOrNull();
@@ -207,7 +211,10 @@ class AppDatabase extends _$AppDatabase {
     if (ids.isEmpty) return const [];
     final rows = await (select(songs)..where((s) => s.id.isIn(ids))).get();
     final byId = {for (final r in rows) r.id: r};
-    return [for (final id in ids) if (byId[id] != null) byId[id]!];
+    return [
+      for (final id in ids)
+        if (byId[id] != null) byId[id]!,
+    ];
   }
 
   Stream<List<Song>> watchLibrary() =>
@@ -218,7 +225,9 @@ class AppDatabase extends _$AppDatabase {
 
   Stream<List<Song>> watchSource(SongSource source) =>
       (select(songs)
-            ..where((s) => s.source.equalsValue(source) & s.inLibrary.equals(true))
+            ..where(
+              (s) => s.source.equalsValue(source) & s.inLibrary.equals(true),
+            )
             ..orderBy([(s) => OrderingTerm.desc(s.addedAt)]))
           .watch();
 
@@ -231,11 +240,12 @@ class AppDatabase extends _$AppDatabase {
   /// Search hits sitting in the cache that the user never touched.
   Future<List<Song>> cachedSongs() =>
       (select(songs)..where(
-        (s) =>
-            s.inLibrary.equals(false) &
-            s.liked.equals(false) &
-            s.playCount.equals(0),
-      )).get();
+            (s) =>
+                s.inLibrary.equals(false) &
+                s.liked.equals(false) &
+                s.playCount.equals(0),
+          ))
+          .get();
 
   Future<List<Song>> allSongs() => select(songs).get();
 
@@ -248,8 +258,9 @@ class AppDatabase extends _$AppDatabase {
       );
 
   Future<void> setBlocked(String id, bool blocked) =>
-      (update(songs)..where((s) => s.id.equals(id)))
-          .write(SongsCompanion(blocked: Value(blocked)));
+      (update(songs)..where((s) => s.id.equals(id))).write(
+        SongsCompanion(blocked: Value(blocked)),
+      );
 
   Future<void> markPlayed(String id) async {
     final song = await songById(id);
@@ -266,8 +277,9 @@ class AppDatabase extends _$AppDatabase {
   Future<void> markSkipped(String id) async {
     final song = await songById(id);
     if (song == null) return;
-    await (update(songs)..where((s) => s.id.equals(id)))
-        .write(SongsCompanion(skipCount: Value(song.skipCount + 1)));
+    await (update(songs)..where((s) => s.id.equals(id))).write(
+      SongsCompanion(skipCount: Value(song.skipCount + 1)),
+    );
   }
 
   Future<void> markDownloaded(String id, String path, int bytes) =>
@@ -304,22 +316,25 @@ class AppDatabase extends _$AppDatabase {
     return row?.read(songs.fileSize.sum()) ?? 0;
   }
 
-  Future<List<Song>> autoDownloaded() => (select(songs)
-        ..where((s) =>
-            s.autoAdded.equals(true) & s.source.equalsValue(SongSource.downloaded))
-        ..orderBy([(s) => OrderingTerm.asc(s.addedAt)]))
-      .get();
+  Future<List<Song>> autoDownloaded() =>
+      (select(songs)
+            ..where(
+              (s) =>
+                  s.autoAdded.equals(true) &
+                  s.source.equalsValue(SongSource.downloaded),
+            )
+            ..orderBy([(s) => OrderingTerm.asc(s.addedAt)]))
+          .get();
 
   // -------------------------------------------------------------- playlists
 
-  Stream<List<Playlist>> watchPlaylists() =>
-      (select(playlists)..orderBy([(p) => OrderingTerm.desc(p.createdAt)]))
-          .watch();
+  Stream<List<Playlist>> watchPlaylists() => (select(
+    playlists,
+  )..orderBy([(p) => OrderingTerm.desc(p.createdAt)])).watch();
 
-  Future<void> createPlaylist(String id, String name) =>
-      into(playlists).insertOnConflictUpdate(
-        PlaylistsCompanion.insert(id: id, name: name),
-      );
+  Future<void> createPlaylist(String id, String name) => into(
+    playlists,
+  ).insertOnConflictUpdate(PlaylistsCompanion.insert(id: id, name: name));
 
   Future<void> deletePlaylist(String id) async {
     await (delete(playlistEntries)..where((e) => e.playlistId.equals(id))).go();
@@ -327,9 +342,9 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> addToPlaylist(String playlistId, String songId) async {
-    final count = await (select(playlistEntries)
-          ..where((e) => e.playlistId.equals(playlistId)))
-        .get();
+    final count = await (select(
+      playlistEntries,
+    )..where((e) => e.playlistId.equals(playlistId))).get();
     await into(playlistEntries).insertOnConflictUpdate(
       PlaylistEntriesCompanion.insert(
         playlistId: playlistId,
@@ -337,17 +352,18 @@ class AppDatabase extends _$AppDatabase {
         position: count.length,
       ),
     );
-    await (update(songs)..where((s) => s.id.equals(songId)))
-        .write(const SongsCompanion(inLibrary: Value(true)));
+    await (update(songs)..where((s) => s.id.equals(songId))).write(
+      const SongsCompanion(inLibrary: Value(true)),
+    );
   }
 
   /// Many songs in one transaction, in order, skipping ones already there.
   Future<void> addAllToPlaylist(String playlistId, List<String> songIds) =>
       transaction(() async {
         final have = {
-          for (final e in await (select(playlistEntries)
-                ..where((e) => e.playlistId.equals(playlistId)))
-              .get())
+          for (final e in await (select(
+            playlistEntries,
+          )..where((e) => e.playlistId.equals(playlistId))).get())
             e.songId,
         };
         var position = have.length;
@@ -361,36 +377,42 @@ class AppDatabase extends _$AppDatabase {
             ),
           );
         }
-        await (update(songs)..where((s) => s.id.isIn(songIds)))
-            .write(const SongsCompanion(inLibrary: Value(true)));
+        await (update(songs)..where((s) => s.id.isIn(songIds))).write(
+          const SongsCompanion(inLibrary: Value(true)),
+        );
       });
 
   Future<void> renamePlaylist(String id, String name) =>
-      (update(playlists)..where((p) => p.id.equals(id)))
-          .write(PlaylistsCompanion(name: Value(name)));
+      (update(playlists)..where((p) => p.id.equals(id))).write(
+        PlaylistsCompanion(name: Value(name)),
+      );
 
   /// Song ids of a playlist, in order (for undoing a delete).
   Future<List<String>> playlistSongIds(String playlistId) async {
-    final rows = await (select(playlistEntries)
-          ..where((e) => e.playlistId.equals(playlistId))
-          ..orderBy([(e) => OrderingTerm.asc(e.position)]))
-        .get();
+    final rows =
+        await (select(playlistEntries)
+              ..where((e) => e.playlistId.equals(playlistId))
+              ..orderBy([(e) => OrderingTerm.asc(e.position)]))
+            .get();
     return [for (final r in rows) r.songId];
   }
 
   Future<void> removeFromPlaylist(String playlistId, String songId) =>
-      (delete(playlistEntries)
-            ..where((e) =>
-                e.playlistId.equals(playlistId) & e.songId.equals(songId)))
+      (delete(playlistEntries)..where(
+            (e) => e.playlistId.equals(playlistId) & e.songId.equals(songId),
+          ))
           .go();
 
   Stream<List<Song>> watchPlaylistSongs(String playlistId) {
-    final query = select(playlistEntries).join([
-      innerJoin(songs, songs.id.equalsExp(playlistEntries.songId)),
-    ])
-      ..where(playlistEntries.playlistId.equals(playlistId))
-      ..orderBy([OrderingTerm.asc(playlistEntries.position)]);
-    return query.watch().map((rows) => rows.map((r) => r.readTable(songs)).toList());
+    final query =
+        select(
+            playlistEntries,
+          ).join([innerJoin(songs, songs.id.equalsExp(playlistEntries.songId))])
+          ..where(playlistEntries.playlistId.equals(playlistId))
+          ..orderBy([OrderingTerm.asc(playlistEntries.position)]);
+    return query.watch().map(
+      (rows) => rows.map((r) => r.readTable(songs)).toList(),
+    );
   }
 
   // ------------------------------------------------------------ ai training
@@ -424,8 +446,9 @@ class AppDatabase extends _$AppDatabase {
       );
 
   Future<void> bumpAffinity(String key, double delta) async {
-    final existing = await (select(affinities)..where((a) => a.key.equals(key)))
-        .getSingleOrNull();
+    final existing = await (select(
+      affinities,
+    )..where((a) => a.key.equals(key))).getSingleOrNull();
     final weight = (existing?.weight ?? 0) + delta;
     await into(affinities).insertOnConflictUpdate(
       AffinitiesCompanion.insert(
@@ -457,9 +480,9 @@ class AppDatabase extends _$AppDatabase {
   Future<void> clearLearning() async {
     await delete(playEvents).go();
     await delete(affinities).go();
-    await (update(songs)).write(
-      const SongsCompanion(playCount: Value(0), skipCount: Value(0)),
-    );
+    await (update(
+      songs,
+    )).write(const SongsCompanion(playCount: Value(0), skipCount: Value(0)));
   }
 
   // ----------------------------------------------------------- artist rules

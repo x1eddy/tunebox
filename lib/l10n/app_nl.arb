@@ -739,5 +739,12 @@
   "stPeaks": "Pieken",
   "stGlow": "Gloed",
   "stSparks": "Vonken",
-  "stPulse": "Puls"
+  "stPulse": "Puls",
+  "libAlbums": "Albums",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Single",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Dit album kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.",
+  "libNoAlbums": "Nog geen albums",
+  "libNoAlbumsBody": "Muziek die je importeert van een schijf of map wordt hier in albums gegroepeerd, samen met albums waarvan je nummers hebt bewaard."
 }

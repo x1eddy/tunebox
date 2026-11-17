@@ -739,5 +739,12 @@
   "stPeaks": "Picos",
   "stGlow": "Brilho",
   "stSparks": "Faíscas",
-  "stPulse": "Pulso"
+  "stPulse": "Pulso",
+  "libAlbums": "Álbuns",
+  "albumKindAlbum": "Álbum",
+  "albumKindSingle": "Single",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Não foi possível carregar este álbum. Verifique a conexão e tente novamente.",
+  "libNoAlbums": "Ainda não há álbuns",
+  "libNoAlbumsBody": "As músicas importadas de um disco ou pasta são agrupadas aqui em álbuns, junto com os álbuns dos quais você salvou músicas."
 }

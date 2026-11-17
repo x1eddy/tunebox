@@ -40,7 +40,8 @@ class LyricsView extends ConsumerWidget {
             ),
             if (retry)
               TextButton(
-                onPressed: () => ref.invalidate(lyricsProvider(LyricsKey(song))),
+                onPressed: () =>
+                    ref.invalidate(lyricsProvider(LyricsKey(song))),
                 child: Text(l.lyrRetry),
               ),
           ],
@@ -50,7 +51,8 @@ class LyricsView extends ConsumerWidget {
 
     return async.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, _) => message(Icons.cloud_off_rounded, l.lyrOffline, retry: true),
+      error: (_, _) =>
+          message(Icons.cloud_off_rounded, l.lyrOffline, retry: true),
       data: (lyrics) {
         if (lyrics.isEmpty) {
           return message(Icons.lyrics_outlined, l.playerNoLyrics);
@@ -96,10 +98,7 @@ class _Plain extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(28, 24, 28, 0),
         children: [
-          Text(
-            text,
-            style: t.textTheme.titleLarge?.copyWith(height: 1.5),
-          ),
+          Text(text, style: t.textTheme.titleLarge?.copyWith(height: 1.5)),
           if (credit) const _Credit(),
         ],
       ),
@@ -260,7 +259,12 @@ class _Line extends StatelessWidget {
                     alpha: state == _LineState.past ? 0.28 : 0.45,
                   ),
             shadows: now
-                ? [Shadow(color: cs.primary.withValues(alpha: 0.6), blurRadius: 18)]
+                ? [
+                    Shadow(
+                      color: cs.primary.withValues(alpha: 0.6),
+                      blurRadius: 18,
+                    ),
+                  ]
                 : const [],
           ),
           child: Text(shown),

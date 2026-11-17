@@ -739,5 +739,12 @@
   "stPeaks": "Picchi",
   "stGlow": "Bagliore",
   "stSparks": "Scintille",
-  "stPulse": "Impulso"
+  "stPulse": "Impulso",
+  "libAlbums": "Album",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Singolo",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Impossibile caricare questo album. Controlla la connessione e riprova.",
+  "libNoAlbums": "Ancora nessun album",
+  "libNoAlbumsBody": "La musica che importi da un disco o da una cartella viene raggruppata qui in album, insieme agli album da cui hai salvato brani."
 }

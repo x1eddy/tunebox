@@ -64,9 +64,7 @@ List<LyricLine> parseLrc(String lrc) {
           ? 0
           : int.parse(frac.padRight(3, '0').substring(0, 3));
       // A positive offset means the lyrics should show earlier.
-      final t = Duration(
-        milliseconds: (min * 60 + sec) * 1000 + ms - offset,
-      );
+      final t = Duration(milliseconds: (min * 60 + sec) * 1000 + ms - offset);
       out.add(LyricLine(t.isNegative ? Duration.zero : t, text));
     }
   }
@@ -87,7 +85,10 @@ String cleanTitle(String title) {
   // "Artist - Title" uploads
   final dash = t.indexOf(' - ');
   if (dash > 0) t = t.substring(dash + 3);
-  t = t.replaceAll(RegExp(r'\s+(ft\.?|feat\.?|featuring)\s.*$', caseSensitive: false), '');
+  t = t.replaceAll(
+    RegExp(r'\s+(ft\.?|feat\.?|featuring)\s.*$', caseSensitive: false),
+    '',
+  );
   return t.replaceAll(RegExp(r'\s+'), ' ').trim();
 }
 
@@ -136,12 +137,17 @@ class LyricsService {
     source: row.source,
   );
 
-  static String _toLrc(List<LyricLine> lines) => lines.map((l) {
-    final m = l.time.inMinutes.toString().padLeft(2, '0');
-    final s = (l.time.inSeconds % 60).toString().padLeft(2, '0');
-    final cs = ((l.time.inMilliseconds % 1000) ~/ 10).toString().padLeft(2, '0');
-    return '[$m:$s.$cs]${l.text}';
-  }).join('\n');
+  static String _toLrc(List<LyricLine> lines) => lines
+      .map((l) {
+        final m = l.time.inMinutes.toString().padLeft(2, '0');
+        final s = (l.time.inSeconds % 60).toString().padLeft(2, '0');
+        final cs = ((l.time.inMilliseconds % 1000) ~/ 10).toString().padLeft(
+          2,
+          '0',
+        );
+        return '[$m:$s.$cs]${l.text}';
+      })
+      .join('\n');
 
   Future<Lyrics> _find(Song song) async {
     final path = song.filePath;

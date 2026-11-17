@@ -2599,4 +2599,27 @@ class LPl extends L {
 
   @override
   String get stPulse => 'Puls';
+
+  @override
+  String get libAlbums => 'Albumy';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Singiel';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Nie udało się wczytać albumu. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get libNoAlbums => 'Brak albumów';
+
+  @override
+  String get libNoAlbumsBody =>
+      'Muzyka zaimportowana z dysku lub folderu jest tu grupowana w albumy, razem z albumami, z których zapisano utwory.';
 }

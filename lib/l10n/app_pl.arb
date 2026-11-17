@@ -739,5 +739,12 @@
   "stPeaks": "Szczyty",
   "stGlow": "Poświata",
   "stSparks": "Iskry",
-  "stPulse": "Puls"
+  "stPulse": "Puls",
+  "libAlbums": "Albumy",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Singiel",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Nie udało się wczytać albumu. Sprawdź połączenie i spróbuj ponownie.",
+  "libNoAlbums": "Brak albumów",
+  "libNoAlbumsBody": "Muzyka zaimportowana z dysku lub folderu jest tu grupowana w albumy, razem z albumami, z których zapisano utwory."
 }

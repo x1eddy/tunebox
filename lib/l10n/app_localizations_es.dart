@@ -2594,4 +2594,27 @@ class LEs extends L {
 
   @override
   String get stPulse => 'Pulso';
+
+  @override
+  String get libAlbums => 'Álbumes';
+
+  @override
+  String get albumKindAlbum => 'Álbum';
+
+  @override
+  String get albumKindSingle => 'Sencillo';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'No se pudo cargar este álbum. Revisa tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get libNoAlbums => 'Aún no hay álbumes';
+
+  @override
+  String get libNoAlbumsBody =>
+      'La música que importas desde un disco o carpeta se agrupa aquí en álbumes, junto con los álbumes de los que guardaste canciones.';
 }

@@ -6,6 +6,8 @@ import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../l10n/app_localizations.dart';
 import '../../ui/common.dart';
+import '../../state/albums.dart';
+import 'album_page.dart';
 
 class ArtistPage extends ConsumerWidget {
   const ArtistPage({super.key, required this.name});
@@ -135,6 +137,7 @@ class ArtistPage extends ConsumerWidget {
                 child: Center(child: CircularProgressIndicator()),
               ),
             ),
+          _ArtistAlbums(name: name),
           SliverToBoxAdapter(child: SectionHeader(title: l.libSongs)),
           SliverList.builder(
             itemCount: songs.length,
@@ -146,6 +149,50 @@ class ArtistPage extends ConsumerWidget {
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 28)),
+        ],
+      ),
+    );
+  }
+}
+
+/// This artist's albums: the ones on this device first, then YouTube Music's
+/// (only those that are really theirs, not tributes that mention them).
+class _ArtistAlbums extends ConsumerWidget {
+  const _ArtistAlbums({required this.name});
+  final String name;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final key = name.trim().toLowerCase();
+    final local = ref
+        .watch(localAlbumsProvider)
+        .where((a) => a.artist.toLowerCase() == key)
+        .toList();
+    final online = (ref.watch(albumSearchProvider(name)).value ?? const [])
+        .where(
+          (a) => a.artist
+              .toLowerCase()
+              .split(RegExp(r',|&| and '))
+              .any((p) => p.trim() == key),
+        )
+        .where(
+          (a) =>
+              !local.any((l) => l.title.toLowerCase() == a.title.toLowerCase()),
+        )
+        .toList();
+    if (local.isEmpty && online.isEmpty) return const SliverToBoxAdapter();
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionHeader(title: L.of(context).libAlbums),
+          HorizontalStrip(
+            height: 196,
+            children: [
+              for (final a in local) AlbumCard.fromView(a),
+              for (final a in online) AlbumCard.fromItem(a),
+            ],
+          ),
         ],
       ),
     );

@@ -54,10 +54,10 @@ class _MixPageState extends ConsumerState<MixPage> {
     setState(() => _busy = true);
     final prompt = parseMixPrompt(input);
     final prefs = ref.read(prefsProvider);
-    await prefs.setStringList(profileKey(_recentKey), [
-      input,
-      ..._recent.where((r) => r != input),
-    ].take(8).toList());
+    await prefs.setStringList(
+      profileKey(_recentKey),
+      [input, ..._recent.where((r) => r != input)].take(8).toList(),
+    );
     try {
       final picks = await ref
           .read(aiProvider)
@@ -136,7 +136,9 @@ class _MixPageState extends ConsumerState<MixPage> {
                         icon: _busy
                             ? const SizedBox.square(
                                 dimension: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Icon(Icons.auto_awesome_rounded),
                         label: Text(l.mixMake),
@@ -149,7 +151,10 @@ class _MixPageState extends ConsumerState<MixPage> {
           ),
           if (picks == null) ...[
             SliverToBoxAdapter(
-              child: SectionHeader(title: l.mixTry, icon: Icons.lightbulb_outline),
+              child: SectionHeader(
+                title: l.mixTry,
+                icon: Icons.lightbulb_outline,
+              ),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -180,9 +185,7 @@ class _MixPageState extends ConsumerState<MixPage> {
               ),
             )
           else ...[
-            SliverToBoxAdapter(
-              child: _Understood(prompt: _prompt!),
-            ),
+            SliverToBoxAdapter(child: _Understood(prompt: _prompt!)),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
@@ -191,10 +194,9 @@ class _MixPageState extends ConsumerState<MixPage> {
                   runSpacing: 8,
                   children: [
                     FilledButton.icon(
-                      onPressed: () => ref.read(musicProvider).playAll(
-                        [for (final p in picks) p.song],
-                        origin: 'mix',
-                      ),
+                      onPressed: () => ref.read(musicProvider).playAll([
+                        for (final p in picks) p.song,
+                      ], origin: 'mix'),
                       icon: const Icon(Icons.play_arrow_rounded),
                       label: Text(l.actionPlayAll),
                     ),
@@ -230,11 +232,13 @@ class _MixPageState extends ConsumerState<MixPage> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  onTap: () => ref.read(musicProvider).playAll(
-                    [for (final x in picks) x.song],
-                    index: i,
-                    origin: 'mix',
-                  ),
+                  onTap: () => ref
+                      .read(musicProvider)
+                      .playAll(
+                        [for (final x in picks) x.song],
+                        index: i,
+                        origin: 'mix',
+                      ),
                 );
               },
             ),

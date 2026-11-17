@@ -2595,4 +2595,27 @@ class LEl extends L {
 
   @override
   String get stPulse => 'Pulse';
+
+  @override
+  String get libAlbums => 'Albums';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Single';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Couldn\'t load this album. Check your connection and try again.';
+
+  @override
+  String get libNoAlbums => 'No albums yet';
+
+  @override
+  String get libNoAlbumsBody =>
+      'Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from.';
 }

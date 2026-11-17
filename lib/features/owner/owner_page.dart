@@ -41,9 +41,7 @@ class OwnerPage extends ConsumerWidget {
             tooltip: 'Copy diagnostics',
             icon: const Icon(Icons.copy_all_rounded),
             onPressed: () async {
-              await Clipboard.setData(
-                ClipboardData(text: _diagnostics(ref)),
-              );
+              await Clipboard.setData(ClipboardData(text: _diagnostics(ref)));
               say('Diagnostics copied');
             },
           ),
@@ -119,7 +117,9 @@ class OwnerPage extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.psychology_alt_outlined),
             title: const Text('Copy the taste data as JSON'),
-            subtitle: const Text('Everything the AI has learned on this profile'),
+            subtitle: const Text(
+              'Everything the AI has learned on this profile',
+            ),
             onTap: () => run('Taste dump', () async {
               final bytes = await ref.read(backupServiceProvider).exportBytes();
               await Clipboard.setData(ClipboardData(text: utf8.decode(bytes)));

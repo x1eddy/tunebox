@@ -2582,4 +2582,27 @@ class LPt extends L {
 
   @override
   String get stPulse => 'Pulso';
+
+  @override
+  String get libAlbums => 'Álbuns';
+
+  @override
+  String get albumKindAlbum => 'Álbum';
+
+  @override
+  String get albumKindSingle => 'Single';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Não foi possível carregar este álbum. Verifique a conexão e tente novamente.';
+
+  @override
+  String get libNoAlbums => 'Ainda não há álbuns';
+
+  @override
+  String get libNoAlbumsBody =>
+      'As músicas importadas de um disco ou pasta são agrupadas aqui em álbuns, junto com os álbuns dos quais você salvou músicas.';
 }

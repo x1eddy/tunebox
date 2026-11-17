@@ -137,7 +137,10 @@ class _ProfileSheet extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-                child: Text(L.of(context).profWho, style: t.textTheme.titleLarge),
+                child: Text(
+                  L.of(context).profWho,
+                  style: t.textTheme.titleLarge,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
@@ -169,7 +172,11 @@ class _ProfileSheet extends ConsumerWidget {
                   trailing: PopupMenuButton<String>(
                     onSelected: (v) async {
                       if (v == 'rename') {
-                        final name = await _askName(context, p.name, L.of(context).profRename);
+                        final name = await _askName(
+                          context,
+                          p.name,
+                          L.of(context).profRename,
+                        );
                         if (name != null) await controller.rename(p.id, name);
                       } else if (v == 'delete') {
                         final ok = await _confirmDelete(context, p.name);
@@ -177,7 +184,10 @@ class _ProfileSheet extends ConsumerWidget {
                       }
                     },
                     itemBuilder: (_) => [
-                      PopupMenuItem(value: 'rename', child: Text(L.of(context).profRename)),
+                      PopupMenuItem(
+                        value: 'rename',
+                        child: Text(L.of(context).profRename),
+                      ),
                       if (p.id != controller.active.id &&
                           controller.profiles.length > 1)
                         PopupMenuItem(
@@ -191,7 +201,11 @@ class _ProfileSheet extends ConsumerWidget {
                 leading: const CircleAvatar(child: Icon(Icons.add_rounded)),
                 title: Text(L.of(context).profAdd),
                 onTap: () async {
-                  final name = await _askName(context, '', L.of(context).profNew);
+                  final name = await _askName(
+                    context,
+                    '',
+                    L.of(context).profNew,
+                  );
                   if (name == null || !context.mounted) return;
                   Navigator.pop(context);
                   await controller.create(name);

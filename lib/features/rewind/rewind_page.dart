@@ -162,7 +162,9 @@ class _RewindPageState extends ConsumerState<RewindPage> {
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 250),
                                 height: 4,
-                                margin: const EdgeInsets.symmetric(horizontal: 2),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: i <= _page
                                       ? t.colorScheme.primary
@@ -256,7 +258,10 @@ class _RewindPageState extends ConsumerState<RewindPage> {
     final shift = page * 47.0;
     return [
       for (final d in [0.0, 60.0, 150.0])
-        base.withHue((base.hue + shift + d) % 360).withSaturation(0.7).toColor(),
+        base
+            .withHue((base.hue + shift + d) % 360)
+            .withSaturation(0.7)
+            .toColor(),
     ];
   }
 
@@ -274,16 +279,13 @@ class _RewindPageState extends ConsumerState<RewindPage> {
       if (s.artists.isNotEmpty)
         _TopList(
           title: l.rwTopArtists,
-          rows: [
-            for (final a in s.artists) (a.item, l.rwPlays(a.plays)),
-          ],
+          rows: [for (final a in s.artists) (a.item, l.rwPlays(a.plays))],
         ),
       if (s.songs.length > 1)
         _TopList(
           title: l.rwTopSongs,
           rows: [
-            for (final x in s.songs.take(5))
-              (x.item.title, l.rwPlays(x.plays)),
+            for (final x in s.songs.take(5)) (x.item.title, l.rwPlays(x.plays)),
           ],
         ),
       if (s.tags.isNotEmpty || s.decades.isNotEmpty)
@@ -308,12 +310,7 @@ class _RewindPageState extends ConsumerState<RewindPage> {
           label: s.unskippable!.item.title,
           footer: l.rwNeverSkipped,
         ),
-      _BigNumber(
-        overline: l.rwYouAre,
-        number: '',
-        label: pName,
-        footer: pSub,
-      ),
+      _BigNumber(overline: l.rwYouAre, number: '', label: pName, footer: pSub),
     ];
   }
 }

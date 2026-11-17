@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/blend/blend_page.dart';
+import '../features/detail/album_page.dart';
 import '../features/detail/artist_page.dart';
 import '../features/detail/playlist_page.dart';
 import '../features/galaxy/galaxy_page.dart';
@@ -39,6 +40,11 @@ List<RouteBase> _details() => [
     path: 'artist/:name',
     builder: (_, s) =>
         ArtistPage(name: Uri.decodeComponent(s.pathParameters['name']!)),
+  ),
+  GoRoute(
+    path: 'album/:id',
+    builder: (_, s) =>
+        AlbumPage(id: Uri.decodeComponent(s.pathParameters['id']!)),
   ),
   GoRoute(path: 'import', builder: (_, _) => const ImportPage()),
   GoRoute(path: 'transfer', builder: (_, _) => const TransferPage()),

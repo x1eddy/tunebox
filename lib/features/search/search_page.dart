@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/router.dart';
 import '../../dev/tour.dart';
 import '../../data/db/database.dart';
+import '../../state/albums.dart';
 import '../../state/providers.dart';
+import '../detail/album_page.dart';
 import '../../state/profiles.dart';
 import '../../state/settings.dart';
 import '../../data/services/versions.dart';
@@ -320,6 +322,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               ),
             ),
+            _AlbumResults(query: _query),
             SliverList.builder(
               itemCount: _results.length,
               itemBuilder: (_, i) => SongTile(
@@ -447,6 +450,32 @@ class _Suggestions extends ConsumerWidget {
         ],
         const SizedBox(height: 20),
       ],
+    );
+  }
+}
+
+/// Albums for the current search, as a row above the songs. Shown only when
+/// YouTube Music has some; offline it simply isn't there.
+class _AlbumResults extends ConsumerWidget {
+  const _AlbumResults({required this.query});
+  final String query;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final albums = ref.watch(albumSearchProvider(query)).value ?? const [];
+    if (albums.isEmpty) return const SliverToBoxAdapter();
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionHeader(title: L.of(context).libAlbums),
+          HorizontalStrip(
+            height: 196,
+            children: [for (final a in albums) AlbumCard.fromItem(a)],
+          ),
+          const SizedBox(height: 6),
+        ],
+      ),
     );
   }
 }

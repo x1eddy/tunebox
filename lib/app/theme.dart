@@ -136,13 +136,29 @@ ThemeData buildTheme({
   Color? background,
 }) {
   R.scale = appearance.corners.scale;
-  final scheme = ColorScheme.fromSeed(
-    seedColor: seed,
+  // "Fidelity" keeps the hue you picked in every shade. The old "vibrant"
+  // variant rotated the secondary colours round the wheel, so orange, green
+  // or blue accents all came out with pink and purple everywhere.
+  ColorScheme schemeFor(Color c) => ColorScheme.fromSeed(
+    seedColor: c,
     brightness: brightness,
     // The high-contrast variants are part of Material 3 itself, so this keeps
     // the palette coherent instead of hand-darkening colours.
     contrastLevel: highContrast ? 1.0 : 0.0,
-    dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
+    dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+  );
+  final base0 = schemeFor(seed);
+  // The second accent (gradients, the visualiser's far end) is a neighbour
+  // on the colour wheel, not the opposite side of it.
+  final hsl = HSLColor.fromColor(seed);
+  final neighbour = schemeFor(
+    hsl.withHue((hsl.hue + 28) % 360).toColor(),
+  );
+  final scheme = base0.copyWith(
+    tertiary: neighbour.primary,
+    onTertiary: neighbour.onPrimary,
+    tertiaryContainer: neighbour.primaryContainer,
+    onTertiaryContainer: neighbour.onPrimaryContainer,
   );
   final dark = brightness == Brightness.dark;
   final surface = dark && pureBlack

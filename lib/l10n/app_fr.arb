@@ -739,5 +739,12 @@
   "stPeaks": "Crêtes",
   "stGlow": "Halo",
   "stSparks": "Étincelles",
-  "stPulse": "Pulsation"
+  "stPulse": "Pulsation",
+  "libAlbums": "Albums",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Single",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Impossible de charger cet album. Vérifie ta connexion et réessaie.",
+  "libNoAlbums": "Pas encore d'albums",
+  "libNoAlbumsBody": "La musique importée depuis un disque ou un dossier est regroupée ici en albums, avec les albums dont tu as enregistré des titres."
 }

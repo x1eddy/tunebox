@@ -132,9 +132,7 @@ class UpdateService {
     }
     // Older downloads are dead weight once a newer one lands.
     for (final old in dir.listSync()) {
-      if (old is File &&
-          old.path.endsWith('.apk') &&
-          old.path != file.path) {
+      if (old is File && old.path.endsWith('.apk') && old.path != file.path) {
         try {
           await old.delete();
         } catch (_) {}

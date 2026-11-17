@@ -2589,4 +2589,27 @@ class LNl extends L {
 
   @override
   String get stPulse => 'Puls';
+
+  @override
+  String get libAlbums => 'Albums';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Single';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Dit album kon niet worden geladen. Controleer je verbinding en probeer het opnieuw.';
+
+  @override
+  String get libNoAlbums => 'Nog geen albums';
+
+  @override
+  String get libNoAlbumsBody =>
+      'Muziek die je importeert van een schijf of map wordt hier in albums gegroepeerd, samen met albums waarvan je nummers hebt bewaard.';
 }

@@ -739,5 +739,12 @@
   "stPeaks": "Spitzen",
   "stGlow": "Glühen",
   "stSparks": "Funken",
-  "stPulse": "Puls"
+  "stPulse": "Puls",
+  "libAlbums": "Alben",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Single",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Das Album konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
+  "libNoAlbums": "Noch keine Alben",
+  "libNoAlbumsBody": "Musik, die du von einem Laufwerk oder Ordner importierst, wird hier zu Alben gruppiert – zusammen mit Alben, aus denen du Songs gespeichert hast."
 }

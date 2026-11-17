@@ -2597,4 +2597,27 @@ class LDe extends L {
 
   @override
   String get stPulse => 'Puls';
+
+  @override
+  String get libAlbums => 'Alben';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Single';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Das Album konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get libNoAlbums => 'Noch keine Alben';
+
+  @override
+  String get libNoAlbumsBody =>
+      'Musik, die du von einem Laufwerk oder Ordner importierst, wird hier zu Alben gruppiert – zusammen mit Alben, aus denen du Songs gespeichert hast.';
 }

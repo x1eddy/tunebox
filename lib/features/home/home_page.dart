@@ -186,6 +186,7 @@ List<AiShelf> arrangeShelves(List<AiShelf> shelves, Appearance look) {
     final i = look.shelfOrder.indexOf(s.id);
     return i < 0 ? look.shelfOrder.length + visible.indexOf(s) : i;
   }
+
   return visible..sort((a, b) => rank(a).compareTo(rank(b)));
 }
 
@@ -349,10 +350,7 @@ class _FirstRunCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.auto_awesome_rounded,
-                color: t.colorScheme.onSurface,
-              ),
+              Icon(Icons.auto_awesome_rounded, color: t.colorScheme.onSurface),
               const SizedBox(width: 8),
               Text(
                 l.homeEmptyTitle,

@@ -10,11 +10,31 @@ const _minLength = Duration(seconds: 45);
 
 /// Phrases that mean "this is not one song" wherever they appear.
 const _junkPhrases = [
-  'full album', 'greatest hits', 'top songs', 'best songs', 'playlist',
-  'mix 20', 'nonstop', 'compilation', 'megamix', '1 hour', 'one hour',
-  'hours of', 'all songs', 'best of', 'radio mix', 'live stream',
-  'livestream', 'full fight', 'full match', 'full episode', 'press conference',
-  'days on', 'day in the life', 'tier list', 'try not to',
+  'full album',
+  'greatest hits',
+  'top songs',
+  'best songs',
+  'playlist',
+  'mix 20',
+  'nonstop',
+  'compilation',
+  'megamix',
+  '1 hour',
+  'one hour',
+  'hours of',
+  'all songs',
+  'best of',
+  'radio mix',
+  'live stream',
+  'livestream',
+  'full fight',
+  'full match',
+  'full episode',
+  'press conference',
+  'days on',
+  'day in the life',
+  'tier list',
+  'try not to',
 ];
 
 /// Whole words that mean "this is not music at all". Matched on word

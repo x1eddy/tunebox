@@ -51,7 +51,7 @@ class TransferPage extends ConsumerWidget {
             subtitle: Text(L.of(context).xferSendSub),
             onTap: () => showModalBottomSheet<void>(
               context: context,
-    useRootNavigator: true,
+              useRootNavigator: true,
               isScrollControlled: true,
               showDragHandle: true,
               isDismissible: false,
@@ -63,13 +63,14 @@ class TransferPage extends ConsumerWidget {
             title: Text(L.of(context).xferReceive),
             subtitle: Text(L.of(context).xferReceiveSub),
             onTap: () async {
-              final got = await showModalBottomSheet<(Map<String, dynamic>, String)>(
-                context: context,
-    useRootNavigator: true,
-                isScrollControlled: true,
-                showDragHandle: true,
-                builder: (_) => const _ReceiveSheet(),
-              );
+              final got =
+                  await showModalBottomSheet<(Map<String, dynamic>, String)>(
+                    context: context,
+                    useRootNavigator: true,
+                    isScrollControlled: true,
+                    showDragHandle: true,
+                    builder: (_) => const _ReceiveSheet(),
+                  );
               // The sheet is gone by now; merge from this page, which is not.
               if (got != null && context.mounted) {
                 await _confirmAndMerge(context, ref, got.$1, got.$2);
@@ -113,7 +114,10 @@ class TransferPage extends ConsumerWidget {
 Future<void> _saveFile(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
   final l = L.of(context);
-  final name = ref.read(profilesProvider).active.name
+  final name = ref
+      .read(profilesProvider)
+      .active
+      .name
       .toLowerCase()
       .replaceAll(RegExp(r'[^a-z0-9]+'), '-');
   try {
@@ -148,9 +152,7 @@ Future<void> _loadFile(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
     await _confirmAndMerge(context, ref, map, l.xferSourceFile);
   } catch (e) {
-    messenger.showTimed(
-      SnackBar(content: Text(l.xferFileUnreadable('$e'))),
-    );
+    messenger.showTimed(SnackBar(content: Text(l.xferFileUnreadable('$e'))));
   }
 }
 
@@ -181,9 +183,7 @@ Future<void> _pasteText(BuildContext context, WidgetRef ref) async {
     if (!context.mounted) return;
     await _confirmAndMerge(context, ref, map, l.xferSourceClipboard);
   } catch (_) {
-    messenger.showTimed(
-      SnackBar(content: Text(l.xferClipboardEmpty)),
-    );
+    messenger.showTimed(SnackBar(content: Text(l.xferClipboardEmpty)));
   }
 }
 
@@ -353,14 +353,18 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
           if (_addresses.isEmpty)
             Text(
               L.of(context).xferNoWifi,
-              style: t.textTheme.bodySmall?.copyWith(color: t.colorScheme.error),
+              style: t.textTheme.bodySmall?.copyWith(
+                color: t.colorScheme.error,
+              ),
             )
           else
             Text(
-              L.of(context).xferThisDevice(
-                _addresses.join(' · '),
-                _server.listeningPort,
-              ),
+              L
+                  .of(context)
+                  .xferThisDevice(
+                    _addresses.join(' · '),
+                    _server.listeningPort,
+                  ),
               style: t.textTheme.bodySmall?.copyWith(
                 color: t.colorScheme.onSurfaceVariant,
               ),
@@ -368,10 +372,7 @@ class _SendSheetState extends ConsumerState<_SendSheet> {
           const SizedBox(height: 10),
           const LinearProgressIndicator(),
           const SizedBox(height: 6),
-          Text(
-            L.of(context).xferWaiting,
-            style: t.textTheme.labelMedium,
-          ),
+          Text(L.of(context).xferWaiting, style: t.textTheme.labelMedium),
         ],
       );
     }
@@ -538,7 +539,10 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(L.of(context).xferReceiveTitle, style: t.textTheme.titleLarge),
+              Text(
+                L.of(context).xferReceiveTitle,
+                style: t.textTheme.titleLarge,
+              ),
               const SizedBox(height: 4),
               Text(
                 L.of(context).xferOpenSendFirst,
@@ -577,7 +581,10 @@ class _ReceiveSheetState extends ConsumerState<_ReceiveSheet> {
                   label: Text(L.of(context).xferSearchAgain),
                 ),
               const Divider(height: 24),
-              Text(L.of(context).xferTypeAddress, style: t.textTheme.titleSmall),
+              Text(
+                L.of(context).xferTypeAddress,
+                style: t.textTheme.titleSmall,
+              ),
               const SizedBox(height: 8),
               Row(
                 children: [

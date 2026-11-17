@@ -143,7 +143,6 @@ class BackupService {
   }
 
   Future<BackupSummary> _merge(Map<String, dynamic> backup) async {
-
     var songsAdded = 0;
     var songsMerged = 0;
     for (final raw in (backup['songs'] as List? ?? const [])) {
@@ -179,7 +178,9 @@ class BackupService {
           id,
           SongsCompanion(
             liked: Value(existing.liked || (s['liked'] as bool? ?? false)),
-            blocked: Value(existing.blocked || (s['blocked'] as bool? ?? false)),
+            blocked: Value(
+              existing.blocked || (s['blocked'] as bool? ?? false),
+            ),
             playCount: Value(
               existing.playCount > (s['playCount'] as int? ?? 0)
                   ? existing.playCount
@@ -205,9 +206,7 @@ class BackupService {
     // Weights: keep whichever device holds the stronger opinion. Adding them
     // (as this used to) doubled everything on every import of the same file.
     var weights = 0;
-    final local = {
-      for (final a in await _db.allAffinities()) a.key: a.weight,
-    };
+    final local = {for (final a in await _db.allAffinities()) a.key: a.weight};
     for (final raw in (backup['affinities'] as List? ?? const [])) {
       final a = raw as Map<String, dynamic>;
       final key = a['key'] as String;

@@ -21,10 +21,15 @@ class TasteCodec {
     var data = bytes;
     // a text file or clipboard paste
     if (data.length > textPrefix.length &&
-        utf8.decode(data.take(textPrefix.length).toList(), allowMalformed: true) ==
+        utf8.decode(
+              data.take(textPrefix.length).toList(),
+              allowMalformed: true,
+            ) ==
             textPrefix) {
       data = base64.decode(
-        utf8.decode(data.sublist(textPrefix.length)).replaceAll(RegExp(r'\s'), ''),
+        utf8
+            .decode(data.sublist(textPrefix.length))
+            .replaceAll(RegExp(r'\s'), ''),
       );
     }
     if (data.length > 2 && data[0] == 0x1f && data[1] == 0x8b) {
@@ -74,7 +79,9 @@ class TransferServer {
 
   Future<List<String>> addresses() async {
     final out = <String>[];
-    for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
+    for (final i in await NetworkInterface.list(
+      type: InternetAddressType.IPv4,
+    )) {
       for (final a in i.addresses) {
         if (!a.isLoopback) out.add(a.address);
       }
@@ -140,7 +147,9 @@ class TransferClient {
     Duration timeout = const Duration(milliseconds: 3500),
   }) async {
     final bases = <String>{};
-    for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
+    for (final i in await NetworkInterface.list(
+      type: InternetAddressType.IPv4,
+    )) {
       for (final a in i.addresses) {
         if (a.isLoopback) continue;
         final p = a.address.split('.');
@@ -163,13 +172,17 @@ class TransferClient {
     return found;
   }
 
-  static Future<NearbyDevice?> probe(String host, {int port = TransferServer.port}) =>
-      _probe(host, port, const Duration(seconds: 3));
+  static Future<NearbyDevice?> probe(
+    String host, {
+    int port = TransferServer.port,
+  }) => _probe(host, port, const Duration(seconds: 3));
 
   static Future<NearbyDevice?> _probe(String host, int port, Duration t) async {
     final client = HttpClient()..connectionTimeout = t;
     try {
-      final req = await client.getUrl(Uri.http('$host:$port', '/hello')).timeout(t);
+      final req = await client
+          .getUrl(Uri.http('$host:$port', '/hello'))
+          .timeout(t);
       final res = await req.close().timeout(t);
       if (res.statusCode != 200) return null;
       final body = jsonDecode(await utf8.decoder.bind(res).join());
@@ -184,11 +197,16 @@ class TransferClient {
     return null;
   }
 
-  static Future<Map<String, dynamic>> fetch(NearbyDevice device, String pin) async {
+  static Future<Map<String, dynamic>> fetch(
+    NearbyDevice device,
+    String pin,
+  ) async {
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 8);
     try {
       final req = await client.getUrl(
-        Uri.http('${device.host}:${device.port}', '/taste', {'pin': pin.trim()}),
+        Uri.http('${device.host}:${device.port}', '/taste', {
+          'pin': pin.trim(),
+        }),
       );
       final res = await req.close().timeout(const Duration(seconds: 60));
       if (res.statusCode == HttpStatus.forbidden) {

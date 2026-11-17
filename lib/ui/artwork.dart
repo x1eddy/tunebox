@@ -104,7 +104,11 @@ class CoverArt extends StatelessWidget {
     this.circle = false,
     this.heroTag,
     this.seedText,
+    this.imageUrl,
   }) : _radius = radius;
+
+  /// A cover that belongs to no saved song yet (a YouTube Music album).
+  final String? imageUrl;
 
   final Song? song;
   final double? size;
@@ -123,7 +127,16 @@ class CoverArt extends StatelessWidget {
     final decode = (heroTag != null && size != null && size! < 160)
         ? 160
         : size?.round();
-    final provider = artworkImageProvider(song, size: decode);
+    final url = imageUrl;
+    final ImageProvider? provider = url != null && url.isNotEmpty
+        ? (decode == null
+              ? CachedNetworkImageProvider(url)
+              : ResizeImage(
+                  CachedNetworkImageProvider(url),
+                  width: decode * 2,
+                  allowUpscaling: false,
+                ))
+        : artworkImageProvider(song, size: decode);
     final seed =
         seedText ??
         (song == null

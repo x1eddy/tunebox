@@ -8,6 +8,8 @@ import '../../data/db/database.dart';
 import '../../state/providers.dart';
 import '../../ui/artwork.dart';
 import '../../state/settings.dart';
+import '../../state/albums.dart';
+import '../detail/album_page.dart';
 import '../detail/playlist_actions.dart';
 import '../../ui/common.dart';
 import '../../ui/motion.dart';
@@ -81,7 +83,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
     final imported = ref.watch(importedProvider).value ?? const <Song>[];
 
     return DefaultTabController(
-      length: 6,
+      length: 7,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l.navLibrary),
@@ -108,6 +110,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
               Tab(text: l.libPlaylists),
               Tab(text: l.libSongs),
               Tab(text: l.libArtists),
+              Tab(text: l.libAlbums),
               Tab(text: l.libLiked),
               Tab(text: l.libDownloads),
               Tab(text: l.libImported),
@@ -116,7 +119,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
         ),
         body: Column(
           children: [
-            // Sorting means nothing for playlists (tab 0) and artists (tab 2).
+            // Sorting means nothing for playlists, artists and albums.
             Builder(
               builder: (context) {
                 final tabs = DefaultTabController.of(context);
@@ -128,7 +131,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                       duration: Motion.fast,
                       curve: Motion.emphasized,
                       alignment: Alignment.topCenter,
-                      child: index == 0 || index == 2
+                      child: index == 0 || index == 2 || index == 3
                           ? const SizedBox(width: double.infinity)
                           : _SortRow(sort: _sort, onSort: _setSort),
                     );
@@ -147,6 +150,7 @@ class _LibraryPageState extends ConsumerState<LibraryPage> {
                           origin: 'library',
                         ),
                         _ArtistsTab(library: library),
+                        const _AlbumsTab(),
                         _SongsTab(
                           songs: _sorted(liked, 'liked'),
                           origin: 'liked',
@@ -552,6 +556,43 @@ class _ArtistsTab extends StatelessWidget {
             ),
           ),
           trailing: const Icon(Icons.chevron_right_rounded),
+        );
+      },
+    );
+  }
+}
+
+/// Albums on this device: imported files grouped by their album tag, and
+/// albums you have saved songs from.
+class _AlbumsTab extends ConsumerWidget {
+  const _AlbumsTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
+    final albums = ref.watch(localAlbumsProvider);
+    if (albums.isEmpty) {
+      return EmptyState(
+        icon: Icons.album_outlined,
+        title: l.libNoAlbums,
+        body: l.libNoAlbumsBody,
+      );
+    }
+    return LayoutBuilder(
+      builder: (context, c) {
+        const gap = 14.0;
+        final cols = (c.maxWidth / 170).floor().clamp(2, 8);
+        final size = (c.maxWidth - 32 - gap * (cols - 1)) / cols;
+        return GridView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: cols,
+            crossAxisSpacing: gap,
+            mainAxisSpacing: gap,
+            mainAxisExtent: size + 52,
+          ),
+          itemCount: albums.length,
+          itemBuilder: (_, i) => AlbumCard.fromView(albums[i], size: size),
         );
       },
     );

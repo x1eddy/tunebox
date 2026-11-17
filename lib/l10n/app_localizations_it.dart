@@ -2584,4 +2584,27 @@ class LIt extends L {
 
   @override
   String get stPulse => 'Impulso';
+
+  @override
+  String get libAlbums => 'Album';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Singolo';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Impossibile caricare questo album. Controlla la connessione e riprova.';
+
+  @override
+  String get libNoAlbums => 'Ancora nessun album';
+
+  @override
+  String get libNoAlbumsBody =>
+      'La musica che importi da un disco o da una cartella viene raggruppata qui in album, insieme agli album da cui hai salvato brani.';
 }

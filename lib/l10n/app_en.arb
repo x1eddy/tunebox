@@ -1482,5 +1482,12 @@
   "stPeaks": "Peaks",
   "stGlow": "Glow",
   "stSparks": "Sparks",
-  "stPulse": "Pulse"
+  "stPulse": "Pulse",
+  "libAlbums": "Albums",
+  "albumKindAlbum": "Album",
+  "albumKindSingle": "Single",
+  "albumKindEp": "EP",
+  "albumLoadFailed": "Couldn't load this album. Check your connection and try again.",
+  "libNoAlbums": "No albums yet",
+  "libNoAlbumsBody": "Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from."
 }

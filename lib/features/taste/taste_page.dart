@@ -387,10 +387,7 @@ class _ProfileCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.auto_awesome_rounded,
-                color: t.colorScheme.onSurface,
-              ),
+              Icon(Icons.auto_awesome_rounded, color: t.colorScheme.onSurface),
               const SizedBox(width: 8),
               Text(
                 l.tasteConfidence((confidence * 100).round()),
@@ -407,12 +404,8 @@ class _ProfileCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: confidence,
               minHeight: 8,
-              backgroundColor: t.colorScheme.onSurface.withValues(
-                alpha: 0.18,
-              ),
-              valueColor: AlwaysStoppedAnimation(
-                t.colorScheme.onSurface,
-              ),
+              backgroundColor: t.colorScheme.onSurface.withValues(alpha: 0.18),
+              valueColor: AlwaysStoppedAnimation(t.colorScheme.onSurface),
             ),
           ),
           const SizedBox(height: 14),

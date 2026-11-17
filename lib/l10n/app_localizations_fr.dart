@@ -2599,4 +2599,27 @@ class LFr extends L {
 
   @override
   String get stPulse => 'Pulsation';
+
+  @override
+  String get libAlbums => 'Albums';
+
+  @override
+  String get albumKindAlbum => 'Album';
+
+  @override
+  String get albumKindSingle => 'Single';
+
+  @override
+  String get albumKindEp => 'EP';
+
+  @override
+  String get albumLoadFailed =>
+      'Impossible de charger cet album. Vérifie ta connexion et réessaie.';
+
+  @override
+  String get libNoAlbums => 'Pas encore d\'albums';
+
+  @override
+  String get libNoAlbumsBody =>
+      'La musique importée depuis un disque ou un dossier est regroupée ici en albums, avec les albums dont tu as enregistré des titres.';
 }

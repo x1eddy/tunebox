@@ -83,7 +83,11 @@ class RemoteProfile {
   final String name;
   final int renamedAt;
 
-  Map<String, Object?> toJson() => {'id': id, 'name': name, 'renamedAt': renamedAt};
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'name': name,
+    'renamedAt': renamedAt,
+  };
 }
 
 class SyncHooks {
@@ -150,8 +154,7 @@ class SyncService {
   var _pairMisses = 0;
   void Function(SyncPeer)? _onPaired;
 
-  bool get pairing =>
-      _pairCode != null && DateTime.now().isBefore(_pairUntil!);
+  bool get pairing => _pairCode != null && DateTime.now().isBefore(_pairUntil!);
   String? get pairCode => pairing ? _pairCode : null;
   int get listeningPort => _server?.port ?? port;
 
@@ -204,12 +207,14 @@ class SyncService {
       switch (req.uri.path) {
         case '/sync/hello':
           res.headers.contentType = ContentType.json;
-          res.write(jsonEncode({
-            'app': 'tunebox-sync',
-            'id': deviceId,
-            'name': deviceName,
-            'pairing': pairing,
-          }));
+          res.write(
+            jsonEncode({
+              'app': 'tunebox-sync',
+              'id': deviceId,
+              'name': deviceName,
+              'pairing': pairing,
+            }),
+          );
         case '/sync/pair':
           await _pair(req);
           return;
@@ -256,7 +261,9 @@ class SyncService {
       ..add(peer);
     await hooks.savePeers(peers);
     res.headers.contentType = ContentType.json;
-    res.write(jsonEncode({'id': deviceId, 'name': deviceName, 'secret': secret}));
+    res.write(
+      jsonEncode({'id': deviceId, 'name': deviceName, 'secret': secret}),
+    );
     await res.close();
     final done = _onPaired;
     closePairing();
@@ -288,9 +295,11 @@ class SyncService {
       return;
     }
     res.headers.contentType = ContentType.binary;
-    res.add(peer.crypto.seal(utf8.encode(jsonEncode([
-      for (final p in hooks.profiles()) p.toJson(),
-    ]))));
+    res.add(
+      peer.crypto.seal(
+        utf8.encode(jsonEncode([for (final p in hooks.profiles()) p.toJson()])),
+      ),
+    );
     await res.close();
   }
 
@@ -298,10 +307,7 @@ class SyncService {
     final res = req.response;
     final profile = req.uri.queryParameters['profile'];
     // 1.0 asked without a profile; its signature does not mention one
-    final peer = _authorised(
-      req,
-      profile == null ? 'taste' : 'taste:$profile',
-    );
+    final peer = _authorised(req, profile == null ? 'taste' : 'taste:$profile');
     if (peer == null) {
       res.statusCode = HttpStatus.forbidden;
       await res.close();
@@ -311,7 +317,8 @@ class SyncService {
     final host = req.connectionInfo?.remoteAddress.address;
     if (host != null && host != peer.host) {
       await hooks.savePeers([
-        for (final p in hooks.loadPeers()) p.id == peer.id ? p.copyWith(host: host) : p,
+        for (final p in hooks.loadPeers())
+          p.id == peer.id ? p.copyWith(host: host) : p,
       ]);
     }
     final taste = await hooks.exportTaste(profile);
@@ -327,22 +334,23 @@ class SyncService {
   Future<SyncPeer> pairWith(String code, {String? host, int? port}) async {
     final candidates = host != null
         ? [(host, port ?? defaultPort)]
-        : [
-            for (final d in await discover(onlyPairing: true)) (d.$1, d.$2),
-          ];
+        : [for (final d in await discover(onlyPairing: true)) (d.$1, d.$2)];
     if (candidates.isEmpty) throw const SyncException('no-device');
     Object? last;
     for (final (h, p) in candidates) {
-      final client = HttpClient()..connectionTimeout = const Duration(seconds: 6);
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 6);
       try {
         final req = await client.postUrl(Uri.http('$h:$p', '/sync/pair'));
         req.headers.contentType = ContentType.json;
-        req.write(jsonEncode({
-          'code': code.trim(),
-          'id': deviceId,
-          'name': deviceName,
-          'port': listeningPort,
-        }));
+        req.write(
+          jsonEncode({
+            'code': code.trim(),
+            'id': deviceId,
+            'name': deviceName,
+            'port': listeningPort,
+          }),
+        );
         final res = await req.close().timeout(const Duration(seconds: 10));
         if (res.statusCode == HttpStatus.forbidden) {
           last = const SyncException('wrong-code');
@@ -383,7 +391,9 @@ class SyncService {
   }) async {
     final bases = <String>{};
     final mine = <String>{};
-    for (final i in await NetworkInterface.list(type: InternetAddressType.IPv4)) {
+    for (final i in await NetworkInterface.list(
+      type: InternetAddressType.IPv4,
+    )) {
       for (final a in i.addresses) {
         if (a.isLoopback) continue;
         mine.add(a.address);
@@ -410,7 +420,9 @@ class SyncService {
   ) async {
     final client = HttpClient()..connectionTimeout = t;
     try {
-      final req = await client.getUrl(Uri.http('$host:$port', '/sync/hello')).timeout(t);
+      final req = await client
+          .getUrl(Uri.http('$host:$port', '/sync/hello'))
+          .timeout(t);
       final res = await req.close().timeout(t);
       if (res.statusCode != 200) return null;
       final j = jsonDecode(await utf8.decoder.bind(res).join());
@@ -450,7 +462,12 @@ class SyncService {
               peers = [
                 for (final x in hooks.loadPeers())
                   x.id == peer.id
-                      ? x.copyWith(host: h, port: p, lastSync: DateTime.now(), clearError: true)
+                      ? x.copyWith(
+                          host: h,
+                          port: p,
+                          lastSync: DateTime.now(),
+                          clearError: true,
+                        )
                       : x,
               ];
               await hooks.savePeers(peers);
@@ -494,9 +511,20 @@ class SyncService {
   Future<void> _pullAll(SyncPeer peer, String host, int port) async {
     List<RemoteProfile> remote;
     try {
-      final list = jsonDecode(
-        utf8.decode(await _get(peer, host, port, '/sync/profiles', 'profiles', const {})),
-      ) as List;
+      final list =
+          jsonDecode(
+                utf8.decode(
+                  await _get(
+                    peer,
+                    host,
+                    port,
+                    '/sync/profiles',
+                    'profiles',
+                    const {},
+                  ),
+                ),
+              )
+              as List;
       remote = [
         for (final j in list.cast<Map<String, dynamic>>())
           RemoteProfile(
@@ -559,7 +587,9 @@ class SyncService {
   }
 
   Future<void> forget(String peerId) async {
-    await hooks.savePeers(hooks.loadPeers().where((p) => p.id != peerId).toList());
+    await hooks.savePeers(
+      hooks.loadPeers().where((p) => p.id != peerId).toList(),
+    );
     _notify();
   }
 

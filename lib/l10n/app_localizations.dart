@@ -4700,6 +4700,48 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Pulse'**
   String get stPulse;
+
+  /// No description provided for @libAlbums.
+  ///
+  /// In en, this message translates to:
+  /// **'Albums'**
+  String get libAlbums;
+
+  /// No description provided for @albumKindAlbum.
+  ///
+  /// In en, this message translates to:
+  /// **'Album'**
+  String get albumKindAlbum;
+
+  /// No description provided for @albumKindSingle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single'**
+  String get albumKindSingle;
+
+  /// No description provided for @albumKindEp.
+  ///
+  /// In en, this message translates to:
+  /// **'EP'**
+  String get albumKindEp;
+
+  /// No description provided for @albumLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load this album. Check your connection and try again.'**
+  String get albumLoadFailed;
+
+  /// No description provided for @libNoAlbums.
+  ///
+  /// In en, this message translates to:
+  /// **'No albums yet'**
+  String get libNoAlbums;
+
+  /// No description provided for @libNoAlbumsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from.'**
+  String get libNoAlbumsBody;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

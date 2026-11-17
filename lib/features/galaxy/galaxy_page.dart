@@ -158,14 +158,14 @@ class _GalaxyPageState extends ConsumerState<GalaxyPage>
     };
     final l = L.of(context);
     if (picked.isEmpty) {
-      ScaffoldMessenger.of(context).showTimed(
-        SnackBar(content: Text(l.glxLassoEmpty)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showTimed(SnackBar(content: Text(l.glxLassoEmpty)));
       return;
     }
-    ScaffoldMessenger.of(context).showTimed(
-      SnackBar(content: Text(l.glxLassoPlaying(picked.length))),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showTimed(SnackBar(content: Text(l.glxLassoPlaying(picked.length))));
     _playArtists(picked);
   }
 
@@ -187,7 +187,10 @@ class _GalaxyPageState extends ConsumerState<GalaxyPage>
             isSelected: _lassoMode,
             onPressed: () => setState(() => _lassoMode = !_lassoMode),
             icon: const Icon(Icons.gesture_rounded),
-            selectedIcon: const Icon(Icons.gesture_rounded, color: Colors.amber),
+            selectedIcon: const Icon(
+              Icons.gesture_rounded,
+              color: Colors.amber,
+            ),
           ),
           IconButton(
             tooltip: l.glxRecenter,
@@ -347,7 +350,8 @@ class _SkyPainter extends CustomPainter {
     final byPlays = [...stars]..sort((a, b) => b.plays.compareTo(a.plays));
     // labels for the brightest; more appear as you zoom in
     final labelled = {
-      for (final s in byPlays.take((14 * zoom * zoom).clamp(12, 90).round())) s.key,
+      for (final s in byPlays.take((14 * zoom * zoom).clamp(12, 90).round()))
+        s.key,
     };
     for (var i = 0; i < stars.length; i++) {
       final s = stars[i];
@@ -360,7 +364,10 @@ class _SkyPainter extends CustomPainter {
         r * 2.6,
         Paint()
           ..shader = RadialGradient(
-            colors: [c.withValues(alpha: 0.35 * pulse), c.withValues(alpha: 0)],
+            colors: [
+              c.withValues(alpha: 0.35 * pulse),
+              c.withValues(alpha: 0),
+            ],
           ).createShader(Rect.fromCircle(center: p, radius: r * 2.6)),
       );
       canvas.drawCircle(p, r, Paint()..color = c);
