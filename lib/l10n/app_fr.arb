@@ -657,7 +657,7 @@
   "swQueued": "\"{title}\" passe ensuite",
   "glxTitle": "Galaxie de tes goûts",
   "glxEntry": "Tes artistes en carte du ciel",
-  "glxHint": "Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Touche une étoile.",
+  "glxHint": "Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Fais glisser pour tourner la galaxie, pince pour zoomer, touche une étoile.",
   "glxLasso": "Entourer un groupe",
   "glxLassoHint": "Entoure des étoiles pour écouter ce coin de tes goûts",
   "glxLassoEmpty": "Aucune étoile à l'intérieur",

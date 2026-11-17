@@ -2292,7 +2292,7 @@ class LHr extends L {
 
   @override
   String get glxHint =>
-      'Big stars are played most. Neighbours sound alike. Tap a star.';
+      'Big stars are played most. Neighbours sound alike. Drag to turn the galaxy, pinch to zoom, tap a star.';
 
   @override
   String get glxLasso => 'Draw around a cluster';

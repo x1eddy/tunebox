@@ -657,7 +657,7 @@
   "swQueued": "\"{title}\" kommt als Nächstes",
   "glxTitle": "Geschmacks-Galaxie",
   "glxEntry": "Deine Artists als Sternenkarte",
-  "glxHint": "Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Tipp einen Stern an.",
+  "glxHint": "Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Ziehen zum Drehen, mit zwei Fingern zoomen, Stern antippen.",
   "glxLasso": "Um eine Gruppe zeichnen",
   "glxLassoHint": "Zeichne eine Schleife um Sterne, um diese Ecke deines Geschmacks zu hören",
   "glxLassoEmpty": "In der Schleife sind keine Sterne",

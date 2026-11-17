@@ -657,7 +657,7 @@
   "swQueued": "„{title}” zagra jako następny",
   "glxTitle": "Galaktyka gustu",
   "glxEntry": "Twoi artyści jako mapa gwiazd",
-  "glxHint": "Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Dotknij gwiazdy.",
+  "glxHint": "Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Przeciągnij, by obrócić galaktykę, uszczypnij, by przybliżyć, dotknij gwiazdy.",
   "glxLasso": "Zakreśl grupę",
   "glxLassoHint": "Zakreśl kilka gwiazd, by posłuchać tego zakątka twojego gustu",
   "glxLassoEmpty": "Brak gwiazd w środku",

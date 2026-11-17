@@ -2296,7 +2296,7 @@ class LNl extends L {
 
   @override
   String get glxHint =>
-      'Grote sterren speel je het meest. Buren klinken hetzelfde. Tik op een ster.';
+      'Grote sterren speel je het meest. Buren klinken hetzelfde. Sleep om het sterrenstelsel te draaien, knijp om te zoomen, tik op een ster.';
 
   @override
   String get glxLasso => 'Om een groep tekenen';

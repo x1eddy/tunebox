@@ -2305,7 +2305,7 @@ class LPl extends L {
 
   @override
   String get glxHint =>
-      'Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Dotknij gwiazdy.';
+      'Duże gwiazdy słuchasz najczęściej. Sąsiednie brzmią podobnie. Przeciągnij, by obrócić galaktykę, uszczypnij, by przybliżyć, dotknij gwiazdy.';
 
   @override
   String get glxLasso => 'Zakreśl grupę';

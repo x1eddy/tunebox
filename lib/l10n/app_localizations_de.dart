@@ -2301,7 +2301,7 @@ class LDe extends L {
 
   @override
   String get glxHint =>
-      'Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Tipp einen Stern an.';
+      'Große Sterne hörst du am meisten. Nachbarn klingen ähnlich. Ziehen zum Drehen, mit zwei Fingern zoomen, Stern antippen.';
 
   @override
   String get glxLasso => 'Um eine Gruppe zeichnen';

@@ -657,7 +657,7 @@
   "swQueued": "\"{title}\" toca a seguir",
   "glxTitle": "Galáxia do teu gosto",
   "glxEntry": "Os teus artistas como um mapa de estrelas",
-  "glxHint": "As estrelas grandes são as mais ouvidas. As vizinhas soam parecido. Toca numa.",
+  "glxHint": "As estrelas grandes são as mais tocadas. Vizinhas soam parecido. Arraste para girar a galáxia, faça pinça para dar zoom, toque numa estrela.",
   "glxLasso": "Rodear um grupo",
   "glxLassoHint": "Desenha um laço à volta de estrelas para ouvir esse canto do teu gosto",
   "glxLassoEmpty": "Nenhuma estrela lá dentro",

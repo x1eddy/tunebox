@@ -2299,7 +2299,7 @@ class LEs extends L {
 
   @override
   String get glxHint =>
-      'Las estrellas grandes son las más escuchadas. Las vecinas suenan parecido. Toca una.';
+      'Las estrellas grandes son las que más escuchas. Las vecinas suenan parecido. Arrastra para girar la galaxia, pellizca para hacer zoom, toca una estrella.';
 
   @override
   String get glxLasso => 'Rodear un grupo';

@@ -2289,7 +2289,7 @@ class LIt extends L {
 
   @override
   String get glxHint =>
-      'Le stelle grandi sono le più ascoltate. Le vicine si somigliano. Tocca una stella.';
+      'Le stelle grandi sono le più ascoltate. Le vicine suonano simili. Trascina per ruotare la galassia, pizzica per lo zoom, tocca una stella.';
 
   @override
   String get glxLasso => 'Cerchia un gruppo';

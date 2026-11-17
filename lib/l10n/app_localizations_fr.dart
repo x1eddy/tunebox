@@ -2305,7 +2305,7 @@ class LFr extends L {
 
   @override
   String get glxHint =>
-      'Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Touche une étoile.';
+      'Les grosses étoiles sont les plus écoutées. Les voisines se ressemblent. Fais glisser pour tourner la galaxie, pince pour zoomer, touche une étoile.';
 
   @override
   String get glxLasso => 'Entourer un groupe';

@@ -1323,7 +1323,7 @@
   },
   "glxTitle": "Taste Galaxy",
   "glxEntry": "Your artists as a map of stars",
-  "glxHint": "Big stars are played most. Neighbours sound alike. Tap a star.",
+  "glxHint": "Big stars are played most. Neighbours sound alike. Drag to turn the galaxy, pinch to zoom, tap a star.",
   "glxLasso": "Draw around a cluster",
   "glxLassoHint": "Draw a loop around some stars to play that corner of your taste",
   "glxLassoEmpty": "No stars inside that loop",

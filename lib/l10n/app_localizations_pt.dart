@@ -2288,7 +2288,7 @@ class LPt extends L {
 
   @override
   String get glxHint =>
-      'As estrelas grandes são as mais ouvidas. As vizinhas soam parecido. Toca numa.';
+      'As estrelas grandes são as mais tocadas. Vizinhas soam parecido. Arraste para girar a galáxia, faça pinça para dar zoom, toque numa estrela.';
 
   @override
   String get glxLasso => 'Rodear um grupo';

@@ -17,8 +17,10 @@ void main() {
     final g = layoutGalaxy(artists, const {});
     double d(String x, String y) {
       final s = {for (final s in g.stars) s.key: s};
-      final dx = s[x]!.x - s[y]!.x, dy = s[x]!.y - s[y]!.y;
-      return dx * dx + dy * dy;
+      final dx = s[x]!.x - s[y]!.x,
+          dy = s[x]!.y - s[y]!.y,
+          dz = s[x]!.z - s[y]!.z;
+      return dx * dx + dy * dy + dz * dz;
     }
 
     expect(d('daft', 'justice'), lessThan(d('daft', 'metallica')));
@@ -26,11 +28,16 @@ void main() {
     for (final s in g.stars) {
       expect(s.x.abs(), lessThanOrEqualTo(1.0));
       expect(s.y.abs(), lessThanOrEqualTo(1.0));
+      expect(s.z.abs(), lessThanOrEqualTo(1.0));
     }
   });
 
   test('the same input always gives the same sky', () {
-    final artists = [a('x', {'pop': 1}), a('y', {'pop': 2}), a('z', {'rock': 1})];
+    final artists = [
+      a('x', {'pop': 1}),
+      a('y', {'pop': 2}),
+      a('z', {'rock': 1}),
+    ];
     final one = layoutGalaxy(artists, const {});
     final two = layoutGalaxy(artists, const {});
     expect([for (final s in one.stars) s.x], [for (final s in two.stars) s.x]);

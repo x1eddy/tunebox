@@ -4206,7 +4206,7 @@ abstract class L {
   /// No description provided for @glxHint.
   ///
   /// In en, this message translates to:
-  /// **'Big stars are played most. Neighbours sound alike. Tap a star.'**
+  /// **'Big stars are played most. Neighbours sound alike. Drag to turn the galaxy, pinch to zoom, tap a star.'**
   String get glxHint;
 
   /// No description provided for @glxLasso.
