@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import '../state/appearance.dart';
 
 /// Shown on the About row; keep in step with pubspec.
-const kAppVersion = '1.0.2';
+const kAppVersion = '1.0.3';
 
 const kDefaultSeed = Color(0xFF3F5EFB);
 
