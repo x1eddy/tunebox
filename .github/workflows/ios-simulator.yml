@@ -17,6 +17,9 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          # pinned to the version releases are built with locally; a newer stable
+          # deprecated material.dart imports and needs a newer Android plugin
+          flutter-version: 3.47.5
           cache: true
       - run: flutter pub get
 
