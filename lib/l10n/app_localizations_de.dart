@@ -1733,10 +1733,11 @@ class LDe extends L {
   }
 
   @override
-  String get sndTitle => 'Klang';
+  String get sndTitle => 'Dein Sound';
 
   @override
-  String get sndSub => 'Überblenden, Equalizer, Lautstärke, Sleep-Timer';
+  String get sndSub =>
+      'Gelernt aus der Musik selbst, während sie läuft: Tempo, Energie, Klang, Bass und Wucht.';
 
   @override
   String get sndAll => 'Alle Klangeinstellungen';
@@ -2620,4 +2621,52 @@ class LDe extends L {
   @override
   String get libNoAlbumsBody =>
       'Musik, die du von einem Laufwerk oder Ordner importierst, wird hier zu Alben gruppiert – zusammen mit Alben, aus denen du Songs gespeichert hast.';
+
+  @override
+  String get sndTempoSlow => 'Langsames Tempo';
+
+  @override
+  String get sndTempoMid => 'Mittleres Tempo';
+
+  @override
+  String get sndTempoFast => 'Schnelles Tempo';
+
+  @override
+  String get sndEnergyLow => 'Ruhig';
+
+  @override
+  String get sndEnergyMid => 'Mittlere Energie';
+
+  @override
+  String get sndEnergyHigh => 'Viel Energie';
+
+  @override
+  String get sndToneDark => 'Dunkler, warmer Klang';
+
+  @override
+  String get sndToneBalanced => 'Ausgewogener Klang';
+
+  @override
+  String get sndToneBright => 'Heller Klang';
+
+  @override
+  String get sndBassHeavy => 'Starker Bass';
+
+  @override
+  String get sndBassLight => 'Leichter Bass';
+
+  @override
+  String get sndBeatPunchy => 'Druckvolle Beats';
+
+  @override
+  String get sndBeatSoft => 'Sanfte Beats';
+
+  @override
+  String get sndLengthShort => 'Kurze Songs';
+
+  @override
+  String get sndLengthMid => 'Mittellange Songs';
+
+  @override
+  String get sndLengthLong => 'Lange Songs';
 }

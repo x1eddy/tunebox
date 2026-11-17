@@ -1731,10 +1731,11 @@ class LEs extends L {
   }
 
   @override
-  String get sndTitle => 'Sonido';
+  String get sndTitle => 'Tu sonido';
 
   @override
-  String get sndSub => 'Fundido, ecualizador, volumen, temporizador';
+  String get sndSub =>
+      'Aprendido de la propia música mientras suena: tempo, energía, tono, graves y pegada.';
 
   @override
   String get sndAll => 'Todos los ajustes de sonido';
@@ -2617,4 +2618,52 @@ class LEs extends L {
   @override
   String get libNoAlbumsBody =>
       'La música que importas desde un disco o carpeta se agrupa aquí en álbumes, junto con los álbumes de los que guardaste canciones.';
+
+  @override
+  String get sndTempoSlow => 'Tempo lento';
+
+  @override
+  String get sndTempoMid => 'Tempo medio';
+
+  @override
+  String get sndTempoFast => 'Tempo rápido';
+
+  @override
+  String get sndEnergyLow => 'Tranquilo';
+
+  @override
+  String get sndEnergyMid => 'Energía media';
+
+  @override
+  String get sndEnergyHigh => 'Mucha energía';
+
+  @override
+  String get sndToneDark => 'Sonido oscuro y cálido';
+
+  @override
+  String get sndToneBalanced => 'Sonido equilibrado';
+
+  @override
+  String get sndToneBright => 'Sonido brillante';
+
+  @override
+  String get sndBassHeavy => 'Graves potentes';
+
+  @override
+  String get sndBassLight => 'Graves suaves';
+
+  @override
+  String get sndBeatPunchy => 'Ritmos contundentes';
+
+  @override
+  String get sndBeatSoft => 'Ritmos suaves';
+
+  @override
+  String get sndLengthShort => 'Canciones cortas';
+
+  @override
+  String get sndLengthMid => 'Canciones de duración media';
+
+  @override
+  String get sndLengthLong => 'Canciones largas';
 }

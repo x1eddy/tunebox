@@ -35,6 +35,10 @@ class Songs extends Table {
   DateTimeColumn get lastPlayed => dateTime().nullable()();
   DateTimeColumn get addedAt => dateTime().withDefault(currentDateAndTime)();
 
+  /// What the song sounds like, measured while it played (see SoundProfile):
+  /// "tempo=118;energy=0.62;tone=0.41;bass=0.55;punch=0.30;n=2".
+  TextColumn get sound => text().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }
@@ -131,13 +135,15 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.named(String name) : super(driftDatabase(name: name));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
       // 1 -> 2: the lyrics cache. Nothing existing changes.
       if (from < 2) await m.createTable(lyricsCache);
+      // 2 -> 3: what each song sounds like, learned while it plays.
+      if (from < 3) await m.addColumn(songs, songs.sound);
     },
   );
 
@@ -203,6 +209,10 @@ class AppDatabase extends _$AppDatabase {
       await cacheSong(song);
     }
   });
+
+  Future<void> setSound(String id, String sound) => (update(
+    songs,
+  )..where((s) => s.id.equals(id))).write(SongsCompanion(sound: Value(sound)));
 
   Future<Song?> songById(String id) =>
       (select(songs)..where((s) => s.id.equals(id))).getSingleOrNull();

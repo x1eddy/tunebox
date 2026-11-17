@@ -3198,13 +3198,13 @@ abstract class L {
   /// No description provided for @sndTitle.
   ///
   /// In en, this message translates to:
-  /// **'Sound'**
+  /// **'Your sound'**
   String get sndTitle;
 
   /// No description provided for @sndSub.
   ///
   /// In en, this message translates to:
-  /// **'Crossfade, equaliser, loudness, sleep timer'**
+  /// **'Learned from the music itself while it plays: tempo, energy, tone, bass and punch.'**
   String get sndSub;
 
   /// No description provided for @sndAll.
@@ -4742,6 +4742,102 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from.'**
   String get libNoAlbumsBody;
+
+  /// No description provided for @sndTempoSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow tempo'**
+  String get sndTempoSlow;
+
+  /// No description provided for @sndTempoMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid tempo'**
+  String get sndTempoMid;
+
+  /// No description provided for @sndTempoFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast tempo'**
+  String get sndTempoFast;
+
+  /// No description provided for @sndEnergyLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Calm'**
+  String get sndEnergyLow;
+
+  /// No description provided for @sndEnergyMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium energy'**
+  String get sndEnergyMid;
+
+  /// No description provided for @sndEnergyHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High energy'**
+  String get sndEnergyHigh;
+
+  /// No description provided for @sndToneDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark, warm sound'**
+  String get sndToneDark;
+
+  /// No description provided for @sndToneBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced sound'**
+  String get sndToneBalanced;
+
+  /// No description provided for @sndToneBright.
+  ///
+  /// In en, this message translates to:
+  /// **'Bright sound'**
+  String get sndToneBright;
+
+  /// No description provided for @sndBassHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy bass'**
+  String get sndBassHeavy;
+
+  /// No description provided for @sndBassLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light bass'**
+  String get sndBassLight;
+
+  /// No description provided for @sndBeatPunchy.
+  ///
+  /// In en, this message translates to:
+  /// **'Punchy beats'**
+  String get sndBeatPunchy;
+
+  /// No description provided for @sndBeatSoft.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft beats'**
+  String get sndBeatSoft;
+
+  /// No description provided for @sndLengthShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Short songs'**
+  String get sndLengthShort;
+
+  /// No description provided for @sndLengthMid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mid-length songs'**
+  String get sndLengthMid;
+
+  /// No description provided for @sndLengthLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Long songs'**
+  String get sndLengthLong;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

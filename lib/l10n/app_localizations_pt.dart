@@ -1725,10 +1725,11 @@ class LPt extends L {
   }
 
   @override
-  String get sndTitle => 'Som';
+  String get sndTitle => 'O seu som';
 
   @override
-  String get sndSub => 'Transição, equalizador, volume, temporizador';
+  String get sndSub =>
+      'Aprendido com a própria música enquanto toca: andamento, energia, timbre, graves e pegada.';
 
   @override
   String get sndAll => 'Todas as definições de som';
@@ -2605,4 +2606,52 @@ class LPt extends L {
   @override
   String get libNoAlbumsBody =>
       'As músicas importadas de um disco ou pasta são agrupadas aqui em álbuns, junto com os álbuns dos quais você salvou músicas.';
+
+  @override
+  String get sndTempoSlow => 'Andamento lento';
+
+  @override
+  String get sndTempoMid => 'Andamento médio';
+
+  @override
+  String get sndTempoFast => 'Andamento rápido';
+
+  @override
+  String get sndEnergyLow => 'Calmo';
+
+  @override
+  String get sndEnergyMid => 'Energia média';
+
+  @override
+  String get sndEnergyHigh => 'Muita energia';
+
+  @override
+  String get sndToneDark => 'Som escuro e quente';
+
+  @override
+  String get sndToneBalanced => 'Som equilibrado';
+
+  @override
+  String get sndToneBright => 'Som brilhante';
+
+  @override
+  String get sndBassHeavy => 'Graves pesados';
+
+  @override
+  String get sndBassLight => 'Graves leves';
+
+  @override
+  String get sndBeatPunchy => 'Batidas marcantes';
+
+  @override
+  String get sndBeatSoft => 'Batidas suaves';
+
+  @override
+  String get sndLengthShort => 'Músicas curtas';
+
+  @override
+  String get sndLengthMid => 'Músicas de duração média';
+
+  @override
+  String get sndLengthLong => 'Músicas longas';
 }

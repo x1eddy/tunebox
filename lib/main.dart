@@ -27,6 +27,7 @@ import 'state/gestures.dart';
 import 'state/home_widget_sync.dart';
 import 'state/lyrics.dart';
 import 'state/settings.dart';
+import 'state/sound_learning.dart';
 import 'state/sound_wiring.dart';
 import 'state/sync.dart';
 
@@ -256,6 +257,7 @@ class _TuneBoxAppState extends ConsumerState<TuneBoxApp>
     ref.read(shakeToSkipProvider);
     ref.read(homeWidgetSyncProvider);
     ref.read(syncTickerProvider);
+    ref.read(soundLearningProvider);
     if (kTour) startFrameStats();
   }
 

@@ -236,6 +236,15 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, Song> {
     requiredDuringInsert: false,
     defaultValue: currentDateAndTime,
   );
+  static const VerificationMeta _soundMeta = const VerificationMeta('sound');
+  @override
+  late final GeneratedColumn<String> sound = GeneratedColumn<String>(
+    'sound',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -258,6 +267,7 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, Song> {
     fileSize,
     lastPlayed,
     addedAt,
+    sound,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -389,6 +399,12 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, Song> {
         addedAt.isAcceptableOrUnknown(data['added_at']!, _addedAtMeta),
       );
     }
+    if (data.containsKey('sound')) {
+      context.handle(
+        _soundMeta,
+        sound.isAcceptableOrUnknown(data['sound']!, _soundMeta),
+      );
+    }
     return context;
   }
 
@@ -480,6 +496,10 @@ class $SongsTable extends Songs with TableInfo<$SongsTable, Song> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}added_at'],
       )!,
+      sound: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sound'],
+      ),
     );
   }
 
@@ -520,6 +540,10 @@ class Song extends DataClass implements Insertable<Song> {
   final int fileSize;
   final DateTime? lastPlayed;
   final DateTime addedAt;
+
+  /// What the song sounds like, measured while it played (see SoundProfile):
+  /// "tempo=118;energy=0.62;tone=0.41;bass=0.55;punch=0.30;n=2".
+  final String? sound;
   const Song({
     required this.id,
     required this.title,
@@ -541,6 +565,7 @@ class Song extends DataClass implements Insertable<Song> {
     required this.fileSize,
     this.lastPlayed,
     required this.addedAt,
+    this.sound,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -579,6 +604,9 @@ class Song extends DataClass implements Insertable<Song> {
       map['last_played'] = Variable<DateTime>(lastPlayed);
     }
     map['added_at'] = Variable<DateTime>(addedAt);
+    if (!nullToAbsent || sound != null) {
+      map['sound'] = Variable<String>(sound);
+    }
     return map;
   }
 
@@ -612,6 +640,9 @@ class Song extends DataClass implements Insertable<Song> {
           ? const Value.absent()
           : Value(lastPlayed),
       addedAt: Value(addedAt),
+      sound: sound == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sound),
     );
   }
 
@@ -643,6 +674,7 @@ class Song extends DataClass implements Insertable<Song> {
       fileSize: serializer.fromJson<int>(json['fileSize']),
       lastPlayed: serializer.fromJson<DateTime?>(json['lastPlayed']),
       addedAt: serializer.fromJson<DateTime>(json['addedAt']),
+      sound: serializer.fromJson<String?>(json['sound']),
     );
   }
   @override
@@ -671,6 +703,7 @@ class Song extends DataClass implements Insertable<Song> {
       'fileSize': serializer.toJson<int>(fileSize),
       'lastPlayed': serializer.toJson<DateTime?>(lastPlayed),
       'addedAt': serializer.toJson<DateTime>(addedAt),
+      'sound': serializer.toJson<String?>(sound),
     };
   }
 
@@ -695,6 +728,7 @@ class Song extends DataClass implements Insertable<Song> {
     int? fileSize,
     Value<DateTime?> lastPlayed = const Value.absent(),
     DateTime? addedAt,
+    Value<String?> sound = const Value.absent(),
   }) => Song(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -716,6 +750,7 @@ class Song extends DataClass implements Insertable<Song> {
     fileSize: fileSize ?? this.fileSize,
     lastPlayed: lastPlayed.present ? lastPlayed.value : this.lastPlayed,
     addedAt: addedAt ?? this.addedAt,
+    sound: sound.present ? sound.value : this.sound,
   );
   Song copyWithCompanion(SongsCompanion data) {
     return Song(
@@ -747,6 +782,7 @@ class Song extends DataClass implements Insertable<Song> {
           ? data.lastPlayed.value
           : this.lastPlayed,
       addedAt: data.addedAt.present ? data.addedAt.value : this.addedAt,
+      sound: data.sound.present ? data.sound.value : this.sound,
     );
   }
 
@@ -772,13 +808,14 @@ class Song extends DataClass implements Insertable<Song> {
           ..write('skipCount: $skipCount, ')
           ..write('fileSize: $fileSize, ')
           ..write('lastPlayed: $lastPlayed, ')
-          ..write('addedAt: $addedAt')
+          ..write('addedAt: $addedAt, ')
+          ..write('sound: $sound')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     title,
     artist,
@@ -799,7 +836,8 @@ class Song extends DataClass implements Insertable<Song> {
     fileSize,
     lastPlayed,
     addedAt,
-  );
+    sound,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -823,7 +861,8 @@ class Song extends DataClass implements Insertable<Song> {
           other.skipCount == this.skipCount &&
           other.fileSize == this.fileSize &&
           other.lastPlayed == this.lastPlayed &&
-          other.addedAt == this.addedAt);
+          other.addedAt == this.addedAt &&
+          other.sound == this.sound);
 }
 
 class SongsCompanion extends UpdateCompanion<Song> {
@@ -847,6 +886,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
   final Value<int> fileSize;
   final Value<DateTime?> lastPlayed;
   final Value<DateTime> addedAt;
+  final Value<String?> sound;
   final Value<int> rowid;
   const SongsCompanion({
     this.id = const Value.absent(),
@@ -869,6 +909,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
     this.fileSize = const Value.absent(),
     this.lastPlayed = const Value.absent(),
     this.addedAt = const Value.absent(),
+    this.sound = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SongsCompanion.insert({
@@ -892,6 +933,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
     this.fileSize = const Value.absent(),
     this.lastPlayed = const Value.absent(),
     this.addedAt = const Value.absent(),
+    this.sound = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        title = Value(title),
@@ -917,6 +959,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
     Expression<int>? fileSize,
     Expression<DateTime>? lastPlayed,
     Expression<DateTime>? addedAt,
+    Expression<String>? sound,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -940,6 +983,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
       if (fileSize != null) 'file_size': fileSize,
       if (lastPlayed != null) 'last_played': lastPlayed,
       if (addedAt != null) 'added_at': addedAt,
+      if (sound != null) 'sound': sound,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -965,6 +1009,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
     Value<int>? fileSize,
     Value<DateTime?>? lastPlayed,
     Value<DateTime>? addedAt,
+    Value<String?>? sound,
     Value<int>? rowid,
   }) {
     return SongsCompanion(
@@ -988,6 +1033,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
       fileSize: fileSize ?? this.fileSize,
       lastPlayed: lastPlayed ?? this.lastPlayed,
       addedAt: addedAt ?? this.addedAt,
+      sound: sound ?? this.sound,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1057,6 +1103,9 @@ class SongsCompanion extends UpdateCompanion<Song> {
     if (addedAt.present) {
       map['added_at'] = Variable<DateTime>(addedAt.value);
     }
+    if (sound.present) {
+      map['sound'] = Variable<String>(sound.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1086,6 +1135,7 @@ class SongsCompanion extends UpdateCompanion<Song> {
           ..write('fileSize: $fileSize, ')
           ..write('lastPlayed: $lastPlayed, ')
           ..write('addedAt: $addedAt, ')
+          ..write('sound: $sound, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -3133,6 +3183,7 @@ typedef $$SongsTableCreateCompanionBuilder =
       Value<int> fileSize,
       Value<DateTime?> lastPlayed,
       Value<DateTime> addedAt,
+      Value<String?> sound,
       Value<int> rowid,
     });
 typedef $$SongsTableUpdateCompanionBuilder =
@@ -3157,6 +3208,7 @@ typedef $$SongsTableUpdateCompanionBuilder =
       Value<int> fileSize,
       Value<DateTime?> lastPlayed,
       Value<DateTime> addedAt,
+      Value<String?> sound,
       Value<int> rowid,
     });
 
@@ -3266,6 +3318,11 @@ class $$SongsTableFilterComposer extends Composer<_$AppDatabase, $SongsTable> {
 
   ColumnFilters<DateTime> get addedAt => $composableBuilder(
     column: $table.addedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sound => $composableBuilder(
+    column: $table.sound,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3378,6 +3435,11 @@ class $$SongsTableOrderingComposer
     column: $table.addedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get sound => $composableBuilder(
+    column: $table.sound,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SongsTableAnnotationComposer
@@ -3456,6 +3518,9 @@ class $$SongsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get addedAt =>
       $composableBuilder(column: $table.addedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get sound =>
+      $composableBuilder(column: $table.sound, builder: (column) => column);
 }
 
 class $$SongsTableTableManager
@@ -3506,6 +3571,7 @@ class $$SongsTableTableManager
                 Value<int> fileSize = const Value.absent(),
                 Value<DateTime?> lastPlayed = const Value.absent(),
                 Value<DateTime> addedAt = const Value.absent(),
+                Value<String?> sound = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SongsCompanion(
                 id: id,
@@ -3528,6 +3594,7 @@ class $$SongsTableTableManager
                 fileSize: fileSize,
                 lastPlayed: lastPlayed,
                 addedAt: addedAt,
+                sound: sound,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -3552,6 +3619,7 @@ class $$SongsTableTableManager
                 Value<int> fileSize = const Value.absent(),
                 Value<DateTime?> lastPlayed = const Value.absent(),
                 Value<DateTime> addedAt = const Value.absent(),
+                Value<String?> sound = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => SongsCompanion.insert(
                 id: id,
@@ -3574,6 +3642,7 @@ class $$SongsTableTableManager
                 fileSize: fileSize,
                 lastPlayed: lastPlayed,
                 addedAt: addedAt,
+                sound: sound,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

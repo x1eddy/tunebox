@@ -1729,10 +1729,11 @@ class LNl extends L {
   }
 
   @override
-  String get sndTitle => 'Geluid';
+  String get sndTitle => 'Jouw sound';
 
   @override
-  String get sndSub => 'Overgang, equalizer, volume, slaaptimer';
+  String get sndSub =>
+      'Geleerd van de muziek zelf terwijl die speelt: tempo, energie, klank, bas en punch.';
 
   @override
   String get sndAll => 'Alle geluidsinstellingen';
@@ -2612,4 +2613,52 @@ class LNl extends L {
   @override
   String get libNoAlbumsBody =>
       'Muziek die je importeert van een schijf of map wordt hier in albums gegroepeerd, samen met albums waarvan je nummers hebt bewaard.';
+
+  @override
+  String get sndTempoSlow => 'Langzaam tempo';
+
+  @override
+  String get sndTempoMid => 'Gemiddeld tempo';
+
+  @override
+  String get sndTempoFast => 'Snel tempo';
+
+  @override
+  String get sndEnergyLow => 'Rustig';
+
+  @override
+  String get sndEnergyMid => 'Gemiddelde energie';
+
+  @override
+  String get sndEnergyHigh => 'Veel energie';
+
+  @override
+  String get sndToneDark => 'Donkere, warme klank';
+
+  @override
+  String get sndToneBalanced => 'Gebalanceerde klank';
+
+  @override
+  String get sndToneBright => 'Heldere klank';
+
+  @override
+  String get sndBassHeavy => 'Zware bas';
+
+  @override
+  String get sndBassLight => 'Lichte bas';
+
+  @override
+  String get sndBeatPunchy => 'Krachtige beats';
+
+  @override
+  String get sndBeatSoft => 'Zachte beats';
+
+  @override
+  String get sndLengthShort => 'Korte nummers';
+
+  @override
+  String get sndLengthMid => 'Middellange nummers';
+
+  @override
+  String get sndLengthLong => 'Lange nummers';
 }

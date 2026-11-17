@@ -1722,10 +1722,11 @@ class LEt extends L {
   }
 
   @override
-  String get sndTitle => 'Sound';
+  String get sndTitle => 'Your sound';
 
   @override
-  String get sndSub => 'Crossfade, equaliser, loudness, sleep timer';
+  String get sndSub =>
+      'Learned from the music itself while it plays: tempo, energy, tone, bass and punch.';
 
   @override
   String get sndAll => 'All sound settings';
@@ -2605,4 +2606,52 @@ class LEt extends L {
   @override
   String get libNoAlbumsBody =>
       'Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from.';
+
+  @override
+  String get sndTempoSlow => 'Slow tempo';
+
+  @override
+  String get sndTempoMid => 'Mid tempo';
+
+  @override
+  String get sndTempoFast => 'Fast tempo';
+
+  @override
+  String get sndEnergyLow => 'Calm';
+
+  @override
+  String get sndEnergyMid => 'Medium energy';
+
+  @override
+  String get sndEnergyHigh => 'High energy';
+
+  @override
+  String get sndToneDark => 'Dark, warm sound';
+
+  @override
+  String get sndToneBalanced => 'Balanced sound';
+
+  @override
+  String get sndToneBright => 'Bright sound';
+
+  @override
+  String get sndBassHeavy => 'Heavy bass';
+
+  @override
+  String get sndBassLight => 'Light bass';
+
+  @override
+  String get sndBeatPunchy => 'Punchy beats';
+
+  @override
+  String get sndBeatSoft => 'Soft beats';
+
+  @override
+  String get sndLengthShort => 'Short songs';
+
+  @override
+  String get sndLengthMid => 'Mid-length songs';
+
+  @override
+  String get sndLengthLong => 'Long songs';
 }

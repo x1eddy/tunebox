@@ -110,6 +110,8 @@ final aiProvider = Provider<AiEngine>((ref) {
   // A profile switch closes this database; background work bound to it
   // has to stop instead of writing into a closed connection.
   ref.onDispose(engine.dispose);
+  // songs not heard yet borrow their artist's measured sound
+  unawaited(engine.refreshArtistSounds());
   return engine;
 });
 

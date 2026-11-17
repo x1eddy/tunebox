@@ -1065,8 +1065,8 @@
       }
     }
   },
-  "sndTitle": "Sound",
-  "sndSub": "Crossfade, equaliser, loudness, sleep timer",
+  "sndTitle": "Your sound",
+  "sndSub": "Learned from the music itself while it plays: tempo, energy, tone, bass and punch.",
   "sndAll": "All sound settings",
   "sndBetween": "Between songs",
   "sndCrossfade": "Crossfade",
@@ -1489,5 +1489,21 @@
   "albumKindEp": "EP",
   "albumLoadFailed": "Couldn't load this album. Check your connection and try again.",
   "libNoAlbums": "No albums yet",
-  "libNoAlbumsBody": "Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from."
+  "libNoAlbumsBody": "Music you import from a disk or folder is grouped into albums here, along with albums you have saved songs from.",
+  "sndTempoSlow": "Slow tempo",
+  "sndTempoMid": "Mid tempo",
+  "sndTempoFast": "Fast tempo",
+  "sndEnergyLow": "Calm",
+  "sndEnergyMid": "Medium energy",
+  "sndEnergyHigh": "High energy",
+  "sndToneDark": "Dark, warm sound",
+  "sndToneBalanced": "Balanced sound",
+  "sndToneBright": "Bright sound",
+  "sndBassHeavy": "Heavy bass",
+  "sndBassLight": "Light bass",
+  "sndBeatPunchy": "Punchy beats",
+  "sndBeatSoft": "Soft beats",
+  "sndLengthShort": "Short songs",
+  "sndLengthMid": "Mid-length songs",
+  "sndLengthLong": "Long songs"
 }

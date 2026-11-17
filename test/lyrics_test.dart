@@ -47,7 +47,7 @@ void main() {
     final dir = await Directory.systemTemp.createTemp('tbmig');
     final file = File('${dir.path}/v1.sqlite');
     // Build a database, then turn it back into what 0.10 shipped: no lyrics
-    // table and schema version 1.
+    // table, no sound column and schema version 1.
     var db = AppDatabase(NativeDatabase(file));
     await db.into(db.songs).insert(
       SongsCompanion.insert(
@@ -57,6 +57,7 @@ void main() {
       ),
     );
     await db.customStatement('DROP TABLE lyrics_cache');
+    await db.customStatement('ALTER TABLE songs DROP COLUMN sound');
     await db.customStatement('PRAGMA user_version = 1');
     await db.close();
 
@@ -72,7 +73,10 @@ void main() {
     );
     expect((await db.cachedLyrics('abc'))!.synced, '[00:01.00]hi');
     final v = await db.customSelect('PRAGMA user_version').getSingle();
-    expect(v.data.values.first, 2);
+    expect(v.data.values.first, 3);
+    // the sound column came back with the 2 -> 3 step
+    await db.setSound('abc', 'energy=0.50;tone=0.50;bass=0.50;punch=0.50;n=1');
+    expect((await db.songById('abc'))!.sound, startsWith('energy=0.50'));
     await db.close();
     await dir.delete(recursive: true);
   });

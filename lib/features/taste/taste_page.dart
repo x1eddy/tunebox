@@ -220,6 +220,14 @@ class TastePage extends ConsumerWidget {
                   ),
                   _ArtistWrap(artists: profile.artists),
                 ],
+                if (profile != null && profile.sound.isNotEmpty) ...[
+                  SectionHeader(
+                    title: l.sndTitle,
+                    subtitle: l.sndSub,
+                    padding: EdgeInsets.fromLTRB(16, 18, 8, 10),
+                  ),
+                  _SoundWrap(sound: profile.sound),
+                ],
                 if (profile != null && profile.plays > 0) ...[
                   SectionHeader(
                     title: l.tasteWhenYouListen,
@@ -851,6 +859,67 @@ class _ResetTile extends StatelessWidget {
           );
           if (ok ?? false) await onReset();
         },
+      ),
+    );
+  }
+}
+
+/// "Fast tempo · Heavy bass · Punchy beats": the sound traits the AI has
+/// learned you lean to, strongest first.
+class _SoundWrap extends StatelessWidget {
+  const _SoundWrap({required this.sound});
+  final List<(String, double)> sound;
+
+  static String label(L l, String key) => switch (key) {
+    'tempo:slow' => l.sndTempoSlow,
+    'tempo:mid' => l.sndTempoMid,
+    'tempo:fast' => l.sndTempoFast,
+    'energy:low' => l.sndEnergyLow,
+    'energy:mid' => l.sndEnergyMid,
+    'energy:high' => l.sndEnergyHigh,
+    'tone:dark' => l.sndToneDark,
+    'tone:balanced' => l.sndToneBalanced,
+    'tone:bright' => l.sndToneBright,
+    'bass:heavy' => l.sndBassHeavy,
+    'bass:light' => l.sndBassLight,
+    'beat:punchy' => l.sndBeatPunchy,
+    'beat:soft' => l.sndBeatSoft,
+    'length:short' => l.sndLengthShort,
+    'length:mid' => l.sndLengthMid,
+    'length:long' => l.sndLengthLong,
+    _ => key,
+  };
+
+  static IconData icon(String key) => switch (key.split(':').first) {
+    'tempo' => Icons.speed_rounded,
+    'energy' => Icons.bolt_rounded,
+    'tone' => Icons.wb_sunny_outlined,
+    'bass' => Icons.graphic_eq_rounded,
+    'beat' => Icons.music_note_rounded,
+    _ => Icons.timer_outlined,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final (key, strength) in sound)
+            Chip(
+              avatar: Icon(icon(key), size: 18, color: cs.primary),
+              label: Text(label(l, key)),
+              backgroundColor: Color.lerp(
+                cs.surfaceContainer,
+                cs.primaryContainer,
+                strength,
+              ),
+            ),
+        ],
       ),
     );
   }

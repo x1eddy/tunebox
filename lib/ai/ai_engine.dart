@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/db/database.dart';
+import 'sound_profile.dart';
 import '../data/services/download_service.dart';
 import '../data/services/yt_service.dart';
 import '../playback/audio_handler.dart';
@@ -99,7 +100,12 @@ class TasteProfile {
     required this.likes,
     required this.confidence,
     required this.summary,
+    this.sound = const [],
   });
+
+  /// The sound traits you lean to, e.g. ("tempo:fast", 1.0), strongest
+  /// first, 0..1 relative to the strongest.
+  final List<(String, double)> sound;
 
   final List<(String, double)> tags;
   final List<(String, double)> artists;
@@ -136,6 +142,40 @@ class AiEngine {
   final DownloadService _downloads;
   final SharedPreferences _prefs;
   final _random = Random();
+
+  // ---------------------------------------------------------------- sound
+
+  /// Rebuilds [artistSounds] from every measured song in the library.
+  Future<void> refreshArtistSounds() async {
+    final byArtist = <String, List<SoundProfile>>{};
+    for (final s in await _db.library()) {
+      final p = SoundProfile.parse(s.sound);
+      final key = artistKey(s);
+      if (p == null || key.isEmpty) continue;
+      byArtist.putIfAbsent(key, () => []).add(p);
+    }
+    if (_disposed) return;
+    artistSounds
+      ..clear()
+      ..addAll({
+        for (final e in byArtist.entries)
+          e.key: SoundProfile.average(e.value)!,
+      });
+  }
+
+  /// One listen's measurement of [songId], folded into what is stored.
+  Future<void> rememberSound(String songId, SoundProfile heard) async {
+    if (_disposed) return;
+    final song = await _db.songById(songId);
+    if (song == null || _disposed) return;
+    final merged = SoundProfile.parse(song.sound)?.merge(heard) ?? heard;
+    await _db.setSound(songId, merged.encode());
+    final key = artistKey(song);
+    if (key.isNotEmpty) {
+      final known = artistSounds[key];
+      artistSounds[key] = known == null ? heard : known.merge(heard);
+    }
+  }
 
   // ------------------------------------------------------------- learning
 
@@ -332,6 +372,10 @@ class AiEngine {
     if (song.year != null) {
       score += (w['decade:${song.year! ~/ 10 * 10}'] ?? 0) * 0.6;
     }
+    // what it sounds like: tempo, energy, tone, bass, punch and length
+    for (final d in soundDescriptorsOf(song)) {
+      score += (w[d] ?? 0) * (d.startsWith('length:') ? 0.4 : 0.8);
+    }
     if (s.useTimeOfDay) {
       final bucket = hourBucket(DateTime.now().hour);
       for (final tag in tagsOf(song).take(4)) {
@@ -389,6 +433,9 @@ class AiEngine {
     var score = (w['artist:${artistKey(song)}'] ?? 0) * 1.7;
     for (final tag in tagsOf(song)) {
       score += w['tag:$tag'] ?? 0;
+    }
+    for (final d in soundDescriptorsOf(song)) {
+      score += (w[d] ?? 0) * 0.6;
     }
     if (song.liked) score += 2;
     return score;
@@ -993,7 +1040,21 @@ class AiEngine {
         : 'Right now: ${topTags.take(2).map((t) => t.$1).join(' and ')}'
               '${topArtists.isEmpty ? '' : ', led by ${topArtists.first.$1}'}.';
 
+    final soundRows = w.entries
+        .where((e) => soundPrefixes.any(e.key.startsWith) && e.value > 0.2)
+        .toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    // one trait per kind: "fast" and "slow" can't both be your sound
+    final seenKinds = <String>{};
+    final sound = <(String, double)>[];
+    for (final e in soundRows) {
+      if (!seenKinds.add(e.key.split(':').first)) continue;
+      sound.add((e.key, (e.value / soundRows.first.value).clamp(0.0, 1.0)));
+      if (sound.length == 5) break;
+    }
+
     return TasteProfile(
+      sound: sound,
       tags: topTags,
       artists: topArtists,
       decades: decadeShare,
@@ -1198,7 +1259,21 @@ List<String> descriptorsOf(Song song) => [
     if (t != 'local file') 'tag:$t', // where a file came from says nothing about taste
   if (artistKey(song).isNotEmpty) 'artist:${artistKey(song)}',
   if (song.year != null) 'decade:${song.year! ~/ 10 * 10}',
+  ...soundDescriptorsOf(song),
 ];
+
+/// What a song sounds like, as learnable words: its own measurement when it
+/// has been heard, otherwise its artist's average sound; plus its length.
+List<String> soundDescriptorsOf(Song song) {
+  final own = SoundProfile.parse(song.sound);
+  final sound = own ?? artistSounds[artistKey(song)];
+  final length = lengthDescriptor(song.durationMs);
+  return [...?sound?.descriptors(), ?length];
+}
+
+/// Average measured sound per artist, so songs not yet heard still carry a
+/// sound guess. Filled by [AiEngine.refreshArtistSounds].
+final artistSounds = <String, SoundProfile>{};
 
 const _loudTags = {
   'rock', 'metal', 'punk', 'rap', 'hip hop', 'edm', 'dance', 'techno', 'house',
@@ -1213,6 +1288,17 @@ const _calmTags = {
 
 /// Rough -1..1 energy guess from a song's descriptors.
 double energyOf(Song song) {
+  final measured =
+      SoundProfile.parse(song.sound) ?? artistSounds[artistKey(song)];
+  if (measured != null) {
+    // the real thing: dense, punchy and fast reads as loud
+    final tempo = measured.tempo == null
+        ? 0.5
+        : ((measured.tempo! - 80) / 70).clamp(0.0, 1.0);
+    return ((measured.energy * 0.5 + measured.punch * 0.3 + tempo * 0.2) * 2 -
+            1)
+        .clamp(-1.0, 1.0);
+  }
   var score = 0.0;
   for (final tag in tagsOf(song)) {
     if (_loudTags.any(tag.contains)) score += 1;

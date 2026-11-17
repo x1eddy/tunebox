@@ -1736,10 +1736,11 @@ class LPl extends L {
   }
 
   @override
-  String get sndTitle => 'Dźwięk';
+  String get sndTitle => 'Twoje brzmienie';
 
   @override
-  String get sndSub => 'Przenikanie, korektor, głośność, wyłącznik czasowy';
+  String get sndSub =>
+      'Nauczone z samej muzyki podczas odtwarzania: tempo, energia, barwa, bas i uderzenie.';
 
   @override
   String get sndAll => 'Wszystkie ustawienia dźwięku';
@@ -2622,4 +2623,52 @@ class LPl extends L {
   @override
   String get libNoAlbumsBody =>
       'Muzyka zaimportowana z dysku lub folderu jest tu grupowana w albumy, razem z albumami, z których zapisano utwory.';
+
+  @override
+  String get sndTempoSlow => 'Wolne tempo';
+
+  @override
+  String get sndTempoMid => 'Średnie tempo';
+
+  @override
+  String get sndTempoFast => 'Szybkie tempo';
+
+  @override
+  String get sndEnergyLow => 'Spokojnie';
+
+  @override
+  String get sndEnergyMid => 'Średnia energia';
+
+  @override
+  String get sndEnergyHigh => 'Dużo energii';
+
+  @override
+  String get sndToneDark => 'Ciemne, ciepłe brzmienie';
+
+  @override
+  String get sndToneBalanced => 'Zrównoważone brzmienie';
+
+  @override
+  String get sndToneBright => 'Jasne brzmienie';
+
+  @override
+  String get sndBassHeavy => 'Mocny bas';
+
+  @override
+  String get sndBassLight => 'Lekki bas';
+
+  @override
+  String get sndBeatPunchy => 'Mocne bity';
+
+  @override
+  String get sndBeatSoft => 'Delikatne bity';
+
+  @override
+  String get sndLengthShort => 'Krótkie utwory';
+
+  @override
+  String get sndLengthMid => 'Utwory średniej długości';
+
+  @override
+  String get sndLengthLong => 'Długie utwory';
 }

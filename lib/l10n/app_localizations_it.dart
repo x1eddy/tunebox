@@ -1725,10 +1725,11 @@ class LIt extends L {
   }
 
   @override
-  String get sndTitle => 'Suono';
+  String get sndTitle => 'Il tuo suono';
 
   @override
-  String get sndSub => 'Dissolvenza, equalizzatore, volume, timer';
+  String get sndSub =>
+      'Imparato dalla musica stessa mentre suona: tempo, energia, timbro, bassi e impatto.';
 
   @override
   String get sndAll => 'Tutte le impostazioni audio';
@@ -2607,4 +2608,52 @@ class LIt extends L {
   @override
   String get libNoAlbumsBody =>
       'La musica che importi da un disco o da una cartella viene raggruppata qui in album, insieme agli album da cui hai salvato brani.';
+
+  @override
+  String get sndTempoSlow => 'Tempo lento';
+
+  @override
+  String get sndTempoMid => 'Tempo medio';
+
+  @override
+  String get sndTempoFast => 'Tempo veloce';
+
+  @override
+  String get sndEnergyLow => 'Calmo';
+
+  @override
+  String get sndEnergyMid => 'Energia media';
+
+  @override
+  String get sndEnergyHigh => 'Tanta energia';
+
+  @override
+  String get sndToneDark => 'Suono scuro e caldo';
+
+  @override
+  String get sndToneBalanced => 'Suono bilanciato';
+
+  @override
+  String get sndToneBright => 'Suono brillante';
+
+  @override
+  String get sndBassHeavy => 'Bassi potenti';
+
+  @override
+  String get sndBassLight => 'Bassi leggeri';
+
+  @override
+  String get sndBeatPunchy => 'Ritmi incisivi';
+
+  @override
+  String get sndBeatSoft => 'Ritmi morbidi';
+
+  @override
+  String get sndLengthShort => 'Brani brevi';
+
+  @override
+  String get sndLengthMid => 'Brani di media durata';
+
+  @override
+  String get sndLengthLong => 'Brani lunghi';
 }

@@ -1736,10 +1736,11 @@ class LFr extends L {
   }
 
   @override
-  String get sndTitle => 'Son';
+  String get sndTitle => 'Ton son';
 
   @override
-  String get sndSub => 'Fondu, égaliseur, volume, minuterie';
+  String get sndSub =>
+      'Appris de la musique elle-même pendant l’écoute : tempo, énergie, timbre, basses et punch.';
 
   @override
   String get sndAll => 'Tous les réglages du son';
@@ -2622,4 +2623,52 @@ class LFr extends L {
   @override
   String get libNoAlbumsBody =>
       'La musique importée depuis un disque ou un dossier est regroupée ici en albums, avec les albums dont tu as enregistré des titres.';
+
+  @override
+  String get sndTempoSlow => 'Tempo lent';
+
+  @override
+  String get sndTempoMid => 'Tempo moyen';
+
+  @override
+  String get sndTempoFast => 'Tempo rapide';
+
+  @override
+  String get sndEnergyLow => 'Calme';
+
+  @override
+  String get sndEnergyMid => 'Énergie moyenne';
+
+  @override
+  String get sndEnergyHigh => 'Beaucoup d’énergie';
+
+  @override
+  String get sndToneDark => 'Son sombre et chaud';
+
+  @override
+  String get sndToneBalanced => 'Son équilibré';
+
+  @override
+  String get sndToneBright => 'Son brillant';
+
+  @override
+  String get sndBassHeavy => 'Basses lourdes';
+
+  @override
+  String get sndBassLight => 'Basses légères';
+
+  @override
+  String get sndBeatPunchy => 'Rythmes percutants';
+
+  @override
+  String get sndBeatSoft => 'Rythmes doux';
+
+  @override
+  String get sndLengthShort => 'Titres courts';
+
+  @override
+  String get sndLengthMid => 'Titres de durée moyenne';
+
+  @override
+  String get sndLengthLong => 'Titres longs';
 }
